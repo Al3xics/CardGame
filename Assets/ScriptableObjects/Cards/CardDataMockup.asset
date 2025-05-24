@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4c4af47719ad294e9daacd12912804b, type: 3}
+  m_Name: CardDataMockup
+  m_EditorClassIdentifier: 
+  CardVisual: {fileID: 2800000, guid: 02061b33d0a03fe4382fe6a7f91cc78d, type: 3}
+  Name: Wendogo
+  CardType: {fileID: 11400000, guid: fcd26e8f53291db45b913da38b4c69ec, type: 2}
+  AppearanceChance: 90.43
+  ActionPointCost: 1
+  Value: 1
+  ID: 10105
+  Toggle: 0

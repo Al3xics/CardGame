@@ -6,9 +6,9 @@ using Sirenix.Serialization;
 public class CardDataSO : ScriptableObject
 {
     [Title("Card Visual")]
-    [HorizontalGroup("CardData", 75), VerticalGroup("CardData/Left", PaddingBottom = 5)]
-    [PreviewField(70, ObjectFieldAlignment.Left), HideLabel]
-    public GameObject CardModel;
+    [HorizontalGroup("CardData", 100), VerticalGroup("CardData/Left", PaddingBottom = 5)]
+    [PreviewField(100, ObjectFieldAlignment.Left), HideLabel]
+    public Texture2D CardVisual;
 
     [Title("Card Stats")]
     [VerticalGroup("CardData/Stats", 10), LabelWidth(75)]
@@ -26,7 +26,7 @@ public class CardDataSO : ScriptableObject
     [VerticalGroup("CardData/Stats"), LabelWidth(120), Range(0, 10)]
     public int Value;
 
-    [VerticalGroup("CardData/Left"), LabelWidth(200), MinValue(0), MaxValue(15)]
+    [VerticalGroup("CardData/Left"), LabelWidth(200), MinValue(10100), MaxValue(10199)]
     [ShowIf("Toggle"),HideLabel]
     public int ID;
     

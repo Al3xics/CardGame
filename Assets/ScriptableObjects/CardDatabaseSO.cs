@@ -1,9 +1,11 @@
+using Sirenix.OdinInspector;
 using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "CardDatabase", menuName = "Scriptable Objects/CardDatabase")]
 public class CardDatabaseSO : ScriptableObject
 {
+    [TableList, Searchable]
     public List<CardDataSO> CardList = new List<CardDataSO>();
 
     private Dictionary<int, CardDataSO> _cardDictionary = new Dictionary<int, CardDataSO>();

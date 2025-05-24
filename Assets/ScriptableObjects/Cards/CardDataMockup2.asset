@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b4c4af47719ad294e9daacd12912804b, type: 3}
-  m_Name: CardDataMockup
+  m_Name: CardDataMockup2
   m_EditorClassIdentifier: 
-  CardModel: {fileID: 3834194678658288003, guid: 090d9b1e839332a4f981f431fa302994, type: 3}
-  Name: 
-  CardType: {fileID: 11400000, guid: fcd26e8f53291db45b913da38b4c69ec, type: 2}
-  AppearanceChance: 7.99
-  ActionPointCost: 0
-  Value: 0
-  ID: 0
+  CardVisual: {fileID: 2800000, guid: 3818eb58d94daa3478fc77c31ea4bd21, type: 3}
+  Name: Mokoy
+  CardType: {fileID: 11400000, guid: 4e25d22ecb00c35458d774d5452ed766, type: 2}
+  AppearanceChance: 57.9
+  ActionPointCost: 1
+  Value: 2
+  ID: 10155
   Toggle: 0
