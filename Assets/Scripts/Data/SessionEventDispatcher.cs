@@ -52,5 +52,7 @@ namespace Data
         public void NotifyFailedToJoinSession() => _hostListeners.ForEach(l => l.OnFailedToJoinSession());
         public void NotifyPlayerJoinedSession(string playerId) => _playerListeners.ForEach(l => l.OnPlayerJoinedSession(playerId));
         public void NotifyPlayerLeftSession(string playerId) => _playerListeners.ForEach(l => l.OnPlayerLeftSession(playerId));
+        public void NotifyPlayerHasLeftSession(string playerId) => _playerListeners.ForEach(l => l.OnPlayerHasLeftSession(playerId));
+        public void NotifyPlayerPropertiesChanged() => _playerListeners.ForEach(l => l.OnPlayerPropertiesChanged());
     }
 }

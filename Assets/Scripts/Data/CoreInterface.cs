@@ -17,5 +17,7 @@
     {
         void OnPlayerJoinedSession(string playerId) { }
         void OnPlayerLeftSession(string playerId) { }
+        void OnPlayerHasLeftSession(string playerId) { }
+        void OnPlayerPropertiesChanged() { }
     }
 }

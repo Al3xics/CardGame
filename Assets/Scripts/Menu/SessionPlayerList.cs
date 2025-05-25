@@ -79,8 +79,6 @@ namespace Wendogo.Menu
             foreach (var player in session.Players)
             {
                 var playerID = player.Id;
-                // if (_playerListItems.ContainsKey(playerID)) continue;
-                
                 var playerListItem = GetPlayerListItem(playerID);
                 playerListItem.transform.SetSiblingIndex(contentRoot.childCount);
                 playerListItem.gameObject.SetActive(true);

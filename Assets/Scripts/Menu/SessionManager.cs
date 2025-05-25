@@ -202,6 +202,8 @@ namespace Wendogo.Menu
         {
             ActiveSession.PlayerJoined += OnPlayerJoined;
             ActiveSession.PlayerLeaving += OnPlayerLeaving;
+            ActiveSession.PlayerHasLeft += OnPlayerHasLeft;
+            ActiveSession.PlayerPropertiesChanged += OnPlayerPropertiesChanged;
             ActiveSession.RemovedFromSession += OnRemovedFromSession;
         }
         
@@ -209,6 +211,8 @@ namespace Wendogo.Menu
         {
             ActiveSession.PlayerJoined -= OnPlayerJoined;
             ActiveSession.PlayerLeaving -= OnPlayerLeaving;
+            ActiveSession.PlayerHasLeft -= OnPlayerHasLeft;
+            ActiveSession.PlayerPropertiesChanged -= OnPlayerPropertiesChanged;
             ActiveSession.RemovedFromSession -= OnRemovedFromSession;
         }
         
@@ -223,12 +227,24 @@ namespace Wendogo.Menu
             Debug.Log($"[SessionManager] Player leaving: {playerId}");
             SessionEventDispatcher.Instance.NotifyPlayerLeftSession(playerId);
         }
+        
+        private void OnPlayerHasLeft(string playerId)
+        {
+            Debug.Log($"[SessionManager] Player has left: {playerId}");
+            SessionEventDispatcher.Instance.NotifyPlayerHasLeftSession(playerId);
+        }
 
         private void OnRemovedFromSession()
         {
             Debug.Log("[SessionManager] Removed from session");
             UnregisterSessionEvents();
             ActiveSession = null;
+        }
+
+        private void OnPlayerPropertiesChanged()
+        {
+            Debug.Log("[SessionManager] Player Properties Changed");
+            SessionEventDispatcher.Instance.NotifyPlayerPropertiesChanged();
         }
 
         public async void KickPlayer(string playerId)
