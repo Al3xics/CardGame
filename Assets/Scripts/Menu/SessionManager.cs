@@ -102,7 +102,7 @@ namespace Wendogo.Menu
             }
             catch (Exception e)
             {
-                Debug.LogException(e);
+                Debug.LogError(e);
             }
         }
 
@@ -211,7 +211,6 @@ namespace Wendogo.Menu
         {
             ActiveSession.PlayerJoined -= OnPlayerJoined;
             ActiveSession.PlayerLeaving -= OnPlayerLeaving;
-            ActiveSession.PlayerHasLeft -= OnPlayerHasLeft;
             ActiveSession.PlayerPropertiesChanged -= OnPlayerPropertiesChanged;
             ActiveSession.RemovedFromSession -= OnRemovedFromSession;
         }
@@ -257,7 +256,7 @@ namespace Wendogo.Menu
             }
             catch (Exception e)
             {
-                Debug.Log(e);
+                Debug.LogWarning(e);
             }
         }
 
@@ -268,15 +267,24 @@ namespace Wendogo.Menu
             
             try
             {
+                // As host, notify all players before leaving
+                // This will trigger the RemovedFromSession event for all clients
                 if (isHost)
                 {
-                    // As host, notify all players before leaving
-                    // This will trigger the RemovedFromSession event for all clients
-                    foreach (var player in ActiveSession.Players)
+                    // 1. Take a snapshot WITHOUT the host
+                    var others = new List<IReadOnlyPlayer>(ActiveSession.Players);
+                    others.RemoveAll(p => p.Id == ActiveSession.CurrentPlayer.Id);
+
+                    // 2. Exclude them one by one
+                    foreach (var p in others)
                     {
-                        if (player.Id != ActiveSession.CurrentPlayer.Id)
+                        try
                         {
-                            await ActiveSession.AsHost().RemovePlayerAsync(player.Id);
+                            await ActiveSession.AsHost().RemovePlayerAsync(p.Id);
+                        }
+                        catch (Exception kickEx)
+                        {
+                            Debug.LogWarning($"Kick failed for {p.Id} : {kickEx.Message}");
                         }
                     }
                 }
@@ -286,7 +294,7 @@ namespace Wendogo.Menu
             }
             catch (Exception e)
             {
-                Debug.Log(e);
+                Debug.LogWarning(e);
             }
             finally
             {

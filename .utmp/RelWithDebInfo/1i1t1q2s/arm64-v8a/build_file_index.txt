@@ -1,0 +1,2 @@
+E:\MY DATA\ICAN\Master\Master 1\Unity\CardGame\Library\Bee\Android\Prj\IL2CPP\Gradle\unityLibrary\src\main\cpp\CMakeLists.txt
+E:\MY DATA\ICAN\Master\Master 1\Unity\CardGame\Library\Bee\Android\Prj\IL2CPP\Gradle\unityLibrary\src\main\cpp\GameActivity\CMakeLists.txt

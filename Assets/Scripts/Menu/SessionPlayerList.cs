@@ -21,8 +21,14 @@ namespace Wendogo.Menu
         public Transform contentRoot;
 
         private Dictionary<string, SessionPlayerListItem> _playerListItems = new();
-        
-        List<SessionPlayerListItem> _cachedPlayerListItems = new();
+
+        public Dictionary<string, SessionPlayerListItem> PlayerListItems
+        {
+            get => _playerListItems;
+            private set => _playerListItems = value;
+        }
+
+        private List<SessionPlayerListItem> _cachedPlayerListItems = new();
 
         #endregion
 
@@ -91,6 +97,9 @@ namespace Wendogo.Menu
 
                 playerListItem.Initialize(playerName, playerID, hostCanKickPlayers);
                 _playerListItems[playerID] = playerListItem;
+                
+                bool isReady = player.Properties.TryGetValue(SessionConstants.PlayerReadyPropertyKey, out var prop) && prop.Value == "True";
+                playerListItem.UpdateReadyState(isReady);
             }
         }
 

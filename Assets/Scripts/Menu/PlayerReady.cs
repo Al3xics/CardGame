@@ -14,55 +14,42 @@ namespace Wendogo.Menu
         #region Variables
 
         [Header("References")]
-        [Tooltip("The play button for the host to start the game.")]
+        [Tooltip("The ready button to indicate if the player is ready or not.")]
         public Button playButton;
         
-        [Tooltip("The toggle button to indicate if the player is ready or not.")]
-        public Toggle readyToggle;
-        
-        [Tooltip("The text that shows the number of players that are ready to start the game.")]
-        public TMP_Text counterText;
-        
-        private const string ReadyText = "Ready";
+        private Button _readyButton;
+        private SessionPlayerListItem _playerListItem;
+        private bool _isReady = false;
 
         #endregion
 
         private void OnEnable()
         {
             SessionEventDispatcher.Instance.Register(this);
+            
+            _readyButton = GetComponent<Button>();
+            if (_readyButton)
+                _readyButton.onClick.AddListener(OnButtonClicked);
+            
+            // Called manually because the session is already created and this will not be called otherwise.
+            OnJoinedSession();
         }
 
         private void OnDisable()
         {
             SessionEventDispatcher.Instance.Unregister(this);
-        }
 
-        private void Start()
-        {
-            readyToggle.onValueChanged.AddListener(OnReadyToggleChanged);
             ResetValue();
         }
 
         public void OnJoinedSession()
         {
-            OnReadyToggleChanged(readyToggle.isOn);
-            SetReadyToggleActive();
+            UpdatePlayerProperties();
             Refresh();
-        }
-
-        public void OnLeftSession()
-        {
-            ResetValue();
-        }
-
-        public void OnFailedToJoinSession()
-        {
-            ResetValue();
         }
 
         public void OnPlayerJoinedSession(string playerId)
         {
-            OnReadyToggleChanged(readyToggle.isOn);
             Refresh();
         }
 
@@ -76,23 +63,20 @@ namespace Wendogo.Menu
             Refresh();
         }
 
-        private void SetReadyToggleActive()
+        private void OnButtonClicked()
         {
-            readyToggle.interactable = SessionManager.Instance.ActiveSession != null;
+            // On button click, toggle the ready state of the player and update his properties
+            _isReady = !_isReady;
+            UpdatePlayerProperties();
         }
 
-        private void SetCounterText(int current, int max)
-        {
-            counterText.text = $"{SessionConstants.PlayerReadyPropertyKey} : {current} / {max}";
-        }
-
-        private async void OnReadyToggleChanged(bool isOn)
+        private async void UpdatePlayerProperties()
         {
             try
             {
                 var playerProperties = new Dictionary<string, PlayerProperty>
                 {
-                    {SessionConstants.PlayerReadyPropertyKey, new PlayerProperty(isOn.ToString(), VisibilityPropertyOptions.Member)}
+                    {SessionConstants.PlayerReadyPropertyKey, new PlayerProperty(_isReady.ToString(), VisibilityPropertyOptions.Member)}
                 };
             
                 // This will trigger OnPlayerPropertiesChanged() because it is binding to the same event 'ActiveSession.PlayerPropertiesChanged += OnPlayerPropertiesChanged;'
@@ -109,7 +93,6 @@ namespace Wendogo.Menu
         {
             var session = SessionManager.Instance.ActiveSession;
             
-            
             /* -------- No session -------- */
             if (session == null)
             {
@@ -117,47 +100,23 @@ namespace Wendogo.Menu
                 return;
             }
             
-            
-            /* -------- Ready counter -------- */
-            int readyCount = 0;
-            int maxPlayer = session.MaxPlayers;
-            
-            foreach (var player in session.Players)
-            {
-                player.Properties.TryGetValue(SessionConstants.PlayerReadyPropertyKey, out var prop);
-                if (prop is { Value: "True" }) readyCount++;
-            }
-            
-            SetCounterText(readyCount, maxPlayer);
-
-            
             /* -------- Play-button (host only) -------- */
             if (playButton)
             {
-                bool everyoneReady = readyCount == maxPlayer;
+                int readyCount = 0;
+                foreach (var p in session.Players)
+                    if (p.Properties.TryGetValue(SessionConstants.PlayerReadyPropertyKey, out var prop) && prop.Value == "True")
+                        readyCount++;
+
+                bool everyoneReady = readyCount == session.MaxPlayers;
                 playButton.interactable = session.IsHost && everyoneReady;
-            }
-
-            
-            /* -------- Toggle state for local player -------- */
-            if (readyToggle)
-            {
-                bool selfReady = session.CurrentPlayer.Properties.TryGetValue(SessionConstants.PlayerReadyPropertyKey, out var selfProp) && selfProp.Value == "True";
-
-                // avoid infinite recursion
-                if (readyToggle.isOn != selfReady)
-                    readyToggle.SetIsOnWithoutNotify(selfReady);
-
-                readyToggle.interactable = true;
             }
         }
 
         private void ResetValue()
         {
-            SetCounterText(0, 0);
-            if (playButton) playButton.interactable = false;
-            readyToggle.SetIsOnWithoutNotify(false);
-            SetReadyToggleActive();
+            _isReady = false;
+            _readyButton.onClick.RemoveListener(OnButtonClicked);
         }
     }
 }

@@ -2,16 +2,14 @@
 using System.Linq;
 using Data;
 using TMPro;
-using Unity.Services.Multiplayer;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
 using Wendogo.Data;
 using Wendogo.Scriptables;
 
 namespace Wendogo.Menu
 {
-    public class JoinSessionByCode : MonoBehaviour, ISessionLifecycleEvents, IPlayerSessionEvents
+    public class JoinSessionByCode : MonoBehaviour, ISessionLifecycleEvents
     {
         #region Variables
         
@@ -22,27 +20,29 @@ namespace Wendogo.Menu
         
         
         /* ---------- Variables --------- */
-        [Header("References")]
-        public Button enterSessionButton;
+        [Header("Current Page")]
+        [Tooltip("Button that joins the session.")]
+        public Button joinButton;
+        
+        [Tooltip("Button that go back to the menu.")]
+        public Button backToMenuButton;
+        
+        [Tooltip("Button that paste the session code from your clipboard.")]
         public Button pasteCodeButton;
+        
+        [Tooltip("Input field for entering the player's name.")]
         public TMP_InputField playerNameInputField;
+        
+        [Tooltip("Input field for entering the session code.")]
         public TMP_InputField enterCodeInputField;
+        
+        
+        [Header("Next Page")]
+        [Tooltip("GameObject containing the UI elements for the next page.")]
+        public GameObject nextUIGameObject;
+        
+        private GameObject _currentGameObject;
 
-        #endregion
-        
-        #region Unity Event
-        
-        [Space(20)]
-
-        [Tooltip("Only called when the player who plays join the session.\nEither the host, or the client.")]
-        public UnityEvent onJoinedSession;
-        
-        [Tooltip("Only called when the player who plays left the session.\nEither the host, or the client.")]
-        public UnityEvent onLeftSession;
-        
-        [Tooltip("Only called when the player who plays left the session.\nEither the host, or the client.")]
-        public UnityEvent onFailedToJoinSession;
-        
         #endregion
         
         private void OnEnable()
@@ -58,21 +58,25 @@ namespace Wendogo.Menu
         private void Awake()
         {
             // Check variables are set in inspector
-            if (enterSessionButton == null)
-                Debug.LogError($"{nameof(enterSessionButton)} is missing !");
+            if (joinButton == null)
+                Debug.LogError($"{nameof(joinButton)} is missing !");
             if (pasteCodeButton == null)
                 Debug.LogError($"{nameof(pasteCodeButton)} is missing !");
             if (playerNameInputField == null)
                 Debug.LogError($"{nameof(playerNameInputField)} is missing !");
             if (enterCodeInputField == null)
                 Debug.LogError($"{nameof(enterCodeInputField)} is missing !");
+            if (nextUIGameObject == null)
+                Debug.LogError($"{nameof(nextUIGameObject)} is missing !");
+            
+            _currentGameObject = gameObject.transform.parent.gameObject;
 
-            enterSessionButton.onClick.AddListener(EnterSessionByCode);
-            enterSessionButton.interactable = false;
+            joinButton.onClick.AddListener(EnterSessionByCode);
+            joinButton.interactable = false;
             
             enterCodeInputField.onValueChanged.AddListener(value =>
             {
-                enterSessionButton.interactable = !string.IsNullOrEmpty(value);
+                joinButton.interactable = !string.IsNullOrEmpty(value);
             });
             playerNameInputField.onEndEdit.AddListener(input =>
             {
@@ -84,21 +88,9 @@ namespace Wendogo.Menu
             });
         }
 
-        public void OnJoinedSession()
-        {
-            onJoinedSession?.Invoke();
-        }
-
-        public void OnLeftSession()
-        {
-            SetButtonAndInputField(true);
-            onLeftSession?.Invoke();
-        }
-
         public void OnFailedToJoinSession()
         {
-            SetButtonAndInputField(true);
-            onFailedToJoinSession?.Invoke();
+            enterCodeInputField.text = "";
         }
 
         private string SanitizeInput(string input)
@@ -123,22 +115,29 @@ namespace Wendogo.Menu
         {
             try
             {
-                SetButtonAndInputField(false);
+                joinButton.interactable = false;
+                backToMenuButton.interactable = false;
                 await SessionManager.Instance.EnterSession(GetSessionData());
-            }
-            catch (SessionException e)
-            {
-                SetButtonAndInputField(true);
-                Debug.LogError(e);
-            }
-        }
 
-        private void SetButtonAndInputField(bool value)
-        {
-            enterSessionButton.interactable = value;
-            enterCodeInputField.interactable = value;
-            pasteCodeButton.interactable = value;
-            if (value) enterCodeInputField.text = SessionConstants.NoCode;
+                if (SessionManager.Instance.ActiveSession == null)
+                {
+                    throw new Exception("The code is invalid.");
+                }
+                
+                _currentGameObject.SetActive(false);
+                nextUIGameObject.SetActive(true);
+                var showSessionInformation = nextUIGameObject.GetComponentInChildren<ShowSessionInformation>();
+                if (showSessionInformation) showSessionInformation.Initialize();
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning($"Failed to join session: {e.Message}");
+            }
+            finally
+            {
+                joinButton.interactable = true;
+                backToMenuButton.interactable = true;
+            }
         }
     }
 }

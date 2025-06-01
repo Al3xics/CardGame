@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Linq;
 using Data;
-using JetBrains.Annotations;
 using TMPro;
-using Unity.Services.Multiplayer;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
 using Wendogo.Scriptables;
 using Wendogo.Data;
 
 namespace Wendogo.Menu
 {
-    public class CreateSession : MonoBehaviour, ISessionLifecycleEvents, IPlayerSessionEvents
+    public class CreateSession : MonoBehaviour, ISessionLifecycleEvents
     {
         #region Variables
         
@@ -23,31 +20,28 @@ namespace Wendogo.Menu
         
         
         /* ---------- Variables --------- */
-        [Header("References")]
+        [Header("Current Page")]
+        [Tooltip("Button that initiates the session creation process.")]
         public Button createSessionButton;
+        
+        [Tooltip("Button that go back to the menu.")]
+        public Button backToMenuButton;
+        
+        [Tooltip("Input field for entering the player's name.")]
         public TMP_InputField playerNameInputField;
+        
+        [Tooltip("Input field for entering the session name.")]
         public TMP_InputField sessionNameInputField;
 
-        #endregion
         
-        #region Unity Event
-        
-        [Space(20)]
+        [Header("Next Page")]
+        [Tooltip("GameObject containing the UI elements for the next page.")]
+        public GameObject nextUIGameObject;
 
-        [Tooltip("Only called when the player who plays join the session.\nEither the host, or the client.")]
-        public UnityEvent onJoinedSession;
-        
-        [Tooltip("Only called when the player who plays left the session.\nEither the host, or the client.")]
-        public UnityEvent onLeftSession;
-
-        [Tooltip("Called when any player (except host) join the session created by the host.")]
-        public UnityEvent onPlayerJoinedSession;
-        
-        [Tooltip("Called when any player (except host) left the session he was in.")]
-        public UnityEvent onPlayerLeftSession;
+        private GameObject _currentGameObject;
         
         #endregion
-        
+
         private void OnEnable()
         {
             SessionEventDispatcher.Instance.Register(this);
@@ -67,14 +61,12 @@ namespace Wendogo.Menu
                 Debug.LogError($"{nameof(sessionNameInputField)} is missing !");
             if (playerNameInputField == null)
                 Debug.LogError($"{nameof(playerNameInputField)} is missing !");
+            if (nextUIGameObject == null)
+                Debug.LogError($"{nameof(nextUIGameObject)} is missing !");
+            
+            _currentGameObject = gameObject.transform.parent.gameObject;
             
             createSessionButton.onClick.AddListener(EnterSession);
-            createSessionButton.interactable = false;
-            
-            sessionNameInputField.onValueChanged.AddListener(value =>
-            {
-                createSessionButton.interactable = !string.IsNullOrEmpty(value);
-            });
             sessionNameInputField.onEndEdit.AddListener(input =>
             {
                 sessionNameInputField.text = SanitizeInput(input);
@@ -85,28 +77,9 @@ namespace Wendogo.Menu
             });
         }
 
-        public void OnJoinedSession()
+        public void OnFailedToJoinSession()
         {
-            onJoinedSession?.Invoke();
-        }
-
-        public void OnLeftSession()
-        {
-            SetButtonAndInputField(true);
-            onLeftSession?.Invoke();
-            Debug.Log("[Create Session] OnLeftSession called.");
-        }
-
-        public void OnPlayerJoinedSession(string playerId)
-        {
-            onPlayerJoinedSession?.Invoke();
-            Debug.Log("[Create Session] OnPlayerJoinedSession called.");
-        }
-
-        public void OnPlayerLeftSession(string playerId)
-        {
-            onPlayerLeftSession?.Invoke();
-            Debug.Log("[Create Session] OnPlayerLeftSession called.");
+            sessionNameInputField.text = "";
         }
 
         private string SanitizeInput(string input)
@@ -132,20 +105,29 @@ namespace Wendogo.Menu
         {
             try
             {
-                SetButtonAndInputField(false);
+                createSessionButton.interactable = false;
+                backToMenuButton.interactable = false;
                 await SessionManager.Instance.EnterSession(GetSessionData());
+
+                if (SessionManager.Instance.ActiveSession == null)
+                {
+                    throw new Exception("Something went wrong. Maybe the session's name you choose is already taken.");
+                }
+
+                _currentGameObject.SetActive(false);
+                nextUIGameObject.SetActive(true);
+                var showSessionInformation = nextUIGameObject.GetComponentInChildren<ShowSessionInformation>();
+                if (showSessionInformation) showSessionInformation.Initialize();
             }
-            catch (SessionException e)
+            catch (Exception e)
             {
-                SetButtonAndInputField(true);
-                Debug.LogError(e);
+                Debug.LogError($"Failed to create session: {e.Message}");
             }
-        }
-        
-        private void SetButtonAndInputField(bool value)
-        {
-            createSessionButton.interactable = value;
-            sessionNameInputField.interactable = value;
+            finally
+            {
+                createSessionButton.interactable = true;
+                backToMenuButton.interactable = true;
+            }
         }
     }
 }
