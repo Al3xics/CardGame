@@ -2,6 +2,7 @@
 using TMPro;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using Wendogo;
 
 public enum Cycle { Day, Night }
 
@@ -22,6 +23,9 @@ public class GameManager : MonoBehaviour
     public List<Player> players = new List<Player>();
 
     private int currentPlayerIndex = 0;
+
+    private bool _wendogoAlreadyAssigned = false;
+
     public Cycle CurrentCycle { get; private set; } = Cycle.Day;
 
     private void Awake()
@@ -42,6 +46,23 @@ public class GameManager : MonoBehaviour
         }
 
         UpdatePanelUI();
+    }
+
+    public string AssignRoleToPlayer()
+    {
+        if (!_wendogoAlreadyAssigned)
+        {
+            // 50% chance de donner Wendogo
+            bool assignWendogo = UnityEngine.Random.value > 0.5f;
+
+            if (assignWendogo)
+            {
+                _wendogoAlreadyAssigned = true;
+                return Data.SessionConstants.Wendogo;
+            }
+        }
+
+        return Data.SessionConstants.Survivor;
     }
 
     public void PlayerClickedReady(Player player)
