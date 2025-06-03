@@ -26,14 +26,16 @@ public class CardEditorTool : OdinMenuEditorWindow
     {
         var tree = new OdinMenuTree(true)
         {
-            { "Settings", this }
+            { "Database", this }
         };
+
+        CardDatabase = AssetDatabase.LoadAssetAtPath<CardDatabaseSO>("Assets/ScriptableObjects/CardDatabase.asset");
 
         if (CardDatabase == null)
         {
-            tree.Add("⚠️ No Database Assigned", null);
             return tree;
         }
+
 
         foreach (var card in CardDatabase.CardList)
         {
@@ -42,6 +44,8 @@ public class CardEditorTool : OdinMenuEditorWindow
                 tree.Add($"Cards/{card.Name} ({card.ID})", card);
             }
         }
+
+        tree.AddAllAssetsAtPath("visuals", "Assets/Textures/CardVisuals", typeof(Texture2D), true);
 
         tree.SortMenuItemsByName();
         tree.Add("✚ Create New Card", new CreateCardHelper(CardDatabase));
@@ -109,7 +113,6 @@ public class CardEditorTool : OdinMenuEditorWindow
                 EditorUtility.SetDirty(_database);
                 AssetDatabase.SaveAssets();
 
-                // Refresh the window
                 EditorWindow.GetWindow<CardEditorTool>().ForceMenuTreeRebuild();
             }
         }
