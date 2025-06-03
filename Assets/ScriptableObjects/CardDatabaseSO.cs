@@ -10,6 +10,11 @@ public class CardDatabaseSO : ScriptableObject
 
     private Dictionary<int, CardDataSO> _cardDictionary = new Dictionary<int, CardDataSO>();
 
+    private void OnEnable()
+    {
+        Initialize();
+    }
+
     public void Initialize()
     {
         foreach (CardDataSO card in CardList)

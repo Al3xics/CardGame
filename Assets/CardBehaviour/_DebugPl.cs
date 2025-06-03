@@ -1,0 +1,32 @@
+using UnityEngine;
+using UnityEngine.InputSystem;
+
+public class _DebugPl : MonoBehaviour
+{
+    [SerializeField] private Transform _cardTransform;
+    [SerializeField] private CardObjectData _cardObjectData;
+    [SerializeField] private InputActionAsset _iaa;
+    private InputAction _interact;
+
+    private void Awake()
+    {
+        _interact = _iaa.FindAction("Interact");
+    }
+
+    void Update()
+    {
+        if (_interact.WasReleasedThisFrame())
+        {
+            _cardObjectData = FindAnyObjectByType<CardObjectData>();
+            if (!_cardObjectData.isSelected)
+            {
+                
+            }
+            else
+            {
+                TweeningManager.CardDown(_cardObjectData.gameObject.transform);
+                _cardObjectData.isSelected = false;
+            }
+        }
+    }
+}
