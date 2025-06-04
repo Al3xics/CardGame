@@ -1,10 +1,12 @@
 ﻿using NUnit.Framework;
+using Sirenix.OdinInspector;
 using Sirenix.Reflection.Editor;
+using Sirenix.Serialization;
 using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "DeckConfig", menuName = "Scriptable Objects/DeckConfig")]
-class DeckConfiguration : ScriptableObject
+class DeckConfiguration : SerializedScriptableObject
 {
     public CardDeckConfig[] cardDeckData;
 
@@ -22,7 +24,6 @@ class DeckConfiguration : ScriptableObject
     }
 }
 
-[System.Serializable]
 class CardDeckConfig
 {
     public CardDataSO CardData;

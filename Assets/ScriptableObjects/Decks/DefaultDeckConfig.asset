@@ -9,8 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cc4178c966fc067498c364c11aa9d6ff, type: 3}
-  m_Name: Attack
+  m_Script: {fileID: 11500000, guid: 9592994fb65ae4346bf93e970c81c9d7, type: 3}
+  m_Name: DefaultDeckConfig
   m_EditorClassIdentifier: 
   serializationData:
     SerializedFormat: 2
@@ -21,15 +21,45 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes:
-    - Name: effects
+    - Name: cardDeckData
       Entry: 7
-      Data: 0|CardEffect[], Assembly-CSharp
+      Data: 0|CardDeckConfig[], Assembly-CSharp
     - Name: 
       Entry: 12
-      Data: 1
+      Data: 3
     - Name: 
       Entry: 7
-      Data: 1|Attack, Assembly-CSharp
+      Data: 1|CardDeckConfig, Assembly-CSharp
+    - Name: CardData
+      Entry: 6
+      Data: 
+    - Name: quantity
+      Entry: 3
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 2|CardDeckConfig, Assembly-CSharp
+    - Name: CardData
+      Entry: 6
+      Data: 
+    - Name: quantity
+      Entry: 3
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 3|CardDeckConfig, Assembly-CSharp
+    - Name: CardData
+      Entry: 6
+      Data: 
+    - Name: quantity
+      Entry: 3
+      Data: 1
     - Name: 
       Entry: 8
       Data: 

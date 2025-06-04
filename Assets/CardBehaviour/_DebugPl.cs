@@ -6,6 +6,7 @@ public class _DebugPl : MonoBehaviour
     [SerializeField] private Transform _cardTransform;
     [SerializeField] private CardObjectData _cardObjectData;
     [SerializeField] private InputActionAsset _iaa;
+    [SerializeField] private HandManager _hand;
     private InputAction _interact;
 
     private void Awake()
@@ -17,16 +18,18 @@ public class _DebugPl : MonoBehaviour
     {
         if (_interact.WasReleasedThisFrame())
         {
-            _cardObjectData = FindAnyObjectByType<CardObjectData>();
-            if (!_cardObjectData.isSelected)
-            {
+            _hand.DrawCard();
+
+            //_cardObjectData = FindAnyObjectByType<CardObjectData>();
+            //if (!_cardObjectData.isSelected)
+            //{
                 
-            }
-            else
-            {
-                TweeningManager.CardDown(_cardObjectData.gameObject.transform);
-                _cardObjectData.isSelected = false;
-            }
+            //}
+            //else
+            //{
+            //    TweeningManager.CardDown(_cardObjectData.gameObject.transform);
+            //    _cardObjectData.isSelected = false;
+            //}
         }
     }
 }
