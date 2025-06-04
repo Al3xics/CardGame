@@ -8,18 +8,16 @@ public class CardsHandler : MonoBehaviour
     [SerializeField] private Transform _handTransform;
     [SerializeField] private CardDatabaseSO _cardDatabase;
 
-    public void DrawCard()
+    public void ApplyCardData(GameObject card)
     {
-        //Temporary implementation to draw card
-        GameObject cardObject = Instantiate(_cardPrefab,_handTransform);
         try
         {
             CardDataSO cardData = _cardDatabase.GetCardByID(10100);
             Texture2D cardVisual = cardData.CardVisual;
-            RawImage rawImage = cardObject.GetComponentInChildren<RawImage>();
+            RawImage rawImage = card.GetComponentInChildren<RawImage>();
             rawImage.texture = cardVisual;
             Debug.Log($"{cardData.name} drawn");
-            CardObjectData data = cardObject.GetComponent<CardObjectData>();
+            CardObjectData data = card.GetComponent<CardObjectData>();
             data.Card = cardData;
         }
         catch (System.ArgumentNullException e)

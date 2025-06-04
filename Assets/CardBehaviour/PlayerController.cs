@@ -1,11 +1,15 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class PlayerController : MonoBehaviour
 {
     public static CardObjectData ActiveCard;
+    [SerializeField] private EventSystem inputEvent;
 
     public void EnableInput()
     {
+        inputEvent.enabled = true;
+
         //Implement enable input
         Debug.Log("Input enabled");
     }
@@ -41,7 +45,8 @@ public class PlayerController : MonoBehaviour
     {
         //Implement confirm play
         //Check player PA
+        Destroy(ActiveCard.gameObject);
+        //Send information to server
         Debug.Log("Confirm play");
     }
-
 }

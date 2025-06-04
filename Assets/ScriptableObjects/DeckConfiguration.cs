@@ -8,12 +8,12 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "DeckConfig", menuName = "Scriptable Objects/DeckConfig")]
 class DeckConfiguration : SerializedScriptableObject
 {
-    public CardDeckConfig[] cardDeckData;
+    public CardDeckConfig[] CardDeckData;
 
     public List<CardDataSO> CreateDeck()
     {
         List<CardDataSO> list = new List<CardDataSO>();
-        foreach (CardDeckConfig data in cardDeckData)
+        foreach (CardDeckConfig data in CardDeckData)
         {
             for (int i = 0; i < data.quantity; i++)
             {

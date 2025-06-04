@@ -1,6 +1,5 @@
 using LitMotion;
 using LitMotion.Extensions;
-using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Splines;
@@ -17,6 +16,10 @@ public class HandManager : MonoBehaviour
 
     [SerializeField] private Transform _handTransform;
 
+
+    //temp
+    [SerializeField] CardsHandler _cardsHandler;
+
     private List<GameObject> _handCards = new List<GameObject>();
 
     public void DrawCard()
@@ -25,6 +28,7 @@ public class HandManager : MonoBehaviour
         GameObject g = Instantiate(_cardPrefab, _spawnPoint.position, _spawnPoint.rotation);
         _handCards.Add(g);
         g.transform.parent = _handTransform;
+        _cardsHandler.ApplyCardData(g);
         UpdateCardPositions();
     }
 
