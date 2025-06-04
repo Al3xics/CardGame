@@ -18,6 +18,6 @@ MonoBehaviour:
   publishIpAddress: 127.0.0.1
   port: 0
   sessionName: Session
-  maxPlayers: 4
+  maxPlayers: 2
   isLocked: 0
   isPrivate: 0

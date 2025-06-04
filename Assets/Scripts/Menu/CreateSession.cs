@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Wendogo.Scriptables;
 using Wendogo.Data;
+using UnityEngine.SceneManagement;
 
 namespace Wendogo.Menu
 {
