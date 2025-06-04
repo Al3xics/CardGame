@@ -1,8 +1,10 @@
 using LitMotion;
 using LitMotion.Extensions;
 using System.Collections.Generic;
+using Cysharp;
 using UnityEngine;
 using UnityEngine.Splines;
+using Cysharp.Threading.Tasks;
 
 public class HandManager : MonoBehaviour
 {
@@ -16,14 +18,47 @@ public class HandManager : MonoBehaviour
 
     [SerializeField] private Transform _handTransform;
 
+    [SerializeField] private PlayerController _playerController;
+
+    private GameObject _goToRemove;
+
 
     //temp
     [SerializeField] CardsHandler _cardsHandler;
 
     private List<GameObject> _handCards = new List<GameObject>();
 
+    private void OnEnable()
+    {
+        PlayerController.OnCardUsed += DrawCard;
+    }
+
+    private void OnDisable()
+    {
+        PlayerController.OnCardUsed -= DrawCard;
+    }
+
+    public void Discard(GameObject discardedCard)
+    {
+        int discardedID = discardedCard.GetInstanceID();
+
+        foreach (GameObject card in _handCards)
+        {
+            int cardID = card.GetInstanceID();
+            if (cardID == discardedID)
+            {
+                _handCards.Remove(card);
+
+            }
+        }
+        //var gameobject = _handCards.Find(x => discardedCard);
+        //_handCards.Remove(gameobject); 
+
+    }
+
     public void DrawCard()
     {
+
         if (_handCards.Count >= _maxHandSize) return;
         GameObject g = Instantiate(_cardPrefab, _spawnPoint.position, _spawnPoint.rotation);
         _handCards.Add(g);

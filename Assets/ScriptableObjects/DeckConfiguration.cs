@@ -1,7 +1,4 @@
-﻿using NUnit.Framework;
-using Sirenix.OdinInspector;
-using Sirenix.Reflection.Editor;
-using Sirenix.Serialization;
+﻿using Sirenix.OdinInspector;
 using System.Collections.Generic;
 using UnityEngine;
 

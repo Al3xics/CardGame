@@ -15,48 +15,25 @@ MonoBehaviour:
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
-    ReferencedUnityObjects: []
+    ReferencedUnityObjects:
+    - {fileID: 11400000, guid: 0a317f580c8ea75419dac16871435e5b, type: 2}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes:
-    - Name: cardDeckData
+    - Name: CardDeckData
       Entry: 7
       Data: 0|CardDeckConfig[], Assembly-CSharp
     - Name: 
       Entry: 12
-      Data: 3
+      Data: 1
     - Name: 
       Entry: 7
       Data: 1|CardDeckConfig, Assembly-CSharp
     - Name: CardData
-      Entry: 6
-      Data: 
-    - Name: quantity
-      Entry: 3
-      Data: 1
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 2|CardDeckConfig, Assembly-CSharp
-    - Name: CardData
-      Entry: 6
-      Data: 
-    - Name: quantity
-      Entry: 3
-      Data: 1
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 3|CardDeckConfig, Assembly-CSharp
-    - Name: CardData
-      Entry: 6
-      Data: 
+      Entry: 10
+      Data: 0
     - Name: quantity
       Entry: 3
       Data: 1

@@ -1,7 +1,8 @@
 ﻿using Sirenix;
 using Sirenix.Serialization;
 
-public abstract class CardEffect
+[System.Serializable]
+public class CardEffect
 {
     public virtual void Apply()
     {

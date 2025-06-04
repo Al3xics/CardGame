@@ -162,7 +162,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90742c97ac8f9924b8cbd30d40b62189, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Card: {fileID: 0}
+  Card: {fileID: 11400000, guid: 0a317f580c8ea75419dac16871435e5b, type: 2}
+  Effect:
+    AttackValue: 5
   isSelected: 0
 --- !u!114 &3381228858445144288
 MonoBehaviour:
@@ -177,4 +179,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _cardIndex: 0
-  _cardsHandler: {fileID: 0}

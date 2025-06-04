@@ -16,8 +16,11 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler
     {
         if (!_cardObjectData.isSelected)
         {
-            TweeningManager.CardUp(gameObject.transform);
-            _cardObjectData.isSelected = true;
+            PlayerController.SelectCard(_cardObjectData);
+        }
+        else 
+        {
+            PlayerController.DeselectCard(_cardObjectData);
         }
     }
 }
