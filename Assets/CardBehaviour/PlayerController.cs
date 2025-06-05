@@ -5,7 +5,9 @@ using UnityEngine.EventSystems;
 
 public class PlayerController : MonoBehaviour
 {
-    public static CardObjectData ActiveCard;
+    public static PlayerController Instance { get; private set; }
+
+    [HideInInspector] public CardObjectData ActiveCard;
     [SerializeField] private EventSystem _inputEvent;
     [SerializeField] private HandManager _handManager;
 
@@ -14,6 +16,18 @@ public class PlayerController : MonoBehaviour
     public static event Action OnCardUsed;
 
     private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+
+        DontDestroyOnLoad(gameObject);
+    }
+
+    private void Start()
     {
         _playerPA = 2;
     }
@@ -26,7 +40,7 @@ public class PlayerController : MonoBehaviour
         Debug.Log("Input enabled");
     }
 
-    public static void SelectCard(CardObjectData card, bool cardHasTarget = false)
+    public void SelectCard(CardObjectData card, bool cardHasTarget = false)
     {
         //Implement select card
         if (cardHasTarget)
@@ -43,61 +57,82 @@ public class PlayerController : MonoBehaviour
         Debug.Log("Card selected");
     }
 
-    public static void DeselectCard(CardObjectData card)
+    public void DeselectCard(CardObjectData card)
     {
-        //Implement select card
-
+        //Implement deselect card
         Debug.Log("Card deselected");
 
         TweeningManager.CardDown(card.gameObject.transform);
         card.isSelected = false;
     }
 
-    public static void SelectTarget()
+    public void SelectTarget()
     {
         //Implement select target
+        //Target selection
         Debug.Log("Target selected");
-        //ConfirmPlay();
+        ConfirmPlay();
     }
 
-    public static void BurnCard()
+    public void BurnCard()
     {
         //Implement burn card
+        if (ActiveCard == null)
+            return;
+
+        Debug.Log("Card burnt");
+
+        HandleUsedCard();
+        CheckPA();
     }
 
-    public async void ConfirmPlay()
+    public void ConfirmPlay()
     {
         //Implement confirm play
         if (ActiveCard == null)
             return;
 
+        //checkCardsconditions
+        //if conditions aren't met: return;
 
-        Debug.Log("Confirm play");
+        Debug.Log("Card played");
 
         //Apply effect
-        //Not needed?
+        //Not needed because handled by server?
         ActiveCard.Effect.Apply();
 
+        HandleUsedCard();
+        CheckPA();
+
+    }
+
+    public void HandleUsedCard()
+    {
         //Use _playerPA
         _playerPA--;
 
-        //Placeholder for sending card lacking to server        
-
+        //Remove the card from the hand
         _handManager.Discard(ActiveCard.gameObject);
-        
+
         Destroy(ActiveCard.gameObject);
+        //Placeholder for sending card lacking to server        
         OnCardUsed.Invoke();
+    }
 
-
+    public void CheckPA()
+    {
         //Check player PA
         if (_playerPA > 0)
             return;
 
-        //Send informations to server
-        //Notify that turn is over
-        //Send IDs of played cards to server
-        Debug.Log("Sending to server");
-
-
+        else
+        {
+            Debug.Log("Turn is over");
+            //Send informations to server
+            //Notify that turn is over
+            //Send IDs of played cards to server
+            Debug.Log("Sending to server");
+            _inputEvent.enabled = false;
+        }
     }
 }

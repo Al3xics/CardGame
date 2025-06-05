@@ -16,11 +16,11 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler
     {
         if (!_cardObjectData.isSelected)
         {
-            PlayerController.SelectCard(_cardObjectData);
+            PlayerController.Instance.SelectCard(_cardObjectData);
         }
         else 
         {
-            PlayerController.DeselectCard(_cardObjectData);
+            PlayerController.Instance.DeselectCard(_cardObjectData);
         }
     }
 }

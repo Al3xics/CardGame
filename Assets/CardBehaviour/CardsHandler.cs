@@ -8,6 +8,7 @@ public class CardsHandler : MonoBehaviour
     [SerializeField] private Transform _handTransform;
     [SerializeField] private CardDatabaseSO _cardDatabase;
 
+    //Placeholder methods for receiving cards from the server 
     public void ApplyCardData(GameObject card)
     {
         try
@@ -25,26 +26,12 @@ public class CardsHandler : MonoBehaviour
             Debug.Log(e.Message);
             throw;
         }
-
     }
 
     public void MakeDeck(CardDatabaseSO database)
     {
         //Use database to get cards and construct deck
         //Just use the database as the deck?
-    }
-
-    public void PlayCard()
-    {
-        //Implement play card
-        Debug.Log("Card played");
-
-    }
-
-    public void DistributeCards()
-    {
-        //Implement DistributeCards
-        Debug.Log("Card distributed");
     }
 
 }

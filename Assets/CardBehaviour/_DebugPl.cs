@@ -9,9 +9,10 @@ public class _DebugPl : MonoBehaviour
     [SerializeField] private HandManager _hand;
     private InputAction _interact;
 
-    private void Awake()
+    private void Start()
     {
         _interact = _iaa.FindAction("Interact");
+        PlayerController.Instance.EnableInput();
     }
 
     void Update()

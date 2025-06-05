@@ -9,19 +9,21 @@ using Cysharp.Threading.Tasks;
 public class HandManager : MonoBehaviour
 {
     [SerializeField] private GameObject _cardPrefab;
-
     [SerializeField] private int _maxHandSize = 5;
-
     [SerializeField] private SplineContainer _splineContainer;
 
     [SerializeField] private Transform _spawnPoint;
-
     [SerializeField] private Transform _handTransform;
 
-    [SerializeField] private PlayerController _playerController;
-
-    private GameObject _goToRemove;
-
+    
+    public async void Awake()
+    {
+        for (int i = 0; i < _maxHandSize; i++)
+        {
+            DrawCard();
+            await UniTask.WaitForSeconds(0.25f);
+        }
+    }
 
     //temp
     [SerializeField] CardsHandler _cardsHandler;
@@ -40,20 +42,7 @@ public class HandManager : MonoBehaviour
 
     public void Discard(GameObject discardedCard)
     {
-        int discardedID = discardedCard.GetInstanceID();
-
-        foreach (GameObject card in _handCards)
-        {
-            int cardID = card.GetInstanceID();
-            if (cardID == discardedID)
-            {
-                _handCards.Remove(card);
-
-            }
-        }
-        //var gameobject = _handCards.Find(x => discardedCard);
-        //_handCards.Remove(gameobject); 
-
+        _handCards.Remove(discardedCard);
     }
 
     public void DrawCard()
