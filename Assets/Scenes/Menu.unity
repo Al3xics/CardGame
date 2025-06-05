@@ -2227,7 +2227,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  playerScore:
+  readyCount:
     m_InternalValue: 0
 --- !u!4 &456159194
 Transform:
@@ -5756,7 +5756,7 @@ MonoBehaviour:
   NetworkConfig:
     ProtocolVersion: 0
     NetworkTransport: {fileID: 1679135415}
-    PlayerPrefab: {fileID: 6756220093676727746, guid: b907150a14bea4646be4ff8b2a9f7be8, type: 3}
+    PlayerPrefab: {fileID: 6807329219254490278, guid: 091288302287a7e4cb8a0ec314708a15, type: 3}
     Prefabs:
       NetworkPrefabsLists:
       - {fileID: 11400000, guid: 6b59dc694f1aabf45bd150635ea88b4c, type: 2}

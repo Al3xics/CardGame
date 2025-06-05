@@ -1,28 +1,46 @@
-using Data;
-using TMPro;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using Unity.Netcode;
 using UnityEngine;
-using Wendogo;
-using Wendogo.Menu;
+using UnityEngine.SceneManagement;
 
 namespace Wendogo
 {
-    public class GameManager : MonoBehaviour
+    public class GameManager : NetworkBehaviour
     {
-        [SerializeField] private PlayerUI playerUIscript;
+        private bool rolesAssigned = false;
 
-        void Start()
+        private void OnEnable()
         {
-            SessionManager.Instance.ActiveSession.CurrentPlayer.Properties.TryGetValue(SessionConstants.PlayerNamePropertyKey, out var name);
-            playerUIscript?.RenamePlayer(name.Value);
+            SceneManager.sceneLoaded += OnSceneLoaded;
         }
 
-        void Update()
+        private void OnDisable()
         {
+            SceneManager.sceneLoaded -= OnSceneLoaded;
         }
 
-        public void Validation()
+        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            playerUIscript?.EndValidation();
+            if (!IsServer || scene.name != "Night_Day_Mech" || rolesAssigned)
+                return;
+        }
+    }
+
+    public static class ListExtensions
+    {
+        public static void Shuffle<T>(this IList<T> list)
+        {
+            var rng = new System.Random();
+            int n = list.Count;
+
+            while (n > 1)
+            {
+                n--;
+                int k = rng.Next(n + 1);
+                (list[n], list[k]) = (list[k], list[n]);
+            }
         }
     }
 }

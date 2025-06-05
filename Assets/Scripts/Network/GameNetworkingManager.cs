@@ -1,8 +1,9 @@
-using Data;
+using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Wendogo.Menu;
+using Data;
 
 namespace Wendogo
 {
@@ -12,8 +13,8 @@ namespace Wendogo
 
         public NetworkVariable<int> readyCount = new NetworkVariable<int>(
             readPerm: NetworkVariableReadPermission.Everyone,
-            writePerm: NetworkVariableWritePermission.Owner
-            );
+            writePerm: NetworkVariableWritePermission.Server
+        );
 
         private void Awake()
         {
@@ -29,36 +30,39 @@ namespace Wendogo
         }
 
         [ServerRpc(RequireOwnership = false)]
-        public void PlayerReadyServerRpc()
+        public void PlayerReadyServerRpc(ServerRpcParams rpcParams = default)
         {
             readyCount.Value++;
 
+            Debug.Log($"Joueur prêt. Nombre total de joueurs prêts : {readyCount.Value}");
+
             if (readyCount.Value >= 2)
             {
-                NotifyClientsGameReadyClientRpc();
-            }
-        }
+                foreach (var player in FindObjectsByType<PlayerController>(FindObjectsSortMode.None))
+                {
+                    player.NotifyGameReadyClientRpc();
+                }
 
-        [ClientRpc]
-        private void NotifyClientsGameReadyClientRpc()
-        {
-            Debug.Log("Finished !!!!");
+                LaunchGame();
+            }
         }
 
         public void LaunchGame()
         {
-            if (IsServer)
+            if (IsServer && SceneManager.GetActiveScene().name != "Night_Day_Mech")
             {
-                NetworkManager.SceneManager.LoadScene(
-                    "Night_Day_Mech",
-                    LoadSceneMode.Single);
+                NetworkManager.SceneManager.LoadScene("Night_Day_Mech", LoadSceneMode.Single);
             }
         }
 
         public string GetPlayerName()
         {
-            SessionManager.Instance.ActiveSession.CurrentPlayer.Properties.TryGetValue(SessionConstants.PlayerNamePropertyKey, out var name);
-            return name.Value;
+            if (SessionManager.Instance.ActiveSession.CurrentPlayer.Properties.TryGetValue(SessionConstants.PlayerNamePropertyKey, out var name))
+            {
+                return name.Value;
+            }
+
+            return "Inconnu";
         }
     }
 }

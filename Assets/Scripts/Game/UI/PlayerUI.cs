@@ -9,27 +9,39 @@ namespace Wendogo
 {
     public class PlayerUI : MonoBehaviour
     {
-        public TextMeshProUGUI PlayerTitle;
-        public TextMeshProUGUI ReadyText;
-        public Button ReadyButton;
+        private TextMeshProUGUI playerTitle;
+        private TextMeshProUGUI readyText;
+        private Button readyButton;
+        private TextMeshProUGUI endText;
+        private TextMeshProUGUI roleText;
 
-        public TextMeshProUGUI EndTest;
-
-        void Start()
+        void Awake()
         {
-            ReadyText.gameObject.SetActive(false);
-            ReadyButton.onClick.AddListener(OnReadyButtonClicked);
+            playerTitle = transform.Find("PlayerTitle")?.GetComponent<TextMeshProUGUI>();
+            readyText = transform.Find("ReadyText")?.GetComponent<TextMeshProUGUI>();
+            readyButton = transform.Find("ReadyButton")?.GetComponent<Button>();
+            endText = transform.Find("END")?.GetComponent<TextMeshProUGUI>();
+            roleText = transform.Find("PlayerRole")?.GetComponent<TextMeshProUGUI>();
+
+            if (readyButton != null)
+            {
+                readyButton.onClick.AddListener(OnReadyButtonClicked);
+            }
+
+            if (readyText != null) readyText.gameObject.SetActive(false);
+            if (endText != null) endText.gameObject.SetActive(false);
         }
 
         public void RenamePlayer(string name)
         {
-            PlayerTitle.text = name;
+            if (playerTitle != null)
+                playerTitle.text = name;
         }
 
         private void OnReadyButtonClicked()
         {
-            ReadyButton.gameObject.SetActive(false);
-            ReadyText.gameObject.SetActive(true);
+            if (readyButton != null) readyButton.gameObject.SetActive(false);
+            if (readyText != null) readyText.gameObject.SetActive(true);
 
             if (GameNetworkingManager.Instance != null && NetworkManager.Singleton.IsClient)
             {
@@ -39,7 +51,8 @@ namespace Wendogo
 
         public void EndValidation()
         {
-            EndTest.gameObject.SetActive(true);
+            if (endText != null)
+                endText.gameObject.SetActive(true);
         }
     }
 }

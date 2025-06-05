@@ -125,7 +125,7 @@ namespace Wendogo.Menu
                 playButton.interactable = true;
 
             _readyButton.onClick.RemoveListener(OnButtonClicked);
-            playButton.onClick.RemoveListener(OnButtonStartGameClicked);
+            playButton?.onClick.RemoveListener(OnButtonStartGameClicked);
         }
 
         private void OnButtonStartGameClicked()
