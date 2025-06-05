@@ -25,4 +25,5 @@ class CardDeckConfig
 {
     public CardDataSO CardData;
     public int quantity = 1;
+    public int DeckID;
 }

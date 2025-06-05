@@ -1,7 +1,6 @@
 using LitMotion;
 using LitMotion.Extensions;
 using System.Collections.Generic;
-using Cysharp;
 using UnityEngine;
 using UnityEngine.Splines;
 using Cysharp.Threading.Tasks;
@@ -16,13 +15,9 @@ public class HandManager : MonoBehaviour
     [SerializeField] private Transform _handTransform;
 
     
-    public async void Awake()
+    public void Awake()
     {
-        for (int i = 0; i < _maxHandSize; i++)
-        {
-            DrawCard();
-            await UniTask.WaitForSeconds(0.25f);
-        }
+        DrawCard();
     }
 
     //temp
@@ -45,15 +40,18 @@ public class HandManager : MonoBehaviour
         _handCards.Remove(discardedCard);
     }
 
-    public void DrawCard()
+    public async void DrawCard()
     {
-
-        if (_handCards.Count >= _maxHandSize) return;
-        GameObject g = Instantiate(_cardPrefab, _spawnPoint.position, _spawnPoint.rotation);
-        _handCards.Add(g);
-        g.transform.parent = _handTransform;
-        _cardsHandler.ApplyCardData(g);
-        UpdateCardPositions();
+        for (int i = 0; i < _maxHandSize; i++)
+        {
+            if (_handCards.Count >= _maxHandSize) return;
+            GameObject g = Instantiate(_cardPrefab, _spawnPoint.position, _spawnPoint.rotation);
+            _handCards.Add(g);
+            g.transform.parent = _handTransform;
+            _cardsHandler.ApplyCardData(g);
+            UpdateCardPositions();
+            await UniTask.WaitForSeconds(0.25f);
+        }
     }
 
     private void UpdateCardPositions()

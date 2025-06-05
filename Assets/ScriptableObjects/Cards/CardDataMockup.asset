@@ -18,5 +18,7 @@ MonoBehaviour:
   AppearanceChance: 90.43
   ActionPointCost: 1
   Value: 1
+  isPassive: 0
+  HasTarget: 0
   ID: 10105
   Toggle: 0

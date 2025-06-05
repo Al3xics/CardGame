@@ -20,10 +20,16 @@ public class CardDataSO : ScriptableObject
     public float AppearanceChance;
 
     [VerticalGroup("CardData/Stats"), LabelWidth(120), Range(0, 10)]
-    public int ActionPointCost;
+    public int Cost;
 
     [VerticalGroup("CardData/Stats"), LabelWidth(120), Range(0, 10)]
-    public int Value;
+    public int Value;        
+    
+    [VerticalGroup("CardData/Stats"), LabelWidth(120)]
+    public bool isPassive;    
+    
+    [VerticalGroup("CardData/Stats"), LabelWidth(120)]
+    public bool HasTarget;
 
     [VerticalGroup("CardData/Left"), LabelWidth(200), MinValue(10100), MaxValue(10199)]
     [ShowIf("Toggle"),HideLabel]

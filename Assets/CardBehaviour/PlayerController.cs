@@ -1,19 +1,28 @@
 using Cysharp.Threading.Tasks;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
+using Sirenix.OdinInspector;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : SerializedMonoBehaviour
 {
     public static PlayerController Instance { get; private set; }
 
     [HideInInspector] public CardObjectData ActiveCard;
-    [SerializeField] private EventSystem _inputEvent;
+    [SerializeField] public EventSystem _inputEvent;
     [SerializeField] private HandManager _handManager;
 
-    static public int _playerPA;
+    Dictionary<Button, PlayerController> playerTargets = new Dictionary<Button, PlayerController>();
+
+    List<PlayerController> playerList = new List<PlayerController>();
+
+    public int _playerPA;
 
     public static event Action OnCardUsed;
+
+    public bool TargetSelected;
 
     private void Awake()
     {
@@ -40,11 +49,9 @@ public class PlayerController : MonoBehaviour
         Debug.Log("Input enabled");
     }
 
-    public void SelectCard(CardObjectData card, bool cardHasTarget = false)
+    public async void SelectCard(CardObjectData card)
     {
         //Implement select card
-        if (cardHasTarget)
-            SelectTarget();
 
         if (ActiveCard != null)
             DeselectCard(ActiveCard);
@@ -53,6 +60,9 @@ public class PlayerController : MonoBehaviour
 
         TweeningManager.CardUp(card.gameObject.transform);
         card.isSelected = true;
+        
+        if (ActiveCard.Card.HasTarget)
+            SelectTarget();
 
         Debug.Log("Card selected");
     }
@@ -66,13 +76,18 @@ public class PlayerController : MonoBehaviour
         card.isSelected = false;
     }
 
-    public void SelectTarget()
+    public async void SelectTarget()
     {
         //Implement select target
+        TargetSelected = false;
         //Target selection
+        //Handled the cancel next
+        await UniTask.WaitUntil(() => TargetSelected);
         Debug.Log("Target selected");
+
         ConfirmPlay();
     }
+
 
     public void BurnCard()
     {
@@ -83,6 +98,8 @@ public class PlayerController : MonoBehaviour
         Debug.Log("Card burnt");
 
         HandleUsedCard();
+        //Placeholder for sending card lacking to server        
+        OnCardUsed.Invoke();
         CheckPA();
     }
 
@@ -114,9 +131,13 @@ public class PlayerController : MonoBehaviour
         //Remove the card from the hand
         _handManager.Discard(ActiveCard.gameObject);
 
+        if(ActiveCard.Card.isPassive)
+        {
+            Debug.Log("Passive card placed");
+        }
+
         Destroy(ActiveCard.gameObject);
-        //Placeholder for sending card lacking to server        
-        OnCardUsed.Invoke();
+
     }
 
     public void CheckPA()
@@ -127,6 +148,8 @@ public class PlayerController : MonoBehaviour
 
         else
         {
+            //Placeholder for sending card lacking to server        
+            OnCardUsed.Invoke();
             Debug.Log("Turn is over");
             //Send informations to server
             //Notify that turn is over
@@ -135,4 +158,6 @@ public class PlayerController : MonoBehaviour
             _inputEvent.enabled = false;
         }
     }
+
+    //Create card with owner directly here
 }
