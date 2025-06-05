@@ -37,6 +37,11 @@ namespace Wendogo
             if (playerTitle != null)
                 playerTitle.text = name;
         }
+        public void GetRole(string role)
+        {
+            if (roleText != null)
+                roleText.text = role;
+        }
 
         private void OnReadyButtonClicked()
         {

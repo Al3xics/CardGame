@@ -1,9 +1,15 @@
+using NUnit.Framework;
+using System;
+using System.Data;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections.Generic;
 
 namespace Wendogo
 {
+    public enum RoleType { Survivor, Wendogo };
+
     public class PlayerController : NetworkBehaviour
     {
         [Header("UI Prefab")]
@@ -11,6 +17,12 @@ namespace Wendogo
 
         private PlayerUI playerUIInstance;
         private bool uiInitialized = false;
+
+        public NetworkVariable<RoleType> Role = new (
+            value: RoleType.Survivor,
+            readPerm: NetworkVariableReadPermission.Everyone,
+            writePerm: NetworkVariableWritePermission.Server
+            );
 
         public override void OnNetworkSpawn()
         {
@@ -48,6 +60,11 @@ namespace Wendogo
             }
         }
 
+        /*public void AssignRole()
+        {
+            GameNetworkingManager.Instance.AskRoleServerRpc();
+        }*/
+
         [ClientRpc]
         public void NotifyGameReadyClientRpc()
         {
@@ -55,6 +72,18 @@ namespace Wendogo
             {
                 playerUIInstance.EndValidation();
             }
+        }
+
+        [ClientRpc]
+        public void SendRoleClientRpc(RoleType role, ClientRpcParams clientRpcParams = default)
+        {
+            playerUIInstance.GetRole(role.ToString());
+        }
+
+        [ClientRpc]
+        public void SendCardsToClientRpc(List<int> role, ClientRpcParams clientRpcParams = default)
+        {
+            playerUIInstance.GetRole(role.ToString());
         }
     }
 }
