@@ -10,6 +10,8 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler
 
     public static event Action<CardObjectData> OnCardClicked;
 
+    public PlayerController Owner { get; set; }
+
     private void Awake()
     {
         _cardObjectData = GetComponent<CardObjectData>();
@@ -21,11 +23,11 @@ public class CardClickHandler : MonoBehaviour, IPointerClickHandler
 
         if (!_cardObjectData.isSelected)
         {
-            PlayerController.Instance.SelectCard(_cardObjectData);
+            Owner.SelectCard(_cardObjectData);
         }
         else 
         {
-            PlayerController.Instance.DeselectCard(_cardObjectData);
+            Owner.DeselectCard(_cardObjectData);
         }
     }
 }

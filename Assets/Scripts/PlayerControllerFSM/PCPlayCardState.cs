@@ -3,9 +3,9 @@ using Wendogo;
 
 namespace Wendogo
 {
-	public class PCCardPlayState : State<PlayerControllerSM>
+	public class PCPlayCardState : State<PlayerControllerSM>
 	{
-		public PCCardPlayState(PlayerControllerSM stateMachine) : base(stateMachine) { }
+		public PCPlayCardState(PlayerControllerSM stateMachine) : base(stateMachine) { }
 
 		public override void OnEnter()
 		{

@@ -26,7 +26,7 @@ namespace Wendogo
 		public void AwaitTarget()
 		{
 			PlayerController.Instance.SelectTarget();
-			StateMachine.ChangeState<PCCardPlayState>();
+			StateMachine.ChangeState<PCPlayCardState>();
 
         }
 	}
