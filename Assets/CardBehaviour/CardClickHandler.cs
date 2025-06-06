@@ -1,35 +1,38 @@
 using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using Wendogo;
 
-public class CardClickHandler : MonoBehaviour, IPointerClickHandler
+
+namespace Wendogo
 {
-    [SerializeField] private int _cardIndex;
-
-    private CardObjectData _cardObjectData;
-
-    public static event Action<CardObjectData> OnCardClicked;
-
-    public PlayerController Owner { get; set; }
-
-    private void Awake()
+    public class CardClickHandler : MonoBehaviour, IPointerClickHandler
     {
-        _cardObjectData = GetComponent<CardObjectData>();
-    }
+        [SerializeField] private int _cardIndex;
 
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        OnCardClicked?.Invoke(_cardObjectData);
+        private CardObjectData _cardObjectData;
 
-        if (!_cardObjectData.isSelected)
+        public static event Action<CardObjectData> OnCardClicked;
+
+        public PlayerController Owner { get; set; }
+
+        private void Awake()
         {
-            Owner.SelectCard(_cardObjectData);
+            _cardObjectData = GetComponent<CardObjectData>();
         }
-        else 
+
+        public void OnPointerClick(PointerEventData eventData)
         {
-            Owner.DeselectCard(_cardObjectData);
+            OnCardClicked?.Invoke(_cardObjectData);
+
+            if (!_cardObjectData.isSelected)
+            {
+                Owner.SelectCard(_cardObjectData);
+            }
+            else
+            {
+                Owner.DeselectCard(_cardObjectData);
+            }
         }
     }
 }
-
-

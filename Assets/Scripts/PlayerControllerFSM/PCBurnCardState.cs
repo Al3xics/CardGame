@@ -5,11 +5,15 @@ namespace Wendogo
 {
 	public class PCBurnCardState : State<PlayerControllerSM>
 	{
-		public PCBurnCardState(PlayerControllerSM stateMachine) : base(stateMachine) { }
+        private PlayerController _player;
+
+        public PCBurnCardState(PlayerControllerSM stateMachine, PlayerController player) : base(stateMachine) { _player = player; }
 
 		public override void OnEnter()
 		{
 			base.OnEnter();
+			_player.BurnCard();
+			StateMachine.ChangeState<PCNotifyMissingCardsState>();
 		}
 
 		public override void OnTick()

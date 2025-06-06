@@ -3,8 +3,8 @@ using Wendogo;
 
 public class PCTurnOverState : State<PlayerControllerSM>
 {
-
-	public PCTurnOverState(PlayerControllerSM stateMachine) : base(stateMachine) { }
+	private PlayerController _player;
+	public PCTurnOverState(PlayerControllerSM stateMachine, PlayerController player) : base(stateMachine) { player = _player; }
 
 	public override void OnEnter()
 	{

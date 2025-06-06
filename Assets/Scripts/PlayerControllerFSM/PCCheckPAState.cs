@@ -5,7 +5,8 @@ namespace Wendogo
 {
     public class PCCheckPAState : State<PlayerControllerSM>
     {
-        public PCCheckPAState(PlayerControllerSM stateMachine) : base(stateMachine) { }
+        private PlayerController _player;
+        public PCCheckPAState(PlayerControllerSM stateMachine, PlayerController player) : base(stateMachine) { _player = player; }
 
         public override void OnEnter()
         {
@@ -25,9 +26,8 @@ namespace Wendogo
 
         public void CheckPA()
         {
-            if (PlayerController.Instance._playerPA > 0)
+            if (_player.HasEnoughPA())
                 StateMachine.ChangeState<PCInputState>();
-
             else
                 StateMachine.ChangeState<PCTurnOverState>();
         }

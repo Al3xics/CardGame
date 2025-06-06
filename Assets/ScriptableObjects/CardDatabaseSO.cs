@@ -23,7 +23,7 @@ public class CardDatabaseSO : ScriptableObject
         }
     }
 
-    public CardDataSO GetCardByID(int id)
+    public CardDataSO GetDatabaseCardByID(int id)
     {
         if (_cardDictionary.TryGetValue(id, out CardDataSO card))
         {

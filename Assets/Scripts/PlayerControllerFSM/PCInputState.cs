@@ -5,13 +5,14 @@ namespace Wendogo
 {
     public class PCInputState : State<PlayerControllerSM>
     {
-        public PCInputState(PlayerControllerSM stateMachine) : base(stateMachine) { }
+        private PlayerController _player;
+        public PCInputState(PlayerControllerSM stateMachine, PlayerController player ) : base(stateMachine) { _player = player; }
 
         public override void OnEnter()
         {
             base.OnEnter();
             CardClickHandler.OnCardClicked += ReceiveSelectedEvent; 
-            PlayerController.Instance.EnableInput();
+            _player.EnableInput();
         }
 
         public override void OnTick()
@@ -28,7 +29,7 @@ namespace Wendogo
 
         public void ReceiveSelectedEvent(CardObjectData cardObjectData)
         {
-            PlayerController.Instance.SelectCard(cardObjectData);
+            _player.SelectCard(cardObjectData);
             StateMachine.ChangeState<PCSelectionState>();
         }
 

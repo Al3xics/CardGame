@@ -5,12 +5,13 @@ namespace Wendogo
 {
 	public class PCNotifyMissingCardsState : State<PlayerControllerSM>
 	{
-		public PCNotifyMissingCardsState(PlayerControllerSM stateMachine) : base(stateMachine) { }
+        private PlayerController _player;
+        public PCNotifyMissingCardsState(PlayerControllerSM stateMachine, PlayerController player) : base(stateMachine) { _player = player; }
 
 		public override void OnEnter()
 		{
 			base.OnEnter();
-			//ServerManager.CallDelegate()
+			_player.NotifyMissingCards();
 			StateMachine.ChangeState<PCCheckPAState>();
 		}
 

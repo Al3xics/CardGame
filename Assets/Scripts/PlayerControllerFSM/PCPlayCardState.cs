@@ -5,12 +5,13 @@ namespace Wendogo
 {
 	public class PCPlayCardState : State<PlayerControllerSM>
 	{
-		public PCPlayCardState(PlayerControllerSM stateMachine) : base(stateMachine) { }
+		PlayerController _player;
+		public PCPlayCardState(PlayerControllerSM stateMachine, PlayerController player) : base(stateMachine) { _player = player; }
 
 		public override void OnEnter()
 		{
 			base.OnEnter();
-			PlayCard();
+			_player.ConfirmPlay();
 			StateMachine.ChangeState<PCNotifyMissingCardsState>();
         }
 
@@ -24,10 +25,5 @@ namespace Wendogo
 			base.OnExit();
 		}
 
-		public void PlayCard()
-		{
-			PlayerController.Instance.ConfirmPlay();
-
-        }
     }
 }

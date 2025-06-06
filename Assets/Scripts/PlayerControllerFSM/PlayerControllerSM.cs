@@ -5,7 +5,7 @@ namespace Wendogo
 {
     public class PlayerControllerSM : StateMachine<PlayerControllerSM>
     {
-        private PlayerController _player;
+        [SerializeField] private PlayerController _player;
 
         protected override void Start()
         {
@@ -15,14 +15,14 @@ namespace Wendogo
 
         protected override State<PlayerControllerSM> GetInitialState()
         {
-            PCInputState inputstate = new PCInputState(this);
-            PCPlayCardState pCCardPlayState = new PCPlayCardState(this);
-            PCCheckPAState pCCheckPAState = new PCCheckPAState(this);
-            PCNotifyMissingCardsState pCNotifyMissingCardsState = new PCNotifyMissingCardsState(this);
-            PCSelectionState pCSelectionState = new PCSelectionState(this);
-            PCTargetSelectionState pCTargetSelectionState = new PCTargetSelectionState(this);
-            PCTurnOverState pCTurnOverState = new PCTurnOverState(this);
-            PCBurnCardState pCBurnCardState = new PCBurnCardState(this);
+            PCInputState inputstate = new PCInputState(this, _player);
+            PCPlayCardState pCCardPlayState = new PCPlayCardState(this, _player);
+            PCCheckPAState pCCheckPAState = new PCCheckPAState(this, _player);
+            PCNotifyMissingCardsState pCNotifyMissingCardsState = new PCNotifyMissingCardsState(this, _player);
+            PCSelectionState pCSelectionState = new PCSelectionState(this, _player);
+            PCTargetSelectionState pCTargetSelectionState = new PCTargetSelectionState(this, _player);
+            PCTurnOverState pCTurnOverState = new PCTurnOverState(this, _player);
+            PCBurnCardState pCBurnCardState = new PCBurnCardState(this, _player);
 
             AddState(inputstate);
             AddState(pCCardPlayState);

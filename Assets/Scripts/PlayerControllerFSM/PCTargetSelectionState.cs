@@ -3,9 +3,11 @@ using Wendogo;
 
 namespace Wendogo
 {
+
 	public class PCTargetSelectionState : State<PlayerControllerSM>
 	{
-		public PCTargetSelectionState(PlayerControllerSM stateMachine) : base(stateMachine) { }
+        PlayerController _player;
+        public PCTargetSelectionState(PlayerControllerSM stateMachine, PlayerController player) : base(stateMachine) { _player = player; }
 
 		public override void OnEnter()
 		{
@@ -25,9 +27,8 @@ namespace Wendogo
 
 		public void AwaitTarget()
 		{
-			PlayerController.Instance.SelectTarget();
+			_player.SelectTarget();
 			StateMachine.ChangeState<PCPlayCardState>();
-
         }
 	}
 }
