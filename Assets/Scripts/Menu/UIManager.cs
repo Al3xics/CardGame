@@ -1,8 +1,7 @@
-﻿using Data;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 
-namespace Wendogo.Menu
+namespace Wendogo
 {
     public class UIManager : MonoBehaviour
     {

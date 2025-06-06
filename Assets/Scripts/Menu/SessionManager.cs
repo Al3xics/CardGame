@@ -3,13 +3,10 @@ using Unity.Services.Core;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Data;
 using Unity.Services.Authentication;
 using Unity.Services.Multiplayer;
-using Wendogo.Scriptables;
-using Wendogo.Data;
 
-namespace Wendogo.Menu
+namespace Wendogo
 {
     public class SessionManager : MonoBehaviour
     {

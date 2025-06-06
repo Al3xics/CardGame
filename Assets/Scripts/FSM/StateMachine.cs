@@ -6,8 +6,8 @@ namespace Wendogo
 {
     public abstract class StateMachine<T> : MonoBehaviour where T : StateMachine<T>
     {
-        protected State<T> CurrentState { get; private set; }
-        private Dictionary<Type, State<T>> _states = new();
+        private State<T> CurrentState { get; set; }
+        private readonly Dictionary<Type, State<T>> _states = new();
 
         protected virtual void Start()
         {
@@ -25,7 +25,7 @@ namespace Wendogo
         /// <returns>The initial state to be used by the state machine.</returns>
         protected abstract State<T> GetInitialState();
 
-        public void AddState(State<T> state)
+        protected void AddState(State<T> state)
         {
             _states.Add(state.GetType(), state);
         }
@@ -37,9 +37,14 @@ namespace Wendogo
             CurrentState?.OnEnter();
         }
 
-        private State<T> GetState<TState>() where TState : State<T>
+        private State<T> GetState<TState>()
         {
             return _states[typeof(TState)];
+        }
+        
+        protected TState GetConcreteState<TState>() where TState : State<GameStateMachine>
+        {
+            return GetState<TState>() as TState;
         }
     }
 }

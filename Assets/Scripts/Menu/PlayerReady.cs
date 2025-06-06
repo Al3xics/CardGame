@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using Data;
-using Sirenix.OdinInspector.Editor.TypeSearch;
-using TMPro;
 using Unity.Services.Multiplayer;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using Wendogo.Data;
 
-namespace Wendogo.Menu
+namespace Wendogo
 {
     public class PlayerReady : MonoBehaviour, ISessionLifecycleEvents, IPlayerSessionEvents
     {
@@ -32,10 +27,7 @@ namespace Wendogo.Menu
             _readyButton = GetComponent<Button>();
             if (_readyButton)
                 _readyButton.onClick.AddListener(OnButtonClicked);
-
-            if (playButton)
-                playButton.onClick.AddListener(OnButtonStartGameClicked);
-
+            
             // Called manually because the session is already created and this will not be called otherwise.
             OnJoinedSession();
         }
@@ -121,19 +113,7 @@ namespace Wendogo.Menu
         private void ResetValue()
         {
             _isReady = false;
-            if (playButton != null)
-                playButton.interactable = true;
-
             _readyButton.onClick.RemoveListener(OnButtonClicked);
-            playButton.onClick.RemoveListener(OnButtonStartGameClicked);
-        }
-
-        private void OnButtonStartGameClicked()
-        {
-            if (playButton != null)
-                playButton.interactable = false;
-
-            GameNetworkingManager.Instance.LaunchGame();
         }
     }
 }

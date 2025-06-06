@@ -1,12 +1,9 @@
-﻿using System;
-using Data;
-using TMPro;
-using Unity.VisualScripting;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Wendogo.Menu
+namespace Wendogo
 {
     public class ShowSessionInformation : MonoBehaviour
     {

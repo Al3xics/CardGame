@@ -1,6 +1,4 @@
-﻿using Unity.Netcode;
-
-namespace Data
+﻿namespace Wendogo
 {
     public static class SessionConstants
     {
