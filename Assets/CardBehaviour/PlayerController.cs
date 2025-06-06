@@ -5,14 +5,29 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Sirenix.OdinInspector;
+using System.Globalization;
+using Unity.Netcode;
+using UnityEngine.SceneManagement;
 
 namespace Wendogo
 {
-    public class PlayerController : SerializedMonoBehaviour
+    public class PlayerController : NetworkBehaviour
     {
         [HideInInspector] public CardObjectData ActiveCard;
         [SerializeField] public EventSystem _inputEvent;
         [SerializeField] private HandManager _handManager;
+
+        [Header("UI Prefab")]
+        public GameObject playerPanelPrefab;
+
+        private PlayerUI playerUIInstance;
+        private bool uiInitialized = false;
+
+        public NetworkVariable<RoleType> Role = new(
+            value: RoleType.Survivor,
+            readPerm: NetworkVariableReadPermission.Everyone,
+            writePerm: NetworkVariableWritePermission.Server
+            );
 
         Dictionary<Button, PlayerController> playerTargets = new Dictionary<Button, PlayerController>();
 
@@ -31,6 +46,42 @@ namespace Wendogo
         private void Start()
         {
             _playerPA = 2;
+        }
+
+        public override void OnNetworkSpawn()
+        {
+            if (!IsOwner) return;
+
+            SceneManager.sceneLoaded += OnSceneLoaded;
+        }
+
+        private new void OnDestroy()
+        {
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+        }
+
+        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            if (!IsOwner || uiInitialized) return;
+
+            if (scene.name == "Night_Day_Mech")
+            {
+                GameObject mainCanvas = GameObject.Find("MainCanvas");
+                if (mainCanvas == null)
+                {
+                    Debug.LogError("MainCanvas non trouv? !");
+                    return;
+                }
+
+                GameObject uiObject = Instantiate(playerPanelPrefab, mainCanvas.transform);
+                playerUIInstance = uiObject.GetComponent<PlayerUI>();
+
+                if (playerUIInstance != null)
+                {
+                    playerUIInstance.RenamePlayer(GameNetworkingManager.Instance.GetPlayerName());
+                    uiInitialized = true;
+                }
+            }
         }
 
         public void EnableInput()
@@ -183,5 +234,25 @@ namespace Wendogo
         }
 
         //Create card with owner directly here
+        [ClientRpc]
+        public void NotifyGameReadyClientRpc()
+        {
+            if (IsOwner && playerUIInstance != null)
+            {
+                playerUIInstance.EndValidation();
+            }
+        }
+
+        [ClientRpc]
+        public void SendRoleClientRpc(RoleType role, ClientRpcParams clientRpcParams = default)
+        {
+            playerUIInstance.GetRole(role.ToString());
+        }
+
+        [ClientRpc]
+        public void SendCardsToClientRpc(int[] role, ClientRpcParams clientRpcParams = default)
+        {
+            playerUIInstance.GetRole(role.ToString());
+        }
     }
 }

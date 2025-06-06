@@ -22,8 +22,9 @@ namespace Wendogo
             {
                 playerRoles[GameStateMachine.Instance.PlayersID[i]] = RoleType.Survivor;
             }
-            
-            ServerManager.Instance.AssignRolesToPlayers(playerRoles);
+
+            Utils.DictionaryToArrays(playerRoles, out ulong[] roleTypeID, out RoleType[] roleType);
+            ServerManager.Instance.AssignRolesToPlayersServerRpc(roleTypeID, roleType);
         }
 
         private void NextState()

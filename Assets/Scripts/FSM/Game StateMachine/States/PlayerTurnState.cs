@@ -31,7 +31,7 @@ namespace Wendogo
             {
                 case Cycle.Day:
                     
-                    ServerManager.Instance.SendData();
+                    ServerManager.Instance.SendDataServerServerRpc();
                     break;
                 
                 case Cycle.Night:

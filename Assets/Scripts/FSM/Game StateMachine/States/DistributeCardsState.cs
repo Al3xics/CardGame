@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Wendogo
@@ -28,8 +29,8 @@ namespace Wendogo
              */
 
             Dictionary<ulong, List<int>> playersCards = new();
-            var actionDeck = StateMachine.DataCollectionScript.ActionDeck;
-            var resourceDeck = StateMachine.DataCollectionScript.ResourceDeck;
+            var actionDeck = StateMachine.DataCollectionScript.ActionDeck.DeckKeyValues;
+            var resourceDeck = StateMachine.DataCollectionScript.ResourcesDeck.DeckKeyValues;
             
             foreach (var playerID in StateMachine.PlayersID)
             {
@@ -39,26 +40,28 @@ namespace Wendogo
                 int actionCardsToDraw = Mathf.Min(actionDeckAmount, actionDeck.Count);
                 for (var i = 0; i < actionCardsToDraw; i++)
                 {
-                    var randomIndex = Random.Range(0, actionDeck.Count);
-                    var card = actionDeck[randomIndex];
-                    int cardID = StateMachine.DataCollectionScript.GetCardID(card);
-                    playersCards[playerID].Add(cardID);
-                    actionDeck.RemoveAt(randomIndex);
+                    var randomKey = actionDeck.Keys.ElementAt(Random.Range(0, actionDeck.Count));
+
+                    playersCards[playerID].Add(randomKey);
+
+                    actionDeck.Remove(randomKey);
                 }
 
                 // Resource Deck
                 int resourceCardsToDraw = Mathf.Min(resourceDeckAmount, resourceDeck.Count);
                 for (var i = 0; i < resourceCardsToDraw; i++)
                 {
-                    var randomIndex = Random.Range(0, resourceDeck.Count);
-                    var card = resourceDeck[randomIndex];
-                    int cardID = StateMachine.DataCollectionScript.GetCardID(card);
-                    playersCards[playerID].Add(cardID);
-                    resourceDeck.RemoveAt(randomIndex);
+                    var randomKey = resourceDeck.Keys.ElementAt(Random.Range(0, resourceDeck.Count));
+
+                    playersCards[playerID].Add(randomKey);
+
+                    resourceDeck.Remove(randomKey);
                 }
             }
 
-            ServerManager.Instance.SendCardsToPlayers(playersCards);
+            Utils.DictionaryToArrays(playersCards, out ulong[] targets, out int[][] cardsID);
+
+            ServerManager.Instance.SendCardsToPlayersServerRpc(targets, cardsID);
         }
 
         private void NextState()

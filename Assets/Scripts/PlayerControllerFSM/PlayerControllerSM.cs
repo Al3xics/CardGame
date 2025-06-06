@@ -37,9 +37,9 @@ namespace Wendogo
 
         }
 
-        private void Update()
+        public void Update()
         {
-            CurrentState?.OnTick();
+            //CurrentState?.OnTick();
         }
     }
 }

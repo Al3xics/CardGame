@@ -1,8 +1,8 @@
 ﻿using UnityEditor;
 using UnityEngine.UIElements;
-using Wendogo.Menu;
 
-namespace DefaultNamespace
+
+namespace Wendogo
 {
     [CustomEditor(typeof(ShowSessionInformation))]
     public class ShowSessionInformationEditor : Editor

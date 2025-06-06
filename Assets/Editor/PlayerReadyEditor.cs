@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using Wendogo.Menu;
 
-namespace DefaultNamespace
+namespace Wendogo
 {
     [CustomEditor(typeof(PlayerReady))]
     public class PlayerReadyEditor : Editor

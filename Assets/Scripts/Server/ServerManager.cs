@@ -16,6 +16,9 @@ namespace Wendogo
         public event Action OnAssignedRoles;
         public event Action OnDrawCard;
         public event Action OnPlayerTurnEnded;
+        public event Action OnAllocatedActionPoint;
+        public event Action OnCheckedHealth;
+        public event Action OnNightConsequencesEnded;
         private Dictionary<ulong, PlayerController> _playersById;
 
         public NetworkVariable<int> readyCount = new NetworkVariable<int>(
@@ -49,56 +52,54 @@ namespace Wendogo
         }
 
         [ServerRpc(RequireOwnership = false)]
-        public void AssignRolesToPlayers(Dictionary<ulong, RoleType> playerRoles, ServerRpcParams rpcParams = default)
+        public void AssignRolesToPlayersServerRpc(ulong[] clientIds, RoleType[] roles, ServerRpcParams rpcParams = default)
         {
-            foreach (var id in playerRoles.Keys)
+            for (int i = 0; i < clientIds.Length; i++)
             {
-                foreach (var player in _playersById.Values)
+                ulong id = clientIds[i];
+                RoleType role = roles[i];
+
+                if (_playersById.TryGetValue(id, out var player))
                 {
-                    if (player.OwnerClientId == id)
-                    {
-                        player.SendRoleClientRpc(playerRoles[id]);
-                    }
+                    player.SendRoleClientRpc(role);
                 }
             }
+
             OnAssignedRoles?.Invoke();
         }
 
         [ServerRpc(RequireOwnership = false)]
-        public void TransmitPlayedCard(int cardID, ulong target, ServerRpcParams rpcParams = default)
+        public void TransmitPlayedCardServerRpc(int cardID, ulong target, ServerRpcParams rpcParams = default)
         {
             GameStateMachine.Instance.CheckCardPlayed(cardID, target);
         }
 
 
         [ServerRpc(RequireOwnership = false)]
-        public void SendData(ServerRpcParams rpcParams = default)
+        public void SendDataServerServerRpc(ServerRpcParams rpcParams = default)
         {
-            foreach (var player in _playersById.Values)
-            {
-                player.SendRoleClientRpc();
-            }
-
             OnPlayerTurnEnded?.Invoke();
         }
 
 
         [ServerRpc(RequireOwnership = false)]
-        public void SendCardsToPlayer(Dictionary<ulong, List<int>> playersCards, ServerRpcParams rpcParams = default)
+        public void SendCardsToPlayersServerRpc(ulong[] ulongArray, int[][] intArray, ServerRpcParams rpcParams = default)
         {
-            foreach (var kvp in playersCards)
+            for (int i = 0; i < ulongArray.Length; i++)
             {
-                if (_playersById.TryGetValue(kvp.Key, out var player))
+                ulong id = ulongArray[i];
+                int[] cards = intArray[i];
+
+                if (_playersById.TryGetValue(id, out var player))
                 {
-                    player.SendCardsToClientRpc(kvp.Value);
+                    player.SendCardsToClientRpc(cards);
                 }
             }
-
             OnDrawCard?.Invoke();
         }
 
         [ServerRpc(RequireOwnership = false)]
-        public void TransmitMissingCards(int cardNumber, int deckID, ServerRpcParams rpcParams = default)
+        public void TransmitMissingCardsServerRpc(int cardNumber, int deckID, ServerRpcParams rpcParams = default)
         {
             ulong idClientAppelant = rpcParams.Receive.SenderClientId;
             GameStateMachine.Instance.DrawCards(idClientAppelant, deckID, cardNumber);
@@ -136,5 +137,20 @@ namespace Wendogo
 
             return "Inconnu";
         }
+
+        public void ChangePlayersHealth(Dictionary<ulong,int> playersHealth)
+        {
+
+        }
+        public void PlayerTurn(ulong playerId)
+        {
+
+        }
+
+        public void FinishedCheckCardPlayed()
+        {
+
+        }
+
     }
 }

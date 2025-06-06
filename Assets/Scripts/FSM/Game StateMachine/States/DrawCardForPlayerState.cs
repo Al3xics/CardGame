@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Wendogo
@@ -23,14 +24,16 @@ namespace Wendogo
             int cardsToDraw = Mathf.Min(amount, deck.Count);
             for (var i = 0; i < cardsToDraw; i++)
             {
-                var randomIndex = Random.Range(0, deck.Count);
-                var card = deck[randomIndex];
-                int cardID = StateMachine.DataCollectionScript.GetCardID(card);
-                playerCards[playerID].Add(cardID);
-                deck.RemoveAt(randomIndex);
+                var randomKey = deck.Keys.ElementAt(Random.Range(0, deck.Count));
+
+                playerCards[playerID].Add(randomKey);
+
+                deck.Remove(randomKey);
             }
 
-            ServerManager.Instance.SendCardsToPlayers(playerCards);
+            Utils.DictionaryToArrays(playerCards, out ulong[] targets, out int[][] cardsID);
+
+            ServerManager.Instance.SendCardsToPlayersServerRpc(targets, cardsID);
         }
 
         private void NextState()

@@ -31,7 +31,7 @@
             }
 
             // Une fois résolu, tu peux notifier le serveur
-            ServerManager.Instance.SendData(); // À adapter avec le résultat
+            ServerManager.Instance.SendDataServerServerRpc(); // À adapter avec le résultat
             StateMachine.NightActions.Clear();
         }
 

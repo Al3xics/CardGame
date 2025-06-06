@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "DeckConfig", menuName = "Scriptable Objects/DeckConfig")]
-class DeckConfiguration : SerializedScriptableObject
+public class DeckConfiguration : SerializedScriptableObject
 {
     public CardDeckConfig[] CardDeckData;
     public int DeckID;
@@ -41,7 +41,7 @@ class DeckConfiguration : SerializedScriptableObject
     }
 }
 
-class CardDeckConfig
+public class CardDeckConfig
 {
     public CardDataSO CardData;
     public int quantity = 1;
