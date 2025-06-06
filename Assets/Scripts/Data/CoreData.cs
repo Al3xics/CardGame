@@ -1,6 +1,4 @@
-﻿using Wendogo.Scriptables;
-
-namespace Wendogo.Data
+﻿namespace Wendogo
 {
     /// <summary>
     /// Enum representing the type of action to perform when setting up a session.
@@ -42,4 +40,17 @@ namespace Wendogo.Data
         /// </summary>
         public string PlayerName;
     }
+    
+    public enum Cycle
+    {
+        Day,
+        Night
+    }
+    
+    public enum RoleType
+    {
+        Survivor,
+        Wendogo
+    }
+    
 }

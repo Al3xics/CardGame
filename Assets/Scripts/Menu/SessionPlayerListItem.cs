@@ -1,12 +1,10 @@
 ﻿using System.Linq;
-using Data;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
-using Wendogo.Data;
 
-namespace Wendogo.Menu
+namespace Wendogo
 {
     public class SessionPlayerListItem : MonoBehaviour, ISessionLifecycleEvents, IPlayerSessionEvents
     {

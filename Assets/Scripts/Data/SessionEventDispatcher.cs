@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using Wendogo.Data;
 
-namespace Data
+namespace Wendogo
 {
     public class SessionEventDispatcher
     {

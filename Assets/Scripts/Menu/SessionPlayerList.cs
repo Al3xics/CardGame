@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
-using Data;
 using UnityEngine;
-using Wendogo.Data;
 
-namespace Wendogo.Menu
+namespace Wendogo
 {
     public class SessionPlayerList : MonoBehaviour, ISessionLifecycleEvents, IPlayerSessionEvents
     {

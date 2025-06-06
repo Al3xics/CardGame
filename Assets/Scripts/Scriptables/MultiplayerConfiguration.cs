@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Wendogo.Scriptables
+namespace Wendogo
 {
     /// <summary>
     /// ConnectionType is the type of connection to use when creating a session.

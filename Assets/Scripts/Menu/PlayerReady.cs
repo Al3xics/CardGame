@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using Data;
-using TMPro;
 using Unity.Services.Multiplayer;
 using UnityEngine;
 using UnityEngine.UI;
-using Wendogo.Data;
 
-namespace Wendogo.Menu
+namespace Wendogo
 {
     public class PlayerReady : MonoBehaviour, ISessionLifecycleEvents, IPlayerSessionEvents
     {

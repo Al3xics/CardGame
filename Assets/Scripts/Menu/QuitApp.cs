@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Wendogo.Menu
+namespace Wendogo
 {
     public class QuitApp : MonoBehaviour
     {
