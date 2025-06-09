@@ -1,8 +1,5 @@
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEngine.UI.GridLayoutGroup;
-using Wendogo;
 
 namespace Wendogo
 {
@@ -18,8 +15,6 @@ namespace Wendogo
             _owner = GetComponent<PlayerController>();
         }
 
-        //Placeholder methods for receiving cards from the server
-        //Add ID reveived by server in get card by ID
         public void ApplyCardData(GameObject card)
         {
             try
@@ -40,12 +35,5 @@ namespace Wendogo
                 throw;
             }
         }
-
-        public void MakeDeck(CardDatabaseSO database)
-        {
-            //Use database to get cards and construct deck
-            //Just use the database as the deck?
-        }
-
     }
 }

@@ -13,16 +13,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         SessionManager.Instance.ActiveSession.CurrentPlayer.Properties.TryGetValue(SessionConstants.PlayerNamePropertyKey, out var name);
-
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
-
 }
 
 public static class Utils

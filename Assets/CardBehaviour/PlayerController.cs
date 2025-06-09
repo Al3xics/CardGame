@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using Sirenix.OdinInspector;
-using System.Globalization;
 using Unity.Netcode;
 using UnityEngine.SceneManagement;
 
@@ -33,8 +31,8 @@ namespace Wendogo
 
         List<ulong> playerList = new List<ulong>();
 
-        public int _playerPA;
-        public int deckID;
+        public int PlayerPA;
+        public int DeckID;
 
         public static event Action OnCardUsed;
 
@@ -43,14 +41,12 @@ namespace Wendogo
 
         private ulong _selectedTarget;
 
-        private void Start()
-        {
-            _playerPA = 2;
-        }
 
         public override void OnNetworkSpawn()
         {
             if (!IsOwner) return;
+
+            _handManager = GetComponent<HandManager>();
 
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
@@ -169,7 +165,7 @@ namespace Wendogo
         public void HandleUsedCard()
         {
             //Use _playerPA
-            _playerPA--;
+            PlayerPA--;
 
             //Remove the card from the hand
             _handManager.Discard(ActiveCard.gameObject);
@@ -179,14 +175,14 @@ namespace Wendogo
                 Debug.Log("Passive card placed");
             }
 
-            //Destroy(ActiveCard.gameObject);
+            Destroy(ActiveCard.gameObject);
 
         }
 
         public void CheckPA()
         {
             //Check player PA
-            if (_playerPA > 0)
+            if (PlayerPA > 0)
                 return;
 
             else
@@ -204,7 +200,7 @@ namespace Wendogo
 
         public bool HasEnoughPA()
         {
-            return _playerPA >= 0;
+            return PlayerPA >= 0;
         }
 
         public ulong GetChosenTarget()
@@ -214,7 +210,7 @@ namespace Wendogo
 
         public void NotifyPlayedCard()
         {
-            //ServerManager.Instance.TransmitPlayedCard(ActiveCard.Card.ID, _selectedTarget);
+            ServerManager.Instance.TransmitPlayedCardServerRpc(ActiveCard.Card.ID, _selectedTarget);
         }
 
         public int GetMissingCards()
@@ -225,12 +221,12 @@ namespace Wendogo
         public void NotifyMissingCards()
         {
 
-            //ServerManager.Instance.TransmitMissingCards(GetMissingCards(), deckID)
+            ServerManager.Instance.TransmitMissingCardsServerRpc(GetMissingCards(), DeckID);
         }
 
         public async void NotifyEndTurn()
         {
-            //ServerManager.Instance.TransmitFinishedTurn();
+            ServerManager.Instance.SendDataServerServerRpc();
         }
 
         //Create card with owner directly here

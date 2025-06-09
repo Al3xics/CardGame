@@ -17,12 +17,6 @@ namespace Wendogo
         [SerializeField] private Transform _spawnPoint;
         [SerializeField] private Transform _handTransform;
 
-
-        public void Awake()
-        {
-            DrawCard();
-        }
-
         //temp
         [SerializeField] CardsHandler _cardsHandler;
 
@@ -36,6 +30,11 @@ namespace Wendogo
         private void OnDisable()
         {
             PlayerController.OnCardUsed -= DrawCard;
+        }
+
+        private void Awake()
+        {
+            DrawCard();
         }
 
         public void Discard(GameObject discardedCard)
