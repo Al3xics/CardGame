@@ -10,6 +10,8 @@ namespace Wendogo
         [SerializeField] private CardDatabaseSO _cardDatabase;
         private PlayerController _owner;
 
+        public PlayerController Owner { get; set; }
+
         private void Start()
         {
             _owner = GetComponent<PlayerController>();
@@ -19,8 +21,8 @@ namespace Wendogo
         {
             try
             {
-                CardClickHandler clickHandler = card.GetComponent<CardClickHandler>();
-                clickHandler.Owner = _owner;
+                CardDragHandler dragHandler = card.GetComponent<CardDragHandler>();
+                dragHandler.Owner = _owner;
                 CardDataSO cardData = _cardDatabase.GetDatabaseCardByID(10100);
                 Texture2D cardVisual = cardData.CardVisual;
                 RawImage rawImage = card.GetComponentInChildren<RawImage>();
