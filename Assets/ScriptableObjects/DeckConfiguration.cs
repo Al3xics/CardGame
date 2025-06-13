@@ -1,43 +1,47 @@
 ﻿using Sirenix.OdinInspector;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [CreateAssetMenu(fileName = "DeckConfig", menuName = "Scriptable Objects/DeckConfig")]
 public class DeckConfiguration : SerializedScriptableObject
 {
-    public CardDeckConfig[] CardDeckData;
-    public int DeckID;
+    [SerializeField] private CardDeckConfig[] _cardDeckData;
+    public int deckID;
 
-    [HideInInspector] public Dictionary<int, CardDataSO> DeckKeyValues;
-
-
-    public void CreateDeckDictionnary()
+    private List<CardDataSO> _cardsDeck;
+    public List<CardDataSO> CardsDeck
     {
-        foreach (CardDataSO card in CreateDeck())
+        get
         {
-            DeckKeyValues.Add(card.ID, card);
+            if (_cardsDeck.Count <= 0)
+                _cardsDeck = CreateDeck();
+            return _cardsDeck;
         }
+        private set => _cardsDeck = value;
     }
-
-    public CardDataSO GetCardByID(int id)
+    
+    private List<CardDataSO> CreateDeck()
     {
-        if (DeckKeyValues.TryGetValue(id, out CardDataSO card))
-        {
-            return card;
-        }
-        return null;
-    }
-    public List<CardDataSO> CreateDeck()
-    {
-        List<CardDataSO> list = new List<CardDataSO>();
-        foreach (CardDeckConfig data in CardDeckData)
+        var list = new List<CardDataSO>();
+        foreach (CardDeckConfig data in _cardDeckData)
         {
             for (int i = 0; i < data.quantity; i++)
             {
                 list.Add(data.CardData);
             }
         }
+        
         return list;
+    }
+    
+    public CardDataSO GetCardDataByID(int id)
+    {
+        foreach (CardDataSO cardData in _cardsDeck)
+        {
+            if (cardData.ID == id) return cardData;
+        }
+        return null;
     }
 }
 

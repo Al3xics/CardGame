@@ -12,16 +12,16 @@
 
         private void CheckRitual()
         {
-            if (GameStateMachine.Instance.IsRitualOver)
+            if (StateMachine.IsRitualOver)
                 StateMachine.ChangeState<EndGameState>();
             else
-                switch (GameStateMachine.Instance.Cycle)
+                switch (StateMachine.Cycle)
                 {
                     case Cycle.Day:
-                        StateMachine.ChangeState<CheckLastTurnState>();
+                        StateMachine.ChangeState<CheckTriggerVoteState>();
                         break;
                     case Cycle.Night:
-                        StateMachine.ChangeState<CheckHealthState>();
+                        StateMachine.ChangeState<NightConsequencesState>();
                         break;
                 }
         }
@@ -29,7 +29,7 @@
         public override void OnExit()
         {
             base.OnExit();
-            GameStateMachine.Instance.SwitchCycle();
+            StateMachine.SwitchCycle();
         }
     }
 }

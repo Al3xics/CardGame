@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Wendogo
@@ -8,35 +9,18 @@ namespace Wendogo
 
     public class DataCollection : MonoBehaviour
     {
-        public DeckConfiguration ResourcesDeck;
-        public DeckConfiguration ActionDeck;
-        List<CardDataSO> cardList = new List<CardDataSO>();
+        public CardDatabaseSO cardDatabase;
+        public DeckConfiguration resourcesDeck;
+        public DeckConfiguration actionDeck;
 
-
-
-        [SerializeField] private Button deckButton;
-
-        private void Start()
+        public List<CardDataSO> GetDeck(int deckID)
         {
-            deckButton.onClick.AddListener(() => Debug.Log($"{cardList}"));
-        }
-
-        public Dictionary<int, CardDataSO> GetDeck(int deckID)
-        {
-            if (ResourcesDeck.DeckID == deckID)
-                return ResourcesDeck.DeckKeyValues;
-            else if(ActionDeck.DeckID== deckID) return ActionDeck.DeckKeyValues;
-            return null;
-        }
-
-        public CardDataSO GetCardByID(int id)
-        {
-            if (ResourcesDeck.DeckKeyValues.TryGetValue(id, out CardDataSO card))
-            {
-                return card;
-            }
+            if (resourcesDeck.deckID == deckID)
+                return resourcesDeck.CardsDeck;
+            else if(actionDeck.deckID== deckID)
+                return actionDeck.CardsDeck;
+            
             return null;
         }
     }
-
 }

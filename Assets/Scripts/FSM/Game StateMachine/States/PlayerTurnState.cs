@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace Wendogo
 {
@@ -16,8 +17,9 @@ namespace Wendogo
 
         private void StartPlayerTurn(int id)
         {
+            Debug.Log("Next Player Turn");
             ServerManager.Instance.OnPlayerTurnEnded += NextPlayer;
-            ServerManager.Instance.PlayerTurn(StateMachine.PlayersID[id]);
+            ServerManager.Instance.PlayerTurnServerServerRpc(StateMachine.PlayersID[id]);
         }
 
         public void CheckCardPlayed(int playedCardID, ulong target)
@@ -68,7 +70,7 @@ namespace Wendogo
 
         private void NextState()
         {
-            StateMachine.ChangeState<DrawCardForPlayerState>();
+            StateMachine.ChangeState<CheckRitualState>();
         }
     }
 }

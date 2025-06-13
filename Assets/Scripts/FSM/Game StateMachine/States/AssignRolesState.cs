@@ -16,11 +16,11 @@ namespace Wendogo
         private void AssignRoles()
         {
             Dictionary<ulong, RoleType> playerRoles = new();
-            playerRoles[GameStateMachine.Instance.PlayersID[0]] = RoleType.Wendogo;
+            playerRoles[StateMachine.PlayersID[0]] = RoleType.Wendogo;
 
-            for (int i = 1; i < GameStateMachine.Instance.PlayersID.Count; i++)
+            for (int i = 1; i < StateMachine.PlayersID.Count; i++)
             {
-                playerRoles[GameStateMachine.Instance.PlayersID[i]] = RoleType.Survivor;
+                playerRoles[StateMachine.PlayersID[i]] = RoleType.Survivor;
             }
 
             Utils.DictionaryToArrays(playerRoles, out ulong[] roleTypeID, out RoleType[] roleType);

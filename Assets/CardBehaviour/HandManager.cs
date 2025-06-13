@@ -20,7 +20,7 @@ namespace Wendogo
 
         public void Awake()
         {
-            DrawCard();
+            
         }
 
         //temp

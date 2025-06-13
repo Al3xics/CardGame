@@ -7,24 +7,34 @@
         public override void OnEnter()
         {
             base.OnEnter();
-            GameStateMachine.Instance.EventAction += NextState;
+            CheckLastTurn();
         }
 
-        private void NextState()
+        private void CheckLastTurn()
         {
-            GameStateMachine.Instance.EventAction -= NextState;
-            
             // Should only be executed just after the night
             // because incrementing cptTurn when changing from night to day
-            if (GameStateMachine.Instance.IsMaximumTurnReached)
+            if (StateMachine.CheckMaximumTurnReached())
                 StateMachine.ChangeState<EndGameState>();
             else
-                StateMachine.ChangeState<AllocateActionPointsState>();
+                StateMachine.ChangeState<PlayerTurnState>();
         }
+
+        private void ReorderPlayersTurn()
+        {
+            if (StateMachine.PlayersID == null || StateMachine.PlayersID.Count <= 1) return;
+
+            // Take the last element, remove it, then add it to the front of the list
+            ulong last = StateMachine.PlayersID[^1];
+            StateMachine.PlayersID.RemoveAt(StateMachine.PlayersID.Count - 1);
+            StateMachine.PlayersID.Insert(0, last);
+        }
+
 
         public override void OnExit()
         {
             base.OnExit();
+            ReorderPlayersTurn();
         }
     }
 }
