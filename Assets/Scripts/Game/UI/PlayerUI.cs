@@ -1,4 +1,3 @@
-using Data;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
@@ -23,11 +22,6 @@ namespace Wendogo
             endText = transform.Find("END")?.GetComponent<TextMeshProUGUI>();
             roleText = transform.Find("PlayerRole")?.GetComponent<TextMeshProUGUI>();
 
-            if (readyButton != null)
-            {
-                readyButton.onClick.AddListener(OnReadyButtonClicked);
-            }
-
             if (readyText != null) readyText.gameObject.SetActive(false);
             if (endText != null) endText.gameObject.SetActive(false);
         }
@@ -41,17 +35,6 @@ namespace Wendogo
         {
             if (roleText != null)
                 roleText.text = role;
-        }
-
-        private void OnReadyButtonClicked()
-        {
-            if (readyButton != null) readyButton.gameObject.SetActive(false);
-            if (readyText != null) readyText.gameObject.SetActive(true);
-
-            if (GameNetworkingManager.Instance != null && NetworkManager.Singleton.IsClient)
-            {
-                GameNetworkingManager.Instance.PlayerReadyServerRpc();
-            }
         }
 
         public void EndValidation()

@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Linq;
-using Data;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using Wendogo.Data;
-using Wendogo.Scriptables;
 
-namespace Wendogo.Menu
+namespace Wendogo
 {
     public class JoinSessionByCode : MonoBehaviour, ISessionLifecycleEvents
     {

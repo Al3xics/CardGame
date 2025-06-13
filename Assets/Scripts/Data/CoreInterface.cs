@@ -1,4 +1,4 @@
-﻿namespace Wendogo.Data
+﻿namespace Wendogo
 {
     /// <summary>
     /// Callbacks that matter only when the host joins/leaves.
