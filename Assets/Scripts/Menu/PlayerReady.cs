@@ -115,10 +115,7 @@ namespace Wendogo
 
         private void OnButtonStartGameClicked()
         {
-            if (playButton != null)
-                playButton.interactable = false;
-
-            ServerManager.Instance?.LaunchGame();
+            ServerManager.Instance.LaunchGame();
         }
 
         private void ResetValue()
