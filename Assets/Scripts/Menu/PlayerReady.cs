@@ -13,7 +13,7 @@ namespace Wendogo
         [Header("References")]
         [Tooltip("The ready button to indicate if the player is ready or not.")]
         public Button playButton;
-        
+
         private Button _readyButton;
         private SessionPlayerListItem _playerListItem;
         private bool _isReady = false;
@@ -23,11 +23,14 @@ namespace Wendogo
         private void OnEnable()
         {
             SessionEventDispatcher.Instance.Register(this);
-            
+
             _readyButton = GetComponent<Button>();
             if (_readyButton)
                 _readyButton.onClick.AddListener(OnButtonClicked);
-            
+
+            if(playButton)
+                playButton.onClick.AddListener(OnButtonStartGameClicked);
+
             // Called manually because the session is already created and this will not be called otherwise.
             OnJoinedSession();
         }
@@ -75,7 +78,7 @@ namespace Wendogo
                 {
                     {SessionConstants.PlayerReadyPropertyKey, new PlayerProperty(_isReady.ToString(), VisibilityPropertyOptions.Member)}
                 };
-            
+
                 // This will trigger OnPlayerPropertiesChanged() because it is binding to the same event 'ActiveSession.PlayerPropertiesChanged += OnPlayerPropertiesChanged;'
                 SessionManager.Instance.ActiveSession.CurrentPlayer.SetProperties(playerProperties);
                 await SessionManager.Instance.ActiveSession.SaveCurrentPlayerDataAsync();
@@ -89,14 +92,14 @@ namespace Wendogo
         private void Refresh()
         {
             var session = SessionManager.Instance.ActiveSession;
-            
+
             /* -------- No session -------- */
             if (session == null)
             {
                 ResetValue();
                 return;
             }
-            
+
             /* -------- Play-button (host only) -------- */
             if (playButton)
             {
@@ -110,10 +113,19 @@ namespace Wendogo
             }
         }
 
+        private void OnButtonStartGameClicked()
+        {
+            ServerManager.Instance.LaunchGame();
+        }
+
         private void ResetValue()
         {
             _isReady = false;
+            if (playButton != null)
+                playButton.interactable = true;
+
             _readyButton.onClick.RemoveListener(OnButtonClicked);
+            playButton?.onClick.RemoveListener(OnButtonStartGameClicked);
         }
     }
 }

@@ -64,7 +64,7 @@ namespace Wendogo
         {
             if (!IsOwner || uiInitialized) return;
 
-            if (scene.name == "Night_Day_Mech")
+            if (scene.name == ServerManager.Instance.GameSceneName)
             {
                 GameObject mainCanvas = GameObject.Find("MainCanvas");
                 if (mainCanvas == null)
@@ -78,7 +78,7 @@ namespace Wendogo
 
                 if (playerUIInstance != null)
                 {
-                    playerUIInstance.RenamePlayer(GameNetworkingManager.Instance.GetPlayerName());
+                    playerUIInstance.RenamePlayer(ServerManager.Instance.GetPlayerName());
                     uiInitialized = true;
                 }
             }
@@ -222,37 +222,46 @@ namespace Wendogo
             return _handManager._maxHandSize - _handManager._handCards.Count;
         }
 
-        public void NotifyMissingCards()
-        {
+        #region RPC
 
-            //ServerManager.Instance.TransmitMissingCards(GetMissingCards(), deckID)
-        }
-
-        public async void NotifyEndTurn()
-        {
-            //ServerManager.Instance.TransmitFinishedTurn();
-        }
-
-        //Create card with owner directly here
-        [ClientRpc]
-        public void NotifyGameReadyClientRpc()
-        {
-            if (IsOwner && playerUIInstance != null)
-            {
-                playerUIInstance.EndValidation();
-            }
-        }
-
+        /* -------------------- RPC -------------------- */
         [ClientRpc]
         public void SendRoleClientRpc(RoleType role, ClientRpcParams clientRpcParams = default)
         {
-            playerUIInstance.GetRole(role.ToString());
+            playerUIInstance?.GetRole(role.ToString());
         }
 
         [ClientRpc]
-        public void SendCardsToClientRpc(int[] role, ClientRpcParams clientRpcParams = default)
+        public void SendCardsToClientRpc(int[] cardsID, ClientRpcParams clientRpcParams = default)
         {
-            playerUIInstance.GetRole(role.ToString());
+            // do things with cards
+            // this will receive either the 5 first cards, or when this player's turn end, the drawn cards he needs to complete his hand
+            // need to handle both events
         }
+
+        [ClientRpc]
+        public void StartMyTurnClientRpc()
+        {
+            // start the Player State Machine here
+
+            // DEBUG
+            NotifyEndTurn();
+        }
+
+        #endregion
+
+        #region Notify
+
+        public void NotifyMissingCards()
+        {
+            ServerManager.Instance.TransmitMissingCardsServerRpc(GetMissingCards(), deckID);
+        }
+
+        private void NotifyEndTurn()
+        {
+            ServerManager.Instance.PlayerTurnEnded();
+        }
+
+        #endregion
     }
 }

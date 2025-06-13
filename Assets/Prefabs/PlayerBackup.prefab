@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 7927234808371501674}
   - component: {fileID: 4266620740246473994}
   m_Layer: 0
-  m_Name: Player
+  m_Name: PlayerBackup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -77,7 +77,7 @@ MonoBehaviour:
   ActiveCard: {fileID: 0}
   _inputEvent: {fileID: 0}
   _handManager: {fileID: 7927234808371501674}
-  playerPanelPrefab: {fileID: 2537800122236944538, guid: 15878c108acf0d641bbc57994e5e9623, type: 3}
+  playerPanelPrefab: {fileID: 0}
   Role:
     m_InternalValue: 0
   PlayerPA: 0
