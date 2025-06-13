@@ -109,7 +109,7 @@ namespace Wendogo
         }
 
         [ServerRpc(RequireOwnership = false)]
-        public void PlayerTurnEnded()
+        public void PlayerTurnEndedServerRpc()
         {
             OnPlayerTurnEnded?.Invoke();
         }

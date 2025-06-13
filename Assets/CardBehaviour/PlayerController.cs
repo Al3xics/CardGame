@@ -259,7 +259,7 @@ namespace Wendogo
 
         private void NotifyEndTurn()
         {
-            ServerManager.Instance.PlayerTurnEnded();
+            ServerManager.Instance.PlayerTurnEndedServerRpc();
         }
 
         #endregion
