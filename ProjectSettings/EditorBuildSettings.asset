@@ -11,6 +11,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Night_Day_Mech.unity
     guid: 78746208466f47f45905fbfd45870667
+  - enabled: 1
+    path: Assets/Scenes/Game.unity
+    guid: 3125d3ba7c9937b49b031cfabaf41ebc
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
