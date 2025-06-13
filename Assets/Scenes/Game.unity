@@ -520,6 +520,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+  gameSceneName: Game
 --- !u!114 &1479689067
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -789,12 +790,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f763a3e5009040c784f3b83ee9804456, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  autoConnect: 1
+  objectsToDestroy:
+  - {fileID: 1425267997}
+  - {fileID: 1479689065}
+  - {fileID: 1357682466}
+  - {fileID: 1990628062}
   networkManager: {fileID: 1357682468}
   retryDelay: 1
   maxRetries: 10
   serverPort: 7777
   serverAddress: 127.0.0.1
-  expectedClientCount: 1
+  expectedPlayersCount: 2
+  playerPrefab: {fileID: 1698801561783264169, guid: cef7361df10639140881ad0f81a39580, type: 3}
 --- !u!4 &1990628064
 Transform:
   m_ObjectHideFlags: 0

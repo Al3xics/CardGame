@@ -17,7 +17,7 @@ namespace Wendogo
         public event Action OnDrawCard;
         public event Action OnPlayerTurnEnded;
         public event Action OnNightConsequencesEnded;
-        public string GameSceneName { get; private set; } = "Game";
+        public string gameSceneName = "Game";
         private Dictionary<ulong, PlayerController> _playersById;
 
         #endregion
@@ -28,10 +28,14 @@ namespace Wendogo
             {
                 Instance = this;
                 DontDestroyOnLoad(gameObject);
-                // Disable GameStateMachine for clients because only the host can do things with it
-                GameObject gameStateMachineObject = GameObject.Find("GameStateMachine");
-                if (!IsServer && gameStateMachineObject)
-                    gameStateMachineObject.SetActive(false);
+
+                if (AutoSessionBootstrapper.AutoConnect)
+                {
+                    // Disable GameStateMachine for clients because only the host can do things with it
+                    GameObject gameStateMachineObject = GameObject.Find("GameStateMachine");
+                    if (!IsServer && gameStateMachineObject)
+                        gameStateMachineObject.SetActive(false);
+                }
             }
             else
             {
@@ -48,20 +52,13 @@ namespace Wendogo
                 GameStateMachine.Instance.RegisterPlayerID(player.OwnerClientId);
             }
 
-            /*// Disable GameStateMachine for clients because only the host can do things with it
-            GameObject gameStateMachineObject = GameObject.Find("GameStateMachine");
-            if (!IsServer && gameStateMachineObject)
-                gameStateMachineObject.SetActive(false);*/
-        }
-
-        public void StartGame()
-        {
-            Debug.Log("All players are ready. Starting GameStateMachine...");
-            // Disable GameStateMachine for clients because only the host can do things with it
-            GameObject gameStateMachineObject = Resources.FindObjectsOfTypeAll<GameObject>().FirstOrDefault(go => go.name == "GameStateMachine");
-
-            if (gameStateMachineObject != null)
-                gameStateMachineObject.SetActive(true);
+            if (!AutoSessionBootstrapper.AutoConnect)
+            {
+                // Disable GameStateMachine for clients because only the host can do things with it
+                GameObject gameStateMachineObject = GameObject.Find("GameStateMachine");
+                if (!IsServer && gameStateMachineObject)
+                    gameStateMachineObject.SetActive(false);
+            }
         }
 
         #region RPC
@@ -128,8 +125,8 @@ namespace Wendogo
 
         public void LaunchGame()
         {
-            if (IsServer && SceneManager.GetActiveScene().name != GameSceneName)
-                NetworkManager.SceneManager.LoadScene(GameSceneName, LoadSceneMode.Single);
+            if (IsServer && SceneManager.GetActiveScene().name != gameSceneName)
+                NetworkManager.SceneManager.LoadScene(gameSceneName, LoadSceneMode.Single);
         }
 
         public string GetPlayerName()

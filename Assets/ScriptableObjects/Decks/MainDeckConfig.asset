@@ -16,19 +16,19 @@ MonoBehaviour:
     SerializedFormat: 2
     SerializedBytes: 
     ReferencedUnityObjects:
-    - {fileID: 11400000, guid: 0a317f580c8ea75419dac16871435e5b, type: 2}
+    - {fileID: 11400000, guid: 18a5be297a7ba38458168dbdfc95dca1, type: 2}
     - {fileID: 11400000, guid: 649dd8441fb68bc4ba4b62fc5b145d22, type: 2}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes:
-    - Name: CardDeckData
+    - Name: _cardDeckData
       Entry: 7
       Data: 0|CardDeckConfig[], Assembly-CSharp
     - Name: 
       Entry: 12
-      Data: 3
+      Data: 2
     - Name: 
       Entry: 7
       Data: 1|CardDeckConfig, Assembly-CSharp
@@ -37,7 +37,7 @@ MonoBehaviour:
       Data: 0
     - Name: quantity
       Entry: 3
-      Data: 5
+      Data: 35
     - Name: 
       Entry: 8
       Data: 
@@ -46,22 +46,10 @@ MonoBehaviour:
       Data: 2|CardDeckConfig, Assembly-CSharp
     - Name: CardData
       Entry: 10
-      Data: 0
-    - Name: quantity
-      Entry: 3
-      Data: 10
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 3|CardDeckConfig, Assembly-CSharp
-    - Name: CardData
-      Entry: 10
       Data: 1
     - Name: quantity
       Entry: 3
-      Data: 50
+      Data: 30
     - Name: 
       Entry: 8
       Data: 
@@ -71,7 +59,4 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-    - Name: DeckKeyValues
-      Entry: 6
-      Data: 
-  DeckID: 1
+  deckID: 0

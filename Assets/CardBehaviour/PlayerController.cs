@@ -64,7 +64,7 @@ namespace Wendogo
         {
             if (!IsOwner || uiInitialized) return;
 
-            if (scene.name == ServerManager.Instance.GameSceneName)
+            if (scene.name == ServerManager.Instance.gameSceneName)
             {
                 GameObject mainCanvas = GameObject.Find("MainCanvas");
                 if (mainCanvas == null)
@@ -81,6 +81,27 @@ namespace Wendogo
                     playerUIInstance.RenamePlayer(ServerManager.Instance.GetPlayerName());
                     uiInitialized = true;
                 }
+            }
+        }
+
+        public void SceneLoaded()
+        {
+            if (uiInitialized) return;
+
+            GameObject mainCanvas = GameObject.Find("MainCanvas");
+            if (mainCanvas == null)
+            {
+                Debug.LogError("MainCanvas non trouv? !");
+                return;
+            }
+
+            GameObject uiObject = Instantiate(playerPanelPrefab, mainCanvas.transform);
+            playerUIInstance = uiObject.GetComponent<PlayerUI>();
+
+            if (playerUIInstance != null)
+            {
+                playerUIInstance.RenamePlayer(ServerManager.Instance.GetPlayerName());
+                uiInitialized = true;
             }
         }
 

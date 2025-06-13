@@ -37,7 +37,8 @@ namespace Wendogo
             if (!Instance)
                 Instance = this;
             
-            // ServerManager.Instance.InitializePlayers();
+            if (!AutoSessionBootstrapper.AutoConnect)
+                ServerManager.Instance.InitializePlayers();
         }
 
         protected override State<GameStateMachine> GetInitialState()
