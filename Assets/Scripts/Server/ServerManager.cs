@@ -126,8 +126,8 @@ namespace Wendogo
 
         public void LaunchGame()
         {
-            if (IsServer && SceneManager.GetActiveScene().name != "Night_Day_Mech")
-                NetworkManager.SceneManager.LoadScene("Night_Day_Mech", LoadSceneMode.Single);
+            if (IsServer && SceneManager.GetActiveScene().name != "Game")
+                NetworkManager.SceneManager.LoadScene("Game", LoadSceneMode.Single);
         }
 
         public string GetPlayerName()
