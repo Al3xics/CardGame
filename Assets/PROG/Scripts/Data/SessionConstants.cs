@@ -1,0 +1,11 @@
+﻿namespace Wendogo
+{
+    public static class SessionConstants
+    {
+        public const string PlayerNamePropertyKey = "PlayerName";
+        public const string PlayerReadyPropertyKey = "IsReady";
+        public const string HostName = "Host";
+        public const string Survivor = "Survivor";
+        public const string Wendogo = "Wendogo";
+    }
+}
