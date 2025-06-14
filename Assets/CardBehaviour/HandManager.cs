@@ -32,11 +32,6 @@ namespace Wendogo
             PlayerController.OnCardUsed -= DrawCard;
         }
 
-        private void Awake()
-        {
-            DrawCard();
-        }
-
         public void Discard(GameObject discardedCard)
         {
             _handCards.Remove(discardedCard);
@@ -50,7 +45,7 @@ namespace Wendogo
                 GameObject g = Instantiate(_cardPrefab, _spawnPoint.position, _spawnPoint.rotation);
                 _handCards.Add(g);
                 g.transform.parent = _handTransform;
-                _cardsHandler.ApplyCardData(g);
+                //_cardsHandler.ApplyCardData(g);
                 UpdateCardPositions();
                 await UniTask.WaitForSeconds(0.25f);
             }

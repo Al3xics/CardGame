@@ -15,10 +15,16 @@ namespace Wendogo
         [SerializeField] public EventSystem _inputEvent;
         [SerializeField] private HandManager _handManager;
 
+
         [Header("UI Prefab")]
         public GameObject playerPanelPrefab;
 
         private PlayerUI playerUIInstance;
+        
+        private CardDatabaseSO cardDatabaseSO;
+
+        [SerializeField] CardDatabaseSO _cardDatabase;
+
         private bool uiInitialized = false;
 
         public NetworkVariable<RoleType> Role = new(
@@ -37,9 +43,9 @@ namespace Wendogo
         public static event Action OnCardUsed;
 
         public bool TargetSelected;
-
-
         private ulong _selectedTarget;
+
+        private CardsHandler _cardsHandler;
 
 
         public override void OnNetworkSpawn()
@@ -242,13 +248,21 @@ namespace Wendogo
         [ClientRpc]
         public void SendRoleClientRpc(RoleType role, ClientRpcParams clientRpcParams = default)
         {
+            //Can modify
             playerUIInstance.GetRole(role.ToString());
         }
 
         [ClientRpc]
-        public void SendCardsToClientRpc(int[] role, ClientRpcParams clientRpcParams = default)
+        public void SendCardsToClientRpc(int[] cardsID, ClientRpcParams clientRpcParams = default)
         {
-            playerUIInstance.GetRole(role.ToString());
+            //This is to receive cards
+            foreach (int ID in cardsID)
+            {
+                CardDataSO cardData = _cardDatabase.GetDatabaseCardByID(ID);
+                GameObject cardObject = new GameObject(cardData.Name);
+                _cardsHandler.ApplyCardData(cardObject, cardData);
+                
+            }
         }
     }
 }

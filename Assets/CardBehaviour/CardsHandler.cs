@@ -17,13 +17,13 @@ namespace Wendogo
             _owner = GetComponent<PlayerController>();
         }
 
-        public void ApplyCardData(GameObject card)
+        public void ApplyCardData(GameObject card, CardDataSO cardData)
         {
             try
             {
                 CardDragHandler dragHandler = card.GetComponent<CardDragHandler>();
                 dragHandler.Owner = _owner;
-                CardDataSO cardData = _cardDatabase.GetDatabaseCardByID(10100);
+               
                 Texture2D cardVisual = cardData.CardVisual;
                 RawImage rawImage = card.GetComponentInChildren<RawImage>();
                 rawImage.texture = cardVisual;
