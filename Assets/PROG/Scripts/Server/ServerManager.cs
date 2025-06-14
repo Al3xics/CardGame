@@ -129,14 +129,6 @@ namespace Wendogo
                 NetworkManager.SceneManager.LoadScene(gameSceneName, LoadSceneMode.Single);
         }
 
-        public string GetPlayerName()
-        {
-            if (SessionManager.Instance.ActiveSession.CurrentPlayer.Properties.TryGetValue(SessionConstants.PlayerNamePropertyKey, out var playerName))
-                return playerName.Value;
-
-            return "Inconnu";
-        }
-
         #endregion
 
 

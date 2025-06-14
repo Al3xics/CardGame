@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using Sirenix.OdinInspector;
+using System.Globalization;
 using Unity.Netcode;
 using UnityEngine.SceneManagement;
 
@@ -15,16 +17,10 @@ namespace Wendogo
         [SerializeField] public EventSystem _inputEvent;
         [SerializeField] private HandManager _handManager;
 
-
         [Header("UI Prefab")]
         public GameObject playerPanelPrefab;
 
         private PlayerUI playerUIInstance;
-        
-        private CardDatabaseSO cardDatabaseSO;
-
-        [SerializeField] CardDatabaseSO _cardDatabase;
-
         private bool uiInitialized = false;
 
         public NetworkVariable<RoleType> Role = new(
@@ -37,22 +33,24 @@ namespace Wendogo
 
         List<ulong> playerList = new List<ulong>();
 
-        public int PlayerPA;
-        public int DeckID;
+        public int _playerPA;
+        public int deckID;
 
         public static event Action OnCardUsed;
 
         public bool TargetSelected;
+
+
         private ulong _selectedTarget;
 
-        private CardsHandler _cardsHandler;
-
+        private void Start()
+        {
+            _playerPA = 2;
+        }
 
         public override void OnNetworkSpawn()
         {
             if (!IsOwner) return;
-
-            _handManager = GetComponent<HandManager>();
 
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
@@ -66,7 +64,7 @@ namespace Wendogo
         {
             if (!IsOwner || uiInitialized) return;
 
-            if (scene.name == "Game")
+            if (scene.name == ServerManager.Instance.gameSceneName)
             {
                 GameObject mainCanvas = GameObject.Find("MainCanvas");
                 if (mainCanvas == null)
@@ -80,9 +78,29 @@ namespace Wendogo
 
                 if (playerUIInstance != null)
                 {
-                    playerUIInstance.RenamePlayer(GameNetworkingManager.Instance.GetPlayerName());
                     uiInitialized = true;
                 }
+            }
+        }
+
+        public void SceneLoaded()
+        {
+            if (uiInitialized) 
+                return;
+
+            GameObject mainCanvas = GameObject.Find("MainCanvas");
+            if (mainCanvas == null)
+            {
+                Debug.LogError("MainCanvas non trouv? !");
+                return;
+            }
+
+            GameObject uiObject = Instantiate(playerPanelPrefab, mainCanvas.transform);
+            playerUIInstance = uiObject.GetComponent<PlayerUI>();
+
+            if (playerUIInstance != null)
+            {
+                uiInitialized = true;
             }
         }
 
@@ -171,7 +189,7 @@ namespace Wendogo
         public void HandleUsedCard()
         {
             //Use _playerPA
-            PlayerPA--;
+            _playerPA--;
 
             //Remove the card from the hand
             _handManager.Discard(ActiveCard.gameObject);
@@ -181,14 +199,14 @@ namespace Wendogo
                 Debug.Log("Passive card placed");
             }
 
-            Destroy(ActiveCard.gameObject);
+            //Destroy(ActiveCard.gameObject);
 
         }
 
         public void CheckPA()
         {
             //Check player PA
-            if (PlayerPA > 0)
+            if (_playerPA > 0)
                 return;
 
             else
@@ -206,7 +224,7 @@ namespace Wendogo
 
         public bool HasEnoughPA()
         {
-            return PlayerPA >= 0;
+            return _playerPA >= 0;
         }
 
         public ulong GetChosenTarget()
@@ -216,7 +234,7 @@ namespace Wendogo
 
         public void NotifyPlayedCard()
         {
-            ServerManager.Instance.TransmitPlayedCardServerRpc(ActiveCard.Card.ID, _selectedTarget);
+            //ServerManager.Instance.TransmitPlayedCard(ActiveCard.Card.ID, _selectedTarget);
         }
 
         public int GetMissingCards()
@@ -224,45 +242,46 @@ namespace Wendogo
             return _handManager._maxHandSize - _handManager._handCards.Count;
         }
 
-        public void NotifyMissingCards()
-        {
+        #region RPC
 
-            ServerManager.Instance.TransmitMissingCardsServerRpc(GetMissingCards(), DeckID);
-        }
-
-        public async void NotifyEndTurn()
-        {
-            ServerManager.Instance.SendDataServerServerRpc();
-        }
-
-        //Create card with owner directly here
-        [ClientRpc]
-        public void NotifyGameReadyClientRpc()
-        {
-            if (IsOwner && playerUIInstance != null)
-            {
-                playerUIInstance.EndValidation();
-            }
-        }
-
+        /* -------------------- RPC -------------------- */
         [ClientRpc]
         public void SendRoleClientRpc(RoleType role, ClientRpcParams clientRpcParams = default)
         {
-            //Can modify
-            playerUIInstance.GetRole(role.ToString());
+            playerUIInstance?.GetRole(role.ToString());
         }
 
         [ClientRpc]
         public void SendCardsToClientRpc(int[] cardsID, ClientRpcParams clientRpcParams = default)
         {
-            //This is to receive cards
-            foreach (int ID in cardsID)
-            {
-                CardDataSO cardData = _cardDatabase.GetDatabaseCardByID(ID);
-                GameObject cardObject = new GameObject(cardData.Name);
-                _cardsHandler.ApplyCardData(cardObject, cardData);
-                
-            }
+            // do things with cards
+            // this will receive either the 5 first cards, or when this player's turn end, the drawn cards he needs to complete his hand
+            // need to handle both events
         }
+
+        [ClientRpc]
+        public void StartMyTurnClientRpc()
+        {
+            // start the Player State Machine here
+
+            // DEBUG
+            NotifyEndTurn();
+        }
+
+        #endregion
+
+        #region Notify
+
+        public void NotifyMissingCards()
+        {
+            ServerManager.Instance.TransmitMissingCardsServerRpc(GetMissingCards(), deckID);
+        }
+
+        private void NotifyEndTurn()
+        {
+            ServerManager.Instance.PlayerTurnEndedServerRpc();
+        }
+
+        #endregion
     }
 }
