@@ -22,6 +22,7 @@
                 foreach (var action in StateMachine.NightActions[playerId])
                 {
                     // Exemples :
+                    // - Récupérer les ressources de food AVANT
                     // - Appliquer dégâts
                     // - Voler ressources
                     // - Vérifier si la cible a une protection en attente
@@ -33,6 +34,22 @@
             // Une fois résolu, tu peux notifier le serveur
             ServerManager.Instance.SendDataServerServerRpc(); // À adapter avec le résultat
             StateMachine.NightActions.Clear();
+        }
+
+        private void CheckHealth()
+        {
+            foreach (var player in StateMachine.PlayersHealth)
+            {
+                // If dead
+                if (player.Value == 0)
+                {
+                    // Remove player from the game (pass to viewer mode), annd from the players ID list
+                    // Send to server manager to tell the player he is dead and need to change to viewer mode
+                    // Inform all players that one player is dead
+                }
+            }
+
+            // ServerManager.Instance.ChangePlayersHealth(StateMachine.PlayersHealth);
         }
 
         private void NextState()

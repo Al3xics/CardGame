@@ -29,8 +29,8 @@ namespace Wendogo
              */
 
             Dictionary<ulong, List<int>> playersCards = new();
-            var actionDeck = StateMachine.DataCollectionScript.ActionDeck.DeckKeyValues;
-            var resourceDeck = StateMachine.DataCollectionScript.ResourcesDeck.DeckKeyValues;
+            var actionDeck = StateMachine.dataCollectionScript.actionDeck.CardsDeck;
+            var resourceDeck = StateMachine.dataCollectionScript.resourcesDeck.CardsDeck;
             
             foreach (var playerID in StateMachine.PlayersID)
             {
@@ -40,34 +40,33 @@ namespace Wendogo
                 int actionCardsToDraw = Mathf.Min(actionDeckAmount, actionDeck.Count);
                 for (var i = 0; i < actionCardsToDraw; i++)
                 {
-                    var randomKey = actionDeck.Keys.ElementAt(Random.Range(0, actionDeck.Count));
-
-                    playersCards[playerID].Add(randomKey);
-
-                    actionDeck.Remove(randomKey);
+                    int randomIndex = Random.Range(0, actionDeck.Count);
+                    int cardID = actionDeck[randomIndex].ID;
+                    
+                    playersCards[playerID].Add(cardID);
+                    actionDeck.RemoveAt(randomIndex);
                 }
-
+                
                 // Resource Deck
                 int resourceCardsToDraw = Mathf.Min(resourceDeckAmount, resourceDeck.Count);
                 for (var i = 0; i < resourceCardsToDraw; i++)
                 {
-                    var randomKey = resourceDeck.Keys.ElementAt(Random.Range(0, resourceDeck.Count));
-
-                    playersCards[playerID].Add(randomKey);
-
-                    resourceDeck.Remove(randomKey);
+                    int randomIndex = Random.Range(0, resourceDeck.Count);
+                    int cardID = resourceDeck[randomIndex].ID;
+                    
+                    playersCards[playerID].Add(cardID);
+                    resourceDeck.RemoveAt(randomIndex);
                 }
             }
 
             Utils.DictionaryToArrays(playersCards, out ulong[] targets, out int[][] cardsID);
-
             ServerManager.Instance.SendCardsToPlayersServerRpc(targets, cardsID);
         }
 
         private void NextState()
         {
             ServerManager.Instance.OnDrawCard -= NextState;
-            StateMachine.ChangeState<AllocateActionPointsState>();
+            StateMachine.ChangeState<PlayerTurnState>();
         }
     }
 }
