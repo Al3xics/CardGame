@@ -172,7 +172,7 @@ namespace Wendogo
             if (ActiveCard == null)
                 return;
 
-            //checkCardsconditions
+            //CheckCardsconditions
             //if conditions aren't met: return;
 
             Debug.Log("Card played");
@@ -246,17 +246,26 @@ namespace Wendogo
 
         /* -------------------- RPC -------------------- */
         [ClientRpc]
-        public void SendRoleClientRpc(RoleType role, ClientRpcParams clientRpcParams = default)
+        public void GetRoleClientRpc(RoleType role, ClientRpcParams clientRpcParams = default)
         {
             playerUIInstance?.GetRole(role.ToString());
         }
 
         [ClientRpc]
-        public void SendCardsToClientRpc(int[] cardsID, ClientRpcParams clientRpcParams = default)
+        public void GetCardsClientRpc(int[] cardsID, ClientRpcParams clientRpcParams = default)
         {
             // do things with cards
             // this will receive either the 5 first cards, or when this player's turn end, the drawn cards he needs to complete his hand
             // need to handle both events
+
+            //foreach (int ID in cardsID)
+            //{
+            //    CardDataSO cardData = _cardDatabase.GetDatabaseCardByID(ID); More actions
+            //    GameObject cardObject = new GameObject(cardData.Name);
+            //    _cardsHandler.ApplyCardData(cardObject, cardData);
+
+            //}
+
         }
 
         [ClientRpc]

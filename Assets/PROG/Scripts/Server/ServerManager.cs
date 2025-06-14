@@ -73,7 +73,7 @@ namespace Wendogo
 
                 if (_playersById.TryGetValue(id, out var player))
                 {
-                    player.SendRoleClientRpc(role);
+                    player.GetRoleClientRpc(role);
                 }
             }
 
@@ -90,7 +90,7 @@ namespace Wendogo
 
                 if (_playersById.TryGetValue(id, out var player))
                 {
-                    player.SendCardsToClientRpc(cards);
+                    player.GetCardsClientRpc(cards);
                 }
             }
             OnDrawCard?.Invoke();
