@@ -3,6 +3,8 @@ using Wendogo;
 
 namespace Wendogo
 {
+    //The state machine for the player controller based on the template
+    //Used to insure clean state transition for the players
     public class PlayerControllerSM : StateMachine<PlayerControllerSM>
     {
         [SerializeField] private PlayerController _player;
@@ -36,10 +38,10 @@ namespace Wendogo
             return inputstate;
 
         }
-
+        
         public void Update()
         {
-            //CurrentState?.OnTick();
+
         }
     }
 }
