@@ -1,7 +1,13 @@
 ﻿namespace Wendogo
 {
+    /// <summary>
+    /// Represents the state in the game where the consequences of the night phase are processed.
+    /// </summary>
     public class NightConsequencesState : State<GameStateMachine>
     {
+        /// <summary>
+        /// Represents the state in which the consequences of actions taken during the night phase are processed.
+        /// </summary>
         public NightConsequencesState(GameStateMachine stateMachine) : base(stateMachine) { }
 
         public override void OnEnter()
@@ -11,6 +17,7 @@
             ResolveNightConsequences();
         }
 
+        // todo
         private void ResolveNightConsequences()
         {
             // Tu parcours l’ordre de tour
@@ -36,6 +43,7 @@
             StateMachine.NightActions.Clear();
         }
 
+        // todo
         private void CheckHealth()
         {
             foreach (var player in StateMachine.PlayersHealth)
@@ -52,6 +60,10 @@
             // ServerManager.Instance.ChangePlayersHealth(StateMachine.PlayersHealth);
         }
 
+        /// <summary>
+        /// Transitions the game state from the current <see cref="NightConsequencesState"/> to the
+        /// <see cref="CheckRitualState"/> after night consequences have been resolved.
+        /// </summary>
         private void NextState()
         {
             ServerManager.Instance.OnNightConsequencesEnded -= NextState;

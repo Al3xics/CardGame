@@ -3,10 +3,21 @@ using UnityEngine;
 
 namespace Wendogo
 {
+    /// <summary>
+    /// Represents the state where a player's turn is handled within the game state machine.
+    /// </summary>
     public class PlayerTurnState : State<GameStateMachine>
     {
+        /// <summary>
+        /// Represents the ID of the current player whose turn is active in the game.
+        /// This variable helps manage the game flow by tracking which player's turn is currently in progress.
+        /// It is incremented sequentially to move to the next player in the turn order.
+        /// </summary>
         private int _currentPlayerId = 0;
         
+        /// <summary>
+        /// Represents the state of the game during a player's turn.
+        /// </summary>
         public PlayerTurnState(GameStateMachine stateMachine) : base(stateMachine) { }
         
         public override void OnEnter()
@@ -15,6 +26,10 @@ namespace Wendogo
             StartPlayerTurn(_currentPlayerId);
         }
 
+        /// <summary>
+        /// Initiates the turn for the specified player, setting up the necessary state for the turn.
+        /// </summary>
+        /// <param name="id">The ID of the player whose turn is starting.</param>
         private void StartPlayerTurn(int id)
         {
             Debug.Log("Next Player Turn");
@@ -22,6 +37,7 @@ namespace Wendogo
             ServerManager.Instance.PlayerTurnServerServerRpc(StateMachine.PlayersID[id]);
         }
 
+        // todo
         public void CheckCardPlayed(int playedCardID, ulong target)
         {
             /*
@@ -53,6 +69,9 @@ namespace Wendogo
             }
         }
 
+        /// <summary>
+        /// Advances the game to the next player's turn.
+        /// </summary>
         private void NextPlayer()
         {
             ServerManager.Instance.OnPlayerTurnEnded -= NextPlayer;
@@ -68,6 +87,9 @@ namespace Wendogo
             StartPlayerTurn(_currentPlayerId);
         }
 
+        /// <summary>
+        /// Transitions the game state from the current <see cref="PlayerTurnState"/> to the <see cref="CheckRitualState"/>.
+        /// </summary>
         private void NextState()
         {
             StateMachine.ChangeState<CheckRitualState>();
