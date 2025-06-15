@@ -22,15 +22,15 @@ namespace Wendogo
 
         #endregion
 
-        // Fonction appelée lors de l'initialisation du script pour configurer l'instance du ServerManager
-        // et désactiver certains objets pour les clients (non-serveur).
+        // Called during script initialization to configure the ServerManager instance
+        // and disable certain objects for clients (non-server).
         private void Awake()
         {
             if (Instance == null)
             {
                 Instance = this;
                 DontDestroyOnLoad(gameObject);
-                // Désactive GameStateMachine pour les Clients car seul celui qui host la partie peut exectuter ce code
+                // Disable GameStateMachine for clients because only the host can run this logic
                 GameObject gameStateMachineObject = GameObject.Find("GameStateMachine");
                 if (!IsServer && gameStateMachineObject)
                     gameStateMachineObject.SetActive(false);
@@ -41,9 +41,9 @@ namespace Wendogo
             }
         }
 
-        // Initialise le dictionnaire des joueurs présents dans la scène,
-        // en associant leur ID réseau à leur PlayerController respectif.
-        // Enregistre aussi chaque joueur dans la GameStateMachine.
+        // Initializes the dictionary of players present in the scene,
+        // mapping their network ID to their corresponding PlayerController.
+        // Also registers each player in the GameStateMachine.
         public void InitializePlayers()
         {
             _playersById = FindObjectsByType<PlayerController>(FindObjectsSortMode.None).ToDictionary(p => p.OwnerClientId);
@@ -59,11 +59,11 @@ namespace Wendogo
                 gameStateMachineObject.SetActive(false);*/
         }
 
-        // Lance le début du jeu en activant la GameStateMachine (réservé à l'hôte).
+        // Starts the game by activating the GameStateMachine (host only).
         public void StartGame()
         {
             Debug.Log("All players are ready. Starting GameStateMachine...");
-            // Désactive GameStateMachine pour les Clients car seul celui qui host la partie peut exectuter ce code
+            // Disable GameStateMachine for clients because only the host can run this logic
             GameObject gameStateMachineObject = Resources.FindObjectsOfTypeAll<GameObject>().FirstOrDefault(go => go.name == "GameStateMachine");
 
             if (gameStateMachineObject != null)
@@ -72,9 +72,8 @@ namespace Wendogo
 
         #region RPC
 
-
-        // Attribue les rôles aux joueurs en fonction de leur ID. Fonction appelée côté serveur.
-        // Chaque joueur reçoit son rôle via un appel ClientRpc.
+        // Assigns roles to players based on their network IDs. Called from the server.
+        // Each player receives their role via a ClientRpc.
         [ServerRpc(RequireOwnership = false)]
         public void AssignRolesToPlayersServerRpc(ulong[] clientIds, RoleType[] roles, ServerRpcParams rpcParams = default)
         {
@@ -92,9 +91,8 @@ namespace Wendogo
             OnAssignedRoles?.Invoke();
         }
 
-
-        // Envoie les cartes tirées à chaque joueur depuis le serveur.
-        // Chaque joueur reçoit ses cartes via un appel ClientRpc.
+        // Sends drawn cards to each player from the server.
+        // Each player receives their cards via a ClientRpc.
         [ServerRpc(RequireOwnership = false)]
         public void SendCardsToPlayersServerRpc(ulong[] target, int[][] intArray, ServerRpcParams rpcParams = default)
         {
@@ -111,8 +109,7 @@ namespace Wendogo
             OnDrawCard?.Invoke();
         }
 
-
-        // Démarre le tour du joueur spécifié en appelant un ClientRpc côté client.
+        // Starts the turn of the specified player by calling a ClientRpc on the client side.
         [ServerRpc(RequireOwnership = false)]
         public void PlayerTurnServerServerRpc(ulong playerId)
         {
@@ -122,17 +119,15 @@ namespace Wendogo
             }
         }
 
-
-        // Notifie que le tour d’un joueur est terminé en déclenchant l’événement approprié.
+        // Notifies that a player's turn has ended by invoking the corresponding event.
         [ServerRpc(RequireOwnership = false)]
         public void PlayerTurnEndedServerRpc()
         {
             OnPlayerTurnEnded?.Invoke();
         }
 
-
-        // Demande au serveur de faire piocher des cartes à la StateMachine pour un joueur spécifique à partir d’un deck spécifique.
-        // Utilisé si des cartes manquent (ex. : après une utilisation).
+        // Asks the server to draw cards for a specific player from a specific deck via the GameStateMachine.
+        // Used when cards are missing (e.g., after usage).
         [ServerRpc(RequireOwnership = false)]
         public void TransmitMissingCardsServerRpc(int drawXCardsFromDeck, int deckID, ServerRpcParams rpcParams = default)
         {
@@ -142,37 +137,33 @@ namespace Wendogo
 
         #endregion
 
+        #region Basic Methods
 
-        #region Basic Methodes
-
-
-        // Lance le chargement de la scène de jeu depuis le serveur si elle n’est pas déjà active.
+        // Starts loading the game scene from the server if it's not already active.
         public void LaunchGame()
         {
             if (IsServer && SceneManager.GetActiveScene().name != GameSceneName)
                 NetworkManager.SceneManager.LoadScene(GameSceneName, LoadSceneMode.Single);
         }
 
-
-        // Récupère et retourne le nom du joueur actuel à partir des propriétés de la session.
+        // Retrieves and returns the current player's name from the session properties.
         public string GetPlayerName()
         {
             if (SessionManager.Instance.ActiveSession.CurrentPlayer.Properties.TryGetValue(SessionConstants.PlayerNamePropertyKey, out var playerName))
                 return playerName.Value;
 
-            return "Inconnu";
+            return "Unknown";
         }
 
         #endregion
 
-        // Prévue pour modifier les points de vie des joueurs selon un dictionnaire ID / santé.
+        // Intended to update players' health using a dictionary of ID / health values.
         public void ChangePlayersHealth(Dictionary<ulong, int> playersHealth)
         {
 
         }
 
-
-        // Fonction vide prévue pour signaler la fin de la vérification d'une carte jouée.
+        // Placeholder function to signal the end of a card play check.
         public void FinishedCheckCardPlayed()
         {
 
@@ -184,8 +175,7 @@ namespace Wendogo
             GameStateMachine.Instance.CheckCardPlayed(cardID, target);
         }*/
 
-
-        // jsp
+        // purpose not fully clear yet.
         [ServerRpc(RequireOwnership = false)]
         public void SendDataServerServerRpc(ServerRpcParams rpcParams = default)
         {
