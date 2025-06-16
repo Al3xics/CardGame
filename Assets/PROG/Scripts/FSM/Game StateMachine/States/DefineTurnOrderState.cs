@@ -19,6 +19,12 @@ namespace Wendogo
         {
             base.OnEnter();
 
+            if (AutoSessionBootstrapper.AutoConnect &&
+                StateMachine.PlayersID.Count < AutoSessionBootstrapper.ExpectedPlayersCount)
+            {
+                throw new System.Exception("Not enough players to start the game.");
+            }
+
             Shuffle(StateMachine.PlayersID);
             StateMachine.ChangeState<AssignRolesState>();
         }

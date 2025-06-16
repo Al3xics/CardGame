@@ -62,6 +62,7 @@ namespace Wendogo
 
         [Tooltip("The number of players expected to be connected in the multiplayer session.\nIt includes the host in the count.")]
         [SerializeField] private int expectedPlayersCount = 2;
+        public static int ExpectedPlayersCount { get; private set; }
 
         [Tooltip("Reference to the player prefab.")]
         [SerializeField] private GameObject playerPrefab;
@@ -74,6 +75,7 @@ namespace Wendogo
         private void Awake()
         {
             AutoConnect = autoConnect;
+            ExpectedPlayersCount = expectedPlayersCount;
             if (AutoConnect) networkManager.OnClientConnectedCallback += OnClientConnected;
         }
 
@@ -94,7 +96,6 @@ namespace Wendogo
                     networkManager.StartHost();
                     playerPrefab.GetComponent<PlayerController>().SceneLoaded();
                     Debug.Log("[Bootstrap] Host started.");
-                    ServerManager.Instance.InitializePlayers();
                 }
                 else if (mppmTag.Contains("Client"))
                 {
@@ -133,6 +134,8 @@ namespace Wendogo
             {
                 networkManager.OnClientConnectedCallback -= OnClientConnected;
                 Debug.Log("[Bootstrap] Every Player is connected. Starting game...");
+                
+                ServerManager.Instance.InitializePlayers();
                 
                 // Disable GameStateMachine for clients because only the host can do things with it
                 GameObject gameStateMachineObject = Resources.FindObjectsOfTypeAll<GameObject>().FirstOrDefault(go => go.name == "GameStateMachine");
