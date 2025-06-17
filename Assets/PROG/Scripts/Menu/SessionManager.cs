@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Unity.Services.Authentication;
 using Unity.Services.Multiplayer;
+using Unity.Services.Vivox;
 
 namespace Wendogo
 {
@@ -71,6 +72,13 @@ namespace Wendogo
             get { return _multiplayerService ??= Unity.Services.Multiplayer.MultiplayerService.Instance; }
             private set => _multiplayerService = value;
         }
+        
+        private IVivoxService _vivoxService;
+        public IVivoxService VivoxService
+        {
+            get { return _vivoxService ??= Unity.Services.Vivox.VivoxService.Instance; }
+            private set => _vivoxService = value;
+        }
 
         #endregion
 
@@ -96,6 +104,12 @@ namespace Wendogo
                     await AuthenticationService.SignInAnonymouslyAsync();
                     Debug.Log($"Signed in anonymously. Name: {AuthenticationService.PlayerName}. ID: {AuthenticationService.PlayerId}");
                 }
+                
+                if (VivoxService != null)
+                {
+                    await VivoxService.InitializeAsync();
+                    Debug.Log("Initialized Voice Chat");
+                }
             }
             catch (Exception e)
             {
@@ -110,6 +124,7 @@ namespace Wendogo
                 EnterSessionData = sessionData;
                 var playerProperties = await GetPlayerProperties(sessionData.PlayerName);
 
+                // Create Session Options
                 var options = new SessionOptions
                 {
                     Name = sessionData.SessionName,
@@ -119,10 +134,22 @@ namespace Wendogo
                     PlayerProperties = playerProperties
                 };
 
+                // Join Session Options
                 var joinSessionOptions = new JoinSessionOptions()
                 {
                     PlayerProperties = playerProperties
                 };
+                
+                // Voice Chat Options
+                if (sessionData.MultiplayerConfiguration.enableVoiceChat)
+                {
+                    var voiceLoginOptions = new LoginOptions()
+                    {
+                        DisplayName = AuthenticationService.PlayerName,
+                        EnableTTS = true
+                    };
+                    await VivoxService.LoginAsync(voiceLoginOptions);
+                }
 
                 SetConnection(ref options, sessionData.MultiplayerConfiguration);
 
@@ -138,6 +165,9 @@ namespace Wendogo
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
+
+                if (sessionData.MultiplayerConfiguration.enableVoiceChat)
+                    await VivoxService.JoinGroupChannelAsync(ActiveSession.Name, ChatCapability.AudioOnly);
             }
             catch (SessionException e)
             {
@@ -286,6 +316,7 @@ namespace Wendogo
                     }
                 }
                 
+                await LeaveVoiceChannel();
                 UnregisterSessionEvents();
                 await ActiveSession.LeaveAsync();
             }
@@ -296,6 +327,61 @@ namespace Wendogo
             finally
             {
                 ActiveSession = null;
+            }
+        }
+        
+        public void MutePlayer(bool mute)
+        {
+            if (mute)
+            {
+                if (!VivoxService.IsInputDeviceMuted)
+                {
+                    VivoxService.MuteInputDevice();
+                    Debug.Log("[Vivox] Input device muted.");
+                }
+            }
+            else
+            {
+                if (VivoxService.IsInputDeviceMuted)
+                {
+                    VivoxService.UnmuteInputDevice();
+                    Debug.Log("[Vivox] Input device unmuted.");
+                }
+            }
+        }
+
+        private async Task LeaveVoiceChannel()
+        {
+            try
+            {
+                await VivoxService.LeaveChannelAsync(EnterSessionData.SessionName);
+                Debug.Log("[Vivox] Left voice channel.");
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"[Vivox] LeaveVoiceChannel failed: {ex.Message}");
+            }
+        }
+
+        private async void OnApplicationQuit()
+        {
+            try
+            {
+                if (VivoxService is { IsLoggedIn: true })
+                {
+                    if (!string.IsNullOrEmpty(EnterSessionData.SessionName) &&
+                        VivoxService.ActiveChannels.ContainsKey(EnterSessionData.SessionName))
+                    {
+                        await LeaveVoiceChannel();
+                    }
+                    
+                    await VivoxService.LogoutAsync();
+                    Debug.Log("[Vivox] Disconnected at application quit.");
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning($"[Vivox] Logout failed on quit: {e.Message}");
             }
         }
     }
