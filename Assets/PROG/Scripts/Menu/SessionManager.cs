@@ -141,7 +141,7 @@ namespace Wendogo
                 };
                 
                 // Voice Chat Options
-                if (sessionData.MultiplayerConfiguration.enableVoiceChat)
+                if (sessionData.MultiplayerConfiguration.enableVoiceChat && VivoxService is { IsLoggedIn: false })
                 {
                     var voiceLoginOptions = new LoginOptions()
                     {
@@ -166,7 +166,7 @@ namespace Wendogo
                         throw new ArgumentOutOfRangeException();
                 }
 
-                if (sessionData.MultiplayerConfiguration.enableVoiceChat)
+                if (sessionData.MultiplayerConfiguration.enableVoiceChat && VivoxService != null && !VivoxService.ActiveChannels.ContainsKey(ActiveSession.Name))
                     await VivoxService.JoinGroupChannelAsync(ActiveSession.Name, ChatCapability.AudioOnly);
             }
             catch (SessionException e)
@@ -263,6 +263,7 @@ namespace Wendogo
         private void OnRemovedFromSession()
         {
             Debug.Log("[SessionManager] Removed from session");
+            _ = LeaveVoiceChannel();
             UnregisterSessionEvents();
             ActiveSession = null;
         }
@@ -314,6 +315,9 @@ namespace Wendogo
                             Debug.LogWarning($"Kick failed for {p.Id} : {kickEx.Message}");
                         }
                     }
+                    
+                    // Small delay to allow players to leave the voice channel (thanks to `OnRemovedFromSession`)
+                    await Task.Delay(1500);
                 }
                 
                 await LeaveVoiceChannel();
@@ -354,7 +358,7 @@ namespace Wendogo
         {
             try
             {
-                await VivoxService.LeaveChannelAsync(EnterSessionData.SessionName);
+                await VivoxService.LeaveChannelAsync(ActiveSession.Name);
                 Debug.Log("[Vivox] Left voice channel.");
             }
             catch (Exception ex)
@@ -369,10 +373,10 @@ namespace Wendogo
             {
                 if (VivoxService is { IsLoggedIn: true })
                 {
-                    if (!string.IsNullOrEmpty(EnterSessionData.SessionName) &&
-                        VivoxService.ActiveChannels.ContainsKey(EnterSessionData.SessionName))
+                    foreach (var kvp in VivoxService.ActiveChannels)
                     {
-                        await LeaveVoiceChannel();
+                        await VivoxService.LeaveChannelAsync(kvp.Key);
+                        Debug.Log($"[Vivox] Left voice channel '{kvp.Key}' on application quit.");
                     }
                     
                     await VivoxService.LogoutAsync();
