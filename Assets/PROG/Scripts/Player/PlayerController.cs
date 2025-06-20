@@ -64,7 +64,7 @@ namespace Wendogo
         {
             if (!IsOwner || uiInitialized) return;
 
-            if (scene.name == ServerManager.Instance.gameSceneName)
+            if (scene.name == ServerManager.Instance.GameSceneName)
             {
                 GameObject mainCanvas = GameObject.Find("MainCanvas");
                 if (mainCanvas == null)

@@ -41,12 +41,19 @@
         public string PlayerName;
     }
     
+    /// <summary>
+    /// Represent the cycles existing in one turn.
+    /// Alternate between Day - Night
+    /// </summary>
     public enum Cycle
     {
         Day,
         Night
     }
     
+    /// <summary>
+    /// All the different types that can be assigned to each player
+    /// </summary>
     public enum RoleType
     {
         Survivor,
