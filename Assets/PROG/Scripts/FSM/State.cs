@@ -29,12 +29,45 @@ namespace Wendogo
         }
 
         /// <summary>
+        /// Custom log method. If <see cref="StateMachine.showDebugLogs"/> in <see cref="StateMachine"/> is true,
+        /// the log will be shown; otherwise not.
+        /// </summary>
+        /// <param name="message">Message you want to log.</param>
+        protected void Log(string message)
+        {
+            if (StateMachine.ShowDebugLogs)
+                Debug.Log(message);
+        }
+
+        /// <summary>
+        /// Custom log method. If <see cref="StateMachine.showDebugLogs"/> in <see cref="StateMachine"/> is true,
+        /// the log will be shown; otherwise not.
+        /// </summary>
+        /// <param name="message">Message you want to log warning.</param>
+        protected void LogWarning(string message)
+        {
+            if (StateMachine.ShowDebugLogs)
+                Debug.LogWarning(message);
+        }
+
+        /// <summary>
+        /// Custom log method. If <see cref="StateMachine.showDebugLogs"/> in <see cref="StateMachine"/> is true,
+        /// the log will be shown; otherwise not.
+        /// </summary>
+        /// <param name="message">Message you want to log error.</param>
+        protected void LogError(string message)
+        {
+            if (StateMachine.ShowDebugLogs)
+                Debug.LogError(message);
+        }
+
+        /// <summary>
         /// Invoked when entering the state.
         /// Performs operations needed to initialize the state when it becomes active.
         /// </summary>
         public virtual void OnEnter()
         {
-            Debug.Log($"Enter {GetType()}");
+            Log($"---------- Enter {GetType()}");
         }
 
         /// <summary>
@@ -48,7 +81,7 @@ namespace Wendogo
         /// </remarks>
         public virtual void OnTick()
         {
-            Debug.Log($"Tick {GetType()}");
+            Log($"----- Tick {GetType()} -----");
         }
 
         /// <summary>
@@ -58,7 +91,7 @@ namespace Wendogo
         /// </summary>
         public virtual void OnExit()
         {
-            Debug.Log($"Exit {GetType()}");
+            Log($"Exit {GetType()} ----------");
         }
     }
 }

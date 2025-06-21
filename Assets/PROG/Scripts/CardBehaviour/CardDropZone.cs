@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Wendogo;
@@ -5,6 +6,8 @@ using Wendogo;
 //Defines a valid drop target for draggable card objects
 public class CardDropZone : MonoBehaviour, IDropHandler
 {
+    public static event Action<CardDataSO> OnCardDropped;
+
     public void OnDrop(PointerEventData eventData)
     {
         //Get the object currently being dragged
@@ -15,6 +18,8 @@ public class CardDropZone : MonoBehaviour, IDropHandler
         {
             //Snap the dragged card to this drop zone's position and rotation
             draggedCard.transform.SetPositionAndRotation(transform.position, transform.rotation);
+            CardObjectData cod = draggedCard.GetComponent<CardObjectData>();
+            OnCardDropped?.Invoke(cod.Card);
         }
     }
 }

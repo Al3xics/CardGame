@@ -13,6 +13,19 @@ namespace Wendogo
     /// </typeparam>
     public abstract class StateMachine<T> : MonoBehaviour where T : StateMachine<T>
     {
+
+        /// <summary>
+        /// Show or hide the debug logs related to the <see cref="StateMachine{T}"/>.
+        /// </summary>
+        [Header("Debug")]
+        [Tooltip("Show or hide the debug logs related to the StateMachine.")]
+        [SerializeField] private bool showDebugLogs = true;
+
+        /// <summary>
+        /// See <see cref="showDebugLogs"/>.
+        /// </summary>
+        public bool ShowDebugLogs => showDebugLogs;
+
         /// <summary>
         /// Represents the current state of the state machine.
         /// This property holds the active state instance of type <see cref="State{T}"/> for the state machine.
@@ -22,10 +35,22 @@ namespace Wendogo
         /// The <c>CurrentState</c> is automatically set to the initial state when the state machine starts,
         /// as defined by the <see cref="StateMachine{T}.GetInitialState"/> method. State transitions can
         /// be triggered by invoking the <see cref="StateMachine{T}.ChangeState{TState}"/> method,
-        /// which updates the <c>CurrentState</c> accordingly and calls the appropriate lifecycle
+        /// which updates the <c>CurrentState</c> and <c>PreviousState</c> accordingly and calls the appropriate lifecycle
         /// methods (<see cref="State{T}.OnExit"/>, <see cref="State{T}.OnEnter"/>) on the involved states.
         /// </remarks>
         private State<T> CurrentState { get; set; }
+
+        /// <summary>
+        /// Represents the previous state of the state machine.
+        /// This property holds the previous state instance of type <see cref="State{T}"/>, who was active before
+        /// the <see cref="CurrentState"/>.
+        /// </summary>
+        /// <remarks>
+        /// State transitions can be triggered by invoking the <see cref="StateMachine{T}.ChangeState{TState}"/> method,
+        /// which updates the <c>CurrentState</c> and <c>PreviousState</c> accordingly and calls the appropriate lifecycle
+        /// methods (<see cref="State{T}.OnExit"/>, <see cref="State{T}.OnEnter"/>) on the involved states.
+        /// </remarks>
+        public State<T> PreviousState { get; private set; }
 
         /// <summary>
         /// A collection of state instances mapped by their respective types.
@@ -78,6 +103,7 @@ namespace Wendogo
         public void ChangeState<TState>() where TState : State<T>
         {
             CurrentState?.OnExit();
+            PreviousState = CurrentState;
             CurrentState = GetState<TState>();
             CurrentState?.OnEnter();
         }
@@ -92,7 +118,7 @@ namespace Wendogo
         {
             return _states[typeof(TState)];
         }
-        
+
         /// <summary>
         /// Retrieves a concrete state of the specified type from the state machine.
         /// The method ensures that the returned state matches the specified generic type

@@ -38,10 +38,5 @@ namespace Wendogo
             return inputstate;
 
         }
-        
-        public void Update()
-        {
-
-        }
     }
 }
