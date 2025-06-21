@@ -1,4 +1,6 @@
-﻿namespace Wendogo
+﻿using UnityEngine;
+
+namespace Wendogo
 {
     /// <summary>
     /// Represents a state in the GameStateMachine where the ritual status is checked.
@@ -18,31 +20,43 @@
 
         /// <summary>
         /// This method handles the logic for advancing the game's state machine
-        /// by evaluating whether the ritual is over or the current cycle of the game.
-        /// If the ritual is completed, the state transitions to <see cref="EndGameState"/>.
-        /// Otherwise, it checks the cycle and transitions to either <see cref="CheckTriggerVoteState"/>
-        /// for the Day cycle or <see cref="NightConsequencesState"/> for the Night cycle.
+        /// by evaluating whether the ritual is over or the current <see cref="Cycle"/> of the game.
         /// </summary>
         private void CheckRitual()
         {
             if (StateMachine.IsRitualOver)
+            {
+                Log("The Ritual is over.");
                 StateMachine.ChangeState<EndGameState>();
-            else
-                switch (StateMachine.Cycle)
-                {
-                    case Cycle.Day:
+                return;
+            }
+
+            Log("The Ritual is not over.");
+            switch (StateMachine.Cycle)
+            {
+                case Cycle.Day:
+                    if (StateMachine.PreviousState is NightConsequencesState)
                         StateMachine.ChangeState<CheckTriggerVoteState>();
-                        break;
-                    case Cycle.Night:
-                        StateMachine.ChangeState<NightConsequencesState>();
-                        break;
-                }
+                    else
+                        StateMachine.ChangeState<PlayerTurnState>();
+                    break;
+                case Cycle.Night:
+                    LogError("[CheckRitualState] The game is in Night mode. This should not happen.");
+                    break;
+            }
         }
 
         public override void OnExit()
         {
             base.OnExit();
-            StateMachine.SwitchCycle();
+            
+            if (StateMachine.Cycle == Cycle.Day && StateMachine.CurrentPlayerId >= StateMachine.PlayersID.Count)
+            {
+                StateMachine.CurrentPlayerId = 0;
+                
+                if (StateMachine.PreviousState is not NightConsequencesState)
+                    StateMachine.SwitchCycle();
+            }
         }
     }
 }

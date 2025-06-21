@@ -27,6 +27,39 @@ namespace Wendogo
         {
             StateMachine = stateMachine;
         }
+        
+        /// <summary>
+        /// Custom log method. If <see cref="StateMachine.showDebugLogs"/> in <see cref="StateMachine"/> is true,
+        /// the log will be shown; otherwise not.
+        /// </summary>
+        /// <param name="message">Message you want to log.</param>
+        protected void Log(string message)
+        {
+            if (StateMachine.ShowDebugLogs)
+                Debug.Log(message);
+        }
+        
+        /// <summary>
+        /// Custom log method. If <see cref="StateMachine.showDebugLogs"/> in <see cref="StateMachine"/> is true,
+        /// the log will be shown; otherwise not.
+        /// </summary>
+        /// <param name="message">Message you want to log warning.</param>
+        protected void LogWarning(string message)
+        {
+            if (StateMachine.ShowDebugLogs)
+                Debug.LogWarning(message);
+        }
+        
+        /// <summary>
+        /// Custom log method. If <see cref="StateMachine.showDebugLogs"/> in <see cref="StateMachine"/> is true,
+        /// the log will be shown; otherwise not.
+        /// </summary>
+        /// <param name="message">Message you want to log error.</param>
+        protected void LogError(string message)
+        {
+            if (StateMachine.ShowDebugLogs)
+                Debug.LogError(message);
+        }
 
         /// <summary>
         /// Custom log method. If <see cref="StateMachine.showDebugLogs"/> in <see cref="StateMachine"/> is true,

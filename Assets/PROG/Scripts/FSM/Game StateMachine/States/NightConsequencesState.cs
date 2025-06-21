@@ -13,7 +13,6 @@
         public override void OnEnter()
         {
             base.OnEnter();
-            ServerManager.Instance.OnNightConsequencesEnded += NextState;
             ResolveNightConsequences();
         }
 
@@ -41,6 +40,7 @@
             // Une fois résolu, tu peux notifier le serveur
             ServerManager.Instance.SendDataServerServerRpc(); // À adapter avec le résultat
             StateMachine.NightActions.Clear();
+            NextState();
         }
 
         // todo
@@ -66,7 +66,6 @@
         /// </summary>
         private void NextState()
         {
-            ServerManager.Instance.OnNightConsequencesEnded -= NextState;
             StateMachine.NightActions.Clear();
             StateMachine.ChangeState<CheckRitualState>();
         }

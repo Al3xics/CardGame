@@ -9,13 +9,6 @@ namespace Wendogo
     public class PlayerTurnState : State<GameStateMachine>
     {
         /// <summary>
-        /// Represents the ID of the current player whose turn is active in the game.
-        /// This variable helps manage the game flow by tracking which player's turn is currently in progress.
-        /// It is incremented sequentially to move to the next player in the turn order.
-        /// </summary>
-        private int _currentPlayerId = 0;
-        
-        /// <summary>
         /// Represents the state of the game during a player's turn.
         /// </summary>
         public PlayerTurnState(GameStateMachine stateMachine) : base(stateMachine) { }
@@ -23,7 +16,7 @@ namespace Wendogo
         public override void OnEnter()
         {
             base.OnEnter();
-            StartPlayerTurn(_currentPlayerId);
+            StartPlayerTurn(StateMachine.CurrentPlayerId);
         }
 
         /// <summary>
@@ -32,8 +25,8 @@ namespace Wendogo
         /// <param name="id">The ID of the player whose turn is starting.</param>
         private void StartPlayerTurn(int id)
         {
-            Debug.Log("Next Player Turn");
-            ServerManager.Instance.OnPlayerTurnEnded += NextPlayer;
+            Log($"Player {StateMachine.CurrentPlayerId} Begin Turn");
+            ServerManager.Instance.OnPlayerTurnEnded += OnPlayerTurnEnded;
             ServerManager.Instance.PlayerTurnServerServerRpc(StateMachine.PlayersID[id]);
         }
 
@@ -53,7 +46,7 @@ namespace Wendogo
                     break;
                 
                 case Cycle.Night:
-                    ulong currentPlayer = StateMachine.PlayersID[_currentPlayerId];
+                    ulong currentPlayer = StateMachine.PlayersID[StateMachine.CurrentPlayerId];
 
                     if (!StateMachine.NightActions.ContainsKey(currentPlayer))
                         StateMachine.NightActions[currentPlayer] = new List<PlayerAction>();
@@ -72,27 +65,36 @@ namespace Wendogo
         /// <summary>
         /// Advances the game to the next player's turn.
         /// </summary>
-        private void NextPlayer()
+        private void OnPlayerTurnEnded()
         {
-            ServerManager.Instance.OnPlayerTurnEnded -= NextPlayer;
-            
-            _currentPlayerId++;
-            
-            if(_currentPlayerId == StateMachine.PlayersID.Count)
-            {
-                NextState();
-                return;
-            }
-        
-            StartPlayerTurn(_currentPlayerId);
-        }
+            Log($"Player {StateMachine.CurrentPlayerId} End Turn");
+            ServerManager.Instance.OnPlayerTurnEnded -= OnPlayerTurnEnded;
 
-        /// <summary>
-        /// Transitions the game state from the current <see cref="PlayerTurnState"/> to the <see cref="CheckRitualState"/>.
-        /// </summary>
-        private void NextState()
+            StateMachine.CurrentPlayerId++;
+            bool isLastPlayer = StateMachine.CurrentPlayerId >= StateMachine.PlayersID.Count;
+
+            switch (StateMachine.Cycle)
+            {
+                case Cycle.Day:
+                    StateMachine.ChangeState<CheckRitualState>();
+                    break;
+
+                case Cycle.Night:
+                    if (isLastPlayer)
+                        StateMachine.ChangeState<NightConsequencesState>();
+                    else
+                        StartPlayerTurn(StateMachine.CurrentPlayerId);
+                    
+                    break;
+            }
+        }
+        
+        public override void OnExit()
         {
-            StateMachine.ChangeState<CheckRitualState>();
+            base.OnExit();
+            
+            if (StateMachine.Cycle == Cycle.Night)
+                StateMachine.SwitchCycle();
         }
     }
 }
