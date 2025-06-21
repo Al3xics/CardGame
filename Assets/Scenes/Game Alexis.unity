@@ -163,6 +163,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6f4b5964f1343d1973fec3448adb572, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  showDebugLogs: 1
   maximumTurn: 10
   dataCollectionScript: {fileID: 916108407}
   startingActionDeckAmount: 3
@@ -589,7 +590,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f763a3e5009040c784f3b83ee9804456, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  autoConnect: 0
+  autoConnect: 1
   objectsToDestroy:
   - {fileID: 1425267997}
   - {fileID: 1479689065}
