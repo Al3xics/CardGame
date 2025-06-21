@@ -101,6 +101,9 @@ namespace Wendogo
         
         [Tooltip("Determines if a session will be private if a session is created.\nPrivate sessions are not visible in queries and cannot be joined with quick-join.\nThey can still be joined by ID or by Code.")]
         public bool isPrivate = false;
+        
+        [Tooltip("Automatically join a voice channel for a session when joing the session.")]
+        public bool enableVoiceChat = true;
 
         #endregion
     }

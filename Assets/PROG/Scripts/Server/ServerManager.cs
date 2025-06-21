@@ -4,6 +4,7 @@ using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 
 namespace Wendogo
 {
@@ -84,7 +85,7 @@ namespace Wendogo
 
                 if (_playersById.TryGetValue(id, out var player))
                 {
-                    player.SendRoleClientRpc(role);
+                    player.GetRoleClientRpc(role);
                 }
             }
 
@@ -103,7 +104,7 @@ namespace Wendogo
 
                 if (_playersById.TryGetValue(id, out var player))
                 {
-                    player.SendCardsToClientRpc(cards);
+                    player.GetCardsClientRpc(cards);
                 }
             }
             OnDrawCard?.Invoke();
@@ -169,11 +170,11 @@ namespace Wendogo
 
         }
 
-        /*[ServerRpc(RequireOwnership = false)]
+        [ServerRpc(RequireOwnership = false)]
         public void TransmitPlayedCardServerRpc(int cardID, ulong target, ServerRpcParams rpcParams = default)
         {
             GameStateMachine.Instance.CheckCardPlayed(cardID, target);
-        }*/
+        }
 
         // purpose not fully clear yet.
         [ServerRpc(RequireOwnership = false)]

@@ -28,20 +28,19 @@ namespace Wendogo
         /// <param name="resourceDeckAmount">The number of cards to draw from the resource deck for each player.</param>
         private void DrawInitialCard(int actionDeckAmount, int resourceDeckAmount)
         {
-            /*
-             * Dictionnaire, <playerID, List<int>>
-             * 
-             * Pour chaque player dans PlayersID on fera :
-             * 
-             * On récupère X cartes dans deck 1 --> on la choisie aléatoirement dans le deck, on récupère l'id de la carte, on l'ajoute au dictionnaire, puis on la supprime du deck
-             * On récupère X cartes dans deck 2 --> on la choisie aléatoirement dans le deck, on récupère l'id de la carte, on l'ajoute au dictionnaire, puis on la supprime du deck
-             *
-             * On envoie le dico au ServerManager
-             */
-
             Dictionary<ulong, List<int>> playersCards = new();
             var actionDeck = StateMachine.dataCollectionScript.actionDeck.CardsDeck;
             var resourceDeck = StateMachine.dataCollectionScript.resourcesDeck.CardsDeck;
+            
+            // Calculate total cards needed for all players
+            int totalActionCardsNeeded = actionDeckAmount * StateMachine.PlayersID.Count();
+            int totalResourceCardsNeeded = resourceDeckAmount * StateMachine.PlayersID.Count();
+            
+            // Verify if we have enough cards
+            if (actionDeck.Count < totalActionCardsNeeded)
+                throw new System.Exception($"Not enough action cards in deck! Need {totalActionCardsNeeded} but only have {actionDeck.Count}");
+            if (resourceDeck.Count < totalResourceCardsNeeded)
+                throw new System.Exception($"Not enough resource cards in deck! Need {totalResourceCardsNeeded} but only have {resourceDeck.Count}");
             
             foreach (var playerID in StateMachine.PlayersID)
             {
@@ -53,7 +52,6 @@ namespace Wendogo
                 {
                     int randomIndex = Random.Range(0, actionDeck.Count);
                     int cardID = actionDeck[randomIndex].ID;
-                    
                     playersCards[playerID].Add(cardID);
                     actionDeck.RemoveAt(randomIndex);
                 }
@@ -64,7 +62,6 @@ namespace Wendogo
                 {
                     int randomIndex = Random.Range(0, resourceDeck.Count);
                     int cardID = resourceDeck[randomIndex].ID;
-                    
                     playersCards[playerID].Add(cardID);
                     resourceDeck.RemoveAt(randomIndex);
                 }

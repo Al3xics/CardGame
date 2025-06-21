@@ -1,4 +1,6 @@
-﻿namespace Wendogo
+﻿using UnityEngine;
+
+namespace Wendogo
 {
     /// <summary>
     /// Represents a state in the GameStateMachine where the trigger for initiating a vote is checked.
@@ -23,6 +25,8 @@
             {
                 // We are in a voting state, so do things
                 // todo
+                
+                Log("Do things inside the voting state.");
             }
             
             StateMachine.ChangeState<CheckLastTurnState>();

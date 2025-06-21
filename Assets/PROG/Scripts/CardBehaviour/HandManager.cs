@@ -16,8 +16,8 @@ namespace Wendogo
         [SerializeField] public int _maxHandSize = 5; //Maximum number of cards allowed in hand
         [SerializeField] private SplineContainer _splineContainer; //Defines the curve layout for card position
 
-        [SerializeField] private Transform _spawnPoint; //World position where new cards appear initially
-        [SerializeField] private Transform _handTransform; //Parent transform that holds all card objects
+        public Transform _spawnPoint; //World position where new cards appear initially
+        public Transform _handTransform; //Parent transform that holds all card objects
 
         //temp
         [SerializeField] CardsHandler _cardsHandler;  //Handles assigning data and visuals to cards
@@ -30,30 +30,26 @@ namespace Wendogo
             _handCards.Remove(discardedCard);
         }
 
-        public async void DrawCard()
+        public async void DrawCard(CardDataSO cardData)
         {
-            //Implement draw card
-            for (int i = 0; i < _maxHandSize; i++)
-            {
-                //Stop if hand is full
-                if (_handCards.Count >= _maxHandSize) return;
+            //Stop if hand is full
+            if (_handCards.Count >= _maxHandSize) return;
 
-                //Instantiate a new card at the spawn position
-                GameObject g = Instantiate(_cardPrefab, _spawnPoint.position, _spawnPoint.rotation);
-                _handCards.Add(g);
+            //Instantiate a new card at the spawn position
+            GameObject g = Instantiate(_cardPrefab, _spawnPoint.position, _spawnPoint.rotation);
+            _handCards.Add(g);
 
-                //Parent the card under the hand transform to show them in the UI
-                g.transform.parent = _handTransform;
+            //Parent the card under the hand transform to show them in the UI
+            g.transform.parent = _handTransform;
 
-                //Assign card data (placeholder)
-                //_cardsHandler.ApplyCardData(g);
+            //Assign card data (placeholder)
+            _cardsHandler.ApplyCardData(g, cardData);
 
-                //Update layout of cards along spline
-                UpdateCardPositions();
+            //Update layout of cards along spline
+            UpdateCardPositions();
 
-                //Delay between each card draw
-                await UniTask.WaitForSeconds(0.25f);
-            }
+            //Delay between each card draw
+            await UniTask.WaitForSeconds(0.25f);
         }
 
         private void UpdateCardPositions()
