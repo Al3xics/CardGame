@@ -5243,9 +5243,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  readyCount:
-    m_InternalValue: 0
-  gameSceneName: Game
+  gameSceneName: Game Alexis
 --- !u!1001 &3218768946901839885
 PrefabInstance:
   m_ObjectHideFlags: 0

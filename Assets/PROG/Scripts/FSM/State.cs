@@ -27,7 +27,7 @@ namespace Wendogo
         {
             StateMachine = stateMachine;
         }
-
+        
         /// <summary>
         /// Custom log method. If <see cref="StateMachine.showDebugLogs"/> in <see cref="StateMachine"/> is true,
         /// the log will be shown; otherwise not.
@@ -38,7 +38,7 @@ namespace Wendogo
             if (StateMachine.ShowDebugLogs)
                 Debug.Log(message);
         }
-
+        
         /// <summary>
         /// Custom log method. If <see cref="StateMachine.showDebugLogs"/> in <see cref="StateMachine"/> is true,
         /// the log will be shown; otherwise not.
@@ -49,7 +49,7 @@ namespace Wendogo
             if (StateMachine.ShowDebugLogs)
                 Debug.LogWarning(message);
         }
-
+        
         /// <summary>
         /// Custom log method. If <see cref="StateMachine.showDebugLogs"/> in <see cref="StateMachine"/> is true,
         /// the log will be shown; otherwise not.

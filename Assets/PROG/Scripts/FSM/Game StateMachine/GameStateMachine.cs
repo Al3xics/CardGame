@@ -22,10 +22,12 @@ namespace Wendogo
         
         #region Variables
         
+        /* --------------- Show in Inspector --------------- */
         /// <summary>
         /// Represents the maximum number of turns allowed in the game.
         /// If the number of completed turns reaches this value, the game will end.
         /// </summary>
+        [Header("Game Settings")]
         [SerializeField] private int maximumTurn = 10;
 
         /// <summary>
@@ -49,6 +51,22 @@ namespace Wendogo
         /// </summary>
         public int triggerVoteEveryXTurn = 2;
 
+        /* --------------- Hide in Inspector --------------- */
+        /// <summary>
+        /// Tracks the current turn count within the game cycle.
+        /// </summary>
+        private int _cptTurn = 0;
+
+        /// <summary>
+        /// Tracks the number of turns since the last vote triggered.
+        /// </summary>
+        /// <remarks>
+        /// This variable is used to determine when a vote should be triggered
+        /// based on the specified interval, defined by the triggerVoteEveryXTurn field.
+        /// It is incremented after every turn and reset when a vote is required.
+        /// </remarks>
+        private int _cptTurnForVote = 1;
+        
         /// <summary>
         /// A dictionary used to store actions performed by players during the "Night" cycle of the game.
         /// </summary>
@@ -61,19 +79,11 @@ namespace Wendogo
         public readonly Dictionary<ulong, List<PlayerAction>> NightActions = new();
         
         /// <summary>
-        /// Tracks the current turn count within the game cycle.
+        /// Represents the ID of the current player whose turn is active in the game.
+        /// This variable helps manage the game flow by tracking which player's turn is currently in progress.
+        /// It is incremented sequentially to move to the next player in <see cref="PlayerTurnState.OnPlayerTurnEnded"/>.
         /// </summary>
-        private int _cptTurn = 1;
-
-        /// <summary>
-        /// Tracks the number of turns since the last vote triggered.
-        /// </summary>
-        /// <remarks>
-        /// This variable is used to determine when a vote should be triggered
-        /// based on the specified interval, defined by the triggerVoteEveryXTurn field.
-        /// It is incremented after every turn and reset when a vote is required.
-        /// </remarks>
-        private int _cptTurnForVote = 1;
+        public int CurrentPlayerId { get; set; } = 0;
         
         /// <summary>
         /// Represents a list containing the unique identifiers (IDs) of all players currently
@@ -159,18 +169,20 @@ namespace Wendogo
         {
             Cycle newCycle;
 
-            if (Cycle == Cycle.Day)
+            switch (Cycle)
             {
-                newCycle = Cycle.Night;
-            }
-            else
-            {
-                newCycle = Cycle.Day;
-                _cptTurn++;
-                CheckMaximumTurnReached();
+                case Cycle.Day:
+                    newCycle = Cycle.Night;
+                    break;
+                case Cycle.Night:
+                    newCycle = Cycle.Day;
+                    _cptTurn++;
+                    break;
+                default:
+                    throw new System.Exception("Invalid cycle value.");
             }
             
-            Debug.Log($"Change cycle from {Cycle} to {newCycle} !");
+            if (ShowDebugLogs) Debug.LogWarning($"******************** Change cycle from {Cycle} to {newCycle} ! ********************");
             Cycle = newCycle;
         }
 
@@ -180,6 +192,7 @@ namespace Wendogo
         /// <returns>Returns true if the current turn is greater than or equal to the maximum turn limit; otherwise, false.</returns>
         public bool CheckMaximumTurnReached()
         {
+            if (ShowDebugLogs) Debug.Log($"Current turn : {_cptTurn} / {maximumTurn}");
             return _cptTurn >= maximumTurn;
         }
 
@@ -190,9 +203,10 @@ namespace Wendogo
         /// <returns>True if a voting phase should be initiated; otherwise, false.</returns>
         public bool CheckVotingTurn()
         {
+            if (ShowDebugLogs) Debug.Log($"Current turn for vote: {_cptTurnForVote} / {triggerVoteEveryXTurn}");
             if (_cptTurnForVote >= triggerVoteEveryXTurn)
             {
-                _cptTurnForVote = 1;
+                _cptTurnForVote = 0;
                 return true;
             }
 
@@ -203,6 +217,8 @@ namespace Wendogo
         /// Increments the counter tracking the number of turns passed until a vote is triggered.
         /// </summary>
         public void IncreaseCptTurnForVote() => _cptTurnForVote++;
+        
+        public void ResetCptTurnForVote() => _cptTurnForVote = 1;
 
         #endregion
 

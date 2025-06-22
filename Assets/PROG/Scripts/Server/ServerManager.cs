@@ -4,6 +4,7 @@ using System.Linq;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 
 namespace Wendogo
 {
@@ -17,7 +18,7 @@ namespace Wendogo
         public event Action OnDrawCard;
         public event Action OnPlayerTurnEnded;
         public event Action OnNightConsequencesEnded;
-        public string GameSceneName { get; private set; } = "Game";
+        public string gameSceneName = "Game";
         private Dictionary<ulong, PlayerController> _playersById;
 
         #endregion
@@ -142,8 +143,8 @@ namespace Wendogo
         // Starts loading the game scene from the server if it's not already active.
         public void LaunchGame()
         {
-            if (IsServer && SceneManager.GetActiveScene().name != GameSceneName)
-                NetworkManager.SceneManager.LoadScene(GameSceneName, LoadSceneMode.Single);
+            if (IsServer && SceneManager.GetActiveScene().name != gameSceneName)
+                NetworkManager.SceneManager.LoadScene(gameSceneName, LoadSceneMode.Single);
         }
 
         // Retrieves and returns the current player's name from the session properties.
