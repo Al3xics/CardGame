@@ -14,9 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CardVisual: {fileID: 0}
   Name: 
-  CardType: {fileID: 0}
+  CardType: {fileID: 11400000, guid: fcd26e8f53291db45b913da38b4c69ec, type: 2}
   AppearanceChance: 0
-  ActionPointCost: 0
+  Cost: 0
   Value: 0
+  isPassive: 0
+  HasTarget: 0
   ID: 0
   Toggle: 0
