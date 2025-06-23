@@ -249,18 +249,20 @@ namespace Wendogo
             return _handManager._maxHandSize - _handManager._handCards.Count;
         }
 
-        public bool TryDefendAgainst(CardEffect attackingEffect, ulong origin)
+        public bool TryApplyPassive(CardEffect attackingEffect, ulong origin, out int value)
         {
             foreach (var hiddenCard in hiddenCards)
             {
                 foreach (var effect in hiddenCard.CardType.Effects)
                 {
-                    if (effect.Defend(attackingEffect, origin, OwnerClientId))
+                    if (effect.ApplyPassive(attackingEffect, origin, OwnerClientId, out value))
                     {
                         return true;
                     }
                 }
             }
+
+            value = -1;
             return false;
         }
 

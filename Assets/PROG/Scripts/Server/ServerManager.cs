@@ -200,6 +200,24 @@ namespace Wendogo
             GameStateMachine.Instance.DrawCards(idClientAppelant, deckID, drawXCardsFromDeck);
         }
 
+        [ServerRpc(RequireOwnership = false)]
+        public void TransmitPlayedCardServerRpc(int cardID, ulong target, ServerRpcParams rpcParams = default)
+        {
+            ulong origin = rpcParams.Receive.SenderClientId;
+            GameStateMachine.Instance.CheckCardPlayed(cardID, origin, target);
+        }
+        
+        [ServerRpc(RequireOwnership = false)]
+        public bool TryApplyPassive(CardEffect effect, ulong origin, ulong target, out int value)
+        {
+            if (_playersById.TryGetValue(target, out var player)) 
+                return player.TryApplyPassive(effect, origin, out value);
+
+            value = 0;
+            return false;
+
+        }
+
         #endregion
 
         #region Basic Methods
@@ -234,17 +252,11 @@ namespace Wendogo
 
         }
 
-        [ServerRpc(RequireOwnership = false)]
-        public void TransmitPlayedCardServerRpc(int cardID, ulong target, ServerRpcParams rpcParams = default)
-        {
-            GameStateMachine.Instance.CheckCardPlayed(cardID, target);
-        }
-
         // purpose not fully clear yet.
         [ServerRpc(RequireOwnership = false)]
         public void SendDataServerServerRpc(ServerRpcParams rpcParams = default)
         {
-            OnPlayerTurnEnded?.Invoke();
+            Debug.Log("SendDataServerServerRpc");
         }
 
     }

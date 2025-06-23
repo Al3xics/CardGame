@@ -44,19 +44,25 @@ namespace Wendogo
                 case Cycle.Day:
                     // We retrieve the CarteDataSO using the ID, in DataCollectionScript
                     CardDataSO card = StateMachine.dataCollectionScript.cardDatabase.GetCardByID(playedCardID);
-                    var playedEffects = card.CardType.effects;
+                    var playedEffects = card.CardType.Effects;
 
                     bool isBlocked = false;
+                    int value;
                     foreach (var effect in playedEffects)
                     {
                         if (origin != target)
                         {
-                            if (ServerManager.Instance.TryDefend(effect, origin, target)) 
+                            bool isApplyPassive = ServerManager.Instance.TryApplyPassive(effect, origin, target, out value);
+                            if (isApplyPassive) 
                             {
                                 Log($"Effect {effect.GetType().Name} was blocked by target's hidden card.");
                                 isBlocked = true;
                                 break;
                             }
+                            // else if (value != -1)
+                            // {
+                            //     effect.Apply(origin, target, value);
+                            // }
                         }
 
                         if (!isBlocked)
