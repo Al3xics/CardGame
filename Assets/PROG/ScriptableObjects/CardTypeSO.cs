@@ -4,5 +4,12 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "CardType", menuName = "Scriptable Objects/CardType")]
 public class CardTypeSO : SerializedScriptableObject
 {
-    public CardEffect[] effects;
+    public CardEffect[] Effects;
+}
+public class CardEffect
+{
+    public virtual void Apply()
+    {
+
+    }
 }
