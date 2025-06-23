@@ -23,6 +23,70 @@ namespace Wendogo
 
         #endregion
 
+        #region Network Variables
+
+        public NetworkVariable<int> player1Life = new NetworkVariable<int>(
+            10, // valeur initiale
+            NetworkVariableReadPermission.Everyone // seul le propriétaire peut modifier
+        );
+
+        public NetworkVariable<int> player2Life = new NetworkVariable<int>(
+            10, // valeur initiale
+            NetworkVariableReadPermission.Everyone // seul le propriétaire peut modifier
+        );
+
+        public NetworkVariable<int> player3Life = new NetworkVariable<int>(
+            10, // valeur initiale
+            NetworkVariableReadPermission.Everyone // seul le propriétaire peut modifier
+        );
+
+        public NetworkVariable<int> player4Life = new NetworkVariable<int>(
+            10, // valeur initiale
+            NetworkVariableReadPermission.Everyone // seul le propriétaire peut modifier
+        );
+
+        public NetworkVariable<int> player1Wood = new NetworkVariable<int>(
+            0, // valeur initiale
+            NetworkVariableReadPermission.Everyone // seul le propriétaire peut modifier
+        );
+
+        public NetworkVariable<int> player2Wood = new NetworkVariable<int>(
+            0, // valeur initiale
+            NetworkVariableReadPermission.Everyone // seul le propriétaire peut modifier
+        );
+
+        public NetworkVariable<int> player3Wood = new NetworkVariable<int>(
+            0, // valeur initiale
+            NetworkVariableReadPermission.Everyone // seul le propriétaire peut modifier
+        );
+
+        public NetworkVariable<int> player4Wood = new NetworkVariable<int>(
+            0, // valeur initiale
+            NetworkVariableReadPermission.Everyone // seul le propriétaire peut modifier
+        );
+
+        public NetworkVariable<int> player1Food = new NetworkVariable<int>(
+            0, // valeur initiale
+            NetworkVariableReadPermission.Everyone // seul le propriétaire peut modifier
+        );
+
+        public NetworkVariable<int> player2Food = new NetworkVariable<int>(
+            0, // valeur initiale
+            NetworkVariableReadPermission.Everyone // seul le propriétaire peut modifier
+        );
+
+        public NetworkVariable<int> player3Food = new NetworkVariable<int>(
+            0, // valeur initiale
+            NetworkVariableReadPermission.Everyone // seul le propriétaire peut modifier
+        );
+
+        public NetworkVariable<int> player4Food = new NetworkVariable<int>(
+            0, // valeur initiale
+            NetworkVariableReadPermission.Everyone // seul le propriétaire peut modifier
+        );
+
+        #endregion
+
         // Called during script initialization to configure the ServerManager instance
         // and disable certain objects for clients (non-server).
         private void Awake()

@@ -8,7 +8,7 @@ public class CardTypeSO : SerializedScriptableObject
 }
 public abstract class CardEffect
 {
-    public virtual void Apply()
+    public virtual void Apply(ulong owner, ulong target, int value = default)
     {
 
     }
