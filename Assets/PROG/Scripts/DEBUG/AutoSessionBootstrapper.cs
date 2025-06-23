@@ -94,7 +94,7 @@ namespace Wendogo
                 if (mppmTag.Contains("Server") || mppmTag.Contains("Host"))
                 {
                     networkManager.StartHost();
-                    playerPrefab.GetComponent<PlayerController>().SceneLoaded();
+                    //playerPrefab.GetComponent<PlayerController>().SceneLoaded();
                     Debug.Log("[Bootstrap] Host started.");
                 }
                 else if (mppmTag.Contains("Client"))
@@ -103,7 +103,7 @@ namespace Wendogo
                     yield return StartCoroutine(WaitForServer());
                 
                     networkManager.StartClient();
-                    playerPrefab.GetComponent<PlayerController>().SceneLoaded();
+                    //playerPrefab.GetComponent<PlayerController>().SceneLoaded();
                     Debug.Log("[Bootstrap] Client started.");
                 }
             }

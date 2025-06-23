@@ -1,4 +1,4 @@
-using Cysharp.Threading.Tasks;
+﻿using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -33,6 +33,7 @@ namespace Wendogo
         Dictionary<Button, PlayerController> playerTargets = new Dictionary<Button, PlayerController>();
 
         List<ulong> playerList = new List<ulong>();
+        List<CardDataSO> hiddenCards = new List<CardDataSO>();
 
         public int _playerPA;
         public int deckID;
@@ -43,6 +44,8 @@ namespace Wendogo
         private ulong _selectedTarget =1;
         public string gameSceneName = "Game";
         public CardDatabaseSO CardDatabaseSO;
+
+        GameObject _pcSMObject;
 
         private void Start()
         {
@@ -242,11 +245,24 @@ namespace Wendogo
             return _selectedTarget;
         }
 
-
-
         public int GetMissingCards()
         {
             return _handManager._maxHandSize - _handManager._handCards.Count;
+        }
+
+        public bool TryDefendAgainst(CardEffect attackingEffect, ulong origin)
+        {
+            foreach (var hiddenCard in hiddenCards)
+            {
+                foreach (var effect in hiddenCard.CardType.Effects)
+                {
+                    if (effect.Defend(attackingEffect, origin, OwnerClientId))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
         #region RPC
@@ -266,7 +282,7 @@ namespace Wendogo
             // need to handle both events
             foreach (int card in cardsID) 
             { 
-                CardDataSO DrawnCard = CardDatabaseSO.GetDatabaseCardByID(card);
+                CardDataSO DrawnCard = CardDatabaseSO.GetCardByID(card);
                 _handManager.DrawCard(DrawnCard);
             }
         }
@@ -275,9 +291,8 @@ namespace Wendogo
         public void StartMyTurnClientRpc()
         {
             // start the Player State Machine here
-
-            // DEBUG
-            NotifyEndTurn();
+           GameObject pcSMObject = new GameObject($"{nameof(PlayerControllerSM)}");
+            pcSMObject.AddComponent<PlayerControllerSM>();
         }
 
         #endregion
@@ -291,6 +306,11 @@ namespace Wendogo
 
         private void NotifyEndTurn()
         {
+            if (_pcSMObject != null)
+            {
+                Destroy(_pcSMObject);
+                _pcSMObject = null;
+            }
             ServerManager.Instance.PlayerTurnEndedServerRpc();
         }
 

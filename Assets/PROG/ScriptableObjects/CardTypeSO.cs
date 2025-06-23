@@ -6,7 +6,7 @@ public class CardTypeSO : SerializedScriptableObject
 {
     public CardEffect[] Effects;
 }
-public class CardEffect
+public abstract class CardEffect
 {
     public virtual void Apply()
     {

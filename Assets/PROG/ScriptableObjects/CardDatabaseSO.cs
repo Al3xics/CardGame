@@ -27,7 +27,7 @@ public class CardDatabaseSO : ScriptableObject
         }
     }
 
-    public CardDataSO GetDatabaseCardByID(int id)
+    public CardDataSO GetCardByID(int id)
     {
         //Retrieve a card by its unique ID
         if (_cardDictionary.TryGetValue(id, out CardDataSO card))

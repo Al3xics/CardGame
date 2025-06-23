@@ -130,27 +130,27 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 2972366806080926271}
+    m_TransformParent: {fileID: 6143607596434390368}
     m_Modifications:
     - target: {fileID: 2537800122236944538, guid: 15878c108acf0d641bbc57994e5e9623, type: 3}
       propertyPath: m_Name
-      value: DEBUGPlayerPanel
+      value: PlayerPanel
       objectReference: {fileID: 0}
     - target: {fileID: 2537800122236944538, guid: 15878c108acf0d641bbc57994e5e9623, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6906657078384856985, guid: 15878c108acf0d641bbc57994e5e9623, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 367
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6906657078384856985, guid: 15878c108acf0d641bbc57994e5e9623, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 954
+      value: -4
       objectReference: {fileID: 0}
     - target: {fileID: 6906657078384856985, guid: 15878c108acf0d641bbc57994e5e9623, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -196
+      value: -195.99998
       objectReference: {fileID: 0}
     - target: {fileID: 6906657078384856985, guid: 15878c108acf0d641bbc57994e5e9623, type: 3}
       propertyPath: m_LocalRotation.w
@@ -158,15 +158,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6906657078384856985, guid: 15878c108acf0d641bbc57994e5e9623, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 6906657078384856985, guid: 15878c108acf0d641bbc57994e5e9623, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 6906657078384856985, guid: 15878c108acf0d641bbc57994e5e9623, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 6906657078384856985, guid: 15878c108acf0d641bbc57994e5e9623, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -586,6 +586,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
+  gameSceneName: Game
 --- !u!114 &1479689067
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -986,7 +987,6 @@ Transform:
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 2100842140}
-  - {fileID: 14653295}
   m_Father: {fileID: 6143607596434390368}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4038565035146118173
@@ -1087,6 +1087,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6465801045006681272}
+  - {fileID: 14653295}
   - {fileID: 2972366806080926271}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
