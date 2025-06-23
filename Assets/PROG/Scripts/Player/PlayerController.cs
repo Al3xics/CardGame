@@ -42,7 +42,6 @@ namespace Wendogo
 
         public bool TargetSelected;
         private ulong _selectedTarget =1;
-        public string gameSceneName = "Game";
         public CardDatabaseSO CardDatabaseSO;
 
         GameObject _pcSMObject;
