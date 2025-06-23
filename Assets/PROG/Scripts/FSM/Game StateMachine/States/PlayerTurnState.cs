@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Wendogo
@@ -31,7 +32,7 @@ namespace Wendogo
         }
 
         // todo
-        public void CheckCardPlayed(int playedCardID, ulong target)
+        public void CheckCardPlayed(int playedCardID, ulong origin, ulong target)
         {
             /*
              * Si un player per de la vie, on ajoute un booléan à un dictionnaire avec la key l'id du player, et la value sa vie
@@ -41,8 +42,29 @@ namespace Wendogo
             switch (StateMachine.Cycle)
             {
                 case Cycle.Day:
+                    // We retrieve the CarteDataSO using the ID, in DataCollectionScript
+                    CardDataSO card = StateMachine.dataCollectionScript.cardDatabase.GetCardByID(playedCardID);
+                    var playedEffects = card.CardType.effects;
+
+                    bool isBlocked = false;
+                    foreach (var effect in playedEffects)
+                    {
+                        if (origin != target)
+                        {
+                            if (ServerManager.Instance.TryDefend(effect, origin, target)) 
+                            {
+                                Log($"Effect {effect.GetType().Name} was blocked by target's hidden card.");
+                                isBlocked = true;
+                                break;
+                            }
+                        }
+
+                        if (!isBlocked)
+                            effect.Apply(origin, target);
+                    }
                     
-                    ServerManager.Instance.SendDataServerServerRpc();
+                    // !!!!!!!!!!!!!!!!! renvoyer une nouvelle carte du deck à valentin
+
                     break;
                 
                 case Cycle.Night:
@@ -59,6 +81,8 @@ namespace Wendogo
 
                     ServerManager.Instance.FinishedCheckCardPlayed();
                     break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(StateMachine.Cycle), StateMachine.Cycle, "The cycle is not valid.");
             }
         }
 

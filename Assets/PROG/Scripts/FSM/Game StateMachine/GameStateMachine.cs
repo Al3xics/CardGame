@@ -238,10 +238,11 @@ namespace Wendogo
         /// based on the current game cycle (Day or Night).
         /// </summary>
         /// <param name="playedCardID">The ID of the card that has been played.</param>
+        /// <param name="origin">The ID of the player who does the action.</param>
         /// <param name="target">The ID of the target player, if applicable.</param>
-        public void CheckCardPlayed(int playedCardID, ulong target)
+        public void CheckCardPlayed(int playedCardID, ulong origin, ulong target)
         {
-            GetConcreteState<PlayerTurnState>().CheckCardPlayed(playedCardID, target);
+            GetConcreteState<PlayerTurnState>().CheckCardPlayed(playedCardID, origin, target);
         }
         
         /// <summary>
