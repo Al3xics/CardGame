@@ -52,13 +52,13 @@ namespace Wendogo
                     {
                         if (origin != target)
                         {
-                            bool isApplyPassive = ServerManager.Instance.TryApplyPassive(effect, origin, target, out value);
-                            if (isApplyPassive) 
-                            {
-                                Log($"Effect {effect.GetType().Name} was blocked by target's hidden card.");
-                                isBlocked = true;
-                                break;
-                            }
+                            //bool isApplyPassive = ServerManager.Instance.TryApplyPassiveServerRpc(effect, origin, target, out value);
+                            //if (isApplyPassive) 
+                            //{
+                            //    Log($"Effect {effect.GetType().Name} was blocked by target's hidden card.");
+                            //    isBlocked = true;
+                            //    break;
+                            //}
                             // else if (value != -1)
                             // {
                             //     effect.Apply(origin, target, value);

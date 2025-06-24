@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.Splines;
 using Cysharp.Threading.Tasks;
 using Unity.VisualScripting;
+using System;
 
 
 namespace Wendogo
@@ -24,6 +25,23 @@ namespace Wendogo
 
         public List<GameObject> _handCards = new List<GameObject>(); //List of all cards currently in hand
 
+        public bool _isReplaced;
+
+        public event Action _onHandsfull;
+
+        private void Awake()
+        {
+            if(_handTransform == null)
+            _handTransform = GameObject.FindWithTag("hand").transform;
+
+            _onHandsfull += ReplaceCards;
+        }
+
+        private void OnDestroy()
+        {
+            _onHandsfull -= ReplaceCards;
+        }
+
         public void Discard(GameObject discardedCard)
         {
             //Remove discarded card from hand list
@@ -33,7 +51,15 @@ namespace Wendogo
         public async void DrawCard(CardDataSO cardData)
         {
             //Stop if hand is full
-            if (_handCards.Count >= _maxHandSize) return;
+            if (_handCards.Count >= _maxHandSize)
+            {
+                if(!_isReplaced)
+                {
+                _onHandsfull?.Invoke();
+                _isReplaced = true;
+                }
+                return;
+            }
 
             //Instantiate a new card at the spawn position
             GameObject g = Instantiate(_cardPrefab, _spawnPoint.position, _spawnPoint.rotation);
@@ -45,6 +71,7 @@ namespace Wendogo
             //Assign card data (placeholder)
             _cardsHandler.ApplyCardData(g, cardData);
 
+            //g.transform.localScale = Vector3.one;
             //Update layout of cards along spline
             UpdateCardPositions();
 
@@ -84,6 +111,14 @@ namespace Wendogo
                 LMotion.Create(startRot, rotation, 0.25f)
                     .BindToLocalRotation(_handCards[i].transform);
             }
+        }
+
+        private async void ReplaceCards()
+        {
+            await UniTask.WaitForSeconds(0.6f);
+
+            _handTransform.localScale = new Vector3(0.0500000007f, 0.0500000007f, 0.0500000007f);
+            _handTransform.localPosition = new Vector3(-294f, -654f, 0f);
         }
     }
 }

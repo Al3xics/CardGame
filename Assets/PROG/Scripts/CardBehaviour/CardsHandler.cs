@@ -7,7 +7,7 @@ namespace Wendogo
     public class CardsHandler : MonoBehaviour
     {
         [SerializeField] private GameObject _cardPrefab;           //Prefab used to spawn card visuals & apply data to
-        [SerializeField] private Transform _handTransform;         //Parent transform for displaying cards in the player UI
+        //[SerializeField] private Transform _handTransform;         //Parent transform for displaying cards in the player UI
         [SerializeField] private CardDatabaseSO _cardDatabase;     //Reference to the central card database
 
         private PlayerController _owner;                           //To set reference to the player owner

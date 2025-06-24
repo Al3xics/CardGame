@@ -207,16 +207,16 @@ namespace Wendogo
             GameStateMachine.Instance.CheckCardPlayed(cardID, origin, target);
         }
         
-        [ServerRpc(RequireOwnership = false)]
-        public bool TryApplyPassive(CardEffect effect, ulong origin, ulong target, out int value)
-        {
-            if (_playersById.TryGetValue(target, out var player)) 
-                return player.TryApplyPassive(effect, origin, out value);
+        //[ServerRpc(RequireOwnership = false)]
+        //public bool TryApplyPassiveServerRpc(CardEffect effect, ulong origin, ulong target, out int value)
+        //{
+        //    if (_playersById.TryGetValue(target, out var player)) 
+        //        return player.TryApplyPassive(effect, origin, out value);
 
-            value = 0;
-            return false;
+        //    value = 0;
+        //    return false;
 
-        }
+        //}
 
         #endregion
 
