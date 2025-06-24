@@ -208,14 +208,13 @@ namespace Wendogo
         }
         
         [ServerRpc(RequireOwnership = false)]
-        public bool TryApplyPassive(CardEffect effect, ulong origin, ulong target, out int value)
+        public void TryApplyPassiveServerRpc(CardEffect effectId, ulong origin, ulong target, out bool isApplyPassive, out int value)
         {
-            if (_playersById.TryGetValue(target, out var player)) 
-                return player.TryApplyPassive(effect, origin, out value);
+            isApplyPassive = false;
+            value = -1;
 
-            value = 0;
-            return false;
-
+            if (_playersById.TryGetValue(target, out var player))
+                player.TryApplyPassiveClientRpc(effectId, origin, out isApplyPassive, out value);
         }
 
         #endregion
