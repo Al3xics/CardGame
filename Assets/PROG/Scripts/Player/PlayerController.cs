@@ -249,21 +249,23 @@ namespace Wendogo
             return _handManager._maxHandSize - _handManager._handCards.Count;
         }
 
-        public bool TryApplyPassive(CardEffect attackingEffect, ulong origin, out int value)
+        [ClientRpc]
+        public void TryApplyPassiveClientRpc(CardEffect attackingEffect, ulong origin, out bool isApplyPassive, out int value)
         {
+            isApplyPassive = false;
+            value = -1;
+
             foreach (var hiddenCard in hiddenCards)
             {
                 foreach (var effect in hiddenCard.CardType.Effects)
                 {
                     if (effect.ApplyPassive(attackingEffect, origin, OwnerClientId, out value))
                     {
-                        return true;
+                        isApplyPassive = true;
+                        return; // optional: if only one passive effect should apply
                     }
                 }
             }
-
-            value = -1;
-            return false;
         }
 
         #region RPC

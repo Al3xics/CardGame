@@ -6,7 +6,7 @@ public class CardObjectData : MonoBehaviour
     public CardDataSO Card;
 
     [OdinSerialize]
-    public Attack Effect;
+    public GroupAttack Effect;
 
     public bool isSelected;
 }
