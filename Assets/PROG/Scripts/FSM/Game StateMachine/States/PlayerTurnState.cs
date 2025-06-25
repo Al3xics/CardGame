@@ -48,17 +48,18 @@ namespace Wendogo
 
                     bool isBlocked = false;
                     int value;
+                    bool isApplyPassive;
                     foreach (var effect in playedEffects)
                     {
                         if (origin != target)
                         {
-                            //bool isApplyPassive = ServerManager.Instance.TryApplyPassiveServerRpc(effect, origin, target, out value);
-                            //if (isApplyPassive) 
-                            //{
-                            //    Log($"Effect {effect.GetType().Name} was blocked by target's hidden card.");
-                            //    isBlocked = true;
-                            //    break;
-                            //}
+                            ServerManager.Instance.TryApplyPassiveServerRpc(effect, origin, target, out value, out isApplyPassive);
+                            if (isApplyPassive) 
+                            {
+                                Log($"Effect {effect.GetType().Name} was blocked by target's hidden card.");
+                                isBlocked = true;
+                                break;
+                            }
                             // else if (value != -1)
                             // {
                             //     effect.Apply(origin, target, value);
