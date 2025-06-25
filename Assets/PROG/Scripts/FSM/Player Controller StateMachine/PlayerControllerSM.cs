@@ -12,7 +12,7 @@ namespace Wendogo
         protected override void Start()
         {
             base.Start();
-            _player = GetComponent<PlayerController>();
+            //_player = GetComponent<PlayerController>();
         }
 
         protected override State<PlayerControllerSM> GetInitialState()
