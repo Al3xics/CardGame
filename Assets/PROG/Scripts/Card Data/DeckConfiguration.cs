@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
-using UnityEngine;
 using Sirenix.OdinInspector;
+using UnityEngine;
+using Wendogo;
 
 [CreateAssetMenu(fileName = "DeckConfig", menuName = "Scriptable Objects/DeckConfig")]
 public class DeckConfiguration : SerializedScriptableObject
@@ -58,5 +59,5 @@ public class CardDeckConfig
 {
     public CardDataSO CardData; //Reference to the card asset
     public int quantity = 1;    //Number of times this card appears in the deck
-                                //Can add more variable if necessary: Enum deck type?
+    //Can add more variable if necessary: Enum deck type?
 }

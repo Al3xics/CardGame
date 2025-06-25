@@ -1,6 +1,7 @@
 using System.Collections.Generic;
-using UnityEngine;
 using Sirenix.OdinInspector;
+using UnityEngine;
+using Wendogo;
 
 [CreateAssetMenu(fileName = "CardDatabase", menuName = "Scriptable Objects/CardDatabase")]
 public class CardDatabaseSO : ScriptableObject
@@ -38,22 +39,6 @@ public class CardDatabaseSO : ScriptableObject
         //Return null if not found
         return null;
     }
-
-    // public List<CardDataSO> GetCardsByType(CardTypeSO type)
-    // {
-    //     //Return all cards that match the specified type
-    //     List<CardDataSO> cardsOfType = new List<CardDataSO>();
-    //
-    //     foreach (CardDataSO card in CardList)
-    //     {
-    //         if (card.CardType == type)
-    //         {
-    //             cardsOfType.Add(card);
-    //         }
-    //     }
-    //
-    //     return cardsOfType;
-    // }
 
     public CardDataSO GetCardByName(string name)
     {

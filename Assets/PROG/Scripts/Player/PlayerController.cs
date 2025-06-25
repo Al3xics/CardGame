@@ -14,6 +14,8 @@ namespace Wendogo
 {
     public class PlayerController : NetworkBehaviour
     {
+        #region Variables
+        
         [HideInInspector] public CardObjectData ActiveCard;
         [SerializeField] public EventSystem _inputEvent;
         [SerializeField] private HandManager _handManager;
@@ -45,7 +47,11 @@ namespace Wendogo
         public CardDatabaseSO CardDatabaseSO;
 
         GameObject _pcSMObject;
+        
+        #endregion
 
+        #region Basic Method
+        
         private void Start()
         {
             _playerPA = 2;
@@ -248,25 +254,8 @@ namespace Wendogo
         {
             return _handManager._maxHandSize - _handManager._handCards.Count;
         }
-
-        [ClientRpc]
-        public void TryApplyPassiveClientRpc(CardEffect attackingEffect, ulong origin, out bool isApplyPassive, out int value)
-        {
-            isApplyPassive = false;
-            value = -1;
-
-            foreach (var hiddenCard in hiddenCards)
-            {
-                foreach (var effect in hiddenCard.CardType.Effects)
-                {
-                    if (effect.ApplyPassive(attackingEffect, origin, OwnerClientId, out value))
-                    {
-                        isApplyPassive = true;
-                        return; // optional: if only one passive effect should apply
-                    }
-                }
-            }
-        }
+        
+        #endregion
 
         #region RPC
 
@@ -288,6 +277,11 @@ namespace Wendogo
                 CardDataSO DrawnCard = CardDatabaseSO.GetCardByID(card);
                 _handManager.DrawCard(DrawnCard);
             }
+            
+            if (!HasEnoughPA())
+            {
+                NotifyEndTurn();
+            }
         }
 
         [ClientRpc]
@@ -296,6 +290,31 @@ namespace Wendogo
             // start the Player State Machine here
            GameObject pcSMObject = new GameObject($"{nameof(PlayerControllerSM)}");
             pcSMObject.AddComponent<PlayerControllerSM>();
+        }
+
+        [ClientRpc]
+        public void TryApplyPassiveClientRpc(int playedCardId, ulong origin)
+        {
+            bool isApplyPassive = false;
+            int value = -1;
+            
+            foreach (var hiddenCard in hiddenCards)
+            {
+                if (hiddenCard.CardEffect.ApplyPassive(playedCardId, origin, OwnerClientId, out value))
+                {
+                    isApplyPassive = true;
+                    break;
+                }
+            }
+            
+            ServerManager.Instance.RespondPassiveResultServerRpc(playedCardId, origin, OwnerClientId, isApplyPassive, value);
+        }
+        
+        [ClientRpc]
+        public void FinishedCheckCardPlayedClientRpc()
+        {
+            // Ask the player which deck he wants to pick a card from and replace '0' by the ID
+            ServerManager.Instance.TransmitMissingCardsServerRpc(1, 0);
         }
 
         #endregion

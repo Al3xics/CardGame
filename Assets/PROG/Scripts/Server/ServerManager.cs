@@ -87,6 +87,8 @@ namespace Wendogo
 
         #endregion
 
+        #region Basic Method
+        
         // Called during script initialization to configure the ServerManager instance
         // and disable certain objects for clients (non-server).
         private void Awake()
@@ -134,6 +136,24 @@ namespace Wendogo
             if (gameStateMachineObject != null)
                 gameStateMachineObject.SetActive(true);
         }
+
+        // Starts loading the game scene from the server if it's not already active.
+        public void LaunchGame()
+        {
+            if (IsServer && SceneManager.GetActiveScene().name != gameSceneName)
+                NetworkManager.SceneManager.LoadScene(gameSceneName, LoadSceneMode.Single);
+        }
+
+        // Retrieves and returns the current player's name from the session properties.
+        public string GetPlayerName()
+        {
+            if (SessionManager.Instance.ActiveSession.CurrentPlayer.Properties.TryGetValue(SessionConstants.PlayerNamePropertyKey, out var playerName))
+                return playerName.Value;
+
+            return "Unknown";
+        }
+
+        #endregion
 
         #region RPC
 
@@ -208,48 +228,30 @@ namespace Wendogo
         }
         
         [ServerRpc(RequireOwnership = false)]
-        public void TryApplyPassiveServerRpc(CardEffect effectId, ulong origin, ulong target, out bool isApplyPassive, out int value)
+        public void TryApplyPassiveServerRpc(int playedCardId, ulong origin, ulong target)
         {
-            isApplyPassive = false;
-            value = -1;
-
             if (_playersById.TryGetValue(target, out var player))
-                player.TryApplyPassiveClientRpc(effectId, origin, out isApplyPassive, out value);
+                player.TryApplyPassiveClientRpc(playedCardId, origin);
+        }
+        
+        [ServerRpc(RequireOwnership = false)]
+        public void FinishedCheckCardPlayedServerRpc(ulong playerId, ServerRpcParams rpcParams = default)
+        {
+            // Signal to the playerId that the GameStateMachine finished applying (and checking) the cards he played.
+            // Now, he needs to ask for a card with "ServerManager.TransmitMissingCardsServerRpc".
+            if (_playersById.TryGetValue(playerId, out var player))
+            {
+                player.FinishedCheckCardPlayedClientRpc();
+            }
+        }
+        
+        [ServerRpc(RequireOwnership = false)]
+        public void RespondPassiveResultServerRpc(int playedCardId, ulong origin, ulong target, bool isApply, int value)
+        {
+            GameStateMachine.Instance.OnPassiveResultReceived(playedCardId, origin, target, isApply, value);
         }
 
         #endregion
-
-        #region Basic Methods
-
-        // Starts loading the game scene from the server if it's not already active.
-        public void LaunchGame()
-        {
-            if (IsServer && SceneManager.GetActiveScene().name != gameSceneName)
-                NetworkManager.SceneManager.LoadScene(gameSceneName, LoadSceneMode.Single);
-        }
-
-        // Retrieves and returns the current player's name from the session properties.
-        public string GetPlayerName()
-        {
-            if (SessionManager.Instance.ActiveSession.CurrentPlayer.Properties.TryGetValue(SessionConstants.PlayerNamePropertyKey, out var playerName))
-                return playerName.Value;
-
-            return "Unknown";
-        }
-
-        #endregion
-
-        // Intended to update players' health using a dictionary of ID / health values.
-        public void ChangePlayersHealth(Dictionary<ulong, int> playersHealth)
-        {
-
-        }
-
-        // Placeholder function to signal the end of a card play check.
-        public void FinishedCheckCardPlayed()
-        {
-
-        }
 
         // purpose not fully clear yet.
         [ServerRpc(RequireOwnership = false)]

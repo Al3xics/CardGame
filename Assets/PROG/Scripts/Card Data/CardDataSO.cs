@@ -1,5 +1,6 @@
-using UnityEngine;
 using Sirenix.OdinInspector;
+using UnityEngine;
+using Wendogo;
 
 [CreateAssetMenu(fileName = "CardData", menuName = "Scriptable Objects/CardData")]
 public class CardDataSO : ScriptableObject
