@@ -7,6 +7,7 @@
     public struct PlayerAction
     {
         public int CardId;
+        public ulong OriginId;
         public ulong TargetId;
     }
 }

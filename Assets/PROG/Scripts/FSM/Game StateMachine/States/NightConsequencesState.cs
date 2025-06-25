@@ -19,6 +19,11 @@
         // todo
         private void ResolveNightConsequences()
         {
+            // réorganiser le dictionnaire NightAction pour que par exemple, si un vote est déclenché par
+            // une carte, ce soit fait en dernier (après toutes les autres cartes)
+            
+            
+            
             // Tu parcours l’ordre de tour
             foreach (var playerId in StateMachine.PlayersID)
             {

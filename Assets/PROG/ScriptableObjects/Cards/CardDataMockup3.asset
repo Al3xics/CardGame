@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CardVisual: {fileID: 2800000, guid: ba707d8219ae3004a9c69e85676a916e, type: 3}
   Name: BWendogo
-  CardType: {fileID: 11400000, guid: be04383f9a7e5c5438ea1c59195619be, type: 2}
+  CardEffect: {fileID: 11400000, guid: d769c5da870033d458232feb65be6e8c, type: 2}
   AppearanceChance: 57.1
-  ActionPointCost: 6
+  Cost: 0
   Value: 7
   isPassive: 0
   HasTarget: 1
