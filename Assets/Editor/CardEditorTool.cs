@@ -66,7 +66,7 @@ public class CardEditorTool : OdinMenuEditorWindow
     {
         if (string.IsNullOrEmpty(searchQuery)) return true;
         return card.Name.ToLower().Contains(searchQuery.ToLower()) ||
-               card.CardType.name.ToLower().Contains(searchQuery.ToLower());
+               card.CardEffect.name.ToLower().Contains(searchQuery.ToLower());
     }
 
     public class CreateCardHelper

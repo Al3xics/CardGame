@@ -39,21 +39,21 @@ public class CardDatabaseSO : ScriptableObject
         return null;
     }
 
-    public List<CardDataSO> GetCardsByType(CardTypeSO type)
-    {
-        //Return all cards that match the specified type
-        List<CardDataSO> cardsOfType = new List<CardDataSO>();
-
-        foreach (CardDataSO card in CardList)
-        {
-            if (card.CardType == type)
-            {
-                cardsOfType.Add(card);
-            }
-        }
-
-        return cardsOfType;
-    }
+    // public List<CardDataSO> GetCardsByType(CardTypeSO type)
+    // {
+    //     //Return all cards that match the specified type
+    //     List<CardDataSO> cardsOfType = new List<CardDataSO>();
+    //
+    //     foreach (CardDataSO card in CardList)
+    //     {
+    //         if (card.CardType == type)
+    //         {
+    //             cardsOfType.Add(card);
+    //         }
+    //     }
+    //
+    //     return cardsOfType;
+    // }
 
     public CardDataSO GetCardByName(string name)
     {

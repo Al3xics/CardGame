@@ -31,7 +31,19 @@ namespace Wendogo
             ServerManager.Instance.PlayerTurnServerServerRpc(StateMachine.PlayersID[id]);
         }
 
-        // todo
+        /// <summary>
+        /// For the Day:
+        /// Check if the card played does an action on another player, and the other player has a passive card to block it.
+        /// If it does, Apply the passive card, then apply the card played by the first player. At the end, draw and send a card
+        /// to the player to complete his hand.
+        ///
+        /// For the Night:
+        /// 
+        /// </summary>
+        /// <param name="playedCardID">The card ID played by the player <c>origin</c>.</param>
+        /// <param name="origin">The ID of the player using the card.</param>
+        /// <param name="target">The targeted ID player.</param>
+        /// <exception cref="ArgumentOutOfRangeException">The cycle messed up, and is neither <see cref="Cycle.Day"/>, nor <see cref="Cycle.Night"/></exception>
         public void CheckCardPlayed(int playedCardID, ulong origin, ulong target)
         {
             /*
@@ -44,33 +56,8 @@ namespace Wendogo
                 case Cycle.Day:
                     // We retrieve the CarteDataSO using the ID, in DataCollectionScript
                     CardDataSO card = StateMachine.dataCollectionScript.cardDatabase.GetCardByID(playedCardID);
-                    var playedEffects = card.CardType.Effects;
-
-                    bool isBlocked = false;
-                    int value;
-                    foreach (var effect in playedEffects)
-                    {
-                        if (origin != target)
-                        {
-                            bool isApplyPassive = ServerManager.Instance.TryApplyPassive(effect, origin, target, out value);
-                            if (isApplyPassive) 
-                            {
-                                Log($"Effect {effect.GetType().Name} was blocked by target's hidden card.");
-                                isBlocked = true;
-                                break;
-                            }
-                            // else if (value != -1)
-                            // {
-                            //     effect.Apply(origin, target, value);
-                            // }
-                        }
-
-                        if (!isBlocked)
-                            effect.Apply(origin, target);
-                    }
                     
-                    // !!!!!!!!!!!!!!!!! renvoyer une nouvelle carte du deck à valentin
-
+                    ServerManager.Instance.TryApplyPassiveServerRpc(playedCardID, origin, target);
                     break;
                 
                 case Cycle.Night:
@@ -82,14 +69,33 @@ namespace Wendogo
                     StateMachine.NightActions[currentPlayer].Add(new PlayerAction
                     {
                         CardId = playedCardID,
+                        OriginId = origin,
                         TargetId = target
                     });
 
-                    ServerManager.Instance.FinishedCheckCardPlayed();
+                    ServerManager.Instance.FinishedCheckCardPlayedServerRpc(origin);
                     break;
+                
                 default:
                     throw new ArgumentOutOfRangeException(nameof(StateMachine.Cycle), StateMachine.Cycle, "The cycle is not valid.");
             }
+        }
+
+        /// <summary>
+        /// Handles the result of a passive card effect in the game, applying the card's effect
+        /// based on the provided parameters and notifying the server upon completion.
+        /// </summary>
+        /// <param name="playedCardId">The ID of the card whose passive effect is being processed.</param>
+        /// <param name="origin">The identifier of the player or entity that played the card.</param>
+        /// <param name="target">The identifier of the player or entity targeted by the card effect.</param>
+        /// <param name="isApply">Indicates whether the effect should be applied or reverted.</param>
+        /// <param name="value">The value associated with the effect being applied.</param>
+        public void OnPassiveResultReceived(int playedCardId, ulong origin, ulong target, bool isApply, int value)
+        {
+            var effect = StateMachine.dataCollectionScript.cardDatabase.GetCardByID(playedCardId).CardEffect;
+
+            effect.Apply(origin, target, isApply ? value : -1);
+            ServerManager.Instance.FinishedCheckCardPlayedServerRpc(origin);
         }
 
         /// <summary>

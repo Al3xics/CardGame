@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CardVisual: {fileID: 2800000, guid: 02061b33d0a03fe4382fe6a7f91cc78d, type: 3}
   Name: Wendogo
-  CardType: {fileID: 11400000, guid: fcd26e8f53291db45b913da38b4c69ec, type: 2}
+  CardEffect: {fileID: 11400000, guid: fffcaaf87e6795a419f51d99005a25ba, type: 2}
   AppearanceChance: 90.43
-  ActionPointCost: 1
+  Cost: 0
   Value: 1
   isPassive: 0
   HasTarget: 0

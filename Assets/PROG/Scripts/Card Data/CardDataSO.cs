@@ -14,7 +14,7 @@ public class CardDataSO : ScriptableObject
     public string Name; //Name of the card
 
     [VerticalGroup("CardData/Stats"), LabelWidth(75)]
-    public CardTypeSO CardType; //Reference to the card's type //Obsolete?
+    public CardEffect CardEffect; //Reference to the card's effect
 
     [VerticalGroup("CardData/Stats"), LabelWidth(120), Range(0, 100), Unit(Units.Percent)]
     public float AppearanceChance; //Chance this card appears in the deck or pool //Obsolete?

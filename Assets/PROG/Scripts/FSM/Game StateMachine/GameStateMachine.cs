@@ -272,6 +272,11 @@ namespace Wendogo
             Utils.DictionaryToArrays(playerCards, out ulong[] targets, out int[][] cardsID);
             ServerManager.Instance.SendCardsToPlayersServerRpc(targets, cardsID);
         }
+        
+        public void OnPassiveResultReceived(int playedCardId, ulong origin, ulong target, bool isApply, int value)
+        {
+            GetConcreteState<PlayerTurnState>().OnPassiveResultReceived(playedCardId, origin, target, isApply, value);
+        }
 
         #endregion
     }
