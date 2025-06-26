@@ -196,7 +196,7 @@ namespace Wendogo
 
         // Starts the turn of the specified player by calling a ClientRpc on the client side.
         [ServerRpc(RequireOwnership = false)]
-        public void PlayerTurnServerServerRpc(ulong playerId)
+        public void PlayerTurnServerRpc(ulong playerId)
         {
             if (_playersById.TryGetValue(playerId, out var player))
             {
