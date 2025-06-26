@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CardVisual: {fileID: 2800000, guid: 3818eb58d94daa3478fc77c31ea4bd21, type: 3}
   Name: Mokoy
-  CardEffect: {fileID: 11400000, guid: aa8f099937e287e49a421280f30ea12d, type: 2}
+  CardEffect: {fileID: 11400000, guid: e0a719035c158b3428df08cdac4d1153, type: 2}
   AppearanceChance: 57.9
   Cost: 0
   Value: 2
