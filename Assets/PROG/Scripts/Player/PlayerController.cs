@@ -47,11 +47,14 @@ namespace Wendogo
         public CardDatabaseSO CardDatabaseSO;
 
         GameObject _pcSMObject;
-        
+
+        public static PlayerController LocalPlayer;
+        public static ulong LocalPlayerId;
+
         #endregion
 
         #region Basic Method
-        
+
         private void Start()
         {
             _playerPA = 2;
@@ -61,10 +64,11 @@ namespace Wendogo
         {
             if (_handManager == null)
                 _handManager = GameObject.FindWithTag("hand")?.GetComponent<HandManager>();
-            _inputEvent = transform.Find("EventSystem")?.GetComponent<EventSystem>();
+            _inputEvent = GameObject.Find("EventSystem")?.GetComponent<EventSystem>();
             if (!IsOwner) return;
 
-
+            LocalPlayer = this;
+            LocalPlayerId = NetworkManager.Singleton.LocalClientId;
             SceneManager.sceneLoaded += OnSceneLoaded;
             CardDropZone.OnCardDropped += NotifyPlayedCard;
         }
@@ -338,7 +342,7 @@ namespace Wendogo
 
         public void NotifyPlayedCard(CardDataSO cardDataSO)
         {
-            ServerManager.Instance.TransmitPlayedCardServerRpc(cardDataSO.ID, _selectedTarget);
+            ServerManager.Instance.TransmitPlayedCardServerRpc(cardDataSO.ID, _selectedTarget != LocalPlayerId ? _selectedTarget : LocalPlayerId);
             Debug.Log($"card {cardDataSO.Name} was sent to server ");
         }
         #endregion

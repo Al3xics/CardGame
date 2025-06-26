@@ -1,3 +1,4 @@
+using Unity.Services.Matchmaker.Models;
 using UnityEngine;
 using Wendogo;
 
@@ -7,24 +8,16 @@ namespace Wendogo
     //Used to insure clean state transition for the players
     public class PlayerControllerSM : StateMachine<PlayerControllerSM>
     {
-        [SerializeField] private PlayerController _player;
-
-        protected override void Start()
-        {
-            base.Start();
-            //_player = GetComponent<PlayerController>();
-        }
-
         protected override State<PlayerControllerSM> GetInitialState()
         {
-            PCInputState inputstate = new PCInputState(this, _player);
-            PCPlayCardState pCCardPlayState = new PCPlayCardState(this, _player);
-            PCCheckPAState pCCheckPAState = new PCCheckPAState(this, _player);
-            PCNotifyMissingCardsState pCNotifyMissingCardsState = new PCNotifyMissingCardsState(this, _player);
-            PCSelectionState pCSelectionState = new PCSelectionState(this, _player);
-            PCTargetSelectionState pCTargetSelectionState = new PCTargetSelectionState(this, _player);
-            PCTurnOverState pCTurnOverState = new PCTurnOverState(this, _player);
-            PCBurnCardState pCBurnCardState = new PCBurnCardState(this, _player);
+            PCInputState inputstate = new PCInputState(this, PlayerController.LocalPlayer);
+            PCPlayCardState pCCardPlayState = new PCPlayCardState(this, PlayerController.LocalPlayer);
+            PCCheckPAState pCCheckPAState = new PCCheckPAState(this, PlayerController.LocalPlayer);
+            PCNotifyMissingCardsState pCNotifyMissingCardsState = new PCNotifyMissingCardsState(this, PlayerController.LocalPlayer);
+            PCSelectionState pCSelectionState = new PCSelectionState(this, PlayerController.LocalPlayer);
+            PCTargetSelectionState pCTargetSelectionState = new PCTargetSelectionState(this, PlayerController.LocalPlayer);
+            PCTurnOverState pCTurnOverState = new PCTurnOverState(this, PlayerController.LocalPlayer);
+            PCBurnCardState pCBurnCardState = new PCBurnCardState(this, PlayerController.LocalPlayer);
 
             AddState(inputstate);
             AddState(pCCardPlayState);
