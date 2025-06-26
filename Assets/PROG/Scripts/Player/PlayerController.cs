@@ -15,13 +15,10 @@ namespace Wendogo
     public class PlayerController : NetworkBehaviour
     {
         #region Variables
-        
+
         [HideInInspector] public CardObjectData ActiveCard;
         [SerializeField] public EventSystem _inputEvent;
         [SerializeField] private HandManager _handManager;
-
-        [Header("UI Prefab")]
-        public GameObject playerPanelPrefab;
 
         private PlayerUI playerUIInstance;
         private bool uiInitialized = false;
@@ -43,7 +40,7 @@ namespace Wendogo
         public static event Action OnCardUsed;
 
         public bool TargetSelected;
-        private ulong _selectedTarget =1;
+        private ulong _selectedTarget = 1;
         public CardDatabaseSO CardDatabaseSO;
 
         GameObject _pcSMObject;
@@ -62,9 +59,8 @@ namespace Wendogo
 
         public override void OnNetworkSpawn()
         {
-            if (_handManager == null)
-                _handManager = GameObject.FindWithTag("hand")?.GetComponent<HandManager>();
-            _inputEvent = GameObject.Find("EventSystem")?.GetComponent<EventSystem>();
+            if (AutoSessionBootstrapper.AutoConnect)
+                _inputEvent = GameObject.Find("EventSystem")?.GetComponent<EventSystem>();
             if (!IsOwner) return;
 
             LocalPlayer = this;
@@ -78,6 +74,7 @@ namespace Wendogo
             SceneManager.sceneLoaded -= OnSceneLoaded;
         }
 
+
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
 
@@ -85,44 +82,9 @@ namespace Wendogo
 
             if (scene.name == ServerManager.Instance.gameSceneName)
             {
-                GameObject mainCanvas = GameObject.Find("MainCanvas");
-                if (mainCanvas == null)
-                {
-                    Debug.LogError("MainCanvas non trouv? !");
-                    return;
-                }
-
-
-
-
-                GameObject uiObject = Instantiate(playerPanelPrefab, mainCanvas.transform);
-                playerUIInstance = uiObject.GetComponent<PlayerUI>();
-
-                if (playerUIInstance != null)
-                {
-                    uiInitialized = true;
-                }
-            }
-        }
-
-        public void SceneLoaded()
-        {
-            if (uiInitialized) 
-                return;
-
-            GameObject mainCanvas = GameObject.Find("MainCanvas");
-            if (mainCanvas == null)
-            {
-                Debug.LogError("MainCanvas non trouv? !");
-                return;
-            }
-
-            GameObject uiObject = Instantiate(playerPanelPrefab, mainCanvas.transform);
-            playerUIInstance = uiObject.GetComponent<PlayerUI>();
-
-            if (playerUIInstance != null)
-            {
-                uiInitialized = true;
+                _inputEvent = GameObject.Find("EventSystem")?.GetComponent<EventSystem>();
+                if (_handManager == null)
+                    _handManager = GameObject.FindWithTag("hand")?.GetComponent<HandManager>();
             }
         }
 
@@ -258,7 +220,7 @@ namespace Wendogo
         {
             return _handManager._maxHandSize - _handManager._handCards.Count;
         }
-        
+
         #endregion
 
         #region RPC
@@ -276,12 +238,15 @@ namespace Wendogo
             // do things with cards
             // this will receive either the 5 first cards, or when this player's turn end, the drawn cards he needs to complete his hand
             // need to handle both events
-            foreach (int card in cardsID) 
-            { 
+            foreach (int card in cardsID)
+            {
                 CardDataSO DrawnCard = CardDatabaseSO.GetCardByID(card);
-                _handManager.DrawCard(DrawnCard);
+                if (IsOwner)
+                {
+                    _handManager.DrawCard(DrawnCard);
+                }
             }
-            
+
             if (!HasEnoughPA())
             {
                 NotifyEndTurn();
@@ -292,7 +257,7 @@ namespace Wendogo
         public void StartMyTurnClientRpc()
         {
             // start the Player State Machine here
-           GameObject pcSMObject = new GameObject($"{nameof(PlayerControllerSM)}");
+            GameObject pcSMObject = new GameObject($"{nameof(PlayerControllerSM)}");
             pcSMObject.AddComponent<PlayerControllerSM>();
         }
 
@@ -301,7 +266,7 @@ namespace Wendogo
         {
             bool isApplyPassive = false;
             int value = -1;
-            
+
             foreach (var hiddenCard in hiddenCards)
             {
                 if (hiddenCard.CardEffect.ApplyPassive(playedCardId, origin, OwnerClientId, out value))
@@ -310,10 +275,10 @@ namespace Wendogo
                     break;
                 }
             }
-            
+
             ServerManager.Instance.RespondPassiveResultServerRpc(playedCardId, origin, OwnerClientId, isApplyPassive, value);
         }
-        
+
         [ClientRpc]
         public void FinishedCheckCardPlayedClientRpc()
         {
