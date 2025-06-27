@@ -62,6 +62,7 @@ namespace Wendogo
             if (AutoSessionBootstrapper.AutoConnect)
             {
                 _inputEvent = GameObject.Find("EventSystem")?.GetComponent<EventSystem>();
+                if (_inputEvent != null) _inputEvent.enabled = false;
                 if (_handManager == null) _handManager = GameObject.FindWithTag("hand")?.GetComponent<HandManager>();
             }
             if (!IsOwner) return;
@@ -86,8 +87,8 @@ namespace Wendogo
             if (scene.name == ServerManager.Instance.gameSceneName)
             {
                 _inputEvent = GameObject.Find("EventSystem")?.GetComponent<EventSystem>();
-                if (_handManager == null)
-                    _handManager = GameObject.FindWithTag("hand")?.GetComponent<HandManager>();
+                if (_inputEvent != null) _inputEvent.enabled = false;
+                if (_handManager == null) _handManager = GameObject.FindWithTag("hand")?.GetComponent<HandManager>();
             }
         }
 
@@ -223,6 +224,20 @@ namespace Wendogo
         {
             return _handManager._maxHandSize - _handManager._handCards.Count;
         }
+        
+        public static PlayerController GetPlayer(ulong clientId)
+        {
+            if (NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out var networkClient))
+            {
+                return networkClient.PlayerObject.GetComponent<PlayerController>();
+            }
+
+            Debug.LogWarning($"PlayerController not found for clientId: {clientId}");
+            return null;
+        }
+        
+        public void AddCardToHiddenCards(CardDataSO card) => hiddenCards.Add(card);
+        public void RemoveCardToHiddenCards(CardDataSO card) => hiddenCards.Remove(card);
 
         #endregion
 
@@ -259,9 +274,12 @@ namespace Wendogo
         [ClientRpc]
         public void StartMyTurnClientRpc()
         {
-            // start the Player State Machine here
-            GameObject pcSMObject = new GameObject($"{nameof(PlayerControllerSM)}");
-            pcSMObject.AddComponent<PlayerControllerSM>();
+            if (IsOwner)
+            {
+                // start the Player State Machine here
+                GameObject pcSMObject = new GameObject($"{nameof(PlayerControllerSM)}");
+                pcSMObject.AddComponent<PlayerControllerSM>();
+            }
         }
 
         [ClientRpc]
@@ -269,13 +287,17 @@ namespace Wendogo
         {
             bool isApplyPassive = false;
             int value = -1;
+            
+            // Get the CardDataSO of the played card
+            var dataCollection = GameObject.Find("DataCollection").GetComponent<DataCollection>();
+            var copyHiddenCards = new List<CardDataSO>(hiddenCards);
 
-            foreach (var hiddenCard in hiddenCards)
+            foreach (var hiddenCard in copyHiddenCards)
             {
                 if (hiddenCard.CardEffect.ApplyPassive(playedCardId, origin, OwnerClientId, out value))
                 {
+                    RemoveCardToHiddenCards(hiddenCard);
                     isApplyPassive = true;
-                    break;
                 }
             }
 
@@ -308,7 +330,7 @@ namespace Wendogo
             ServerManager.Instance.PlayerTurnEndedServerRpc();
         }
 
-        public void NotifyPlayedCard(CardDataSO cardDataSO)
+        private void NotifyPlayedCard(CardDataSO cardDataSO)
         {
             if (cardDataSO.isPassive)
                 _selectedTarget = LocalPlayerId;
@@ -316,6 +338,7 @@ namespace Wendogo
             // Needs this player to select a target to play the card against
             // if (cardDataSO.HasTarget)
             //     _selectedTarget = cardDataSO.Target;
+            
             ServerManager.Instance.TransmitPlayedCardServerRpc(cardDataSO.ID, _selectedTarget);
             Debug.Log($"card {cardDataSO.Name} was sent to server ");
         }

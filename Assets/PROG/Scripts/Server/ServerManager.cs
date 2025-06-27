@@ -20,6 +20,8 @@ namespace Wendogo
         public event Action OnNightConsequencesEnded;
         public string gameSceneName = "Game";
         private Dictionary<ulong, PlayerController> _playersById;
+        private HashSet<int> resolvedCards = new HashSet<int>();
+
 
         #endregion
 
@@ -248,6 +250,8 @@ namespace Wendogo
         [ServerRpc(RequireOwnership = false)]
         public void RespondPassiveResultServerRpc(int playedCardId, ulong origin, ulong target, bool isApply, int value)
         {
+            if (!resolvedCards.Add(playedCardId)) return; // Ignore repeated calls
+
             GameStateMachine.Instance.OnPassiveResultReceived(playedCardId, origin, target, isApply, value);
         }
 

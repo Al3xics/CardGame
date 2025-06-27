@@ -54,9 +54,19 @@ namespace Wendogo
             switch (StateMachine.Cycle)
             {
                 case Cycle.Day:
-                    // We retrieve the CarteDataSO using the ID, in DataCollectionScript
-                    CardDataSO card = StateMachine.dataCollectionScript.cardDatabase.GetCardByID(playedCardID);
+                    var card = StateMachine.dataCollectionScript.cardDatabase.GetCardByID(playedCardID);
                     
+                    // Only if the card is NOT a passive card, we will check the active/passive card combos
+                    
+                    // For passive cards
+                    if (card.isPassive)
+                    {
+                        PlayerController.GetPlayer(origin).AddCardToHiddenCards(card);
+                        ServerManager.Instance.FinishedCheckCardPlayedServerRpc(origin);
+                        return;
+                    }
+                    
+                    // For active cards
                     ServerManager.Instance.TryApplyPassiveServerRpc(playedCardID, origin, target);
                     break;
                 
