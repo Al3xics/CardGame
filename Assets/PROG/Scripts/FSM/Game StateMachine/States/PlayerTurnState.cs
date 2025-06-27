@@ -28,7 +28,7 @@ namespace Wendogo
         {
             Log($"Player {StateMachine.CurrentPlayerId} Begin Turn");
             ServerManager.Instance.OnPlayerTurnEnded += OnPlayerTurnEnded;
-            ServerManager.Instance.PlayerTurnServerServerRpc(StateMachine.PlayersID[id]);
+            ServerManager.Instance.PlayerTurnServerRpc(StateMachine.PlayersID[id]);
         }
 
         /// <summary>
