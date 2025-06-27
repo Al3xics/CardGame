@@ -60,7 +60,10 @@ namespace Wendogo
         public override void OnNetworkSpawn()
         {
             if (AutoSessionBootstrapper.AutoConnect)
+            {
                 _inputEvent = GameObject.Find("EventSystem")?.GetComponent<EventSystem>();
+                if (_handManager == null) _handManager = GameObject.FindWithTag("hand")?.GetComponent<HandManager>();
+            }
             if (!IsOwner) return;
 
             LocalPlayer = this;
@@ -307,7 +310,13 @@ namespace Wendogo
 
         public void NotifyPlayedCard(CardDataSO cardDataSO)
         {
-            ServerManager.Instance.TransmitPlayedCardServerRpc(cardDataSO.ID, _selectedTarget != LocalPlayerId ? _selectedTarget : LocalPlayerId);
+            if (cardDataSO.isPassive)
+                _selectedTarget = LocalPlayerId;
+
+            // Needs this player to select a target to play the card against
+            // if (cardDataSO.HasTarget)
+            //     _selectedTarget = cardDataSO.Target;
+            ServerManager.Instance.TransmitPlayedCardServerRpc(cardDataSO.ID, _selectedTarget);
             Debug.Log($"card {cardDataSO.Name} was sent to server ");
         }
         #endregion
