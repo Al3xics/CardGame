@@ -4,11 +4,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using Sirenix.OdinInspector;
-using System.Globalization;
 using Unity.Netcode;
 using UnityEngine.SceneManagement;
-using UnityEditor.Timeline;
+using Unity.VisualScripting;
+using Cysharp.Threading.Tasks.Triggers;
 
 namespace Wendogo
 {
@@ -365,7 +364,9 @@ namespace Wendogo
         private void NotifyPlayedCard(CardDataSO cardDataSO)
         {
             if (cardDataSO.isPassive)
+            {
                 _selectedTarget = LocalPlayerId;
+            }
 
             // Needs this player to select a target to play the card against
             // if (cardDataSO.HasTarget)
@@ -373,6 +374,7 @@ namespace Wendogo
             
             ServerManager.Instance.TransmitPlayedCardServerRpc(cardDataSO.ID, _selectedTarget);
             Debug.Log($"card {cardDataSO.Name} was sent to server ");
+
         }
         #endregion
     }

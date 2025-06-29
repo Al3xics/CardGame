@@ -39,17 +39,22 @@ namespace Wendogo
 
         public void OnEndDrag(PointerEventData eventData)
         {
-            //Re-enable raycasts for interaction detection
+
             _canvasGroup.blocksRaycasts = true;
 
             //Check if the card was dropped on a valid drop zone
             if (eventData.pointerEnter == null || !eventData.pointerEnter.TryGetComponent(out CardDropZone zone))
             {
-                //Restore card to original position and rotation if no valid drop target was hit
-                _rectTransform.position = _originalPosition;
-                _rectTransform.rotation = _originalRotation;
+                RevertPosition();
             }
 
+        }
+        public void RevertPosition()
+        {
+            //Re-enable raycasts for interaction detection
+            _canvasGroup.blocksRaycasts = true;
+            _rectTransform.position = _originalPosition;
+            _rectTransform.rotation = _originalRotation;
         }
     }
 }
