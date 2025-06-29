@@ -310,7 +310,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6f4b5964f1343d1973fec3448adb572, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  showDebugLogs: 1
+  showDebugLogs: 0
   maximumTurn: 10
   dataCollectionScript: {fileID: 916108407}
   startingActionDeckAmount: 3
@@ -667,7 +667,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  gameSceneName: Game
+  gameSceneName: Game Valentin
   player1Life:
     m_InternalValue: 10
   player2Life:

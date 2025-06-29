@@ -20,6 +20,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Game Valentin.unity
     guid: 962122184fe7fbb4f8bc2336ea0899a6
+  - enabled: 1
+    path: Assets/Scenes/Game Valentin.unity
+    guid: 59cdef65821aa6842a4a7be1621620c7
+  - enabled: 1
+    path: Assets/Scenes/Game Valentin.unity
+    guid: 962122184fe7fbb4f8bc2336ea0899a6
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

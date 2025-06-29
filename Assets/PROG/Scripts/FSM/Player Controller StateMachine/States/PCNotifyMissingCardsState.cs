@@ -8,11 +8,12 @@ namespace Wendogo
         private PlayerController _player;
         public PCNotifyMissingCardsState(PlayerControllerSM stateMachine, PlayerController player) : base(stateMachine) { _player = player; }
 
-		public override void OnEnter()
+		public async override void OnEnter()
 		{
-			base.OnEnter();
-			_player.NotifyMissingCards();
-			StateMachine.ChangeState<PCCheckPAState>();
+			base.OnEnter();            
+			int missingCards = _player.GetMissingCards();
+            await _player.SelectDeckAsync(missingCards);
+            StateMachine.ChangeState<PCCheckPAState>();
 		}
 
 		public override void OnTick()

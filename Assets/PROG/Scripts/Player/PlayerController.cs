@@ -35,6 +35,8 @@ namespace Wendogo
         List<CardDataSO> hiddenCards = new List<CardDataSO>();
 
         public int _playerPA;
+
+        private int _selectedDeck = -1;
         public int deckID;
 
         public static event Action OnCardUsed;
@@ -100,6 +102,29 @@ namespace Wendogo
             Debug.Log("Input enabled");
         }
 
+        public async UniTask<int> SelectDeckAsync(int missingCards)
+        {
+            _selectedDeck = -1;
+            DeckClickHandler.OnDeckClicked += HandleDeckClicked;
+
+            Debug.Log($"Vous devez piocher {missingCards} cartes : choisissez un deck.");
+
+            await UniTask.WaitUntil(() => _selectedDeck >= 0);
+
+            DeckClickHandler.OnDeckClicked -= HandleDeckClicked;
+
+            Debug.Log($"Deck sélectionné : {_selectedDeck}");
+
+            ServerManager.Instance.TransmitMissingCardsServerRpc(missingCards, _selectedDeck);
+
+            return _selectedDeck;
+        }
+
+        private void HandleDeckClicked(int deckId)
+        {
+            _selectedDeck = deckId;
+        }
+
         public async void SelectCard(CardObjectData card)
         {
             //Implement select card
@@ -150,7 +175,7 @@ namespace Wendogo
 
             HandleUsedCard();
             //Placeholder for sending card lacking to server        
-            NotifyMissingCards();
+            //NotifyMissingCards();
             CheckPA();
         }
 
@@ -200,7 +225,7 @@ namespace Wendogo
             else
             {
                 //Placeholder for sending card lacking to server        
-                NotifyMissingCards();
+                //NotifyMissingCards();
                 Debug.Log("Turn is over");
                 //Send informations to server
                 NotifyEndTurn();
@@ -282,6 +307,7 @@ namespace Wendogo
             }
         }
 
+
         [ClientRpc]
         public void TryApplyPassiveClientRpc(int playedCardId, ulong origin)
         {
@@ -307,15 +333,21 @@ namespace Wendogo
         [ClientRpc]
         public void FinishedCheckCardPlayedClientRpc()
         {
-            // Ask the player which deck he wants to pick a card from and replace '0' by the ID
-            ServerManager.Instance.TransmitMissingCardsServerRpc(1, 0);
+            if (!IsOwner) return;
+            UniTask.Void(async () =>
+            {
+                int missing = GetMissingCards();
+
+                await SelectDeckAsync(missing);
+
+            });
         }
 
         #endregion
 
         #region Notify
 
-        public void NotifyMissingCards()
+        public void NotifyMissingCards(int missingCards, int deckID)
         {
             ServerManager.Instance.TransmitMissingCardsServerRpc(GetMissingCards(), deckID);
         }
