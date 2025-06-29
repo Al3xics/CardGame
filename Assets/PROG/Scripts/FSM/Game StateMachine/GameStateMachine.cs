@@ -51,6 +51,20 @@ namespace Wendogo
         /// </summary>
         public int triggerVoteEveryXTurn = 2;
 
+        /// <summary>
+        /// Represents the required number of food items needed to successfully complete the ritual in the game.
+        /// This value is used as a condition within the game's mechanics to determine if the ritual goals
+        /// have been met during gameplay.
+        /// </summary>
+        public int numberOfFoodToCompleteRitual = 6;
+
+        /// <summary>
+        /// Represents the number of wood pieces required to successfully complete the ritual.
+        /// This value serves as a key resource target that players must gather to progress through or achieve
+        /// ritual-related goals within the game.
+        /// </summary>
+        public int numberOfWoodToCompleteRitual = 6;
+
         /* --------------- Hide in Inspector --------------- */
         /// <summary>
         /// Tracks the current turn count within the game cycle.
@@ -66,17 +80,14 @@ namespace Wendogo
         /// It is incremented after every turn and reset when a vote is required.
         /// </remarks>
         private int _cptTurnForVote = 1;
-        
+
         /// <summary>
-        /// A dictionary used to store actions performed by players during the "Night" cycle of the game.
+        /// Represents the collection of player actions performed during the night phase in the game. Only for cards that
+        /// have a <see cref="CardDataSO.nightPriorityIndex"/> different than <c>0</c>.
+        /// This list is used to store and manage actions taken by players, which are then processed
+        /// during the night cycle state transitions.
         /// </summary>
-        /// <remarks>
-        /// The keys of the dictionary represent the unique identifiers (IDs) of players, while the values are lists of <see cref="PlayerAction"/> objects.
-        /// Each <see cref="PlayerAction"/> in a list corresponds to an action performed by the associated player during the night phase.
-        /// This data structure is cleared at the end of each "Night" cycle after resolving related consequences. It is populated dynamically
-        /// during the night phase as players make their moves.
-        /// </remarks>
-        public readonly Dictionary<ulong, List<PlayerAction>> NightActions = new();
+        public readonly List<PlayerAction> NightActions = new();
         
         /// <summary>
         /// Represents the ID of the current player whose turn is active in the game.
@@ -104,17 +115,6 @@ namespace Wendogo
         /// with the normal game cycle.
         /// </summary>
         public bool IsRitualOver {get; private set;} = false;
-
-        /// <summary>
-        /// Represents a mapping of player unique identifiers (IDs) to their current health values.
-        /// </summary>
-        /// <remarks>
-        /// This property maintains the health status of all players in the game.
-        /// Each player's health is mapped using their unique identifier (ulong) as the key and their health value (int) as the value.
-        /// It is used to track and manage health-related gameplay mechanics throughout the game's lifecycle.
-        /// Changes to player health are checked and used in various game states, such as in <see cref="NightConsequencesState"/>.
-        /// </remarks>
-        public Dictionary<ulong, int> PlayersHealth { get; private set; } = new();
 
         #endregion
 

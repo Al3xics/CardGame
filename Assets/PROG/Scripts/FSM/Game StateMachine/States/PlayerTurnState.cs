@@ -17,6 +17,10 @@ namespace Wendogo
         public override void OnEnter()
         {
             base.OnEnter();
+            
+            if (StateMachine.Cycle == Cycle.Night)
+                ServerManager.Instance.SynchronizePlayerValuesServerRpc(true);
+            
             StartPlayerTurn(StateMachine.CurrentPlayerId);
         }
 
@@ -32,36 +36,23 @@ namespace Wendogo
         }
 
         /// <summary>
-        /// For the Day:
-        /// Check if the card played does an action on another player, and the other player has a passive card to block it.
-        /// If it does, Apply the passive card, then apply the card played by the first player. At the end, draw and send a card
-        /// to the player to complete his hand.
-        ///
-        /// For the Night:
-        /// 
+        /// Checks the card played by a player during the game and resolves its effects based on the current game cycle.
         /// </summary>
-        /// <param name="playedCardID">The card ID played by the player <c>origin</c>.</param>
-        /// <param name="origin">The ID of the player using the card.</param>
-        /// <param name="target">The targeted ID player.</param>
-        /// <exception cref="ArgumentOutOfRangeException">The cycle messed up, and is neither <see cref="Cycle.Day"/>, nor <see cref="Cycle.Night"/></exception>
+        /// <param name="playedCardID">The unique identifier of the card that was played.</param>
+        /// <param name="origin">The unique identifier of the player who played the card.</param>
+        /// <param name="target">The unique identifier of the target player, if applicable.</param>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when the game cycle value is invalid or unhandled.</exception>
         public void CheckCardPlayed(int playedCardID, ulong origin, ulong target)
         {
-            /*
-             * Si un player per de la vie, on ajoute un booléan à un dictionnaire avec la key l'id du player, et la value sa vie
-             * 
-             */
+            var card = StateMachine.dataCollectionScript.cardDatabase.GetCardByID(playedCardID);
             
             switch (StateMachine.Cycle)
             {
                 case Cycle.Day:
-                    var card = StateMachine.dataCollectionScript.cardDatabase.GetCardByID(playedCardID);
-                    
-                    // Only if the card is NOT a passive card, we will check the active/passive card combos
-                    
                     // For passive cards
                     if (card.isPassive)
                     {
-                        PlayerController.GetPlayer(origin).AddCardToHiddenCards(card);
+                        PlayerController.GetPlayer(origin).PassiveCards.Add(card);
                         ServerManager.Instance.FinishedCheckCardPlayedServerRpc(origin);
                         return;
                     }
@@ -71,19 +62,26 @@ namespace Wendogo
                     break;
                 
                 case Cycle.Night:
-                    ulong currentPlayer = StateMachine.PlayersID[StateMachine.CurrentPlayerId];
-
-                    if (!StateMachine.NightActions.ContainsKey(currentPlayer))
-                        StateMachine.NightActions[currentPlayer] = new List<PlayerAction>();
-
-                    StateMachine.NightActions[currentPlayer].Add(new PlayerAction
+                    // For passive cards
+                    if (card.isPassive)
                     {
-                        CardId = playedCardID,
-                        OriginId = origin,
-                        TargetId = target
-                    });
-
-                    ServerManager.Instance.FinishedCheckCardPlayedServerRpc(origin);
+                        PlayerController.GetPlayer(origin).HiddenPassiveCards.Add(card);
+                        ServerManager.Instance.FinishedCheckCardPlayedServerRpc(origin);
+                        return;
+                    }
+                    
+                    if (card.nightPriorityIndex != 0) // Add active card to NightActions if it has a priority index
+                    {
+                        StateMachine.NightActions.Add(new PlayerAction
+                        {
+                            CardId = playedCardID,
+                            CardPriorityIndex = card.nightPriorityIndex,
+                            OriginId = origin,
+                            TargetId = target
+                        });
+                    }
+                    else // Handle cards without priority normally
+                        ServerManager.Instance.TryApplyPassiveServerRpc(playedCardID, origin, target);
                     break;
                 
                 default:
