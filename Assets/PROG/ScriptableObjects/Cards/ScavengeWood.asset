@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4c4af47719ad294e9daacd12912804b, type: 3}
+  m_Name: ScavengeWood
+  m_EditorClassIdentifier: 
+  CardVisual: {fileID: 2800000, guid: ae54b1514a291a242b4d4ccd0cd0c73c, type: 3}
+  Name: ScavengeWood
+  CardEffect: {fileID: 11400000, guid: 55cd397d58e152743bdb957cfd0ca36c, type: 2}
+  isPassive: 0
+  HasTarget: 0
+  nightPriorityIndex: 0
+  ID: 10153
+  Toggle: 1

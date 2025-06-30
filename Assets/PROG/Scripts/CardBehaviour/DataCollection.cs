@@ -13,12 +13,23 @@ namespace Wendogo
         public DeckConfiguration resourcesDeck;
         public DeckConfiguration actionDeck;
 
+        // Runtime versions of the decks
+        public DeckConfiguration RuntimeResourcesDeck { get; private set; }
+        public DeckConfiguration RuntimeActionDeck { get; private set; }
+        
+        private void Awake()
+        {
+            // Clone the ScriptableObjects at runtime to avoid modifying the original
+            RuntimeResourcesDeck = Instantiate(resourcesDeck);
+            RuntimeActionDeck = Instantiate(actionDeck);
+        }
+        
         public List<CardDataSO> GetDeck(int deckID)
         {
-            if (resourcesDeck.deckID == deckID)
-                return resourcesDeck.CardsDeck;
-            else if(actionDeck.deckID== deckID)
-                return actionDeck.CardsDeck;
+            if (RuntimeResourcesDeck.deckID == deckID)
+                return RuntimeResourcesDeck.CardsDeck;
+            else if(RuntimeActionDeck.deckID== deckID)
+                return RuntimeActionDeck.CardsDeck;
             
             return null;
         }
