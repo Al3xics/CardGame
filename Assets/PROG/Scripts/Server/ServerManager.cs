@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Cysharp.Threading.Tasks;
+using NUnit.Framework;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -20,7 +22,6 @@ namespace Wendogo
         public event Action OnResolveCardNightConsequences;
         public string gameSceneName = "Game";
         private Dictionary<ulong, PlayerController> _playersById;
-        private HashSet<int> resolvedCards = new HashSet<int>();
 
 
         #endregion
@@ -171,9 +172,9 @@ namespace Wendogo
         }
         
         [ServerRpc(RequireOwnership = false)]
-        public void RespondPassiveResultServerRpc(int playedCardId, ulong origin, ulong target, bool isApply, int value)
+        public void RespondPassiveResultServerRpc(int playedCardId, ulong origin, ulong target, bool isApply, int value, ServerRpcParams rpcParams = default)
         {
-            if (!resolvedCards.Add(playedCardId)) return; // Ignore repeated calls
+            if (rpcParams.Receive.SenderClientId != origin) return;
 
             GameStateMachine.Instance.OnPassiveResultReceived(playedCardId, origin, target, isApply, value);
         }
