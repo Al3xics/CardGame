@@ -404,44 +404,19 @@ namespace Wendogo
         }
         
         [ClientRpc]
-        public void DestructAllTraps()
-        {
-            if (IsSimulatingNight)
-            {
-                for (int i = HiddenPassiveCards.Count - 1; i >= 0; i--)
-                    if (HiddenPassiveCards[i].CardEffect is Trap)
-                        HiddenPassiveCards.RemoveAt(i);
-            }
-            else
-            {
-                for (int i = PassiveCards.Count - 1; i >= 0; i--)
-                    if (PassiveCards[i].CardEffect is Trap)
-                        PassiveCards.RemoveAt(i);
-            }
-        }
-
-        [ClientRpc]
         public void DestructAllTrapsClientRpc()
         {
             if (IsSimulatingNight)
             {
                 for (int i = HiddenPassiveCards.Count - 1; i >= 0; i--)
-                {
                     if (HiddenPassiveCards[i].CardEffect is Trap)
-                    {
                         HiddenPassiveCards.RemoveAt(i);
-                    }
-                }
             }
             else
             {
                 for (int i = PassiveCards.Count - 1; i >= 0; i--)
-                {
                     if (PassiveCards[i].CardEffect is Trap)
-                    {
                         PassiveCards.RemoveAt(i);
-                    }
-                }
             }
         }
 
