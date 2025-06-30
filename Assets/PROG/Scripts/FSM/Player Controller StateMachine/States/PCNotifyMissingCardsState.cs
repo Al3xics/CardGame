@@ -12,7 +12,6 @@ namespace Wendogo
         public async override void OnEnter()
         {
             base.OnEnter();
-            ToggleMovingCards();
             ToggleDeck();
             int missingCards = _player.GetMissingCards();
             await _player.SelectDeckAsync(missingCards);
@@ -26,21 +25,11 @@ namespace Wendogo
 
         public override void OnExit()
         {
-            ToggleMovingCards();
             ToggleDeck();
             base.OnExit();
         }
 
-        public void ToggleMovingCards()
-        {
-            List<GameObject> cardsInHand = _player._handManager._handCards;
 
-            foreach (GameObject card in cardsInHand)
-            {
-                CardDragHandler handler = card.GetComponent<CardDragHandler>();
-                handler.enabled = !handler.enabled;
-            }
-        }
 
         public void ToggleDeck()
         {

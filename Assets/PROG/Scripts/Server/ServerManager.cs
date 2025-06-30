@@ -200,7 +200,7 @@ namespace Wendogo
                 ulong id = currentPlayerId[i];
                 if (_playersById.TryGetValue(id, out var player))
                 {
-                    player.DestructAllTraps();
+                    player.DestructAllTrapsClientRpc();
                 }
             }
         }

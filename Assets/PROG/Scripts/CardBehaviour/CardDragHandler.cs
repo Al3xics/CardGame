@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -56,5 +57,15 @@ namespace Wendogo
             _rectTransform.position = _originalPosition;
             _rectTransform.rotation = _originalRotation;
         }
+
+        public static void ToggleMovingCards(List<GameObject> cardsInHand)
+        {
+            foreach (GameObject card in cardsInHand)
+            {
+                CardDragHandler handler = card.GetComponent<CardDragHandler>();
+                handler.enabled = !handler.enabled;
+            }
+        }
+
     }
 }
