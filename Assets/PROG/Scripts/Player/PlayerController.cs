@@ -85,7 +85,7 @@ namespace Wendogo
 
         private void Start()
         {
-            _playerPA = 2;
+            
         }
 
         public override void OnNetworkSpawn()
@@ -233,8 +233,6 @@ namespace Wendogo
 
         public void HandleUsedCard()
         {
-            //Use _playerPA
-            _playerPA--;
 
             //Remove the card from the hand
             _handManager.Discard(ActiveCard.gameObject);
@@ -269,7 +267,7 @@ namespace Wendogo
 
         public bool HasEnoughPA()
         {
-            return _playerPA >= 0;
+            return _playerPA > 0;
         }
 
         public ulong GetChosenTarget()
@@ -348,10 +346,10 @@ namespace Wendogo
                 }
             }
 
-            if (!HasEnoughPA())
-            {
-                NotifyEndTurn();
-            }
+            //if (!HasEnoughPA())
+            //{
+            //    NotifyEndTurn();
+            //}
         }
 
         [ClientRpc]
@@ -412,14 +410,17 @@ namespace Wendogo
             ServerManager.Instance.TransmitMissingCardsServerRpc(GetMissingCards(), deckID);
         }
 
-        private void NotifyEndTurn()
+        public void NotifyEndTurn()
         {
+            _inputEvent.enabled = false;
             if (_pcSMObject != null)
             {
+                Debug.Log("Destroy the player controller");
                 Destroy(_pcSMObject);
                 _pcSMObject = null;
             }
             ServerManager.Instance.PlayerTurnEndedServerRpc();
+
         }
 
         private void NotifyPlayedCard(CardDataSO cardDataSO)

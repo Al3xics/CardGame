@@ -6,11 +6,17 @@ namespace Wendogo
     public class PCInputState : State<PlayerControllerSM>
     {
         private PlayerController _player;
+        bool isTurnBeginning = false;
         public PCInputState(PlayerControllerSM stateMachine, PlayerController player) : base(stateMachine) { _player = player; }
 
         public override void OnEnter()
         {
             base.OnEnter();
+            if (!isTurnBeginning)
+            {
+                _player._playerPA = 2;
+                isTurnBeginning = true;
+            }
             CardDropZone.OnCardDropped += ReceiveSelectedEvent;
             _player.EnableInput();
         }
