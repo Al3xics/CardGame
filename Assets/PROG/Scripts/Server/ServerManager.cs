@@ -206,6 +206,20 @@ namespace Wendogo
             }
         }
 
+        [ServerRpc(RequireOwnership = false)]
+        public void AskToDestructTrapsServerRpc()
+        {
+            ulong[] currentPlayerId = new ulong[] { 0, 1, 2, 3 };
+            for (int i = 0; i < currentPlayerId.Length; i++)
+            {
+                ulong id = currentPlayerId[i];
+                if (_playersById.TryGetValue(id, out var player))
+                {
+                    player.DestructAllTrapsClientRpc();
+                }
+            }
+        }
+
         #endregion
     }
 }
