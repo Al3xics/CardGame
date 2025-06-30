@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b4c4af47719ad294e9daacd12912804b, type: 3}
-  m_Name: CardDataMockup2
+  m_Name: BoostWood
   m_EditorClassIdentifier: 
-  CardVisual: {fileID: 2800000, guid: 29be5888969cbe144812641b907a2e3c, type: 3}
-  Name: Mokoy
-  CardEffect: {fileID: 11400000, guid: e0a719035c158b3428df08cdac4d1153, type: 2}
-  AppearanceChance: 57.9
+  CardVisual: {fileID: 2800000, guid: 56ad4181782f14746b97eb854472d0c2, type: 3}
+  Name: BoostWood
+  CardEffect: {fileID: 11400000, guid: 3b0f506b1e16d71409e3208f25c7444f, type: 2}
+  AppearanceChance: 0
   Cost: 0
-  Value: 2
+  Value: 0
   isPassive: 0
   HasTarget: 0
   nightPriorityIndex: 0
-  ID: 10155
+  ID: 0
   Toggle: 0

@@ -15,48 +15,19 @@ MonoBehaviour:
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
-    ReferencedUnityObjects:
-    - {fileID: 11400000, guid: 18a5be297a7ba38458168dbdfc95dca1, type: 2}
-    - {fileID: 11400000, guid: 649dd8441fb68bc4ba4b62fc5b145d22, type: 2}
+    ReferencedUnityObjects: []
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
-    SerializationNodes:
-    - Name: _cardDeckData
-      Entry: 7
-      Data: 0|CardDeckConfig[], Assembly-CSharp
-    - Name: 
-      Entry: 12
-      Data: 2
-    - Name: 
-      Entry: 7
-      Data: 1|CardDeckConfig, Assembly-CSharp
-    - Name: CardData
-      Entry: 10
-      Data: 0
-    - Name: quantity
-      Entry: 3
-      Data: 35
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 7
-      Data: 2|CardDeckConfig, Assembly-CSharp
-    - Name: CardData
-      Entry: 10
-      Data: 1
-    - Name: quantity
-      Entry: 3
-      Data: 30
-    - Name: 
-      Entry: 8
-      Data: 
-    - Name: 
-      Entry: 13
-      Data: 
-    - Name: 
-      Entry: 8
-      Data: 
+    SerializationNodes: []
+  _cardDeckData:
+  - CardData: {fileID: 11400000, guid: 649dd8441fb68bc4ba4b62fc5b145d22, type: 2}
+    quantity: 30
+  - CardData: {fileID: 11400000, guid: 9aa288262a939f5448d3a2ef7026e76f, type: 2}
+    quantity: 30
+  - CardData: {fileID: 11400000, guid: 0f961ec93fae9e94385cca09e6aa1c19, type: 2}
+    quantity: 30
+  - CardData: {fileID: 11400000, guid: 0f0dc0dc6f5db2944b1960d0bee62926, type: 2}
+    quantity: 30
   deckID: 0
