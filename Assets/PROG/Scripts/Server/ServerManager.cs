@@ -155,6 +155,8 @@ namespace Wendogo
             return "Unknown";
         }
 
+        public static Cycle GetCycle() => GameStateMachine.Instance.Cycle;
+
         #endregion
 
         #region RPC

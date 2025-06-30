@@ -31,7 +31,7 @@ namespace Wendogo
         Dictionary<Button, PlayerController> playerTargets = new Dictionary<Button, PlayerController>();
 
         List<ulong> playerList = new List<ulong>();
-        List<CardDataSO> hiddenCards = new List<CardDataSO>();
+
 
         public int _playerPA;
 
@@ -48,6 +48,36 @@ namespace Wendogo
 
         public static PlayerController LocalPlayer;
         public static ulong LocalPlayerId;
+
+        #endregion
+
+        #region Health & Food & Wood & Cards
+
+        public int hiddenHealth;
+        public NetworkVariable<int> health = new(
+            10,
+            NetworkVariableReadPermission.Everyone,
+            NetworkVariableWritePermission.Server
+        );
+
+        public int hiddenWood;
+        public NetworkVariable<int> wood = new(
+            0,
+            NetworkVariableReadPermission.Everyone,
+            NetworkVariableWritePermission.Server
+        );
+
+        public int hiddenFood;
+        public NetworkVariable<int> food = new(
+            0,
+            NetworkVariableReadPermission.Everyone,
+            NetworkVariableWritePermission.Server
+        );
+
+        public List<CardDataSO> HiddenPassiveCards { get; set; } = new();
+        public List<CardDataSO> PassiveCards { get; set; } = new();
+
+        public bool IsSimulatingNight => ServerManager.GetCycle() == Cycle.Night && IsLocalPlayer;
 
         #endregion
 
@@ -262,9 +292,35 @@ namespace Wendogo
             Debug.LogWarning($"PlayerController not found for clientId: {clientId}");
             return null;
         }
-        
-        public void AddCardToHiddenCards(CardDataSO card) => hiddenCards.Add(card);
-        public void RemoveCardToHiddenCards(CardDataSO card) => hiddenCards.Remove(card);
+
+        /// <summary>
+        /// Updates the hidden health, food, and wood values to match their respective public network variables.
+        /// Also replicates the list of public passive cards into the hidden passive cards list.
+        /// </summary>
+        [ClientRpc]
+        public void CopyPublicToHiddenClientRpc()
+        {
+            hiddenHealth = health.Value;
+            hiddenFood = food.Value;
+            hiddenWood = wood.Value;
+
+            HiddenPassiveCards = new List<CardDataSO>(PassiveCards);
+        }
+
+        /// <summary>
+        /// Copies the values of hidden health, food, and wood into their respective public network variables.
+        /// Also transfers the list of hidden passive cards to the public passive cards list.
+        /// </summary>
+        [ClientRpc]
+        public void CopyHiddenToPublicClientRpc()
+        {
+            health.Value = hiddenHealth;
+            food.Value = hiddenFood;
+            wood.Value = hiddenWood;
+
+            PassiveCards = new List<CardDataSO>(HiddenPassiveCards);
+        }
+
 
         #endregion
 
@@ -315,16 +371,18 @@ namespace Wendogo
         {
             bool isApplyPassive = false;
             int value = -1;
-            
+
             // Get the CardDataSO of the played card
-            var dataCollection = GameObject.Find("DataCollection").GetComponent<DataCollection>();
-            var copyHiddenCards = new List<CardDataSO>(hiddenCards);
+            var copyHiddenCards = new List<CardDataSO>(IsSimulatingNight ? HiddenPassiveCards : PassiveCards);
 
             foreach (var hiddenCard in copyHiddenCards)
             {
                 if (hiddenCard.CardEffect.ApplyPassive(playedCardId, origin, OwnerClientId, out value))
                 {
-                    RemoveCardToHiddenCards(hiddenCard);
+                    if (IsSimulatingNight)
+                        HiddenPassiveCards.Remove(hiddenCard);
+                    else
+                        PassiveCards.Remove(hiddenCard);
                     isApplyPassive = true;
                 }
             }
