@@ -19,15 +19,6 @@ public class CardDataSO : ScriptableObject
     [VerticalGroup("CardData/Stats"), LabelWidth(75)]
     public CardEffect CardEffect; //Reference to the card's effect
 
-    [VerticalGroup("CardData/Stats"), LabelWidth(120), Range(0, 100), Unit(Units.Percent)]
-    public float AppearanceChance; //Chance this card appears in the deck or pool //Obsolete?
-
-    [VerticalGroup("CardData/Stats"), LabelWidth(120), Range(0, 10)]
-    public int Cost; //Cost of playing the card
-
-    [VerticalGroup("CardData/Stats"), LabelWidth(120), Range(0, 10)]
-    public int Value; //Value/strength of the card effect
-
     [VerticalGroup("CardData/Stats"), LabelWidth(120)]
     public bool isPassive; //Whether the card is passive or not
 
