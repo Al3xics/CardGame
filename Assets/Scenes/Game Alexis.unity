@@ -212,6 +212,10 @@ PrefabInstance:
       propertyPath: serializationData.Prefab
       value: 
       objectReference: {fileID: 813918724391784896, guid: 15878c108acf0d641bbc57994e5e9623, type: 3}
+    - target: {fileID: 1866734529388921552, guid: 15878c108acf0d641bbc57994e5e9623, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2537800122236944538, guid: 15878c108acf0d641bbc57994e5e9623, type: 3}
       propertyPath: m_Name
       value: PlayerPanel
@@ -246,7 +250,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6906657078384856985, guid: 15878c108acf0d641bbc57994e5e9623, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 100
+      value: 118.75
       objectReference: {fileID: 0}
     - target: {fileID: 6906657078384856985, guid: 15878c108acf0d641bbc57994e5e9623, type: 3}
       propertyPath: m_LocalPosition.z
@@ -278,6 +282,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6906657078384856985, guid: 15878c108acf0d641bbc57994e5e9623, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7368836910483104095, guid: 15878c108acf0d641bbc57994e5e9623, type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -334,7 +342,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6f4b5964f1343d1973fec3448adb572, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  showDebugLogs: 0
+  showDebugLogs: 1
   maximumTurn: 10
   dataCollectionScript: {fileID: 916108407}
   startingActionDeckAmount: 3
@@ -706,7 +714,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 110025669
+  GlobalObjectIdHash: 3138413712
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1

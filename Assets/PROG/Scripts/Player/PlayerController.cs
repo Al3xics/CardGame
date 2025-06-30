@@ -49,6 +49,8 @@ namespace Wendogo
         public static PlayerController LocalPlayer;
         public static ulong LocalPlayerId;
 
+        private GameObject pcSMObject;
+
         #endregion
 
         #region Health & Food & Wood & Cards
@@ -85,7 +87,11 @@ namespace Wendogo
 
         private void Start()
         {
-            _playerPA = 2;
+            if (IsOwner)
+            {
+                pcSMObject = new GameObject($"{nameof(PlayerControllerSM)}");
+                pcSMObject.AddComponent<PlayerControllerSM>();
+            }
         }
 
         public override void OnNetworkSpawn()
@@ -233,8 +239,6 @@ namespace Wendogo
 
         public void HandleUsedCard()
         {
-            //Use _playerPA
-            _playerPA--;
 
             //Remove the card from the hand
             _handManager.Discard(ActiveCard.gameObject);
@@ -269,7 +273,7 @@ namespace Wendogo
 
         public bool HasEnoughPA()
         {
-            return _playerPA >= 0;
+            return _playerPA > 0;
         }
 
         public ulong GetChosenTarget()
@@ -348,21 +352,17 @@ namespace Wendogo
                 }
             }
 
-            if (!HasEnoughPA())
-            {
-                NotifyEndTurn();
-            }
+            //if (!HasEnoughPA())
+            //{
+            //    NotifyEndTurn();
+            //}
         }
 
         [ClientRpc]
         public void StartMyTurnClientRpc()
         {
             if (IsOwner)
-            {
-                // start the Player State Machine here
-                GameObject pcSMObject = new GameObject($"{nameof(PlayerControllerSM)}");
-                pcSMObject.AddComponent<PlayerControllerSM>();
-            }
+                pcSMObject.GetComponent<PlayerControllerSM>().StartStateMachine();
         }
 
 
@@ -402,6 +402,23 @@ namespace Wendogo
 
             });
         }
+        
+        [ClientRpc]
+        public void DestructAllTraps()
+        {
+            if (IsSimulatingNight)
+            {
+                for (int i = HiddenPassiveCards.Count - 1; i >= 0; i--)
+                    if (HiddenPassiveCards[i].CardEffect is Trap)
+                        HiddenPassiveCards.RemoveAt(i);
+            }
+            else
+            {
+                for (int i = PassiveCards.Count - 1; i >= 0; i--)
+                    if (PassiveCards[i].CardEffect is Trap)
+                        PassiveCards.RemoveAt(i);
+            }
+        }
 
         [ClientRpc]
         public void DestructAllTrapsClientRpc()
@@ -437,14 +454,17 @@ namespace Wendogo
             ServerManager.Instance.TransmitMissingCardsServerRpc(GetMissingCards(), deckID);
         }
 
-        private void NotifyEndTurn()
+        public void NotifyEndTurn()
         {
+            _inputEvent.enabled = false;
             if (_pcSMObject != null)
             {
+                Debug.Log("Destroy the player controller");
                 Destroy(_pcSMObject);
                 _pcSMObject = null;
             }
             ServerManager.Instance.PlayerTurnEndedServerRpc();
+
         }
 
         private void NotifyPlayedCard(CardDataSO cardDataSO)

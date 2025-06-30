@@ -212,6 +212,10 @@ PrefabInstance:
       propertyPath: serializationData.Prefab
       value: 
       objectReference: {fileID: 813918724391784896, guid: 15878c108acf0d641bbc57994e5e9623, type: 3}
+    - target: {fileID: 1866734529388921552, guid: 15878c108acf0d641bbc57994e5e9623, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2537800122236944538, guid: 15878c108acf0d641bbc57994e5e9623, type: 3}
       propertyPath: m_Name
       value: PlayerPanel
@@ -280,6 +284,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7368836910483104095, guid: 15878c108acf0d641bbc57994e5e9623, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -340,6 +348,8 @@ MonoBehaviour:
   startingActionDeckAmount: 3
   startingResourceDeckAmount: 2
   triggerVoteEveryXTurn: 2
+  numberOfFoodToCompleteRitual: 6
+  numberOfWoodToCompleteRitual: 6
 --- !u!1 &916108406
 GameObject:
   m_ObjectHideFlags: 0
@@ -692,30 +702,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   gameSceneName: Game Valentin
-  player1Life:
-    m_InternalValue: 10
-  player2Life:
-    m_InternalValue: 10
-  player3Life:
-    m_InternalValue: 10
-  player4Life:
-    m_InternalValue: 10
-  player1Wood:
-    m_InternalValue: 0
-  player2Wood:
-    m_InternalValue: 0
-  player3Wood:
-    m_InternalValue: 0
-  player4Wood:
-    m_InternalValue: 0
-  player1Food:
-    m_InternalValue: 0
-  player2Food:
-    m_InternalValue: 0
-  player3Food:
-    m_InternalValue: 0
-  player4Food:
-    m_InternalValue: 0
 --- !u!114 &1479689067
 MonoBehaviour:
   m_ObjectHideFlags: 0

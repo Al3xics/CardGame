@@ -12,7 +12,8 @@ namespace Wendogo
 		{
 			base.OnEnter();
 			_player.ConfirmPlay();
-			StateMachine.ChangeState<PCNotifyMissingCardsState>();
+            _player._playerPA--;
+            StateMachine.ChangeState<PCNotifyMissingCardsState>();
         }
 
 		public override void OnTick()

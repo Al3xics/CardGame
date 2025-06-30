@@ -65,7 +65,7 @@ namespace Wendogo
         /// of the state machine. It then transitions to that state by invoking its <see cref="State{T}.OnEnter"/> method.
         /// If overridden in derived classes, ensure to call the base implementation to properly initialize the state machine.
         /// </summary>
-        protected virtual void Start()
+        public void StartStateMachine()
         {
             CurrentState = GetInitialState();
             CurrentState?.OnEnter();
@@ -89,7 +89,7 @@ namespace Wendogo
         /// the <see cref="State{T}"/> for the relevant state machine type.</param>
         protected void AddState(State<T> state)
         {
-            _states.Add(state.GetType(), state);
+            if (!_states.ContainsKey(state.GetType())) _states.Add(state.GetType(), state);
         }
 
         /// <summary>

@@ -35,10 +35,6 @@ namespace Wendogo
             {
                 Instance = this;
                 DontDestroyOnLoad(gameObject);
-                // Disable GameStateMachine for clients because only the host can run this logic
-                GameObject gameStateMachineObject = GameObject.Find("GameStateMachine");
-                if (!IsServer && gameStateMachineObject)
-                    gameStateMachineObject.SetActive(false);
             }
             else
             {
@@ -61,18 +57,7 @@ namespace Wendogo
             /*// Disable GameStateMachine for clients because only the host can do things with it
             GameObject gameStateMachineObject = GameObject.Find("GameStateMachine");
             if (!IsServer && gameStateMachineObject)
-                gameStateMachineObject.SetActive(false);*/
-        }
-
-        // Starts the game by activating the GameStateMachine (host only).
-        public void StartGame()
-        {
-            Debug.Log("All players are ready. Starting GameStateMachine...");
-            // Disable GameStateMachine for clients because only the host can run this logic
-            GameObject gameStateMachineObject = Resources.FindObjectsOfTypeAll<GameObject>().FirstOrDefault(go => go.name == "GameStateMachine");
-
-            if (gameStateMachineObject != null)
-                gameStateMachineObject.SetActive(true);
+                gameStateMachineObject.GetComponent<GameStateMachine>().StartStateMachine();*/
         }
 
         // Starts loading the game scene from the server if it's not already active.
@@ -203,6 +188,20 @@ namespace Wendogo
                     player.CopyPublicToHiddenClientRpc();
                 else
                     player.CopyHiddenToPublicClientRpc();
+            }
+        }
+        
+        [ServerRpc(RequireOwnership = false)]
+        public void AskToDestructTrapsServerRpc()
+        {
+            ulong[] currentPlayerId = new ulong[] { 0, 1, 2, 3 };
+            for (int i = 0; i < currentPlayerId.Length; i++)
+            {
+                ulong id = currentPlayerId[i];
+                if (_playersById.TryGetValue(id, out var player))
+                {
+                    player.DestructAllTraps();
+                }
             }
         }
 

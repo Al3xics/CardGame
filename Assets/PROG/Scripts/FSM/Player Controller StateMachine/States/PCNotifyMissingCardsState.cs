@@ -1,5 +1,6 @@
 using UnityEngine;
 using Wendogo;
+using System.Collections.Generic;
 
 namespace Wendogo
 {
@@ -12,6 +13,7 @@ namespace Wendogo
         {
             base.OnEnter();
             ToggleMovingCards();
+            ToggleDeck();
             int missingCards = _player.GetMissingCards();
             await _player.SelectDeckAsync(missingCards);
             StateMachine.ChangeState<PCCheckPAState>();
@@ -25,17 +27,27 @@ namespace Wendogo
         public override void OnExit()
         {
             ToggleMovingCards();
+            ToggleDeck();
             base.OnExit();
         }
 
         public void ToggleMovingCards()
         {
-            System.Collections.Generic.List<GameObject> cardsInHand = _player._handManager._handCards;
+            List<GameObject> cardsInHand = _player._handManager._handCards;
 
             foreach (GameObject card in cardsInHand)
             {
                 CardDragHandler handler = card.GetComponent<CardDragHandler>();
                 handler.enabled = !handler.enabled;
+            }
+        }
+
+        public void ToggleDeck()
+        {
+            DeckClickHandler[] deckClickHandlers = Object.FindObjectsByType<DeckClickHandler>(FindObjectsSortMode.None);
+            foreach (DeckClickHandler deck in deckClickHandlers)
+            {
+                deck.enabled = !deck.enabled;
             }
         }
     }
