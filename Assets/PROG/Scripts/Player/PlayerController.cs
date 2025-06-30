@@ -223,6 +223,18 @@ namespace Wendogo
         {
             return _handManager._maxHandSize - _handManager._handCards.Count;
         }
+        
+        public static PlayerController GetPlayer(ulong clientId)
+        {
+            if (NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out var networkClient))
+            {
+                return networkClient.PlayerObject.GetComponent<PlayerController>();
+            }
+
+            Debug.LogWarning($"PlayerController not found for clientId: {clientId}");
+            return null;
+        }
+
 
         #endregion
 

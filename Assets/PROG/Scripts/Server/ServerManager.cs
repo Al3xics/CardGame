@@ -253,7 +253,7 @@ namespace Wendogo
 
         #endregion
 
-        // purpose not fully clear yet.
+        // Sends data to the server, typically used to notify the server of specific actions or events.
         [ServerRpc(RequireOwnership = false)]
         public void SendDataServerServerRpc(ServerRpcParams rpcParams = default)
         {
