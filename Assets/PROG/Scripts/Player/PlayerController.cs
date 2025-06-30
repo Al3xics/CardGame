@@ -147,13 +147,11 @@ namespace Wendogo
 
             Debug.Log($"Vous devez piocher {missingCards} cartes : choisissez un deck.");
 
-            CardDragHandler.ToggleMovingCards(_handManager._handCards);
 
             await UniTask.WaitUntil(() => _selectedDeck >= 0);
 
             DeckClickHandler.OnDeckClicked -= HandleDeckClicked;
 
-            CardDragHandler.ToggleMovingCards(_handManager._handCards);
 
             Debug.Log($"Deck sélectionné : {_selectedDeck}");
 
@@ -161,6 +159,8 @@ namespace Wendogo
 
             return _selectedDeck;
         }
+
+
 
         private void HandleDeckClicked(int deckId)
         {
@@ -296,7 +296,7 @@ namespace Wendogo
             {
                 return networkClient.PlayerObject.GetComponent<PlayerController>();
             }
-
+        
             Debug.LogWarning($"PlayerController not found for clientId: {clientId}");
             return null;
         }
