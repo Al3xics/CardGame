@@ -29,8 +29,8 @@ namespace Wendogo
         private void DrawInitialCard(int actionDeckAmount, int resourceDeckAmount)
         {
             Dictionary<ulong, List<int>> playersCards = new();
-            var actionDeck = StateMachine.dataCollectionScript.actionDeck.CardsDeck;
-            var resourceDeck = StateMachine.dataCollectionScript.resourcesDeck.CardsDeck;
+            var actionDeck = StateMachine.dataCollectionScript.RuntimeActionDeck.CardsDeck;
+            var resourceDeck = StateMachine.dataCollectionScript.RuntimeResourcesDeck.CardsDeck;
             
             // Calculate total cards needed for all players
             int totalActionCardsNeeded = actionDeckAmount * StateMachine.PlayersID.Count();
