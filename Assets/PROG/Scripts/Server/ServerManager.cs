@@ -12,6 +12,7 @@ namespace Wendogo
 {
     public class ServerManager : NetworkBehaviour
     {
+        
         #region Variables
 
         public static ServerManager Instance { get; private set; }
