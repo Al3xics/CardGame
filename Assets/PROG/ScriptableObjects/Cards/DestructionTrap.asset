@@ -15,11 +15,8 @@ MonoBehaviour:
   CardVisual: {fileID: 2800000, guid: b87b4c77cf44d534f8d896528b997e8f, type: 3}
   Name: DestructionTrap
   CardEffect: {fileID: 11400000, guid: 9dcad1f5984d9e64baeb39b04b7251f5, type: 2}
-  AppearanceChance: 0
-  Cost: 0
-  Value: 0
   isPassive: 0
   HasTarget: 0
   nightPriorityIndex: 0
-  ID: 0
-  Toggle: 0
+  ID: 10156
+  Toggle: 1
