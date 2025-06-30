@@ -18,6 +18,9 @@ namespace Wendogo
         public event Action OnDrawCard;
         public event Action OnPlayerTurnEnded;
         public event Action OnResolveCardNightConsequences;
+        
+        public event Action<ulong, ulong> OnTargetSelected;
+        
         public string gameSceneName = "Game";
         private Dictionary<ulong, PlayerController> _playersById;
         private HashSet<int> resolvedCards = new HashSet<int>();
