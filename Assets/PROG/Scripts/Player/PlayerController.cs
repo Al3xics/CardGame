@@ -17,7 +17,7 @@ namespace Wendogo
 
         [HideInInspector] public CardObjectData ActiveCard;
         [SerializeField] public EventSystem _inputEvent;
-        [SerializeField] private HandManager _handManager;
+        [SerializeField] public HandManager _handManager;
 
         private PlayerUI playerUIInstance;
         private bool uiInitialized = false;
@@ -71,7 +71,7 @@ namespace Wendogo
             LocalPlayer = this;
             LocalPlayerId = NetworkManager.Singleton.LocalClientId;
             SceneManager.sceneLoaded += OnSceneLoaded;
-            CardDropZone.OnCardDropped += NotifyPlayedCard;
+            CardDropZone.OnCardDataDropped += NotifyPlayedCard;
         }
 
         private new void OnDestroy()
@@ -103,6 +103,9 @@ namespace Wendogo
 
         public async UniTask<int> SelectDeckAsync(int missingCards)
         {
+            if (!IsOwner)
+                return -1;
+
             _selectedDeck = -1;
             DeckClickHandler.OnDeckClicked += HandleDeckClicked;
 
@@ -124,7 +127,7 @@ namespace Wendogo
             _selectedDeck = deckId;
         }
 
-        public async void SelectCard(CardObjectData card)
+        public void SelectCard(CardObjectData card)
         {
             //Implement select card
 
@@ -133,7 +136,7 @@ namespace Wendogo
 
             ActiveCard = card;
 
-            TweeningManager.CardUp(card.gameObject.transform);
+            //TweeningManager.CardUp(card.gameObject.transform);
             card.isSelected = true;
 
             if (ActiveCard.Card.HasTarget)
@@ -147,7 +150,7 @@ namespace Wendogo
             //Implement deselect card
             Debug.Log("Card deselected");
 
-            TweeningManager.CardDown(card.gameObject.transform);
+            //TweeningManager.CardDown(card.gameObject.transform);
             card.isSelected = false;
         }
 
@@ -175,7 +178,7 @@ namespace Wendogo
             HandleUsedCard();
             //Placeholder for sending card lacking to server        
             //NotifyMissingCards();
-            CheckPA();
+            //CheckPA();
         }
 
         public void ConfirmPlay()
@@ -194,7 +197,7 @@ namespace Wendogo
             //NotifyPlayedCard();
 
             HandleUsedCard();
-            CheckPA();
+            //CheckPA();
 
         }
 

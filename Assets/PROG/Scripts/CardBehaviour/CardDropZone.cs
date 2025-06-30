@@ -9,7 +9,8 @@ namespace Wendogo
     //Defines a valid drop target for draggable card objects
     public class CardDropZone : SerializedMonoBehaviour, IDropHandler
     {
-        public static event Action<CardDataSO> OnCardDropped;
+        public static event Action<CardDataSO> OnCardDataDropped;
+        public static event Action<CardObjectData> OnCardDropped;
 
         enum ZoneType
         {
@@ -41,7 +42,8 @@ namespace Wendogo
 
                 draggedCard.transform.SetPositionAndRotation(transform.position, transform.rotation);
                 card.enabled = false;
-                OnCardDropped?.Invoke(cardData);
+                OnCardDataDropped?.Invoke(cardData);
+                OnCardDropped?.Invoke(cod);
 
                 if (isActiveDrop)
                 {

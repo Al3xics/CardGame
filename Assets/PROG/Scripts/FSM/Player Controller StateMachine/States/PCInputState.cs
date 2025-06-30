@@ -11,7 +11,7 @@ namespace Wendogo
         public override void OnEnter()
         {
             base.OnEnter();
-            CardClickHandler.OnCardClicked += ReceiveSelectedEvent;
+            CardDropZone.OnCardDropped += ReceiveSelectedEvent;
             _player.EnableInput();
         }
 
@@ -24,7 +24,7 @@ namespace Wendogo
         public override void OnExit()
         {
             base.OnExit();
-            CardClickHandler.OnCardClicked -= ReceiveSelectedEvent;
+            CardDropZone.OnCardDropped -= ReceiveSelectedEvent;
         }
 
         public void ReceiveSelectedEvent(CardObjectData cardObjectData)
