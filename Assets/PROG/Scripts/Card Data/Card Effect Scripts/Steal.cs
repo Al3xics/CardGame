@@ -11,79 +11,13 @@ namespace Wendogo
         {
             if(typeOfRessource == 0)
             {
-                //ScavengeFood.Instance.Apply(owner, owner, 1);
-                if (owner == 0)
-                {
-                    ServerManager.Instance.player1Food.Value += 1;
-                }
-                else if (owner == 1)
-                {
-                    ServerManager.Instance.player2Food.Value += 1;
-                }
-                else if (owner == 2)
-                {
-                    ServerManager.Instance.player3Food.Value += 1;
-                }
-                else
-                {
-                    ServerManager.Instance.player4Food.Value += 1;
-                }
-
-                //ScavengeFood.Instance.Apply(owner, target, -1);
-                if (target == 0)
-                {
-                    ServerManager.Instance.player1Food.Value -= 1;
-                }
-                else if (target == 1)
-                {
-                    ServerManager.Instance.player2Food.Value -= 1;
-                }
-                else if (target == 2)
-                {
-                    ServerManager.Instance.player3Food.Value -= 1;
-                }
-                else
-                {
-                    ServerManager.Instance.player4Food.Value -= 1;
-                }
+                PlayerController.GetPlayer(owner).food.Value += 1;
+                PlayerController.GetPlayer(target).food.Value -= 1;
             } 
             else
             {
-                //ScavengeWood.Instance.Apply(owner, owner, 1);
-                if (owner == 0)
-                {
-                    ServerManager.Instance.player1Wood.Value += 1;
-                }
-                else if (owner == 1)
-                {
-                    ServerManager.Instance.player2Wood.Value += 1;
-                }
-                else if (owner == 2)
-                {
-                    ServerManager.Instance.player3Wood.Value += 1;
-                }
-                else
-                {
-                    ServerManager.Instance.player4Wood.Value += 1;
-                }
-
-                //ScavengeWood.Instance.Apply(owner, target, -1);
-                if (target == 0)
-                {
-                    ServerManager.Instance.player1Wood.Value -= 1;
-                }
-                else if (target == 1)
-                {
-                    ServerManager.Instance.player2Wood.Value -= 1;
-                }
-                else if (target == 2)
-                {
-                    ServerManager.Instance.player3Wood.Value -= 1;
-                }
-                else
-                {
-                    ServerManager.Instance.player4Wood.Value -= 1;
-                }
+                PlayerController.GetPlayer(owner).wood.Value += 1;
+                PlayerController.GetPlayer(target).wood.Value -= 1;
             }
         }
 

@@ -17,73 +17,11 @@ namespace Wendogo
         public event Action OnAssignedRoles;
         public event Action OnDrawCard;
         public event Action OnPlayerTurnEnded;
-        public event Action OnNightConsequencesEnded;
+        public event Action OnResolveCardNightConsequences;
         public string gameSceneName = "Game";
         private Dictionary<ulong, PlayerController> _playersById;
+        private HashSet<int> resolvedCards = new HashSet<int>();
 
-        #endregion
-
-        #region Network Variables
-
-        public NetworkVariable<int> player1Life = new NetworkVariable<int>(
-            10, // valeur initiale
-            NetworkVariableReadPermission.Everyone // seul le propriétaire peut modifier
-        );
-
-        public NetworkVariable<int> player2Life = new NetworkVariable<int>(
-            10, // valeur initiale
-            NetworkVariableReadPermission.Everyone // seul le propriétaire peut modifier
-        );
-
-        public NetworkVariable<int> player3Life = new NetworkVariable<int>(
-            10, // valeur initiale
-            NetworkVariableReadPermission.Everyone // seul le propriétaire peut modifier
-        );
-
-        public NetworkVariable<int> player4Life = new NetworkVariable<int>(
-            10, // valeur initiale
-            NetworkVariableReadPermission.Everyone // seul le propriétaire peut modifier
-        );
-
-        public NetworkVariable<int> player1Wood = new NetworkVariable<int>(
-            0, // valeur initiale
-            NetworkVariableReadPermission.Everyone // seul le propriétaire peut modifier
-        );
-
-        public NetworkVariable<int> player2Wood = new NetworkVariable<int>(
-            0, // valeur initiale
-            NetworkVariableReadPermission.Everyone // seul le propriétaire peut modifier
-        );
-
-        public NetworkVariable<int> player3Wood = new NetworkVariable<int>(
-            0, // valeur initiale
-            NetworkVariableReadPermission.Everyone // seul le propriétaire peut modifier
-        );
-
-        public NetworkVariable<int> player4Wood = new NetworkVariable<int>(
-            0, // valeur initiale
-            NetworkVariableReadPermission.Everyone // seul le propriétaire peut modifier
-        );
-
-        public NetworkVariable<int> player1Food = new NetworkVariable<int>(
-            0, // valeur initiale
-            NetworkVariableReadPermission.Everyone // seul le propriétaire peut modifier
-        );
-
-        public NetworkVariable<int> player2Food = new NetworkVariable<int>(
-            0, // valeur initiale
-            NetworkVariableReadPermission.Everyone // seul le propriétaire peut modifier
-        );
-
-        public NetworkVariable<int> player3Food = new NetworkVariable<int>(
-            0, // valeur initiale
-            NetworkVariableReadPermission.Everyone // seul le propriétaire peut modifier
-        );
-
-        public NetworkVariable<int> player4Food = new NetworkVariable<int>(
-            0, // valeur initiale
-            NetworkVariableReadPermission.Everyone // seul le propriétaire peut modifier
-        );
 
         #endregion
 
@@ -152,6 +90,8 @@ namespace Wendogo
 
             return "Unknown";
         }
+
+        public static Cycle GetCycle() => GameStateMachine.Instance.Cycle;
 
         #endregion
 
@@ -248,17 +188,24 @@ namespace Wendogo
         [ServerRpc(RequireOwnership = false)]
         public void RespondPassiveResultServerRpc(int playedCardId, ulong origin, ulong target, bool isApply, int value)
         {
+            if (!resolvedCards.Add(playedCardId)) return; // Ignore repeated calls
+
             GameStateMachine.Instance.OnPassiveResultReceived(playedCardId, origin, target, isApply, value);
         }
 
-        #endregion
-
-        // Sends data to the server, typically used to notify the server of specific actions or events.
         [ServerRpc(RequireOwnership = false)]
-        public void SendDataServerServerRpc(ServerRpcParams rpcParams = default)
+        public void SynchronizePlayerValuesServerRpc(bool copyToHidden)
         {
-            Debug.Log("SendDataServerServerRpc");
+            // Parcourt tous les joueurs et délègue la responsabilité au PlayerController
+            foreach (var player in _playersById.Values)
+            {
+                if (copyToHidden)
+                    player.CopyPublicToHiddenClientRpc();
+                else
+                    player.CopyHiddenToPublicClientRpc();
+            }
         }
 
+        #endregion
     }
 }

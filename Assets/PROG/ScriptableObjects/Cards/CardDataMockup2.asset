@@ -20,5 +20,6 @@ MonoBehaviour:
   Value: 2
   isPassive: 0
   HasTarget: 0
+  priorityIndex: 0
   ID: 10155
   Toggle: 0

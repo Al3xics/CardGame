@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace Wendogo
 {
@@ -9,17 +10,16 @@ namespace Wendogo
 
         public override bool ApplyPassive(int playedCardId, ulong origin, ulong target, out int value)
         {
-            DataCollection script = GameObject.Find("DataCollection").GetComponent<DataCollection>();
-            CardDataSO card = script.cardDatabase.GetCardByID(playedCardId);
+            value = -1;
+            var card = GameObject.Find("DataCollection").GetComponent<DataCollection>().cardDatabase.GetCardByID(playedCardId);
             
             if (card.CardEffect is ScavengeFood)
             {
                 value = boostFoodBy;
-                Debug.Log($"Boost food by {value}");
+                Debug.Log($"BoostFood passive applied! Boost by {value}");
                 return true;
             }
             
-            value = -1;
             return false;
         }
     }
