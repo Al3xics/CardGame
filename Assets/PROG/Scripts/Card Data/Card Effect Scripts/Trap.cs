@@ -1,23 +1,27 @@
 ﻿using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Wendogo
 {
     [CreateAssetMenu(fileName = "Trap", menuName = "Card Effects/Trap")]
     public class Trap : CardEffect
     {
-        public int defendValue = 5;
+        public int defenseValue = 1;
 
-        public bool ApplyPassive(int attackingEffectId, ulong origin, ulong target, out int value)
+        public override bool ApplyPassive(int playedCardId, ulong origin, ulong target, out int value)
         {
-            DataCollection script = GameObject.Find("DataCollection").GetComponent<DataCollection>();
-            //script.effects.TryGetValue(attackingEffectId, out CardEffect cardEffect);
-
-            //if (cardEffect is GroupAttack)
+            value = -1;
+            var card = GameObject.Find("DataCollection").GetComponent<DataCollection>().cardDatabase.GetCardByID(playedCardId);
+            
+            PlayerController originPlayer = PlayerController.GetPlayer(origin);
+            
+            if (card.CardEffect is WendigoAttack || (card.CardEffect is FightOrFlight && originPlayer.Role.Value == RoleType.Wendogo) || card.CardEffect is GroupAttack)
             {
-                //value = GroupAttack.AttackValue - defendValue;
-                //return true;
+                value = defenseValue;
+                Debug.Log($"Defense by {value}");
+                return true;
             }
-
+            
             value = -1;
             return false;
         }
