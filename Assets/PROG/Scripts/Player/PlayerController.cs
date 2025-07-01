@@ -406,7 +406,15 @@ namespace Wendogo
 
             });
         }
-        
+
+        //[ClientRpc]
+        //public void FinishedCheckCardPlayedClientRpc()
+        //{
+        //    if (!IsOwner) return;
+        //    pcSMObject.GetComponent<PlayerControllerSM>()
+        //              .ChangeState<PCNotifyMissingCardsState>(this);
+        //}
+
         [ClientRpc]
         public void DestructAllTrapsClientRpc()
         {
