@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,7 +11,7 @@ public class TargetSelectionUI : MonoBehaviour
 
     private void Awake()
     {
-        _button = GetComponent<Button>();
+        //_button = GetComponent<Button>();
     }
 
     public void TargetSelection()

@@ -8,6 +8,7 @@ using Unity.Netcode;
 using UnityEngine.SceneManagement;
 using Unity.VisualScripting;
 using Cysharp.Threading.Tasks.Triggers;
+using static UnityEngine.GraphicsBuffer;
 
 namespace Wendogo
 {
@@ -20,7 +21,7 @@ namespace Wendogo
         [SerializeField] public HandManager _handManager;
 
         private PlayerUI playerUIInstance;
-        private GameObject TargetUI;
+
         private bool uiInitialized = false;
 
         public NetworkVariable<RoleType> Role = new(
@@ -33,6 +34,8 @@ namespace Wendogo
 
         List<ulong> playerList = new List<ulong>();
 
+        private ulong target;
+        GameObject selectTargetCanvas = GameObject.Find("SelectTargetCanvas");
 
         public int _playerPA;
 
@@ -102,7 +105,6 @@ namespace Wendogo
                 _inputEvent = GameObject.Find("EventSystem")?.GetComponent<EventSystem>();
                 if (_inputEvent != null) _inputEvent.enabled = false;
                 if (_handManager == null) _handManager = GameObject.FindWithTag("hand")?.GetComponent<HandManager>();
-                if(TargetUI == null) TargetUI = GameObject.FindWithTag("TargetUI");
             }
             if (!IsOwner) return;
 
@@ -174,11 +176,6 @@ namespace Wendogo
             Debug.Log($"Selected target is {_selectedTarget} ");
 
             return _selectedTarget;
-        }
-
-        public void ToggleUI()
-        {
-            TargetUI.SetActive(!TargetUI.activeSelf);
         }
 
         private void HandleDeckClicked(int deckId)
@@ -325,32 +322,24 @@ namespace Wendogo
             return null;
         }
 
+
         /// <summary>
         /// Updates the hidden health, food, and wood values to match their respective public network variables.
         /// Also replicates the list of public passive cards into the hidden passive cards list.
         /// </summary>
-        [ClientRpc]
-        public void CopyPublicToHiddenClientRpc()
-        {
-            hiddenHealth = health.Value;
-            hiddenFood = food.Value;
-            hiddenWood = wood.Value;
 
-            HiddenPassiveCards = new List<CardDataSO>(PassiveCards);
+        public ulong LaunchPlayerSelection(ulong origin, int value = -1)
+        {
+            selectTargetCanvas.SetActive(true);
+
+
+            target = 0;
+            return 0;
         }
 
-        /// <summary>
-        /// Copies the values of hidden health, food, and wood into their respective public network variables.
-        /// Also transfers the list of hidden passive cards to the public passive cards list.
-        /// </summary>
-        [ClientRpc]
-        public void CopyHiddenToPublicClientRpc()
+        public void LaunchResourcesSelection(ulong origin, int value = -1)
         {
-            health.Value = hiddenHealth;
-            food.Value = hiddenFood;
-            wood.Value = hiddenWood;
 
-            PassiveCards = new List<CardDataSO>(HiddenPassiveCards);
         }
 
 
@@ -447,6 +436,30 @@ namespace Wendogo
                     if (PassiveCards[i].CardEffect is Trap)
                         PassiveCards.RemoveAt(i);
             }
+        }
+
+        [ClientRpc]
+        public void CopyPublicToHiddenClientRpc()
+        {
+            hiddenHealth = health.Value;
+            hiddenFood = food.Value;
+            hiddenWood = wood.Value;
+
+            HiddenPassiveCards = new List<CardDataSO>(PassiveCards);
+        }
+
+        /// <summary>
+        /// Copies the values of hidden health, food, and wood into their respective public network variables.
+        /// Also transfers the list of hidden passive cards to the public passive cards list.
+        /// </summary>
+        [ClientRpc]
+        public void CopyHiddenToPublicClientRpc()
+        {
+            health.Value = hiddenHealth;
+            food.Value = hiddenFood;
+            wood.Value = hiddenWood;
+
+            PassiveCards = new List<CardDataSO>(HiddenPassiveCards);
         }
 
         #endregion

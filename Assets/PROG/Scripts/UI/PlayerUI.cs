@@ -3,6 +3,7 @@ using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 using Wendogo.Menu;
+using static UnityEngine.GraphicsBuffer;
 
 namespace Wendogo
 {
@@ -14,8 +15,24 @@ namespace Wendogo
         private TextMeshProUGUI endText;
         private TextMeshProUGUI roleText;
 
+        [SerializeField] private GameObject TargetUI;
+
+        public static PlayerUI Instance { get; private set; }
+
+
+
         void Awake()
         {
+            if (Instance == null)
+            {
+                Instance = this;
+                DontDestroyOnLoad(gameObject);
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
+
             playerTitle = transform.Find("PlayerTitle")?.GetComponent<TextMeshProUGUI>();
             readyText = transform.Find("ReadyText")?.GetComponent<TextMeshProUGUI>();
             readyButton = transform.Find("ReadyButton")?.GetComponent<Button>();
@@ -24,6 +41,11 @@ namespace Wendogo
 
             if (readyText != null) readyText.gameObject.SetActive(false);
             if (endText != null) endText.gameObject.SetActive(false);
+        }
+
+        public void ToggleTargetSelectUI()
+        {
+            TargetUI.SetActive(!TargetUI.activeSelf);
         }
 
         public void SendDebug(string message)

@@ -40,11 +40,8 @@ namespace Wendogo
             _rectTransform.rotation = Quaternion.identity;
         }
 
-
-
         public void OnEndDrag(PointerEventData eventData)
         {
-
             _canvasGroup.blocksRaycasts = true;
 
             //Check if the card was dropped on a valid drop zone
