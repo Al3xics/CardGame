@@ -36,12 +36,11 @@ namespace Wendogo
 
         List<ulong> playerList = new List<ulong>();
 
-        private ulong target;
-        GameObject selectTargetCanvas = GameObject.Find("SelectTargetCanvas");
+        public ulong target;
+        GameObject selectTargetCanvas;
 
         public int _playerPA;
 
-        public ulong target;
 
         private int _selectedDeck = -1;
         public int deckID;
@@ -58,9 +57,6 @@ namespace Wendogo
         public static ulong LocalPlayerId;
 
         private GameObject pcSMObject;
-        
-        GameObject selectTargetCanvas = GameObject.Find("SelectTargetCanvas");
-
         #endregion
 
         #region Health & Food & Wood & Cards
@@ -466,29 +462,6 @@ namespace Wendogo
             PassiveCards = new List<CardDataSO>(HiddenPassiveCards);
         }
 
-        [ClientRpc]
-        public void CopyPublicToHiddenClientRpc()
-        {
-            hiddenHealth = health.Value;
-            hiddenFood = food.Value;
-            hiddenWood = wood.Value;
-
-            HiddenPassiveCards = new List<CardDataSO>(PassiveCards);
-        }
-
-        /// <summary>
-        /// Copies the values of hidden health, food, and wood into their respective public network variables.
-        /// Also transfers the list of hidden passive cards to the public passive cards list.
-        /// </summary>
-        [ClientRpc]
-        public void CopyHiddenToPublicClientRpc()
-        {
-            health.Value = hiddenHealth;
-            food.Value = hiddenFood;
-            wood.Value = hiddenWood;
-
-            PassiveCards = new List<CardDataSO>(HiddenPassiveCards);
-        }
 
         #endregion
 

@@ -787,7 +787,7 @@ MonoBehaviour:
   maxRetries: 10
   serverPort: 7777
   serverAddress: 127.0.0.1
-  expectedPlayersCount: 4
+  expectedPlayersCount: 2
   playerPrefab: {fileID: 1698801561783264169, guid: cef7361df10639140881ad0f81a39580, type: 3}
 --- !u!4 &1600000139
 Transform:

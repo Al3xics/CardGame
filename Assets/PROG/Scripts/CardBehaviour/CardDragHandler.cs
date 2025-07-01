@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using TMPro.EditorUtilities;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -38,6 +39,7 @@ namespace Wendogo
             // Move in local (anchored) space by the pointer delta
             _rectTransform.anchoredPosition += eventData.delta / _canvas.scaleFactor;
             _rectTransform.rotation = Quaternion.identity;
+            _rectTransform.localScale = Vector3.one;
         }
 
         public void OnEndDrag(PointerEventData eventData)
@@ -56,7 +58,7 @@ namespace Wendogo
             //Re-enable raycasts for interaction detection
             _canvasGroup.blocksRaycasts = true;
             _rectTransform.position = _originalPosition;
-            _rectTransform.rotation = _originalRotation;
+            //_rectTransform.rotation = _originalRotation;
         }
 
     }
