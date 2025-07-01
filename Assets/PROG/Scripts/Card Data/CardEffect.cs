@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Threading.Tasks;
 
 namespace Wendogo
 {
@@ -19,5 +20,12 @@ namespace Wendogo
             value = -1;
             return false;
         }
+
+        public virtual Task ApplyAsync(ulong owner, ulong target, int value = -1)
+        {
+            Apply(owner, target, value);
+            return Task.CompletedTask;
+        }
+
     }
 }
