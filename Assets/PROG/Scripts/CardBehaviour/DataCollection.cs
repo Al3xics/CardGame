@@ -21,7 +21,10 @@ namespace Wendogo
         {
             // Clone the ScriptableObjects at runtime to avoid modifying the original
             RuntimeResourcesDeck = Instantiate(resourcesDeck);
+            RuntimeResourcesDeck.CardsDeck = new List<CardDataSO>(resourcesDeck.CardsDeck); // Initialize CardsDeck
+
             RuntimeActionDeck = Instantiate(actionDeck);
+            RuntimeActionDeck.CardsDeck = new List<CardDataSO>(actionDeck.CardsDeck); // Initialize CardsDeck
         }
         
         public List<CardDataSO> GetDeck(int deckID)

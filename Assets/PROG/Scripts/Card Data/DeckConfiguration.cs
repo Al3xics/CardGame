@@ -21,7 +21,7 @@ public class DeckConfiguration : SerializedScriptableObject
 
             return _cardsDeck;
         }
-        private set => _cardsDeck = value;
+        set => _cardsDeck = value;
     }
 
     private List<CardDataSO> CreateDeck()
