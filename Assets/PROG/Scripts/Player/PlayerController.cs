@@ -388,6 +388,7 @@ namespace Wendogo
                     else
                         PassiveCards.Remove(hiddenCard);
                     isApplyPassive = true;
+                    break;
                 }
             }
 

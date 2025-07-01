@@ -12,16 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9592994fb65ae4346bf93e970c81c9d7, type: 3}
   m_Name: Ressources
   m_EditorClassIdentifier: 
-  serializationData:
-    SerializedFormat: 2
-    SerializedBytes: 
-    ReferencedUnityObjects: []
-    SerializedBytesString: 
-    Prefab: {fileID: 0}
-    PrefabModificationsReferencedUnityObjects: []
-    PrefabModifications: []
-    SerializationNodes: []
-  _cardDeckData:
+  cardDeckData:
   - CardData: {fileID: 11400000, guid: 18a5be297a7ba38458168dbdfc95dca1, type: 2}
     quantity: 30
   - CardData: {fileID: 11400000, guid: e473904292e34344ea4aae777984439a, type: 2}
