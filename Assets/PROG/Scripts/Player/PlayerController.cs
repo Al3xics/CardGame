@@ -102,6 +102,7 @@ namespace Wendogo
                 _inputEvent = GameObject.Find("EventSystem")?.GetComponent<EventSystem>();
                 if (_inputEvent != null) _inputEvent.enabled = false;
                 if (_handManager == null) _handManager = GameObject.FindWithTag("hand")?.GetComponent<HandManager>();
+                if(TargetUI == null) TargetUI = GameObject.FindWithTag("TargetUI");
             }
             if (!IsOwner) return;
 
@@ -175,9 +176,9 @@ namespace Wendogo
             return _selectedTarget;
         }
 
-        private void ToggleUI()
+        public void ToggleUI()
         {
-
+            TargetUI.SetActive(!TargetUI.activeSelf);
         }
 
         private void HandleDeckClicked(int deckId)
@@ -411,6 +412,7 @@ namespace Wendogo
                     else
                         PassiveCards.Remove(hiddenCard);
                     isApplyPassive = true;
+                    break;
                 }
             }
 

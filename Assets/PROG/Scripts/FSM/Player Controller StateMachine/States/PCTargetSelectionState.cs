@@ -12,6 +12,7 @@ namespace Wendogo
 		public override void OnEnter()
 		{
 			base.OnEnter();
+			_player.ToggleUI();
 			AwaitTarget();
 		}
 

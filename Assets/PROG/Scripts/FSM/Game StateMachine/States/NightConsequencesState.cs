@@ -24,7 +24,11 @@ namespace Wendogo
             sortedActions = StateMachine.NightActions.Where(card => card.CardPriorityIndex > 0).OrderBy(card => card.CardPriorityIndex).ToList();
             
             ServerManager.Instance.SynchronizePlayerValuesServerRpc(false);
-            ResolveCardNightConsequences(id);
+            
+            if (sortedActions.Count != 0)
+                ResolveCardNightConsequences(id);
+            else
+                NextState();
         }
 
         // todo
