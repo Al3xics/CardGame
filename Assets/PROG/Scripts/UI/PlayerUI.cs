@@ -26,6 +26,9 @@ namespace Wendogo
             if (endText != null) endText.gameObject.SetActive(false);
         }
 
+        public void SendDebug(string message)
+        { Debug.Log(message); }
+
         public void RenamePlayer(string name)
         {
             if (playerTitle != null)
