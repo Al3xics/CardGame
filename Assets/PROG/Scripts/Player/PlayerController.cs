@@ -9,6 +9,7 @@ using Unity.VisualScripting;
 using Cysharp.Threading.Tasks.Triggers;
 using UnityEngine.UIElements;
 using Button = UnityEngine.UI.Button;
+using System.Threading.Tasks;
 
 namespace Wendogo
 {
@@ -55,6 +56,10 @@ namespace Wendogo
         public static ulong LocalPlayerId;
 
         private GameObject pcSMObject;
+        
+        public virtual event Action OnTargetDetection;
+        
+        public int temporaryTask = -1;
 
         #endregion
 
@@ -307,13 +312,12 @@ namespace Wendogo
             return null;
         }
 
-        public ulong LaunchPlayerSelection(ulong origin, int value = -1)
+        public async Task LaunchPlayerSelection(ulong owner, int value = -1)
         {
+            OnTargetDetection?.Invoke();
             selectTargetCanvas.SetActive(true);
+            await UniTask.WaitUntil(() => temporaryTask > -1);
             
-            
-            target = 0;
-            return 0;
         }
         
         public void LaunchResourcesSelection(ulong origin, int value = -1)

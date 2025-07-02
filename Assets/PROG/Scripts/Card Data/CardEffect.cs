@@ -6,7 +6,7 @@ namespace Wendogo
 {
     public abstract class CardEffect : ScriptableObject
     {
-        public virtual event Action OnTargetDetected;
+        //public virtual event Action OnTargetDetection;
         public virtual void Apply(ulong owner, ulong target, int value = -1) { }
 
         /// <summary>
@@ -25,7 +25,6 @@ namespace Wendogo
 
         public virtual Task ApplyAsync(ulong owner, ulong target, int value = -1)
         {
-            Apply(owner, target, value);
             return Task.CompletedTask;
         }
 

@@ -12,12 +12,12 @@ namespace Wendogo
             // If 'value' is '-1', then no value was passed and just use woodGained
             int wood = value != -1 ? value + woodGained : woodGained;
             var player = PlayerController.GetPlayer(target);
-            Debug.Log($"Scavenge food by {wood}");
+            Debug.Log($"Scavenge wood by {wood}");
             
             if (player.IsSimulatingNight)
-                player.hiddenFood += wood; // Night, so apply only for local player
+                player.hiddenWood += wood; // Night, so apply only for local player
             else
-                player.food.Value += wood; // Day, so apply for all players
+                player.wood.Value += wood; // Day, so apply for all players
         }
     }
 }
