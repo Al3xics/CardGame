@@ -53,8 +53,8 @@ namespace Wendogo
         public static ulong LocalPlayerId;
 
         private GameObject pcSMObject;
-        
-        GameObject selectTargetCanvas = GameObject.Find("SelectTargetCanvas");
+
+        GameObject selectTargetCanvas;
 
         #endregion
 
