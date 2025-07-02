@@ -49,12 +49,12 @@ namespace Wendogo
 
         GameObject _pcSMObject;
 
+        private GameObject selectTargetCanvas;
+
         public static PlayerController LocalPlayer;
         public static ulong LocalPlayerId;
 
         private GameObject pcSMObject;
-        
-        GameObject selectTargetCanvas = GameObject.Find("SelectTargetCanvas");
 
         #endregion
 
@@ -97,6 +97,7 @@ namespace Wendogo
                 pcSMObject = new GameObject($"{nameof(PlayerControllerSM)}");
                 pcSMObject.AddComponent<PlayerControllerSM>();
             }
+            selectTargetCanvas = GameObject.Find("SelectTargetCanvas");
         }
 
         public override void OnNetworkSpawn()

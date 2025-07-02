@@ -16,6 +16,7 @@ namespace Wendogo
         // Runtime versions of the decks
         public DeckConfiguration RuntimeResourcesDeck { get; private set; }
         public DeckConfiguration RuntimeActionDeck { get; private set; }
+        public static DataCollection Instance { get; private set; }
         
         private void Awake()
         {
@@ -25,6 +26,15 @@ namespace Wendogo
 
             RuntimeActionDeck = Instantiate(actionDeck);
             RuntimeActionDeck.CardsDeck = new List<CardDataSO>(actionDeck.CardsDeck); // Initialize CardsDeck
+            
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
         }
         
         public List<CardDataSO> GetDeck(int deckID)

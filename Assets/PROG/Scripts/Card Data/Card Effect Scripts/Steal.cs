@@ -7,7 +7,7 @@ namespace Wendogo
     {
         public int typeOfRessource = 0;
 
-        public override void Apply(ulong owner, ulong target, int value = default)
+        public override void Apply(ulong owner, ulong target, int value = -1)
         {
             if(typeOfRessource == 0)
             {

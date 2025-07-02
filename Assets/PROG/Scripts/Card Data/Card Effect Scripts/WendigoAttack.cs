@@ -1,6 +1,7 @@
-﻿using System.Threading.Tasks;
-using Cysharp.Threading.Tasks;
+﻿using Cysharp.Threading.Tasks;
 using UnityEngine;
+using System.Threading.Tasks;
+using System;
 
 namespace Wendogo
 {
@@ -10,8 +11,12 @@ namespace Wendogo
         public int damageDone = 1;
         private int temporaryTask = -1;
         
+        public override event Action OnTargetDetected;
+
+        
         public override async Task ApplyAsync(ulong owner, ulong target, int value = -1)
         {
+            OnTargetDetected?.Invoke();
             PlayerController player = PlayerController.GetPlayer(owner);
             await UniTask.WaitUntil(() => player.LaunchPlayerSelection(owner, value) >= (ulong)temporaryTask);
             

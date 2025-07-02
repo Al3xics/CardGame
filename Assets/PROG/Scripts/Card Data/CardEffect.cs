@@ -1,10 +1,12 @@
 using UnityEngine;
 using System.Threading.Tasks;
+using System;
 
 namespace Wendogo
 {
     public abstract class CardEffect : ScriptableObject
     {
+        public virtual event Action OnTargetDetected;
         public virtual void Apply(ulong owner, ulong target, int value = -1) { }
 
         /// <summary>
