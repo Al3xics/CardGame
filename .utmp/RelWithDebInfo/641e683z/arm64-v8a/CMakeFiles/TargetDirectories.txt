@@ -1,0 +1,5 @@
+C:/Users/valen/OneDrive/Documents/UnityRepository/CardGame/.utmp/RelWithDebInfo/641e683z/arm64-v8a/CMakeFiles/edit_cache.dir
+C:/Users/valen/OneDrive/Documents/UnityRepository/CardGame/.utmp/RelWithDebInfo/641e683z/arm64-v8a/CMakeFiles/rebuild_cache.dir
+C:/Users/valen/OneDrive/Documents/UnityRepository/CardGame/.utmp/RelWithDebInfo/641e683z/arm64-v8a/GameActivity/CMakeFiles/game.dir
+C:/Users/valen/OneDrive/Documents/UnityRepository/CardGame/.utmp/RelWithDebInfo/641e683z/arm64-v8a/GameActivity/CMakeFiles/edit_cache.dir
+C:/Users/valen/OneDrive/Documents/UnityRepository/CardGame/.utmp/RelWithDebInfo/641e683z/arm64-v8a/GameActivity/CMakeFiles/rebuild_cache.dir

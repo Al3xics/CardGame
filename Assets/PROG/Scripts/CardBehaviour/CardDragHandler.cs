@@ -38,13 +38,11 @@ namespace Wendogo
             // Move in local (anchored) space by the pointer delta
             _rectTransform.anchoredPosition += eventData.delta / _canvas.scaleFactor;
             _rectTransform.rotation = Quaternion.identity;
+            _rectTransform.localScale = Vector3.one;
         }
-
-
 
         public void OnEndDrag(PointerEventData eventData)
         {
-
             _canvasGroup.blocksRaycasts = true;
 
             //Check if the card was dropped on a valid drop zone
@@ -59,7 +57,7 @@ namespace Wendogo
             //Re-enable raycasts for interaction detection
             _canvasGroup.blocksRaycasts = true;
             _rectTransform.position = _originalPosition;
-            _rectTransform.rotation = _originalRotation;
+            //_rectTransform.rotation = _originalRotation;
         }
 
     }

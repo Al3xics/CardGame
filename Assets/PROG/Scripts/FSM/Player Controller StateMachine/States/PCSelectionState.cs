@@ -11,7 +11,9 @@ namespace Wendogo
 		public override void OnEnter()
 		{
 			base.OnEnter();
-			if (_player.ActiveCard.Card.HasTarget)
+			//OnTargetDetected += PassToTarget;
+
+            if (_player.ActiveCard.Card.HasTarget)
 			{
 				StateMachine.ChangeState<PCTargetSelectionState>();
 			}
@@ -34,6 +36,11 @@ namespace Wendogo
 		{
 			base.OnExit();
 		}
+
+		public void PassToTarget()
+		{
+            StateMachine.ChangeState<PCTargetSelectionState>();
+        }
 
 		public void CheckRessources()
 		{
