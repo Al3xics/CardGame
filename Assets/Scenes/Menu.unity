@@ -1049,7 +1049,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8b51677d7964aa29c17680fa74ec6c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  multiplayerConfiguration: {fileID: 11400000, guid: 72f10e2eedad9774e83e8819d618f74f, type: 2}
+  multiplayerConfiguration: {fileID: 11400000, guid: af580614e15bb824c8baca1ca5eaf107, type: 2}
   createSessionButton: {fileID: 677475133}
   backToMenuButton: {fileID: 354768773}
   playerNameInputField: {fileID: 357540197}
@@ -4059,7 +4059,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9d70a9680ad402c8d48c8c194fbcf7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  multiplayerConfiguration: {fileID: 11400000, guid: 72f10e2eedad9774e83e8819d618f74f, type: 2}
+  multiplayerConfiguration: {fileID: 11400000, guid: af580614e15bb824c8baca1ca5eaf107, type: 2}
   joinButton: {fileID: 851850707}
   backToMenuButton: {fileID: 821843502}
   pasteCodeButton: {fileID: 1219682044}
@@ -5244,30 +5244,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   gameSceneName: Game Valentin
-  player1Life:
-    m_InternalValue: 10
-  player2Life:
-    m_InternalValue: 10
-  player3Life:
-    m_InternalValue: 10
-  player4Life:
-    m_InternalValue: 10
-  player1Wood:
-    m_InternalValue: 0
-  player2Wood:
-    m_InternalValue: 0
-  player3Wood:
-    m_InternalValue: 0
-  player4Wood:
-    m_InternalValue: 0
-  player1Food:
-    m_InternalValue: 0
-  player2Food:
-    m_InternalValue: 0
-  player3Food:
-    m_InternalValue: 0
-  player4Food:
-    m_InternalValue: 0
 --- !u!1001 &3218768946901839885
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -5,10 +5,6 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using Unity.Netcode;
 using UnityEngine.SceneManagement;
-using Unity.VisualScripting;
-using Cysharp.Threading.Tasks.Triggers;
-using static UnityEngine.GraphicsBuffer;
-using UnityEngine.UIElements;
 using Button = UnityEngine.UI.Button;
 
 
@@ -93,11 +89,11 @@ namespace Wendogo
 
         private void Start()
         {
-            if (IsOwner)
-            {
-                pcSMObject = new GameObject($"{nameof(PlayerControllerSM)}");
-                pcSMObject.AddComponent<PlayerControllerSM>();
-            }
+            //if (IsOwner)
+            //{
+            //    pcSMObject = new GameObject($"{nameof(PlayerControllerSM)}");
+            //    pcSMObject.AddComponent<PlayerControllerSM>();
+            //}
         }
 
         public override void OnNetworkSpawn()
@@ -109,6 +105,8 @@ namespace Wendogo
                 if (_handManager == null) _handManager = GameObject.FindWithTag("hand")?.GetComponent<HandManager>();
             }
             if (!IsOwner) return;
+
+
 
             LocalPlayer = this;
             LocalPlayerId = NetworkManager.Singleton.LocalClientId;
@@ -132,6 +130,8 @@ namespace Wendogo
                 _inputEvent = GameObject.Find("EventSystem")?.GetComponent<EventSystem>();
                 if (_inputEvent != null) _inputEvent.enabled = false;
                 if (_handManager == null) _handManager = GameObject.FindWithTag("hand")?.GetComponent<HandManager>();
+                pcSMObject = new GameObject($"{nameof(PlayerControllerSM)}");
+                pcSMObject.AddComponent<PlayerControllerSM>();
             }
         }
 
