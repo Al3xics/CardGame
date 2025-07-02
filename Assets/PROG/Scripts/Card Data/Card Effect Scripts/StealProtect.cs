@@ -9,7 +9,7 @@ namespace Wendogo
         public override bool ApplyPassive(int playedCardId, ulong origin, ulong target, out int value)
         {
             value = -1;
-            var card = GameObject.Find("DataCollection").GetComponent<DataCollection>().cardDatabase.GetCardByID(playedCardId);
+            var card = DataCollection.Instance.cardDatabase.GetCardByID(playedCardId);
             
             if (card.CardEffect is StealResourceEffect)
             {

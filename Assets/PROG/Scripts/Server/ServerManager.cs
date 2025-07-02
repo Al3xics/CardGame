@@ -12,7 +12,6 @@ namespace Wendogo
 {
     public class ServerManager : NetworkBehaviour
     {
-        
         #region Variables
 
         public static ServerManager Instance { get; private set; }
@@ -26,8 +25,7 @@ namespace Wendogo
         
         public string gameSceneName = "Game";
         private Dictionary<ulong, PlayerController> _playersById;
-
-
+        
         #endregion
 
         #region Basic Method
@@ -157,30 +155,25 @@ namespace Wendogo
             GameStateMachine.Instance.CheckCardPlayed(cardID, origin, target);
         }
         
-        [ServerRpc(RequireOwnership = false)]
-        public void TryApplyPassiveServerRpc(int playedCardId, ulong origin, ulong target)
+        [Rpc(SendTo.Server)]
+        public void TryApplyPassiveRpc(int playedCardId, ulong origin, ulong target)
         {
             if (_playersById.TryGetValue(target, out var player))
-                player.TryApplyPassiveClientRpc(playedCardId, origin);
+                player.TryApplyPassiveRpc(playedCardId, origin, RpcTarget.Single(target, RpcTargetUse.Temp));
         }
         
-        [ServerRpc(RequireOwnership = false)]
-        public void FinishedCheckCardPlayedServerRpc(ulong playerId, ServerRpcParams rpcParams = default)
+        [Rpc(SendTo.Server)]
+        public void FinishedPassiveCardPlayedRpc(int cardId, ulong origin, bool isHiddenPassiveCards)
         {
-            // Signal to the playerId that the GameStateMachine finished applying (and checking) the cards he played.
-            // Now, he needs to ask for a card with "ServerManager.TransmitMissingCardsServerRpc".
-            if (_playersById.TryGetValue(playerId, out var player))
+            if (_playersById.TryGetValue(origin, out var player))
             {
-                player.FinishedCheckCardPlayedClientRpc();
+                if (isHiddenPassiveCards)
+                    player.AddHiddenPassiveCardRpc(cardId, RpcTarget.Single(origin, RpcTargetUse.Temp));
+                else
+                    player.AddPassiveCardRpc(cardId, RpcTarget.Single(origin, RpcTargetUse.Temp));
+                
+                player.FinishedCardPlayedRpc(RpcTarget.Single(origin, RpcTargetUse.Temp));
             }
-        }
-        
-        [ServerRpc(RequireOwnership = false)]
-        public void RespondPassiveResultServerRpc(int playedCardId, ulong origin, ulong target, bool isApply, int value, ServerRpcParams rpcParams = default)
-        {
-            if (rpcParams.Receive.SenderClientId != origin) return;
-
-            GameStateMachine.Instance.OnPassiveResultReceived(playedCardId, origin, target, isApply, value);
         }
 
         [ServerRpc(RequireOwnership = false)]

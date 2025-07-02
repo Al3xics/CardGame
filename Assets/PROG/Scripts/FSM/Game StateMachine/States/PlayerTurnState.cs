@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 namespace Wendogo
@@ -44,7 +45,7 @@ namespace Wendogo
         /// <exception cref="ArgumentOutOfRangeException">Thrown when the game cycle value is invalid or unhandled.</exception>
         public void CheckCardPlayed(int playedCardID, ulong origin, ulong target)
         {
-            var card = StateMachine.dataCollectionScript.cardDatabase.GetCardByID(playedCardID);
+            var card = DataCollection.Instance.cardDatabase.GetCardByID(playedCardID);
             
             switch (StateMachine.Cycle)
             {
@@ -52,21 +53,19 @@ namespace Wendogo
                     // For passive cards
                     if (card.isPassive)
                     {
-                        PlayerController.GetPlayer(origin).PassiveCards.Add(card);
-                        ServerManager.Instance.FinishedCheckCardPlayedServerRpc(origin);
+                        ServerManager.Instance.FinishedPassiveCardPlayedRpc(playedCardID, origin, false);
                         return;
                     }
                     
                     // For active cards
-                    ServerManager.Instance.TryApplyPassiveServerRpc(playedCardID, origin, target);
+                    ServerManager.Instance.TryApplyPassiveRpc(playedCardID, origin, target);
                     break;
                 
                 case Cycle.Night:
                     // For passive cards
                     if (card.isPassive)
                     {
-                        PlayerController.GetPlayer(origin).HiddenPassiveCards.Add(card);
-                        ServerManager.Instance.FinishedCheckCardPlayedServerRpc(origin);
+                        ServerManager.Instance.FinishedPassiveCardPlayedRpc(playedCardID, origin, true);
                         return;
                     }
                     
@@ -81,29 +80,12 @@ namespace Wendogo
                         });
                     }
                     else // Handle cards without priority normally
-                        ServerManager.Instance.TryApplyPassiveServerRpc(playedCardID, origin, target);
+                        ServerManager.Instance.TryApplyPassiveRpc(playedCardID, origin, target);
                     break;
                 
                 default:
                     throw new ArgumentOutOfRangeException(nameof(StateMachine.Cycle), StateMachine.Cycle, "The cycle is not valid.");
             }
-        }
-
-        /// <summary>
-        /// Handles the result of a passive card effect in the game, applying the card's effect
-        /// based on the provided parameters and notifying the server upon completion.
-        /// </summary>
-        /// <param name="playedCardId">The ID of the card whose passive effect is being processed.</param>
-        /// <param name="origin">The identifier of the player or entity that played the card.</param>
-        /// <param name="target">The identifier of the player or entity targeted by the card effect.</param>
-        /// <param name="isApply">Indicates whether the effect should be applied or reverted.</param>
-        /// <param name="value">The value associated with the effect being applied.</param>
-        public void OnPassiveResultReceived(int playedCardId, ulong origin, ulong target, bool isApply, int value)
-        {
-            var effect = StateMachine.dataCollectionScript.cardDatabase.GetCardByID(playedCardId).CardEffect;
-
-            effect.Apply(origin, target, isApply ? value : -1);
-            ServerManager.Instance.FinishedCheckCardPlayedServerRpc(origin);
         }
 
         /// <summary>

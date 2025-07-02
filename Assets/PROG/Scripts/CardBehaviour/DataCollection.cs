@@ -12,6 +12,20 @@ namespace Wendogo
         public CardDatabaseSO cardDatabase;
         public DeckConfiguration resourcesDeck;
         public DeckConfiguration actionDeck;
+        
+        public static DataCollection Instance { get; private set; }
+
+        private void Awake()
+        {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
 
         // Runtime versions of the decks
         private List<CardDataSO> _resourceDeck = new();
