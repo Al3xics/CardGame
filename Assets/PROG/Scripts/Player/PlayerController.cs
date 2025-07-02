@@ -54,7 +54,6 @@ namespace Wendogo
 
         private GameObject pcSMObject;
 
-        GameObject selectTargetCanvas;
 
         #endregion
 
