@@ -7,9 +7,6 @@ namespace Wendogo
     {
         public CardDataSO Card;
 
-        [OdinSerialize]
-        public GroupAttack Effect;
-
         public bool isSelected;
     }
 }

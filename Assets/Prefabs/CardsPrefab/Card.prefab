@@ -164,8 +164,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90742c97ac8f9924b8cbd30d40b62189, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Card: {fileID: 11400000, guid: 0a317f580c8ea75419dac16871435e5b, type: 2}
-  Effect: {fileID: 0}
+  Card: {fileID: 0}
   isSelected: 0
 --- !u!114 &8295755034486674526
 MonoBehaviour:
