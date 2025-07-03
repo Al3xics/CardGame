@@ -3,20 +3,23 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TargetSelectionUI : MonoBehaviour
+namespace Wendogo
 {
-    private Button _button;
-    [SerializeField] private ulong _playerID;
-    public static event Action<ulong> OnTargetPicked;
-
-    private void Awake()
+    public class TargetSelectionUI : MonoBehaviour
     {
-        //_button = GetComponent<Button>();
-    }
+        private Button _button;
+        [SerializeField] private ulong _playerID;
+        public static event Action<ulong> OnTargetPicked;
 
-    public void TargetSelection()
-    {
-        OnTargetPicked?.Invoke(_playerID);
-    }
+        private void Awake()
+        {
+            //_button = GetComponent<Button>();
+        }
 
+        public void TargetSelection()
+        {
+            OnTargetPicked?.Invoke(_playerID);
+        }
+
+    }
 }

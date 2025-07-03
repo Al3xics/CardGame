@@ -30,8 +30,8 @@ namespace Wendogo
 
         private void Awake()
         {
-            if(_handTransform == null)
-            _handTransform = GameObject.FindWithTag("hand").transform;
+            if (_handTransform == null)
+                _handTransform = GameObject.FindWithTag("hand").transform;
 
         }
 
@@ -44,27 +44,10 @@ namespace Wendogo
 
         public async void DrawCard(CardDataSO cardData)
         {
-            //Implement draw card
-            for (int i = 0; i < _maxHandSize; i++)
+            //Stop if hand is full
+            if (_handCards.Count >= _maxHandSize)
             {
-                //Stop if hand is full
-                if (_handCards.Count >= _maxHandSize) return;
-
-                //Instantiate a new card at the spawn position
-                GameObject g = Instantiate(_cardPrefab, _spawnPoint.position, _spawnPoint.rotation);
-                _handCards.Add(g);
-
-                //Parent the card under the hand transform to show them in the UI
-                g.transform.parent = _handTransform;
-
-                //Assign card data (placeholder)
-                //_cardsHandler.ApplyCardData(g);
-
-                //Update layout of cards along spline
-                UpdateCardPositions();
-
-                //Delay between each card draw
-                await UniTask.WaitForSeconds(0.25f);
+                return;
             }
 
             //Instantiate a new card at the spawn position
