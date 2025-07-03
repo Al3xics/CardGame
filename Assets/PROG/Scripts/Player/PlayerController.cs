@@ -93,15 +93,6 @@ namespace Wendogo
 
         #region Basic Method
 
-        private void Start()
-        {
-            if (IsOwner)
-            {
-                pcSMObject = new GameObject($"{nameof(PlayerControllerSM)}");
-                pcSMObject.AddComponent<PlayerControllerSM>();
-            }
-            selectTargetCanvas = GameObject.Find("SelectTargetCanvas");
-        }
 
         public override void OnNetworkSpawn()
         {
@@ -110,10 +101,13 @@ namespace Wendogo
                 _inputEvent = GameObject.Find("EventSystem")?.GetComponent<EventSystem>();
                 if (_inputEvent != null) _inputEvent.enabled = false;
                 if (_handManager == null) _handManager = GameObject.FindWithTag("hand")?.GetComponent<HandManager>();
+                if (IsOwner)
+                {
+                    pcSMObject = new GameObject($"{nameof(PlayerControllerSM)}");
+                    pcSMObject.AddComponent<PlayerControllerSM>();
+                }
             }
             if (!IsOwner) return;
-
-
 
             LocalPlayer = this;
             LocalPlayerId = NetworkManager.Singleton.LocalClientId;
@@ -137,8 +131,8 @@ namespace Wendogo
                 _inputEvent = GameObject.Find("EventSystem")?.GetComponent<EventSystem>();
                 if (_inputEvent != null) _inputEvent.enabled = false;
                 if (_handManager == null) _handManager = GameObject.FindWithTag("hand")?.GetComponent<HandManager>();
-                pcSMObject = new GameObject($"{nameof(PlayerControllerSM)}");
-                pcSMObject.AddComponent<PlayerControllerSM>();
+                //pcSMObject = new GameObject($"{nameof(PlayerControllerSM)}");
+                //pcSMObject.AddComponent<PlayerControllerSM>();
             }
         }
 

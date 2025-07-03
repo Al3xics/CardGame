@@ -21,4 +21,4 @@ MonoBehaviour:
   maxPlayers: 4
   isLocked: 0
   isPrivate: 0
-  enableVoiceChat: 0
+  enableVoiceChat: 1
