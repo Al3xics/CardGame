@@ -54,6 +54,8 @@ namespace Wendogo
         public static ulong LocalPlayerId;
 
         private GameObject pcSMObject;
+
+        private int cardDataID;
         
         public virtual event Action OnTargetDetection;
         
@@ -366,6 +368,11 @@ namespace Wendogo
                 copy.Add(cardId);
 
             return copy;
+        }
+
+        public CardDataSO GetCardByID(int cardId)
+        {
+            return DataCollection.Instance.cardDatabase.GetCardByID(cardId);
         }
 
         #endregion

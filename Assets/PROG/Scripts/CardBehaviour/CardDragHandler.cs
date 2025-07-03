@@ -57,7 +57,7 @@ namespace Wendogo
             //Re-enable raycasts for interaction detection
             _canvasGroup.blocksRaycasts = true;
             _rectTransform.position = _originalPosition;
-            //_rectTransform.rotation = _originalRotation;
+            _rectTransform.rotation = _originalRotation;
         }
 
     }
