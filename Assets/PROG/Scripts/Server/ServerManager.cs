@@ -26,6 +26,8 @@ namespace Wendogo
         public string gameSceneName = "Game";
         private Dictionary<ulong, PlayerController> _playersById;
         
+        public NetworkVariable<int> PlayerReadyCount = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+        
         #endregion
 
         #region Basic Method

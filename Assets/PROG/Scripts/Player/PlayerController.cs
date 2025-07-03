@@ -343,19 +343,6 @@ namespace Wendogo
             Debug.LogWarning($"PlayerController not found for clientId: {clientId}");
             return null;
         }
-
-        public async Task LaunchPlayerSelection(ulong owner, int value = -1)
-        {
-            OnTargetDetection?.Invoke();
-            selectTargetCanvas.SetActive(true);
-            await UniTask.WaitUntil(() => temporaryTask > -1);
-            
-        }
-        
-        public void LaunchResourcesSelection(ulong origin, int value = -1)
-        {
-            
-        }
         
         private List<int> GetPassiveCardCopy()
         {
@@ -366,6 +353,10 @@ namespace Wendogo
                 copy.Add(cardId);
 
             return copy;
+        }
+        public CardDataSO GetCardByID(int cardId)
+        {
+            return DataCollection.Instance.cardDatabase.GetCardByID(cardId);
         }
 
         #endregion
