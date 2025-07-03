@@ -5,11 +5,9 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using Unity.Netcode;
 using UnityEngine.SceneManagement;
-using Unity.VisualScripting;
-using Cysharp.Threading.Tasks.Triggers;
-using UnityEngine.UIElements;
 using Button = UnityEngine.UI.Button;
 using System.Threading.Tasks;
+
 
 namespace Wendogo
 {
@@ -22,6 +20,7 @@ namespace Wendogo
         [SerializeField] public HandManager _handManager;
 
         private PlayerUI playerUIInstance;
+
         private bool uiInitialized = false;
 
         public NetworkVariable<RoleType> Role = new(
@@ -34,10 +33,11 @@ namespace Wendogo
 
         List<ulong> playerList = new List<ulong>();
 
+        public ulong target;
+        GameObject selectTargetCanvas;
 
         public int _playerPA;
 
-        public ulong target;
 
         private int _selectedDeck = -1;
         public int deckID;
@@ -45,12 +45,10 @@ namespace Wendogo
         public static event Action OnCardUsed;
 
         public bool TargetSelected;
-        private ulong _selectedTarget = 1;
+        private ulong _selectedTarget = 0;
         public CardDatabaseSO CardDatabaseSO;
 
         GameObject _pcSMObject;
-
-        private GameObject selectTargetCanvas;
 
         public static PlayerController LocalPlayer;
         public static ulong LocalPlayerId;
@@ -115,6 +113,8 @@ namespace Wendogo
             }
             if (!IsOwner) return;
 
+
+
             LocalPlayer = this;
             LocalPlayerId = NetworkManager.Singleton.LocalClientId;
             SceneManager.sceneLoaded += OnSceneLoaded;
@@ -137,6 +137,8 @@ namespace Wendogo
                 _inputEvent = GameObject.Find("EventSystem")?.GetComponent<EventSystem>();
                 if (_inputEvent != null) _inputEvent.enabled = false;
                 if (_handManager == null) _handManager = GameObject.FindWithTag("hand")?.GetComponent<HandManager>();
+                pcSMObject = new GameObject($"{nameof(PlayerControllerSM)}");
+                pcSMObject.AddComponent<PlayerControllerSM>();
             }
         }
 
@@ -156,7 +158,7 @@ namespace Wendogo
             _selectedDeck = -1;
             DeckClickHandler.OnDeckClicked += HandleDeckClicked;
 
-            Debug.Log($"Vous devez piocher {missingCards} cartes : choisissez un deck.");
+            Debug.Log($"You have to draw {missingCards} cards : pick a deck.");
 
 
             await UniTask.WaitUntil(() => _selectedDeck >= 0);
@@ -164,18 +166,35 @@ namespace Wendogo
             DeckClickHandler.OnDeckClicked -= HandleDeckClicked;
 
 
-            Debug.Log($"Deck sélectionné : {_selectedDeck}");
+            Debug.Log($"Selected deck is : {_selectedDeck}");
 
             ServerManager.Instance.TransmitMissingCardsServerRpc(missingCards, _selectedDeck);
 
             return _selectedDeck;
         }
 
+        public async UniTask<ulong> SelectTargetAsync(ulong target)
+        {
 
+            TargetSelectionUI.OnTargetPicked += HandleTargetSelected;
+
+            await UniTask.WaitUntil(() => _selectedTarget > 0);
+
+            TargetSelectionUI.OnTargetPicked -= HandleTargetSelected;
+
+            Debug.Log($"Selected target is {_selectedTarget} ");
+
+            return _selectedTarget;
+        }
 
         private void HandleDeckClicked(int deckId)
         {
             _selectedDeck = deckId;
+        }
+
+        private void HandleTargetSelected(ulong targetID)
+        { 
+            _selectedTarget = targetID; 
         }
 
         public void SelectCard(CardObjectData card)
@@ -208,10 +227,10 @@ namespace Wendogo
         public async void SelectTarget()
         {
             //Implement select target
-            TargetSelected = false;
+            _selectedTarget = 0;
             //Target selection
             //Handled the cancel next
-            await UniTask.WaitUntil(() => TargetSelected);
+            await UniTask.WaitUntil(() => _selectedTarget > 0);
             Debug.Log("Target selected");
 
             ConfirmPlay();
@@ -300,14 +319,14 @@ namespace Wendogo
         {
             return _handManager._maxHandSize - _handManager._handCards.Count;
         }
-        
+
         public static PlayerController GetPlayer(ulong clientId)
         {
             if (NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out var networkClient))
             {
                 return networkClient.PlayerObject.GetComponent<PlayerController>();
             }
-        
+
             Debug.LogWarning($"PlayerController not found for clientId: {clientId}");
             return null;
         }
@@ -379,6 +398,7 @@ namespace Wendogo
                     else
                         PassiveCards.Remove(hiddenCard);
                     isApplyPassive = true;
+                    break;
                 }
             }
 
@@ -397,7 +417,7 @@ namespace Wendogo
 
             });
         }
-        
+
         [ClientRpc]
         public void DestructAllTrapsClientRpc()
         {
@@ -443,6 +463,7 @@ namespace Wendogo
             PassiveCards = new List<CardDataSO>(HiddenPassiveCards);
         }
 
+
         #endregion
 
         #region Notify
@@ -475,7 +496,7 @@ namespace Wendogo
             // Needs this player to select a target to play the card against
             // if (cardDataSO.HasTarget)
             //     _selectedTarget = cardDataSO.Target;
-            
+
             ServerManager.Instance.TransmitPlayedCardServerRpc(cardDataSO.ID, _selectedTarget);
             Debug.Log($"card {cardDataSO.Name} was sent to server ");
 
