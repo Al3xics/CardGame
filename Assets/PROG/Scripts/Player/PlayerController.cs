@@ -363,11 +363,6 @@ namespace Wendogo
                     _handManager.DrawCard(DrawnCard);
                 }
             }
-
-            //if (!HasEnoughPA())
-            //{
-            //    NotifyEndTurn();
-            //}
         }
 
         [ClientRpc]
