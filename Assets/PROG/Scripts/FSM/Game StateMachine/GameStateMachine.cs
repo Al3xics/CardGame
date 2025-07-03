@@ -31,12 +31,6 @@ namespace Wendogo
         [SerializeField] private int maximumTurn = 10;
 
         /// <summary>
-        /// Reference to the DataCollection instance used to manage and retrieve various game-related data,
-        /// such as decks and card configurations.
-        /// </summary>
-        public DataCollection dataCollectionScript;
-
-        /// <summary>
         /// Represents the number of cards each player receives in the action deck at the start of the game.
         /// </summary>
         public int startingActionDeckAmount = 3;
@@ -253,7 +247,7 @@ namespace Wendogo
         /// <param name="amount">The number of cards to draw from the deck.</param>
         public void DrawCards(ulong playerID, int deckID, int amount)
         {
-            var deck = dataCollectionScript.GetDeck(deckID);
+            var deck = DataCollection.Instance.GetDeck(deckID);
             if (deck == null || deck.Count == 0) return;
             
             Dictionary<ulong, List<int>> playerCards = new();
@@ -271,11 +265,6 @@ namespace Wendogo
 
             Utils.DictionaryToArrays(playerCards, out ulong[] targets, out int[][] cardsID);
             ServerManager.Instance.SendCardsToPlayersServerRpc(targets, cardsID);
-        }
-        
-        public void OnPassiveResultReceived(int playedCardId, ulong origin, ulong target, bool isApply, int value)
-        {
-            GetConcreteState<PlayerTurnState>().OnPassiveResultReceived(playedCardId, origin, target, isApply, value);
         }
 
         #endregion

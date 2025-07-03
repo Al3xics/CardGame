@@ -30,8 +30,8 @@ namespace Wendogo
 
         private void Awake()
         {
-            if(_handTransform == null)
-            _handTransform = GameObject.FindWithTag("hand").transform;
+            if (_handTransform == null)
+                _handTransform = GameObject.FindWithTag("hand").transform;
 
         }
 
