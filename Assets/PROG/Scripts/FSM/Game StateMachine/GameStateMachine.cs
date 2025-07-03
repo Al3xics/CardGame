@@ -4,34 +4,124 @@ using UnityEngine.Serialization;
 
 namespace Wendogo
 {
+    /// <summary>
+    /// Represents the main state machine responsible for managing the game's flow and transitions between various states.
+    /// </summary>
     public class GameStateMachine : StateMachine<GameStateMachine>
     {
         #region Instance
         
+        /// <summary>
+        /// Gets the singleton instance of the <see cref="GameStateMachine"/>.
+        /// This property provides access to the single, globally accessible instance
+        /// of the <see cref="GameStateMachine"/> class, ensuring it follows a singleton pattern.
+        /// </summary>
         public static GameStateMachine Instance { get; private set; }
 
         #endregion
         
         #region Variables
         
+        /* --------------- Show in Inspector --------------- */
+        /// <summary>
+        /// Represents the maximum number of turns allowed in the game.
+        /// If the number of completed turns reaches this value, the game will end.
+        /// </summary>
+        [Header("Game Settings")]
         [SerializeField] private int maximumTurn = 10;
+
+        /// <summary>
+        /// Reference to the DataCollection instance used to manage and retrieve various game-related data,
+        /// such as decks and card configurations.
+        /// </summary>
         public DataCollection dataCollectionScript;
+
+        /// <summary>
+        /// Represents the number of cards each player receives in the action deck at the start of the game.
+        /// </summary>
         public int startingActionDeckAmount = 3;
+
+        /// <summary>
+        /// Represents the number of cards each player receives in the resource deck at the start of the game.
+        /// </summary>
         public int startingResourceDeckAmount = 2;
+
+        /// <summary>
+        /// Represents the number of turns after which a vote is triggered in the game.
+        /// </summary>
         public int triggerVoteEveryXTurn = 2;
-        public int pointPerTurn = 2;
-        public readonly Dictionary<ulong, List<PlayerAction>> NightActions = new();
-        
-        private int _cptTurn = 1;
+
+        /// <summary>
+        /// Represents the required number of food items needed to successfully complete the ritual in the game.
+        /// This value is used as a condition within the game's mechanics to determine if the ritual goals
+        /// have been met during gameplay.
+        /// </summary>
+        public int numberOfFoodToCompleteRitual = 6;
+
+        /// <summary>
+        /// Represents the number of wood pieces required to successfully complete the ritual.
+        /// This value serves as a key resource target that players must gather to progress through or achieve
+        /// ritual-related goals within the game.
+        /// </summary>
+        public int numberOfWoodToCompleteRitual = 6;
+
+        /* --------------- Hide in Inspector --------------- */
+        /// <summary>
+        /// Tracks the current turn count within the game cycle.
+        /// </summary>
+        private int _cptTurn = 0;
+
+        /// <summary>
+        /// Tracks the number of turns since the last vote triggered.
+        /// </summary>
+        /// <remarks>
+        /// This variable is used to determine when a vote should be triggered
+        /// based on the specified interval, defined by the triggerVoteEveryXTurn field.
+        /// It is incremented after every turn and reset when a vote is required.
+        /// </remarks>
         private int _cptTurnForVote = 1;
+
+        /// <summary>
+        /// Represents the collection of player actions performed during the night phase in the game. Only for cards that
+        /// have a <see cref="CardDataSO.nightPriorityIndex"/> different than <c>0</c>.
+        /// This list is used to store and manage actions taken by players, which are then processed
+        /// during the night cycle state transitions.
+        /// </summary>
+        public readonly List<PlayerAction> NightActions = new();
         
+        /// <summary>
+        /// Represents the ID of the current player whose turn is active in the game.
+        /// This variable helps manage the game flow by tracking which player's turn is currently in progress.
+        /// It is incremented sequentially to move to the next player in <see cref="PlayerTurnState.OnPlayerTurnEnded"/>.
+        /// </summary>
+        public int CurrentPlayerId { get; set; } = 0;
+        
+        /// <summary>
+        /// Represents a list containing the unique identifiers (IDs) of all players currently
+        /// participating in the game. Used to manage player-specific data and turn orders.
+        /// </summary>
         public List<ulong> PlayersID { get; private set; } = new();
+
+        /// <summary>
+        /// Represents the current <see cref="Cycle"/> of the game, which can be either Day or Night.
+        /// The state of the cycle determines the flow of the game's behavior and logic.
+        /// </summary>
         public Cycle Cycle { get; private set; } = Cycle.Day;
+
+        /// <summary>
+        /// Indicates whether the ritual in the game has been completed or not.
+        /// This property is used to control the flow of game states, transitioning
+        /// to the end game state if the ritual is complete or proceeding
+        /// with the normal game cycle.
+        /// </summary>
         public bool IsRitualOver {get; private set;} = false;
-        public Dictionary<ulong, int> PlayersHealth { get; private set; } = new();
 
         #endregion
 
+        /// <summary>
+        /// Initializes the GameStateMachine instance, ensuring that only one instance exists and
+        /// initializing players if auto-connection is disabled.
+        /// </summary>
         private void Awake()
         {
             if (!Instance)
@@ -41,6 +131,13 @@ namespace Wendogo
                 ServerManager.Instance.InitializePlayers();
         }
 
+        /// <summary>
+        /// Gets the initial state for the game state machine.
+        /// This state will be used to start the state machine's execution flow.
+        /// </summary>
+        /// <returns>
+        /// The initial state of type <see cref="State{GameStateMachine}"/> used to initiate the state machine.
+        /// </returns>
         protected override State<GameStateMachine> GetInitialState()
         {
             var turnOrderState = new DefineTurnOrderState(this);
@@ -60,61 +157,100 @@ namespace Wendogo
 
         #region Called By States
 
+        /// <summary>
+        /// Switches the current cycle of the game between Day and Night.
+        /// </summary>
+        /// <remarks>
+        /// If the current cycle is Day, it transitions to Night. Otherwise, it transitions back to Day.
+        /// Additionally, when transitioning from Night to Day, the turn counter is incremented,
+        /// and the maximum turn condition is checked.
+        /// </remarks>
         public void SwitchCycle()
         {
             Cycle newCycle;
 
-            if (Cycle == Cycle.Day)
+            switch (Cycle)
             {
-                newCycle = Cycle.Night;
-            }
-            else
-            {
-                newCycle = Cycle.Day;
-                _cptTurn++;
-                CheckMaximumTurnReached();
+                case Cycle.Day:
+                    newCycle = Cycle.Night;
+                    break;
+                case Cycle.Night:
+                    newCycle = Cycle.Day;
+                    _cptTurn++;
+                    break;
+                default:
+                    throw new System.Exception("Invalid cycle value.");
             }
             
-            Debug.Log($"Change cycle from {Cycle} to {newCycle} !");
+            if (ShowDebugLogs) Debug.LogWarning($"******************** Change cycle from {Cycle} to {newCycle} ! ********************");
             Cycle = newCycle;
         }
 
+        /// <summary>
+        /// Checks if the current turn has reached or exceeded the maximum allowed turns.
+        /// </summary>
+        /// <returns>Returns true if the current turn is greater than or equal to the maximum turn limit; otherwise, false.</returns>
         public bool CheckMaximumTurnReached()
         {
+            if (ShowDebugLogs) Debug.Log($"Current turn : {_cptTurn} / {maximumTurn}");
             return _cptTurn >= maximumTurn;
         }
 
+        /// <summary>
+        /// Determines whether it is time to initiate a voting phase based on the turn counter.
+        /// Resets the turn counter if a voting phase is triggered.
+        /// </summary>
+        /// <returns>True if a voting phase should be initiated; otherwise, false.</returns>
         public bool CheckVotingTurn()
         {
+            if (ShowDebugLogs) Debug.Log($"Current turn for vote: {_cptTurnForVote} / {triggerVoteEveryXTurn}");
             if (_cptTurnForVote >= triggerVoteEveryXTurn)
             {
-                _cptTurnForVote = 1;
+                _cptTurnForVote = 0;
                 return true;
             }
 
             return false;
         }
 
+        /// <summary>
+        /// Increments the counter tracking the number of turns passed until a vote is triggered.
+        /// </summary>
         public void IncreaseCptTurnForVote() => _cptTurnForVote++;
+        
+        public void ResetCptTurnForVote() => _cptTurnForVote = 1;
 
         #endregion
 
         #region Called By ServerManager
 
         /// <summary>
-        /// Register a player ID to have a reference to all players in the State Machine.
+        /// Register a player ID to maintain a reference to all players in the State Machine.
         /// </summary>
-        /// <param name="playerID">The ID of the player spawned by the network.</param>
+        /// <param name="playerID">The unique ID of the player assigned by the network.</param>
         public void RegisterPlayerID(ulong playerID)
         {
             PlayersID.Add(playerID);
         }
 
-        public void CheckCardPlayed(int playedCardID, ulong target)
+        /// <summary>
+        /// Evaluates the card played during a player's turn and performs the necessary actions
+        /// based on the current game cycle (Day or Night).
+        /// </summary>
+        /// <param name="playedCardID">The ID of the card that has been played.</param>
+        /// <param name="origin">The ID of the player who does the action.</param>
+        /// <param name="target">The ID of the target player, if applicable.</param>
+        public void CheckCardPlayed(int playedCardID, ulong origin, ulong target)
         {
-            GetConcreteState<PlayerTurnState>().CheckCardPlayed(playedCardID, target);
+            GetConcreteState<PlayerTurnState>().CheckCardPlayed(playedCardID, origin, target);
         }
         
+        /// <summary>
+        /// Draws a specified number of cards from a given deck for a specified player.
+        /// </summary>
+        /// <param name="playerID">The unique identifier of the player who will receive the cards.</param>
+        /// <param name="deckID">The identifier of the deck from which cards will be drawn.</param>
+        /// <param name="amount">The number of cards to draw from the deck.</param>
         public void DrawCards(ulong playerID, int deckID, int amount)
         {
             var deck = dataCollectionScript.GetDeck(deckID);
@@ -135,6 +271,11 @@ namespace Wendogo
 
             Utils.DictionaryToArrays(playerCards, out ulong[] targets, out int[][] cardsID);
             ServerManager.Instance.SendCardsToPlayersServerRpc(targets, cardsID);
+        }
+        
+        public void OnPassiveResultReceived(int playedCardId, ulong origin, ulong target, bool isApply, int value)
+        {
+            GetConcreteState<PlayerTurnState>().OnPassiveResultReceived(playedCardId, origin, target, isApply, value);
         }
 
         #endregion

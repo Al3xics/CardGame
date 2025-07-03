@@ -15,10 +15,10 @@ namespace Wendogo
 			{
 				StateMachine.ChangeState<PCTargetSelectionState>();
 			}
-			else if (_player.ActiveCard.Card.Cost > 0)
-			{
-				CheckRessources();
-			}
+			//else if (_player.ActiveCard.Card.Cost > 0)
+			//{
+			//	CheckRessources();
+			//}
 			else 
 			{
                 StateMachine.ChangeState<PCPlayCardState>();

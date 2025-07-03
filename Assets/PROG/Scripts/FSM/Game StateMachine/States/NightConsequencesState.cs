@@ -1,60 +1,63 @@
-﻿namespace Wendogo
+﻿using System.Collections.Generic;
+using System.Linq;
+
+namespace Wendogo
 {
+    /// <summary>
+    /// Represents the state in the game where the consequences of the night phase are processed.
+    /// </summary>
     public class NightConsequencesState : State<GameStateMachine>
     {
+        private int id;
+        private List<PlayerAction> sortedActions = new();
+        
+        /// <summary>
+        /// Represents the state in which the consequences of actions taken during the night phase are processed.
+        /// </summary>
         public NightConsequencesState(GameStateMachine stateMachine) : base(stateMachine) { }
 
         public override void OnEnter()
         {
             base.OnEnter();
-            ServerManager.Instance.OnNightConsequencesEnded += NextState;
-            ResolveNightConsequences();
+            id = 0;
+            // Sort `NightActions` by priority index and process them
+            sortedActions = StateMachine.NightActions.Where(card => card.CardPriorityIndex > 0).OrderBy(card => card.CardPriorityIndex).ToList();
+            
+            ServerManager.Instance.SynchronizePlayerValuesServerRpc(false);
+            ResolveCardNightConsequences(id);
         }
 
-        private void ResolveNightConsequences()
+        // todo
+        private void ResolveCardNightConsequences(int cpt)
         {
-            // Tu parcours l’ordre de tour
-            foreach (var playerId in StateMachine.PlayersID)
-            {
-                if (!StateMachine.NightActions.ContainsKey(playerId))
-                    continue;
-
-                foreach (var action in StateMachine.NightActions[playerId])
-                {
-                    // Exemples :
-                    // - Récupérer les ressources de food AVANT
-                    // - Appliquer dégâts
-                    // - Voler ressources
-                    // - Vérifier si la cible a une protection en attente
-
-                    // Tu résous ici en fonction de la logique du jeu
-                }
-            }
-
-            // Une fois résolu, tu peux notifier le serveur
-            ServerManager.Instance.SendDataServerServerRpc(); // À adapter avec le résultat
-            StateMachine.NightActions.Clear();
+            ServerManager.Instance.OnResolveCardNightConsequences += OnResolveCardNightConsequences;
+            
+            var card = StateMachine.dataCollectionScript.cardDatabase.GetCardByID(sortedActions[cpt].CardId);
+            card.CardEffect.Apply(sortedActions[cpt].OriginId, sortedActions[cpt].TargetId);
+            // Here, only card that needs an action from the players will execute. When they finish,
+            // 'OnResolvedCardNightConsequences' will be called.
         }
 
-        private void CheckHealth()
+        // todo
+        private void OnResolveCardNightConsequences()
         {
-            foreach (var player in StateMachine.PlayersHealth)
-            {
-                // If dead
-                if (player.Value == 0)
-                {
-                    // Remove player from the game (pass to viewer mode), annd from the players ID list
-                    // Send to server manager to tell the player he is dead and need to change to viewer mode
-                    // Inform all players that one player is dead
-                }
-            }
-
-            // ServerManager.Instance.ChangePlayersHealth(StateMachine.PlayersHealth);
+            ServerManager.Instance.OnResolveCardNightConsequences -= OnResolveCardNightConsequences;
+            
+            id++;
+            bool isLast = id >= sortedActions.Count;
+            
+            if (isLast)
+                NextState();
+            else
+                ResolveCardNightConsequences(id);
         }
 
+        /// <summary>
+        /// Transitions the game state from the current <see cref="NightConsequencesState"/> to the
+        /// <see cref="CheckRitualState"/> after night consequences have been resolved.
+        /// </summary>
         private void NextState()
         {
-            ServerManager.Instance.OnNightConsequencesEnded -= NextState;
             StateMachine.NightActions.Clear();
             StateMachine.ChangeState<CheckRitualState>();
         }

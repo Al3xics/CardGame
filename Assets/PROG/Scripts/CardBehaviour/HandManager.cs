@@ -4,33 +4,37 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Splines;
 using Cysharp.Threading.Tasks;
+using System;
 
 
 namespace Wendogo
 {
+    //Handles the visual management and behavior of cards in the player's hand
     public class HandManager : MonoBehaviour
     {
-        [SerializeField] private GameObject _cardPrefab;
-        [SerializeField] public int _maxHandSize = 5;
-        [SerializeField] private SplineContainer _splineContainer;
+        [SerializeField] private GameObject _cardPrefab; //Prefab for spawning new cards into the hand
+        [SerializeField] public int _maxHandSize = 5; //Maximum number of cards allowed in hand
+        [SerializeField] private SplineContainer _splineContainer; //Defines the curve layout for card position
 
-        [SerializeField] private Transform _spawnPoint;
-        [SerializeField] private Transform _handTransform;
+        public Transform _spawnPoint; //World position where new cards appear initially
+        public Transform _handTransform; //Parent transform that holds all card objects
 
         //temp
-        [SerializeField] CardsHandler _cardsHandler;
+        [SerializeField] CardsHandler _cardsHandler;  //Handles assigning data and visuals to cards
 
-        public List<GameObject> _handCards = new List<GameObject>();
+        public List<GameObject> _handCards = new List<GameObject>(); //List of all cards currently in hand
 
-        private void OnEnable()
+        public bool _isReplaced;
+
+        public event Action _onHandsfull;
+
+        private void Awake()
         {
-            PlayerController.OnCardUsed += DrawCard;
+            if(_handTransform == null)
+            _handTransform = GameObject.FindWithTag("hand").transform;
+
         }
 
-        private void OnDisable()
-        {
-            PlayerController.OnCardUsed -= DrawCard;
-        }
 
         public void Discard(GameObject discardedCard)
         {
@@ -38,7 +42,7 @@ namespace Wendogo
             _handCards.Remove(discardedCard);
         }
 
-        public async void DrawCard()
+        public async void DrawCard(CardDataSO cardData)
         {
             //Implement draw card
             for (int i = 0; i < _maxHandSize; i++)
@@ -62,6 +66,23 @@ namespace Wendogo
                 //Delay between each card draw
                 await UniTask.WaitForSeconds(0.25f);
             }
+
+            //Instantiate a new card at the spawn position
+            GameObject g = Instantiate(_cardPrefab, _spawnPoint.position, _spawnPoint.rotation);
+            _handCards.Add(g);
+
+            //Parent the card under the hand transform to show them in the UI
+            g.transform.parent = _handTransform;
+
+            //Assign card data (placeholder)
+            _cardsHandler.ApplyCardData(g, cardData);
+
+            //Update layout of cards along spline
+            UpdateCardPositions();
+
+            g.transform.localScale = Vector3.one;
+            //Delay between each card draw
+            await UniTask.WaitForSeconds(0.25f);
         }
 
         private void UpdateCardPositions()

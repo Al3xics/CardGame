@@ -10,16 +10,16 @@ EditorBuildSettings:
     guid: 99c9720ab356a0642a771bea13969a05
   - enabled: 1
     path: Assets/Scenes/Game.unity
-    guid: 3125d3ba7c9937b49b031cfabaf41ebc
+    guid: f57fdb7330b650a44b3d1942661f887d
   - enabled: 1
     path: Assets/Scenes/Game Alexis.unity
-    guid: acd2ba2757624ae4db0d9012ae008a94
-  - enabled: 1
-    path: Assets/Scenes/Game Martin.unity
-    guid: 1cb7dcf2514dfbb439b20885f949f2ba
+    guid: 3e552999b947b3943866263d958bd87e
   - enabled: 1
     path: Assets/Scenes/Game Valentin.unity
     guid: 962122184fe7fbb4f8bc2336ea0899a6
+  - enabled: 1
+    path: Assets/Scenes/Game Martin.unity
+    guid: c89c98bc3b683e043838190a0803f5af
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

@@ -110,7 +110,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: 86.7}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 125, y: 168.75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1594671258042834132
@@ -164,8 +164,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Card: {fileID: 11400000, guid: 0a317f580c8ea75419dac16871435e5b, type: 2}
-  Effect:
-    AttackValue: 5
+  Effect: {fileID: 0}
   isSelected: 0
 --- !u!114 &8295755034486674526
 MonoBehaviour:

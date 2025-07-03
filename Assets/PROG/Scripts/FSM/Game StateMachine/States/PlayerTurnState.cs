@@ -1,76 +1,144 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Wendogo
 {
+    /// <summary>
+    /// Represents the state where a player's turn is handled within the game state machine.
+    /// </summary>
     public class PlayerTurnState : State<GameStateMachine>
     {
-        private int _currentPlayerId = 0;
-        
+        /// <summary>
+        /// Represents the state of the game during a player's turn.
+        /// </summary>
         public PlayerTurnState(GameStateMachine stateMachine) : base(stateMachine) { }
         
         public override void OnEnter()
         {
             base.OnEnter();
-            StartPlayerTurn(_currentPlayerId);
+            
+            if (StateMachine.Cycle == Cycle.Night)
+                ServerManager.Instance.SynchronizePlayerValuesServerRpc(true);
+            
+            StartPlayerTurn(StateMachine.CurrentPlayerId);
         }
 
+        /// <summary>
+        /// Initiates the turn for the specified player, setting up the necessary state for the turn.
+        /// </summary>
+        /// <param name="id">The ID of the player whose turn is starting.</param>
         private void StartPlayerTurn(int id)
         {
-            Debug.Log("Next Player Turn");
-            ServerManager.Instance.OnPlayerTurnEnded += NextPlayer;
-            ServerManager.Instance.PlayerTurnServerServerRpc(StateMachine.PlayersID[id]);
+            Log($"Player {StateMachine.CurrentPlayerId} Begin Turn");
+            ServerManager.Instance.OnPlayerTurnEnded += OnPlayerTurnEnded;
+            ServerManager.Instance.PlayerTurnServerRpc(StateMachine.PlayersID[id]);
         }
 
-        public void CheckCardPlayed(int playedCardID, ulong target)
+        /// <summary>
+        /// Checks the card played by a player during the game and resolves its effects based on the current game cycle.
+        /// </summary>
+        /// <param name="playedCardID">The unique identifier of the card that was played.</param>
+        /// <param name="origin">The unique identifier of the player who played the card.</param>
+        /// <param name="target">The unique identifier of the target player, if applicable.</param>
+        /// <exception cref="ArgumentOutOfRangeException">Thrown when the game cycle value is invalid or unhandled.</exception>
+        public void CheckCardPlayed(int playedCardID, ulong origin, ulong target)
         {
-            /*
-             * Si un player per de la vie, on ajoute un booléan à un dictionnaire avec la key l'id du player, et la value sa vie
-             * 
-             */
+            var card = StateMachine.dataCollectionScript.cardDatabase.GetCardByID(playedCardID);
             
             switch (StateMachine.Cycle)
             {
                 case Cycle.Day:
+                    // For passive cards
+                    if (card.isPassive)
+                    {
+                        PlayerController.GetPlayer(origin).PassiveCards.Add(card);
+                        ServerManager.Instance.FinishedCheckCardPlayedServerRpc(origin);
+                        return;
+                    }
                     
-                    ServerManager.Instance.SendDataServerServerRpc();
+                    // For active cards
+                    ServerManager.Instance.TryApplyPassiveServerRpc(playedCardID, origin, target);
                     break;
                 
                 case Cycle.Night:
-                    ulong currentPlayer = StateMachine.PlayersID[_currentPlayerId];
-
-                    if (!StateMachine.NightActions.ContainsKey(currentPlayer))
-                        StateMachine.NightActions[currentPlayer] = new List<PlayerAction>();
-
-                    StateMachine.NightActions[currentPlayer].Add(new PlayerAction
+                    // For passive cards
+                    if (card.isPassive)
                     {
-                        CardId = playedCardID,
-                        TargetId = target
-                    });
+                        PlayerController.GetPlayer(origin).HiddenPassiveCards.Add(card);
+                        ServerManager.Instance.FinishedCheckCardPlayedServerRpc(origin);
+                        return;
+                    }
+                    
+                    if (card.nightPriorityIndex != 0) // Add active card to NightActions if it has a priority index
+                    {
+                        StateMachine.NightActions.Add(new PlayerAction
+                        {
+                            CardId = playedCardID,
+                            CardPriorityIndex = card.nightPriorityIndex,
+                            OriginId = origin,
+                            TargetId = target
+                        });
+                    }
+                    else // Handle cards without priority normally
+                        ServerManager.Instance.TryApplyPassiveServerRpc(playedCardID, origin, target);
+                    break;
+                
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(StateMachine.Cycle), StateMachine.Cycle, "The cycle is not valid.");
+            }
+        }
 
-                    ServerManager.Instance.FinishedCheckCardPlayed();
+        /// <summary>
+        /// Handles the result of a passive card effect in the game, applying the card's effect
+        /// based on the provided parameters and notifying the server upon completion.
+        /// </summary>
+        /// <param name="playedCardId">The ID of the card whose passive effect is being processed.</param>
+        /// <param name="origin">The identifier of the player or entity that played the card.</param>
+        /// <param name="target">The identifier of the player or entity targeted by the card effect.</param>
+        /// <param name="isApply">Indicates whether the effect should be applied or reverted.</param>
+        /// <param name="value">The value associated with the effect being applied.</param>
+        public void OnPassiveResultReceived(int playedCardId, ulong origin, ulong target, bool isApply, int value)
+        {
+            var effect = StateMachine.dataCollectionScript.cardDatabase.GetCardByID(playedCardId).CardEffect;
+
+            effect.Apply(origin, target, isApply ? value : -1);
+            ServerManager.Instance.FinishedCheckCardPlayedServerRpc(origin);
+        }
+
+        /// <summary>
+        /// Advances the game to the next player's turn.
+        /// </summary>
+        private void OnPlayerTurnEnded()
+        {
+            Log($"Player {StateMachine.CurrentPlayerId} End Turn");
+            ServerManager.Instance.OnPlayerTurnEnded -= OnPlayerTurnEnded;
+
+            StateMachine.CurrentPlayerId++;
+            bool isLastPlayer = StateMachine.CurrentPlayerId >= StateMachine.PlayersID.Count;
+
+            switch (StateMachine.Cycle)
+            {
+                case Cycle.Day:
+                    StateMachine.ChangeState<CheckRitualState>();
+                    break;
+
+                case Cycle.Night:
+                    if (isLastPlayer)
+                        StateMachine.ChangeState<NightConsequencesState>();
+                    else
+                        StartPlayerTurn(StateMachine.CurrentPlayerId);
+                    
                     break;
             }
         }
-
-        private void NextPlayer()
-        {
-            ServerManager.Instance.OnPlayerTurnEnded -= NextPlayer;
-            
-            _currentPlayerId++;
-            
-            if(_currentPlayerId == StateMachine.PlayersID.Count)
-            {
-                NextState();
-                return;
-            }
         
-            StartPlayerTurn(_currentPlayerId);
-        }
-
-        private void NextState()
+        public override void OnExit()
         {
-            StateMachine.ChangeState<CheckRitualState>();
+            base.OnExit();
+            
+            if (StateMachine.Cycle == Cycle.Night)
+                StateMachine.SwitchCycle();
         }
     }
 }

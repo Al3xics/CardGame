@@ -6,114 +6,116 @@ using System.Collections.Generic;
 using System.Linq;
 using Sirenix.Utilities.Editor;
 
-public class CardEditorTool : OdinMenuEditorWindow
+namespace Wendogo
 {
-    [MenuItem("Tools/Card Editor")]
-    private static void OpenWindow()
+    public class CardEditorTool : OdinMenuEditorWindow
     {
-        var window = GetWindow<CardEditorTool>();
-        window.titleContent = new GUIContent("Card Editor");
-        window.Show();
-    }
-
-    [PropertySpace(10)]
-    [InlineEditor(ObjectFieldMode = InlineEditorObjectFieldModes.Hidden)]
-    public CardDatabaseSO CardDatabase;
-
-    private string searchQuery = "";
-
-    protected override OdinMenuTree BuildMenuTree()
-    {
-        var tree = new OdinMenuTree(true)
+        [MenuItem("Tools/Card Editor")]
+        private static void OpenWindow()
         {
-            { "Database", this }
-        };
+            var window = GetWindow<CardEditorTool>();
+            window.titleContent = new GUIContent("Card Editor");
+            window.Show();
+        }
 
-        CardDatabase = AssetDatabase.LoadAssetAtPath<CardDatabaseSO>("Assets/ScriptableObjects/CardDatabase.asset");
+        [PropertySpace(10)] [InlineEditor(ObjectFieldMode = InlineEditorObjectFieldModes.Hidden)]
+        public CardDatabaseSO CardDatabase;
 
-        if (CardDatabase == null)
+        private string searchQuery = "";
+
+        protected override OdinMenuTree BuildMenuTree()
         {
+            var tree = new OdinMenuTree(true)
+            {
+                { "Database", this }
+            };
+
+            CardDatabase = AssetDatabase.LoadAssetAtPath<CardDatabaseSO>("Assets/ScriptableObjects/CardDatabase.asset");
+
+            if (CardDatabase == null)
+            {
+                return tree;
+            }
+
+
+            foreach (var card in CardDatabase.CardList)
+            {
+                if (IsCardVisible(card))
+                {
+                    tree.Add($"Cards/{card.Name} ({card.ID})", card);
+                }
+            }
+
+            tree.AddAllAssetsAtPath("visuals", "Assets/Textures/CardVisuals", typeof(Texture2D), true);
+
+            tree.SortMenuItemsByName();
+            tree.Add("✚ Create New Card", new CreateCardHelper(CardDatabase));
+
             return tree;
         }
 
-
-        foreach (var card in CardDatabase.CardList)
+        protected override void OnBeginDrawEditors()
         {
-            if (IsCardVisible(card))
+            SirenixEditorGUI.Title("Card Editor", null, TextAlignment.Center, true);
+
+            GUILayout.Space(10);
+            searchQuery = SirenixEditorFields.TextField("Search", searchQuery);
+            GUILayout.Space(10);
+        }
+
+        private bool IsCardVisible(CardDataSO card)
+        {
+            if (string.IsNullOrEmpty(searchQuery)) return true;
+            return card.Name.ToLower().Contains(searchQuery.ToLower()) ||
+                   card.CardEffect.name.ToLower().Contains(searchQuery.ToLower());
+        }
+
+        public class CreateCardHelper
+        {
+            [InlineEditor(ObjectFieldMode = InlineEditorObjectFieldModes.Hidden)] [HideLabel]
+            public CardDataSO NewCard;
+
+            private CardDatabaseSO _database;
+
+            public CreateCardHelper(CardDatabaseSO database)
             {
-                tree.Add($"Cards/{card.Name} ({card.ID})", card);
+                _database = database;
+                NewCard = ScriptableObject.CreateInstance<CardDataSO>();
+                AssignUniqueID();
             }
-        }
 
-        tree.AddAllAssetsAtPath("visuals", "Assets/Textures/CardVisuals", typeof(Texture2D), true);
-
-        tree.SortMenuItemsByName();
-        tree.Add("✚ Create New Card", new CreateCardHelper(CardDatabase));
-
-        return tree;
-    }
-
-    protected override void OnBeginDrawEditors()
-    {
-        SirenixEditorGUI.Title("Card Editor", null, TextAlignment.Center, true);
-
-        GUILayout.Space(10);
-        searchQuery = SirenixEditorFields.TextField("Search", searchQuery);
-        GUILayout.Space(10);
-    }
-
-    private bool IsCardVisible(CardDataSO card)
-    {
-        if (string.IsNullOrEmpty(searchQuery)) return true;
-        return card.Name.ToLower().Contains(searchQuery.ToLower()) ||
-               card.CardType.name.ToLower().Contains(searchQuery.ToLower());
-    }
-
-    public class CreateCardHelper
-    {
-        [InlineEditor(ObjectFieldMode = InlineEditorObjectFieldModes.Hidden)]
-        [HideLabel]
-        public CardDataSO NewCard;
-
-        private CardDatabaseSO _database;
-
-        public CreateCardHelper(CardDatabaseSO database)
-        {
-            _database = database;
-            NewCard = ScriptableObject.CreateInstance<CardDataSO>();
-            AssignUniqueID();
-        }
-
-        private void AssignUniqueID()
-        {
-            int startID = 10100;
-            int maxID = 10199;
-            HashSet<int> usedIDs = new HashSet<int>(_database.CardList.Select(c => c.ID));
-
-            for (int id = startID; id <= maxID; id++)
+            private void AssignUniqueID()
             {
-                if (!usedIDs.Contains(id))
+                int startID = 10100;
+                int maxID = 10199;
+                HashSet<int> usedIDs = new HashSet<int>(_database.CardList.Select(c => c.ID));
+
+                for (int id = startID; id <= maxID; id++)
                 {
-                    NewCard.ID = id;
-                    break;
+                    if (!usedIDs.Contains(id))
+                    {
+                        NewCard.ID = id;
+                        break;
+                    }
                 }
             }
-        }
 
-        [Button("Add to Database", ButtonSizes.Large)]
-        private void AddCard()
-        {
-            string path = EditorUtility.SaveFilePanelInProject("Save New Card", "NewCard", "asset", "Save new card asset");
-            if (!string.IsNullOrEmpty(path))
+            [Button("Add to Database", ButtonSizes.Large)]
+            private void AddCard()
             {
-                AssetDatabase.CreateAsset(NewCard, path);
-                AssetDatabase.SaveAssets();
+                string path =
+                    EditorUtility.SaveFilePanelInProject("Save New Card", "NewCard", "asset", "Save new card asset");
+                if (!string.IsNullOrEmpty(path))
+                {
+                    AssetDatabase.CreateAsset(NewCard, path);
+                    AssetDatabase.SaveAssets();
 
-                _database.CardList.Add(NewCard);
-                EditorUtility.SetDirty(_database);
-                AssetDatabase.SaveAssets();
+                    _database.CardList.Add(NewCard);
+                    EditorUtility.SetDirty(_database);
+                    AssetDatabase.SaveAssets();
 
-                EditorWindow.GetWindow<CardEditorTool>().ForceMenuTreeRebuild();
+                    EditorWindow.GetWindow<CardEditorTool>().ForceMenuTreeRebuild();
+                }
             }
         }
     }

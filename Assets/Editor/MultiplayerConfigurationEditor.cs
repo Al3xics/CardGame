@@ -52,6 +52,7 @@ namespace Wendogo
             EditorGUILayout.PropertyField(serializedObject.FindProperty("maxPlayers"));
             EditorGUILayout.PropertyField(serializedObject.FindProperty("isLocked"));
             EditorGUILayout.PropertyField(serializedObject.FindProperty("isPrivate"));
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("enableVoiceChat"));
 
             serializedObject.ApplyModifiedProperties();
         }

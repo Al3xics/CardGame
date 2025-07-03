@@ -1,12 +1,15 @@
 using Sirenix.Serialization;
 using UnityEngine;
 
-public class CardObjectData : MonoBehaviour
+namespace Wendogo
 {
-    public CardDataSO Card;
+    public class CardObjectData : MonoBehaviour
+    {
+        public CardDataSO Card;
 
-    [OdinSerialize]
-    public Attack Effect;
+        [OdinSerialize]
+        public GroupAttack Effect;
 
-    public bool isSelected;
+        public bool isSelected;
+    }
 }
