@@ -23,10 +23,8 @@ namespace Wendogo
             return false;
         }
 
-        public virtual Task ApplyAsync(ulong owner, ulong target, int value = -1)
-        {
-            return Task.CompletedTask;
-        }
-
+        public virtual void ShowUI() {}
+        
+        public virtual void HideUI() {}
     }
 }
