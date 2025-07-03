@@ -49,7 +49,7 @@
 		},
 		{
 			"isGenerated" : true,
-			"path" : "E:/MY DATA/ICAN/Master/Master 1/Unity/CardGame/.utmp/RelWithDebInfo/1i1t1q2s/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CMakeSystem.cmake"
+			"path" : "C:/Users/valen/OneDrive/Documents/UnityRepository/CardGame/.utmp/RelWithDebInfo/641e683z/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CMakeSystem.cmake"
 		},
 		{
 			"isExternal" : true,
@@ -324,7 +324,7 @@
 		},
 		{
 			"isGenerated" : true,
-			"path" : "E:/MY DATA/ICAN/Master/Master 1/Unity/CardGame/.utmp/RelWithDebInfo/1i1t1q2s/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CMakeCCompiler.cmake"
+			"path" : "C:/Users/valen/OneDrive/Documents/UnityRepository/CardGame/.utmp/RelWithDebInfo/641e683z/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CMakeCCompiler.cmake"
 		},
 		{
 			"isCMake" : true,
@@ -558,7 +558,7 @@
 		},
 		{
 			"isGenerated" : true,
-			"path" : "E:/MY DATA/ICAN/Master/Master 1/Unity/CardGame/.utmp/RelWithDebInfo/1i1t1q2s/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CMakeCXXCompiler.cmake"
+			"path" : "C:/Users/valen/OneDrive/Documents/UnityRepository/CardGame/.utmp/RelWithDebInfo/641e683z/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CMakeCXXCompiler.cmake"
 		},
 		{
 			"isCMake" : true,
@@ -722,7 +722,7 @@
 		},
 		{
 			"isGenerated" : true,
-			"path" : "E:/MY DATA/ICAN/Master/Master 1/Unity/CardGame/.utmp/RelWithDebInfo/1i1t1q2s/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CMakeCCompiler.cmake"
+			"path" : "C:/Users/valen/OneDrive/Documents/UnityRepository/CardGame/.utmp/RelWithDebInfo/641e683z/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CMakeCCompiler.cmake"
 		},
 		{
 			"isCMake" : true,
@@ -816,21 +816,21 @@
 		},
 		{
 			"isGenerated" : true,
-			"path" : "E:/MY DATA/ICAN/Master/Master 1/Unity/CardGame/.utmp/RelWithDebInfo/1i1t1q2s/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CMakeCXXCompiler.cmake"
+			"path" : "C:/Users/valen/OneDrive/Documents/UnityRepository/CardGame/.utmp/RelWithDebInfo/641e683z/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CMakeCXXCompiler.cmake"
 		},
 		{
 			"path" : "GameActivity/CMakeLists.txt"
 		},
 		{
 			"isExternal" : true,
-			"path" : "E:/MY DATA/ICAN/Master/Master 1/Unity/CardGame/.utmp/RelWithDebInfo/1i1t1q2s/prefab/arm64-v8a/prefab/lib/aarch64-linux-android/cmake/game-activity/game-activityConfig.cmake"
+			"path" : "C:/Users/valen/OneDrive/Documents/UnityRepository/CardGame/.utmp/RelWithDebInfo/641e683z/prefab/arm64-v8a/prefab/lib/aarch64-linux-android/cmake/game-activity/game-activityConfig.cmake"
 		}
 	],
 	"kind" : "cmakeFiles",
 	"paths" : 
 	{
-		"build" : "E:/MY DATA/ICAN/Master/Master 1/Unity/CardGame/.utmp/RelWithDebInfo/1i1t1q2s/arm64-v8a",
-		"source" : "E:/MY DATA/ICAN/Master/Master 1/Unity/CardGame/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/src/main/cpp"
+		"build" : "C:/Users/valen/OneDrive/Documents/UnityRepository/CardGame/.utmp/RelWithDebInfo/641e683z/arm64-v8a",
+		"source" : "C:/Users/valen/OneDrive/Documents/UnityRepository/CardGame/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/src/main/cpp"
 	},
 	"version" : 
 	{
