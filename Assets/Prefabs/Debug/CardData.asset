@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b4c4af47719ad294e9daacd12912804b, type: 3}
-  m_Name: DestructionTrap
+  m_Name: CardData
   m_EditorClassIdentifier: 
-  CardVisual: {fileID: 2800000, guid: b87b4c77cf44d534f8d896528b997e8f, type: 3}
-  Name: DestructionTrap
-  CardEffect: {fileID: 11400000, guid: 9dcad1f5984d9e64baeb39b04b7251f5, type: 2}
+  CardVisual: {fileID: 2800000, guid: dffef66376be4fa480fb02b19edbe903, type: 3}
+  Name: _debugTarget
+  CardEffect: {fileID: 11400000, guid: 8aed460c743531b4c84406dc2a8349ae, type: 2}
   isPassive: 0
-  HasTarget: 0
+  HasTarget: 1
   nightPriorityIndex: 0
-  ID: 10156
+  ID: 10199
   Toggle: 1

@@ -356,10 +356,6 @@ namespace Wendogo
 
             return copy;
         }
-        public CardDataSO GetCardByID(int cardId)
-        {
-            return DataCollection.Instance.cardDatabase.GetCardByID(cardId);
-        }
 
         public CardDataSO GetCardByID(int cardId)
         {
