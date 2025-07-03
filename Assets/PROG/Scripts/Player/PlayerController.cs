@@ -238,7 +238,7 @@ namespace Wendogo
             if (ActiveCard == null)
                 return;
 
-            //checkCardsconditions
+            //CheckCardsconditions
             //if conditions aren't met: return;
 
             Debug.Log("Card played");
@@ -351,11 +351,6 @@ namespace Wendogo
                     _handManager.DrawCard(DrawnCard);
                 }
             }
-
-            //if (!HasEnoughPA())
-            //{
-            //    NotifyEndTurn();
-            //}
         }
 
         [ClientRpc]
