@@ -12,6 +12,8 @@ namespace Wendogo
         public static event Action<CardDataSO> OnCardDataDropped;
         public static event Action<CardObjectData> OnCardDropped;
 
+        public bool isOccupied;
+
         enum ZoneType
         {
             Active,
@@ -32,12 +34,28 @@ namespace Wendogo
                 CardObjectData cod = draggedCard.GetComponent<CardObjectData>();
                 CardDataSO cardData = cod.Card;
 
-                bool isActiveDrop = zoneType == ZoneType.Active && !cardData.isPassive;
-                bool isPassiveDrop = zoneType == ZoneType.Passive && cardData.isPassive;
-                if (!(isActiveDrop || isPassiveDrop))
+                //bool isActiveDrop = zoneType == ZoneType.Active && !cardData.isPassive;
+                //bool isPassiveDrop = zoneType == ZoneType.Passive && cardData.isPassive;
+                //if (!(isActiveDrop || isPassiveDrop))
+                //{
+                //    card.RevertPosition(); ;
+                //    return;  
+                //}
+
+                if (cardData.isPassive)
                 {
-                    card.RevertPosition(); ;
-                    return;  
+                    CardDropZone[] passiveCardDropZones = PlayerUI.Instance.passiveCardDropZones;  
+
+                    foreach (var zone in PlayerUI.Instance.passiveCardDropZones)
+                    {
+                        if(!zone.isOccupied)
+                        {
+                            draggedCard.transform.SetPositionAndRotation(zone.gameObject.transform.position, zone.gameObject.transform.rotation);
+                            zone.isOccupied = true;
+                            continue;
+                        }
+                    } 
+
                 }
 
                 draggedCard.transform.SetPositionAndRotation(transform.position, transform.rotation);
