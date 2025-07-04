@@ -43,7 +43,7 @@ namespace Wendogo
             }
 
             Utils.DictionaryToArrays(playerRoles, out ulong[] roleTypeID, out RoleType[] roleType);
-            ServerManager.Instance.AssignRolesToPlayersServerRpc(roleTypeID, roleType);
+            ServerManager.Instance.AssignRolesToPlayersRpc(roleTypeID, roleType);
         }
 
         /// <summary>

@@ -105,12 +105,6 @@ namespace Wendogo
         private void Start()
         {
             name = IsLocalPlayer ? "LocalPlayer" : $"Player{OwnerClientId}";
-            
-            if (IsOwner)
-            {
-                pcSMObject = new GameObject($"{nameof(PlayerControllerSM)}");
-                pcSMObject.AddComponent<PlayerControllerSM>();
-            }
         }
 
         public override void OnNetworkSpawn()
@@ -181,7 +175,7 @@ namespace Wendogo
 
             Debug.Log($"Selected deck is : {_selectedDeck}");
 
-            ServerManager.Instance.TransmitMissingCardsServerRpc(missingCards, _selectedDeck);
+            ServerManager.Instance.TransmitMissingCardsRpc(missingCards, _selectedDeck);
 
             return _selectedDeck;
         }
@@ -373,14 +367,14 @@ namespace Wendogo
         #region RPC
 
         /* -------------------- RPC -------------------- */
-        [ClientRpc]
-        public void GetRoleClientRpc(RoleType role, ClientRpcParams clientRpcParams = default)
+        [Rpc(SendTo.SpecifiedInParams)]
+        public void GetRoleRpc(RoleType role, RpcParams rpcParams)
         {
             playerUIInstance?.GetRole(role.ToString());
         }
 
-        [ClientRpc]
-        public void GetCardsClientRpc(int[] cardsID, ClientRpcParams clientRpcParams = default)
+        [Rpc(SendTo.SpecifiedInParams)]
+        public void GetCardsRpc(int[] cardsID, RpcParams rpcParams)
         {
             // do things with cards
             // this will receive either the 5 first cards, or when this player's turn end, the drawn cards he needs to complete his hand
@@ -395,8 +389,8 @@ namespace Wendogo
             }
         }
 
-        [ClientRpc]
-        public void StartMyTurnClientRpc()
+        [Rpc(SendTo.SpecifiedInParams)]
+        public void StartMyTurnRpc(RpcParams rpcParams)
         {
             if (IsOwner)
                 pcSMObject.GetComponent<PlayerControllerSM>().StartStateMachine();
@@ -419,10 +413,11 @@ namespace Wendogo
 
                 if (hiddenCard.CardEffect.ApplyPassive(playedCardId, origin, OwnerClientId, out value))
                 {
-                    if (IsSimulatingNight)
-                        HiddenPassiveCards.Remove(cardId);
-                    else
-                        PassiveCards.Remove(cardId);
+                    // todo --> Normal que l'effet boost ne s'applique pas la deuxième fois..... c'est supprimé ici......
+                    // if (IsSimulatingNight)
+                    //     HiddenPassiveCards.Remove(cardId); // OR --> RemoveHiddenPassiveCardRpc
+                    // else
+                    //     PassiveCards.Remove(cardId); // OR --> RemovePassiveCardRpc
                     isApplyPassive = true;
                     break;
                 }
@@ -454,8 +449,8 @@ namespace Wendogo
         /// Updates the hidden health, food, and wood values to match their respective public network variables.
         /// Also replicates the list of public passive cards into the hidden passive cards list.
         /// </summary>
-        [ClientRpc]
-        public void CopyPublicToHiddenClientRpc()
+        [Rpc(SendTo.SpecifiedInParams)]
+        public void CopyPublicToHiddenRpc(RpcParams rpcParams)
         {
             hiddenHealth = health.Value;
             hiddenFood = food.Value;
@@ -464,14 +459,17 @@ namespace Wendogo
             HiddenPassiveCards.Clear();
             foreach (var cardId in PassiveCards)
                 HiddenPassiveCards.Add(cardId);
+            
+            Debug.Log($"[CopyPublicToHiddenRpc] RealHealth : {health.Value} RealFood : {food.Value} RealWood : {wood.Value}");
+            Debug.Log($"[CopyPublicToHiddenRpc] PassiveCards : {PassiveCards.Count}");
         }
 
         /// <summary>
         /// Copies the values of hidden health, food, and wood into their respective public network variables.
         /// Also transfers the list of hidden passive cards to the public passive cards list.
         /// </summary>
-        [ClientRpc]
-        public void CopyHiddenToPublicClientRpc()
+        [Rpc(SendTo.SpecifiedInParams)]
+        public void CopyHiddenToPublicRpc(RpcParams rpcParams)
         {
             health.Value = hiddenHealth;
             food.Value = hiddenFood;
@@ -480,10 +478,13 @@ namespace Wendogo
             PassiveCards.Clear();
             foreach (var cardId in HiddenPassiveCards)
                 PassiveCards.Add(cardId);
+            
+            Debug.Log($"[CopyHiddenToPublicRpc] RealHealth : {health.Value} RealFood : {food.Value} RealWood : {wood.Value}");
+            Debug.Log($"[CopyPublicToHiddenRpc] PassiveCards : {PassiveCards.Count}");
         }
         
-        [ClientRpc]
-        public void DestructAllTrapsClientRpc()
+        [Rpc(SendTo.SpecifiedInParams)]
+        public void DestructAllTrapsRpc(RpcParams rpcParams)
         {
             if (IsSimulatingNight)
             {
@@ -497,7 +498,7 @@ namespace Wendogo
             {
                 for (int i = PassiveCards.Count - 1; i >= 0; i--)
                 {
-                    var card = DataCollection.Instance.cardDatabase.GetCardByID(HiddenPassiveCards[i]);
+                    var card = DataCollection.Instance.cardDatabase.GetCardByID(PassiveCards[i]);
                     if (card.CardEffect is Trap) PassiveCards.RemoveAt(i);
                 }
             }
@@ -521,7 +522,7 @@ namespace Wendogo
 
         public void NotifyMissingCards(int missingCards, int deckID)
         {
-            ServerManager.Instance.TransmitMissingCardsServerRpc(GetMissingCards(), deckID);
+            ServerManager.Instance.TransmitMissingCardsRpc(GetMissingCards(), deckID);
         }
 
         public void NotifyEndTurn()
@@ -533,7 +534,7 @@ namespace Wendogo
                 Destroy(_pcSMObject);
                 _pcSMObject = null;
             }
-            ServerManager.Instance.PlayerTurnEndedServerRpc();
+            ServerManager.Instance.PlayerTurnEndedRpc();
 
         }
 
@@ -548,7 +549,7 @@ namespace Wendogo
             // if (cardDataSO.HasTarget)
             //     _selectedTarget = cardDataSO.Target;
 
-            ServerManager.Instance.TransmitPlayedCardServerRpc(cardDataSO.ID, _selectedTarget);
+            ServerManager.Instance.TransmitPlayedCardRpc(cardDataSO.ID, _selectedTarget);
             Debug.Log($"card {cardDataSO.Name} was sent to server ");
 
         }

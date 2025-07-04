@@ -8,7 +8,7 @@ namespace Wendogo
         
         public override void Apply(ulong owner, ulong target, int value = -1)
         {
-            ServerManager.Instance.AskToDestructTrapsServerRpc();
+            ServerManager.Instance.AskToDestructTrapsRpc();
         }
     }
 }

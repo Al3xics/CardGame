@@ -26,6 +26,12 @@ namespace Wendogo
         public string gameSceneName = "Game";
         private Dictionary<ulong, PlayerController> _playersById;
         
+        public NetworkVariable<int> PlayerReadyCount = new(
+            0,
+            NetworkVariableReadPermission.Everyone,
+            NetworkVariableWritePermission.Owner
+        );
+        
         #endregion
 
         #region Basic Method
@@ -87,8 +93,8 @@ namespace Wendogo
 
         // Assigns roles to players based on their network IDs. Called from the server.
         // Each player receives their role via a ClientRpc.
-        [ServerRpc(RequireOwnership = false)]
-        public void AssignRolesToPlayersServerRpc(ulong[] clientIds, RoleType[] roles, ServerRpcParams rpcParams = default)
+        [Rpc(SendTo.Server)]
+        public void AssignRolesToPlayersRpc(ulong[] clientIds, RoleType[] roles)
         {
             for (int i = 0; i < clientIds.Length; i++)
             {
@@ -97,7 +103,7 @@ namespace Wendogo
 
                 if (_playersById.TryGetValue(id, out var player))
                 {
-                    player.GetRoleClientRpc(role);
+                    player.GetRoleRpc(role, RpcTarget.Single(id, RpcTargetUse.Temp));;
                 }
             }
 
@@ -106,8 +112,8 @@ namespace Wendogo
 
         // Sends drawn cards to each player from the server.
         // Each player receives their cards via a ClientRpc.
-        [ServerRpc(RequireOwnership = false)]
-        public void SendCardsToPlayersServerRpc(ulong[] target, int[][] intArray, ServerRpcParams rpcParams = default)
+        [Rpc(SendTo.Server)]
+        public void SendCardsToPlayersRpc(ulong[] target, int[][] intArray)
         {
             for (int i = 0; i < target.Length; i++)
             {
@@ -116,40 +122,40 @@ namespace Wendogo
 
                 if (_playersById.TryGetValue(id, out var player))
                 {
-                    player.GetCardsClientRpc(cards);
+                    player.GetCardsRpc(cards, RpcTarget.Single(id, RpcTargetUse.Temp));
                 }
             }
             OnDrawCard?.Invoke();
         }
 
         // Starts the turn of the specified player by calling a ClientRpc on the client side.
-        [ServerRpc(RequireOwnership = false)]
-        public void PlayerTurnServerRpc(ulong playerId)
+        [Rpc(SendTo.Server)]
+        public void PlayerTurnRpc(ulong playerId)
         {
             if (_playersById.TryGetValue(playerId, out var player))
             {
-                player.StartMyTurnClientRpc();
+                player.StartMyTurnRpc(RpcTarget.Single(playerId, RpcTargetUse.Temp));;
             }
         }
 
         // Notifies that a player's turn has ended by invoking the corresponding event.
-        [ServerRpc(RequireOwnership = false)]
-        public void PlayerTurnEndedServerRpc()
+        [Rpc(SendTo.Server)]
+        public void PlayerTurnEndedRpc()
         {
             OnPlayerTurnEnded?.Invoke();
         }
 
         // Asks the server to draw cards for a specific player from a specific deck via the GameStateMachine.
         // Used when cards are missing (e.g., after usage).
-        [ServerRpc(RequireOwnership = false)]
-        public void TransmitMissingCardsServerRpc(int drawXCardsFromDeck, int deckID, ServerRpcParams rpcParams = default)
+        [Rpc(SendTo.Server)]
+        public void TransmitMissingCardsRpc(int drawXCardsFromDeck, int deckID, RpcParams rpcParams = default)
         {
             ulong idClientAppelant = rpcParams.Receive.SenderClientId;
             GameStateMachine.Instance.DrawCards(idClientAppelant, deckID, drawXCardsFromDeck);
         }
 
-        [ServerRpc(RequireOwnership = false)]
-        public void TransmitPlayedCardServerRpc(int cardID, ulong target, ServerRpcParams rpcParams = default)
+        [Rpc(SendTo.Server)]
+        public void TransmitPlayedCardRpc(int cardID, ulong target, RpcParams rpcParams = default)
         {
             ulong origin = rpcParams.Receive.SenderClientId;
             GameStateMachine.Instance.CheckCardPlayed(cardID, origin, target);
@@ -176,29 +182,27 @@ namespace Wendogo
             }
         }
 
-        [ServerRpc(RequireOwnership = false)]
-        public void SynchronizePlayerValuesServerRpc(bool copyToHidden)
+        [Rpc(SendTo.Server)]
+        public void SynchronizePlayerValuesRpc(bool copyToHidden)
         {
-            // Parcourt tous les joueurs et délègue la responsabilité au PlayerController
             foreach (var player in _playersById.Values)
             {
                 if (copyToHidden)
-                    player.CopyPublicToHiddenClientRpc();
+                    player.CopyPublicToHiddenRpc(RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
                 else
-                    player.CopyHiddenToPublicClientRpc();
+                    player.CopyHiddenToPublicRpc(RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
             }
         }
         
-        [ServerRpc(RequireOwnership = false)]
-        public void AskToDestructTrapsServerRpc()
+        [Rpc(SendTo.Server)]
+        public void AskToDestructTrapsRpc()
         {
-            ulong[] currentPlayerId = new ulong[] { 0, 1, 2, 3 };
-            for (int i = 0; i < currentPlayerId.Length; i++)
+            foreach (var playerId in _playersById)
             {
-                ulong id = currentPlayerId[i];
+                var id = playerId.Key;
                 if (_playersById.TryGetValue(id, out var player))
                 {
-                    player.DestructAllTrapsClientRpc();
+                    player.DestructAllTrapsRpc(RpcTarget.Single(id, RpcTargetUse.Temp));
                 }
             }
         }
