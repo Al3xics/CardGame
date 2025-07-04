@@ -24,13 +24,21 @@ namespace Wendogo
         public event Action<ulong, ulong> OnTargetSelected;
 
         public string gameSceneName = "Game";
-        private Dictionary<ulong, PlayerController> _playersById;
+        public Dictionary<ulong, PlayerController> _playersById { get; private set;}
         
         public NetworkVariable<int> PlayerReadyCount = new(
             0,
             NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Owner
         );
+
+        public string playerNameAsked;
+        
+        public int playerHealthAsked;
+        
+        public int playerFoodAsked;
+        
+        public int playerWoodAsked;
         
         #endregion
 
@@ -74,15 +82,6 @@ namespace Wendogo
         {
             if (IsServer && SceneManager.GetActiveScene().name != gameSceneName)
                 NetworkManager.SceneManager.LoadScene(gameSceneName, LoadSceneMode.Single);
-        }
-
-        // Retrieves and returns the current player's name from the session properties.
-        public string GetPlayerName()
-        {
-            if (SessionManager.Instance.ActiveSession.CurrentPlayer.Properties.TryGetValue(SessionConstants.PlayerNamePropertyKey, out var playerName))
-                return playerName.Value;
-
-            return "Unknown";
         }
 
         public static Cycle GetCycle() => GameStateMachine.Instance.Cycle;
@@ -215,7 +214,51 @@ namespace Wendogo
                 player.UseVoteUI(openOrClose);
             }
         }
+        
+        /*[Rpc(SendTo.Server)]
+        public string GetPlayerName(ulong clientID)
+        {
+            if (SessionManager.Instance.ActiveSession.CurrentPlayer.Properties.TryGetValue(SessionConstants.PlayerNamePropertyKey, out var playerName))
+                return playerName.Value;
+        
+            return "Unknown";
+        }*/
+        
+        [Rpc(SendTo.Server)]
+        public void GetPlayerName(ulong clientID)
+        {
+            // On parcourt les joueurs pour trouver celui avec le bon ID
+            var player = SessionManager.Instance.ActiveSession.Players
+                .FirstOrDefault(p => p.Id == clientID.ToString());
 
+            if (player != null && player.Properties.TryGetValue(SessionConstants.PlayerNamePropertyKey, out var playerName))
+            {
+                playerNameAsked = playerName.Value;
+            }
+
+            playerNameAsked = "Unknown";
+        }
+
+        [Rpc(SendTo.Server)]
+        public void GetPlayerFood(ulong clientID)
+        {
+            var player = PlayerController.GetPlayer(clientID);
+            playerFoodAsked = player.food.Value;
+        }
+        
+        [Rpc(SendTo.Server)]
+        public void GetPlayerWood(ulong clientID)
+        {
+            var player = PlayerController.GetPlayer(clientID);
+            playerWoodAsked = player.wood.Value;
+        }
+        
+        [Rpc(SendTo.Server)]
+        public void GetPlayerHealth(ulong clientID)
+        {
+            var player = PlayerController.GetPlayer(clientID);
+            playerHealthAsked = player.health.Value;
+        }
         #endregion
     }
 }

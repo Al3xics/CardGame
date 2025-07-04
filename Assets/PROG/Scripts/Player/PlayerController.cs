@@ -50,8 +50,6 @@ namespace Wendogo
         public CardDatabaseSO CardDatabaseSO;
 
         GameObject _pcSMObject;
-        
-        GameObject _prefabUI;
 
         public static PlayerController LocalPlayer;
         public static ulong LocalPlayerId;
