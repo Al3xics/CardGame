@@ -1638,6 +1638,10 @@ PrefabInstance:
       value: 0.058745325
       objectReference: {fileID: 0}
     - target: {fileID: 588981839735098746, guid: 15878c108acf0d641bbc57994e5e9623, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -293.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 588981839735098746, guid: 15878c108acf0d641bbc57994e5e9623, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 6.736
       objectReference: {fileID: 0}
@@ -1699,7 +1703,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1666380177020090602, guid: 15878c108acf0d641bbc57994e5e9623, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -126
+      value: -119.2
       objectReference: {fileID: 0}
     - target: {fileID: 1666380177020090602, guid: 15878c108acf0d641bbc57994e5e9623, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -1743,7 +1747,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2300106859264367152, guid: 15878c108acf0d641bbc57994e5e9623, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -162
+      value: -175.7
       objectReference: {fileID: 0}
     - target: {fileID: 2300106859264367152, guid: 15878c108acf0d641bbc57994e5e9623, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -1851,7 +1855,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6831133763232083078, guid: 15878c108acf0d641bbc57994e5e9623, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -66
+      value: -2.8
       objectReference: {fileID: 0}
     - target: {fileID: 6831133763232083078, guid: 15878c108acf0d641bbc57994e5e9623, type: 3}
       propertyPath: m_AnchoredPosition.y
@@ -1927,7 +1931,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9116831789849821737, guid: 15878c108acf0d641bbc57994e5e9623, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -800
+      value: -718.59
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
@@ -10529,20 +10533,20 @@ MonoBehaviour:
       TangentIn:
         x: -0
         y: -0
-        z: -2.7144244
+        z: -2.2461543
       TangentOut:
         x: 0
         y: 0
-        z: 2.7144244
+        z: 2.2461543
       Rotation:
         value:
-          x: 0.3218077
-          y: 0.6296346
-          z: 0.6296348
-          w: 0.3218074
+          x: 0.4467443
+          y: 0.5481055
+          z: 0.54810536
+          w: 0.4467444
     - Position:
         x: 0
-        y: -30.9
+        y: -42.27
         z: 0
       TangentIn:
         x: 0
@@ -10554,10 +10558,10 @@ MonoBehaviour:
         z: 10
       Rotation:
         value:
-          x: 0.49581584
+          x: 0.4958158
           y: 0.5041481
           z: 0.50414807
-          w: 0.4958186
+          w: 0.49581856
     - Position:
         x: 21.1
         y: -47.8
@@ -10565,17 +10569,17 @@ MonoBehaviour:
       TangentIn:
         x: -0
         y: -0
-        z: -2.7033684
+        z: -2.1812632
       TangentOut:
         x: 0
         y: 0
-        z: 2.7033684
+        z: 2.1812632
       Rotation:
         value:
-          x: 0.6374061
-          y: 0.30612656
-          z: 0.30612662
-          w: 0.63740605
+          x: 0.55980414
+          y: 0.43199462
+          z: 0.43199456
+          w: 0.55980414
     m_MetaData:
     - Mode: 0
       Tension: 0.5

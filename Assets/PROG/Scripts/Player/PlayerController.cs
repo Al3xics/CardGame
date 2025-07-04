@@ -108,12 +108,8 @@ namespace Wendogo
         private void Start()
         {
             name = IsLocalPlayer ? "LocalPlayer" : $"Player{OwnerClientId}";
-            
-            if (IsOwner)
-            {
-                pcSMObject = new GameObject($"{nameof(PlayerControllerSM)}");
-                pcSMObject.AddComponent<PlayerControllerSM>();
-            }
+
+
         }
 
         public override void OnNetworkSpawn()
@@ -153,8 +149,8 @@ namespace Wendogo
                 _inputEvent = GameObject.Find("EventSystem")?.GetComponent<EventSystem>();
                 if (_inputEvent != null) _inputEvent.enabled = false;
                 if (_handManager == null) _handManager = GameObject.FindWithTag("hand")?.GetComponent<HandManager>();
-                //pcSMObject = new GameObject($"{nameof(PlayerControllerSM)}");
-                //pcSMObject.AddComponent<PlayerControllerSM>();
+                pcSMObject = new GameObject($"{nameof(PlayerControllerSM)}");
+                pcSMObject.AddComponent<PlayerControllerSM>();
             }
         }
 
