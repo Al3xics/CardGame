@@ -82,8 +82,6 @@ namespace Wendogo
         }
 
         public static Cycle GetCycle() => GameStateMachine.Instance.Cycle;
-        
-        public Dictionary<ulong, PlayerController> GetAllPlayers() => _playersById;
 
         #endregion
 
@@ -208,14 +206,13 @@ namespace Wendogo
         }
 
         [Rpc(SendTo.Server)]
-        public void OpenAllUIForVotersRpc(GameObject prefabUI)
+        public void UseAllUIForVotersRpc(GameObject prefabUI, bool openOrClose)
         {
-            var players = ServerManager.Instance.GetAllPlayers();
-            foreach (var player in players.Values)
+            foreach (var player in _playersById.Values)
             {
                 if (prefabUI != null)
                 {
-                    player.OpenVoteUI(prefabUI);
+                    player.UseVoteUI(prefabUI, openOrClose);
                 }
             }
         }

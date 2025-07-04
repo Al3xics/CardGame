@@ -21,12 +21,12 @@ namespace Wendogo
         
         public override void ShowUI()
         {
-            ServerManager.Instance.OpenAllUIForVotersRpc(prefabUI);
+            ServerManager.Instance.UseAllUIForVotersRpc(prefabUI, true);
         }
         
         public override void HideUI()
         {
-            prefabUI.SetActive(false);
+            ServerManager.Instance.UseAllUIForVotersRpc(prefabUI, false);
         }
     }
 }

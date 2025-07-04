@@ -359,9 +359,9 @@ namespace Wendogo
             return DataCollection.Instance.cardDatabase.GetCardByID(cardId);
         }
 
-        public void OpenVoteUI(GameObject prefabUI)
+        public void UseVoteUI(GameObject prefabUI, bool openOrClose)
         {
-            prefabUI.SetActive(true);
+            prefabUI.SetActive(openOrClose);
         }
 
         #endregion
