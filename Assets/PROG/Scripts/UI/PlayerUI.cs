@@ -15,7 +15,9 @@ namespace Wendogo
         private TextMeshProUGUI endText;
         private TextMeshProUGUI roleText;
 
-        [SerializeField] private GameObject TargetUI;
+        [SerializeField] private TextMeshProUGUI foodCount;
+        [SerializeField] private TextMeshProUGUI woodCount;
+        [SerializeField] private GameObject[] heathVisuals;
 
         public static PlayerUI Instance { get; private set; }
 
@@ -26,7 +28,6 @@ namespace Wendogo
             if (Instance == null)
             {
                 Instance = this;
-                DontDestroyOnLoad(gameObject);
             }
             else
             {
@@ -43,9 +44,13 @@ namespace Wendogo
             if (endText != null) endText.gameObject.SetActive(false);
         }
 
-        public void ToggleTargetSelectUI()
+        public void DefineFoodText(int foodAmount)
         {
-            TargetUI.SetActive(!TargetUI.activeSelf);
+            foodCount.text = $"{foodAmount.ToString()}/6";
+        }        
+        public void DefineWoodText(int woodAmount)
+        {
+            woodCount.text = $"{woodAmount.ToString()}/6";
         }
 
         public void SendDebug(string message)

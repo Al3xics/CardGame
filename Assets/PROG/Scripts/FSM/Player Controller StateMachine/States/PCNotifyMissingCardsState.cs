@@ -13,7 +13,8 @@ namespace Wendogo
         {
             base.OnEnter();
             ToggleDeck();
-            HandManager.ToggleOffMovingCards(_player._handManager._handCards);
+            HandManager handManager = _player._handManager;
+            handManager.ToggleOffMovingCards(handManager._handCards);
             int missingCards = _player.GetMissingCards();
             await _player.SelectDeckAsync(missingCards);
             StateMachine.ChangeState<PCCheckPAState>();
@@ -27,7 +28,7 @@ namespace Wendogo
         public override void OnExit()
         {
             ToggleDeck();
-            HandManager.ToggleOnMovingCards(_player._handManager._handCards);
+            _player._handManager.ToggleOnMovingCards(_player._handManager._handCards);
             base.OnExit();
         }
 

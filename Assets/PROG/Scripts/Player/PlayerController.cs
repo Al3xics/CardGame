@@ -108,12 +108,8 @@ namespace Wendogo
         private void Start()
         {
             name = IsLocalPlayer ? "LocalPlayer" : $"Player{OwnerClientId}";
-            
-            if (IsOwner)
-            {
-                pcSMObject = new GameObject($"{nameof(PlayerControllerSM)}");
-                pcSMObject.AddComponent<PlayerControllerSM>();
-            }
+
+
         }
 
         public override void OnNetworkSpawn()
@@ -133,6 +129,10 @@ namespace Wendogo
 
             LocalPlayer = this;
             LocalPlayerId = NetworkManager.Singleton.LocalClientId;
+
+
+            food.OnValueChanged += UpdateFoodText;
+            wood.OnValueChanged += UpdateWoodText;
             SceneManager.sceneLoaded += OnSceneLoaded;
             CardDropZone.OnCardDataDropped += NotifyPlayedCard;
         }
@@ -140,6 +140,8 @@ namespace Wendogo
         private new void OnDestroy()
         {
             SceneManager.sceneLoaded -= OnSceneLoaded;
+            food.OnValueChanged -= UpdateFoodText;
+            wood.OnValueChanged -= UpdateWoodText;
         }
 
 
@@ -153,8 +155,8 @@ namespace Wendogo
                 _inputEvent = GameObject.Find("EventSystem")?.GetComponent<EventSystem>();
                 if (_inputEvent != null) _inputEvent.enabled = false;
                 if (_handManager == null) _handManager = GameObject.FindWithTag("hand")?.GetComponent<HandManager>();
-                //pcSMObject = new GameObject($"{nameof(PlayerControllerSM)}");
-                //pcSMObject.AddComponent<PlayerControllerSM>();
+                pcSMObject = new GameObject($"{nameof(PlayerControllerSM)}");
+                pcSMObject.AddComponent<PlayerControllerSM>();
             }
         }
 
@@ -166,13 +168,6 @@ namespace Wendogo
             Debug.Log("Input enabled");
         }
 
-        private void EnsureWaitForTargetTask()
-        {
-            if (_waitForTargetTask.Status == UniTaskStatus.Pending)
-                return;
-
-            _waitForTargetTask = UniTask.WaitUntil(() => _selectedTarget > 0);
-        }
 
         public async UniTask<int> SelectDeckAsync(int missingCards)
         {
@@ -203,6 +198,20 @@ namespace Wendogo
             TargetSelectionUI.OnTargetPicked += HandleTargetSelected;
 
             await UniTask.WaitUntil(() => _selectedTarget > 0);
+
+            TargetSelectionUI.OnTargetPicked -= HandleTargetSelected;
+
+            Debug.Log($"Selected target is {_selectedTarget} ");
+
+            return _selectedTarget;
+        }
+
+
+        public async UniTask<ulong> GroupSelectTargetAsync(ulong target)
+        {
+            TargetSelectionUI.OnTargetPicked += HandleTargetSelected;
+ 
+            await UniTask.WaitUntil(() => ServerManager.Instance.PlayerReadyCount.Value == 4);
 
             TargetSelectionUI.OnTargetPicked -= HandleTargetSelected;
 
@@ -305,9 +314,10 @@ namespace Wendogo
             {
                 Debug.Log("Passive card placed");
             }
-
-            //Destroy(ActiveCard.gameObject);
-
+            else
+            {
+                Destroy(ActiveCard.gameObject);
+            }
         }
 
         public void CheckPA()
@@ -374,6 +384,16 @@ namespace Wendogo
         public void UseVoteUI(GameObject prefabUI, bool openOrClose)
         {
             prefabUI.SetActive(openOrClose);
+        }
+
+        public void UpdateFoodText(int oldFoodValue, int newFoodValue)
+        {
+            PlayerUI.Instance.DefineFoodText(newFoodValue);
+        }        
+
+        public void UpdateWoodText(int oldWoodValue, int newWoodValue)
+        {
+            PlayerUI.Instance.DefineWoodText(newWoodValue);
         }
 
         #endregion
@@ -444,18 +464,7 @@ namespace Wendogo
         [Rpc(SendTo.SpecifiedInParams)]
         public void FinishedCardPlayedRpc(RpcParams rpcParams)
         {
-            // todo --> il faut pas le faire ici vu que `SelectDeckAsync` est appelé par `PCNotifyMissingCardsState`
-            // c'est pour ça que on a un print qui dit de piocher une 0 carte
-            
-            if (!IsOwner) return;
-            
-            UniTask.Void(async () =>
-            {
-                int missing = GetMissingCards();
 
-                await SelectDeckAsync(missing);
-
-            });
         }
 
         /// <summary>
@@ -547,7 +556,7 @@ namespace Wendogo
 
         private async void NotifyPlayedCard(CardDataSO cardDataSO)
         {
-            if (cardDataSO.isPassive)
+            if (cardDataSO.isPassive || !cardDataSO.HasTarget)
             {
                 _selectedTarget = LocalPlayerId;
             }
