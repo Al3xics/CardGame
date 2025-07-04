@@ -13,11 +13,6 @@ namespace Wendogo
         [HideInInspector]
         public GameObject prefabUI;
 
-        private void Awake()
-        {
-            prefabUI = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject;
-        }
-
         public override void Apply(ulong owner, ulong target, int value = -1)
         {
             var targetPlayer = PlayerController.GetPlayer(target);

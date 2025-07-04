@@ -2624,7 +2624,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   showDebugLogs: 0
   maximumTurn: 10
-  dataCollectionScript: {fileID: 916108407}
   startingActionDeckAmount: 3
   startingResourceDeckAmount: 2
   triggerVoteEveryXTurn: 2
@@ -6730,6 +6729,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   gameSceneName: Game Valentin
+  PlayerReadyCount:
+    m_InternalValue: 0
 --- !u!114 &1479689067
 MonoBehaviour:
   m_ObjectHideFlags: 0
