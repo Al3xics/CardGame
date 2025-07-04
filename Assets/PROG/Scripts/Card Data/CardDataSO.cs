@@ -21,6 +21,8 @@ public class CardDataSO : ScriptableObject
 
     [VerticalGroup("CardData/Stats"), LabelWidth(120)]
     public bool isPassive; //Whether the card is passive or not
+    [VerticalGroup("CardData/Stats"), LabelWidth(120)]
+    public bool isGroup; //Whether the card is passive or not
 
     [VerticalGroup("CardData/Stats"), LabelWidth(120)]
     public bool HasTarget; //Indicates whether the card needs a target to be played
@@ -39,7 +41,7 @@ public class CardDataSO : ScriptableObject
     [ShowIf("Toggle"), HideLabel]
     public int ID; //Unique identifier for this card
 
-    private string _buttonName = "ID"; 
+    private string _buttonName = "ID";
     [HideInInspector]
     public bool Toggle; //Controls visibility of the ID field
 
@@ -50,7 +52,7 @@ public class CardDataSO : ScriptableObject
         // Toggles the visibility of the ID field for this card
         this.Toggle = !this.Toggle;
     }
-    
+
     private void ValidatePriorityIndex()
     {
 #if UNITY_EDITOR

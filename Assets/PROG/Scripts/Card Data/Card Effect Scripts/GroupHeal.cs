@@ -6,8 +6,6 @@ namespace Wendogo
     public class GroupHeal : CardEffect
     {
         public int healValue = 2;
-        
-
         public override void Apply(ulong owner, ulong target, int value = -1)
         {
             var targetPlayer = PlayerController.GetPlayer(target);
@@ -21,7 +19,7 @@ namespace Wendogo
         {
             ServerManager.Instance.UseAllUIForVotersRpc(true);
         }
-        
+
         public override void HideUI()
         {
             ServerManager.Instance.UseAllUIForVotersRpc(false);

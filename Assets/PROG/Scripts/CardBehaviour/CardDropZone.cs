@@ -45,11 +45,11 @@ namespace Wendogo
                 OnCardDataDropped?.Invoke(cardData);
                 OnCardDropped?.Invoke(cod);
 
-                if (isActiveDrop)
-                {
-                    await UniTask.WaitForSeconds(2);
-                    Destroy(cod.gameObject);
-                }
+                //if (isActiveDrop)
+                //{
+                //    await UniTask.WaitForSeconds(2);
+                //    Destroy(cod.gameObject);
+                //}
             }
         }
     }

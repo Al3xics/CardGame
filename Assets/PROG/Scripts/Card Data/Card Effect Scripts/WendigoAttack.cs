@@ -9,7 +9,8 @@ namespace Wendogo
     public class WendigoAttack : CardEffect
     {
         public int damageDone = 1;
-        
+
+        [HideInInspector]
         public GameObject prefabUI;
 
         public override void Apply(ulong owner, ulong target, int value = -1)
@@ -23,11 +24,15 @@ namespace Wendogo
 
         public override void ShowUI()
         {
+            if (prefabUI == null)
+                prefabUI = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject;
             prefabUI.SetActive(true);
         }
-        
+
         public override void HideUI()
         {
+            if (prefabUI == null)
+                prefabUI = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject;
             prefabUI.SetActive(false);
         }
     }

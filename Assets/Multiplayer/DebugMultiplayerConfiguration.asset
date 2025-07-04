@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59a3627f0d5845fdb5c333e0c4e8c78d, type: 3}
   m_Name: DebugMultiplayerConfiguration
   m_EditorClassIdentifier: 
-  connectionType: 2
+  connectionType: 1
   connectionMode: 0
   listenIpAddress: 127.0.0.1
   publishIpAddress: 127.0.0.1

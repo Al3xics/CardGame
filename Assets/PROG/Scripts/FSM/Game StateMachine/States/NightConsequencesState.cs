@@ -23,7 +23,7 @@ namespace Wendogo
             // Sort `NightActions` by priority index and process them
             sortedActions = StateMachine.NightActions.Where(card => card.CardPriorityIndex > 0).OrderBy(card => card.CardPriorityIndex).ToList();
             
-            ServerManager.Instance.SynchronizePlayerValuesServerRpc(false);
+            ServerManager.Instance.SynchronizePlayerValuesRpc(false);
             
             if (sortedActions.Count != 0)
                 ResolveCardNightConsequences(id);
