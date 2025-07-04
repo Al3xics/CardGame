@@ -18,9 +18,10 @@ namespace Wendogo
             }
         }
 
+        
         public override void ShowUI()
         {
-            prefabUI.SetActive(true);
+            ServerManager.Instance.OpenAllUIForVotersRpc(prefabUI);
         }
         
         public override void HideUI()
