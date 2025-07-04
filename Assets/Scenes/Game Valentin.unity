@@ -1390,6 +1390,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: UpdtatedSelectTargetCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 728514128433627386, guid: b591182f062020c408595876a3e3ff76, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3263382433569448153, guid: b591182f062020c408595876a3e3ff76, type: 3}
       propertyPath: _playerID
       value: 1

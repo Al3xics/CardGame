@@ -6,8 +6,7 @@ namespace Wendogo
     public class GroupHeal : CardEffect
     {
         public int healValue = 2;
-        
-        public GameObject prefabUI;
+
 
         public override void Apply(ulong owner, ulong target, int value = -1)
         {
@@ -20,12 +19,12 @@ namespace Wendogo
 
         public override void ShowUI()
         {
-            prefabUI.SetActive(true);
+            ServerManager.Instance.UseAllUIForVotersRpc(true);
         }
-        
+
         public override void HideUI()
         {
-            prefabUI.SetActive(false);
+            ServerManager.Instance.UseAllUIForVotersRpc(false);
         }
     }
 }

@@ -20,18 +20,18 @@ namespace Wendogo
         public event Action OnDrawCard;
         public event Action OnPlayerTurnEnded;
         public event Action OnResolveCardNightConsequences;
-        
+
         public event Action<ulong, ulong> OnTargetSelected;
-        
+
         public string gameSceneName = "Game";
         private Dictionary<ulong, PlayerController> _playersById;
-        
+
         public NetworkVariable<int> PlayerReadyCount = new NetworkVariable<int>(0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
-        
+
         #endregion
 
         #region Basic Method
-        
+
         // Called during script initialization to configure the ServerManager instance
         // and disable certain objects for clients (non-server).
         private void Awake()
@@ -156,14 +156,14 @@ namespace Wendogo
             ulong origin = rpcParams.Receive.SenderClientId;
             GameStateMachine.Instance.CheckCardPlayed(cardID, origin, target);
         }
-        
+
         [Rpc(SendTo.Server)]
         public void TryApplyPassiveRpc(int playedCardId, ulong origin, ulong target)
         {
             if (_playersById.TryGetValue(target, out var player))
                 player.TryApplyPassiveRpc(playedCardId, origin, RpcTarget.Single(target, RpcTargetUse.Temp));
         }
-        
+
         [Rpc(SendTo.Server)]
         public void FinishedPassiveCardPlayedRpc(int cardId, ulong origin, bool isHiddenPassiveCards)
         {
@@ -173,7 +173,7 @@ namespace Wendogo
                     player.AddHiddenPassiveCardRpc(cardId, RpcTarget.Single(origin, RpcTargetUse.Temp));
                 else
                     player.AddPassiveCardRpc(cardId, RpcTarget.Single(origin, RpcTargetUse.Temp));
-                
+
                 player.FinishedCardPlayedRpc(RpcTarget.Single(origin, RpcTargetUse.Temp));
             }
         }
@@ -190,7 +190,7 @@ namespace Wendogo
                     player.CopyHiddenToPublicClientRpc();
             }
         }
-        
+
         [ServerRpc(RequireOwnership = false)]
         public void AskToDestructTrapsServerRpc()
         {
@@ -206,17 +206,13 @@ namespace Wendogo
         }
 
         [Rpc(SendTo.Server)]
-        public void UseAllUIForVotersRpc(GameObject prefabUI, bool openOrClose)
+        public void UseAllUIForVotersRpc(bool openOrClose)
         {
             foreach (var player in _playersById.Values)
             {
-                if (prefabUI != null)
-                {
-                    player.UseVoteUI(prefabUI, openOrClose);
-                }
+                player.UseVoteUI(openOrClose);
             }
         }
-        
 
         #endregion
     }
