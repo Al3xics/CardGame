@@ -20,7 +20,7 @@ namespace Wendogo
             base.OnEnter();
             
             if (StateMachine.Cycle == Cycle.Night)
-                ServerManager.Instance.SynchronizePlayerValuesServerRpc(true);
+                ServerManager.Instance.SynchronizePlayerValuesRpc(true);
             
             StartPlayerTurn(StateMachine.CurrentPlayerId);
         }
@@ -33,7 +33,7 @@ namespace Wendogo
         {
             Log($"Player {StateMachine.CurrentPlayerId} Begin Turn");
             ServerManager.Instance.OnPlayerTurnEnded += OnPlayerTurnEnded;
-            ServerManager.Instance.PlayerTurnServerRpc(StateMachine.PlayersID[id]);
+            ServerManager.Instance.PlayerTurnRpc(StateMachine.PlayersID[id]);
         }
 
         /// <summary>

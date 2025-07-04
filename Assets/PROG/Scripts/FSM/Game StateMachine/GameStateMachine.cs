@@ -264,7 +264,7 @@ namespace Wendogo
             }
 
             Utils.DictionaryToArrays(playerCards, out ulong[] targets, out int[][] cardsID);
-            ServerManager.Instance.SendCardsToPlayersServerRpc(targets, cardsID);
+            ServerManager.Instance.SendCardsToPlayersRpc(targets, cardsID);
         }
 
         #endregion
