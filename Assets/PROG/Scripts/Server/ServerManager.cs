@@ -205,6 +205,19 @@ namespace Wendogo
             }
         }
 
+        [Rpc(SendTo.Server)]
+        public void UseAllUIForVotersRpc(GameObject prefabUI, bool openOrClose)
+        {
+            foreach (var player in _playersById.Values)
+            {
+                if (prefabUI != null)
+                {
+                    player.UseVoteUI(prefabUI, openOrClose);
+                }
+            }
+        }
+        
+
         #endregion
     }
 }

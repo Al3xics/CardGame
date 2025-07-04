@@ -371,6 +371,11 @@ namespace Wendogo
             return DataCollection.Instance.cardDatabase.GetCardByID(cardId);
         }
 
+        public void UseVoteUI(GameObject prefabUI, bool openOrClose)
+        {
+            prefabUI.SetActive(openOrClose);
+        }
+
         #endregion
 
         #region RPC
