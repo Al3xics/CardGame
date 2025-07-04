@@ -102,7 +102,7 @@ namespace Wendogo
             }
         }
 
-        public static void ToggleOffMovingCards(List<GameObject> cardsInHand)
+        public void ToggleOffMovingCards(List<GameObject> cardsInHand)
         {
             foreach (GameObject card in cardsInHand)
             {
@@ -110,7 +110,7 @@ namespace Wendogo
                 handler.enabled = false;
             }
         }
-        public static void ToggleOnMovingCards(List<GameObject> cardsInHand)
+        public void ToggleOnMovingCards(List<GameObject> cardsInHand)
         {
             foreach (GameObject card in cardsInHand)
             {

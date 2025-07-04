@@ -18,7 +18,7 @@ namespace Wendogo
 			//AwaitTarget();
 			_player.ActiveCard.Card.CardEffect.ShowUI();
 			Debug.Log($"active card is : {_player.ActiveCard.Card.name}");
-            HandManager.ToggleOffMovingCards(_player._handManager._handCards);
+            _player._handManager.ToggleOffMovingCards(_player._handManager._handCards);
             ulong selectedTarget = _player.GetChosenTarget();
 			await _player.SelectTargetAsync(selectedTarget);
             StateMachine.ChangeState<PCPlayCardState>();
@@ -31,7 +31,7 @@ namespace Wendogo
 
 		public override void OnExit()
 		{
-            HandManager.ToggleOffMovingCards(_player._handManager._handCards);
+            _player._handManager.ToggleOffMovingCards(_player._handManager._handCards);
             _player.ActiveCard.Card.CardEffect.HideUI();
             base.OnExit();
 		}

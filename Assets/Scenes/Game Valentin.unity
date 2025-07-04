@@ -1525,7 +1525,7 @@ GameObject:
   - component: {fileID: 372637401}
   - component: {fileID: 372637400}
   m_Layer: 5
-  m_Name: Ritual_Food_Bar
+  m_Name: Player_Food_Bar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1777,6 +1777,18 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3931746223066491401, guid: 15878c108acf0d641bbc57994e5e9623, type: 3}
+      propertyPath: roleText
+      value: 
+      objectReference: {fileID: 1540466910}
+    - target: {fileID: 3931746223066491401, guid: 15878c108acf0d641bbc57994e5e9623, type: 3}
+      propertyPath: foodCount
+      value: 
+      objectReference: {fileID: 1540466910}
+    - target: {fileID: 3931746223066491401, guid: 15878c108acf0d641bbc57994e5e9623, type: 3}
+      propertyPath: woodCount
+      value: 
+      objectReference: {fileID: 1656168350}
     - target: {fileID: 4651572359779764939, guid: 15878c108acf0d641bbc57994e5e9623, type: 3}
       propertyPath: m_LocalScale.x
       value: 1.022319
@@ -4112,7 +4124,7 @@ GameObject:
   - component: {fileID: 968171898}
   - component: {fileID: 968171897}
   m_Layer: 5
-  m_Name: Ritual_Food_Icon
+  m_Name: Player_Food_Icon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5655,7 +5667,7 @@ GameObject:
   - component: {fileID: 1273210866}
   - component: {fileID: 1273210865}
   m_Layer: 5
-  m_Name: Ritual_Wood_Bar
+  m_Name: Player_Wood_Bar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7041,7 +7053,7 @@ GameObject:
   - component: {fileID: 1540466911}
   - component: {fileID: 1540466910}
   m_Layer: 5
-  m_Name: Ritual_Food_Text
+  m_Name: Player_Food_Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7086,7 +7098,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 2/6
+  m_text: 0/6
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -7706,7 +7718,7 @@ GameObject:
   - component: {fileID: 1656168351}
   - component: {fileID: 1656168350}
   m_Layer: 5
-  m_Name: Ritual_Wood_Text
+  m_Name: Player_Wood_Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7751,7 +7763,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 2/6
+  m_text: 0/6
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -9418,7 +9430,7 @@ GameObject:
   - component: {fileID: 1922642983}
   - component: {fileID: 1922642982}
   m_Layer: 5
-  m_Name: Ritual_Wood_Icon
+  m_Name: Player_Wood_Icon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
