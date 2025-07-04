@@ -101,5 +101,23 @@ namespace Wendogo
                     .BindToLocalRotation(_handCards[i].transform);
             }
         }
+
+        public static void ToggleOffMovingCards(List<GameObject> cardsInHand)
+        {
+            foreach (GameObject card in cardsInHand)
+            {
+                CardDragHandler handler = card.GetComponent<CardDragHandler>();
+                handler.enabled = false;
+            }
+        }
+        public static void ToggleOnMovingCards(List<GameObject> cardsInHand)
+        {
+            foreach (GameObject card in cardsInHand)
+            {
+                CardDragHandler handler = card.GetComponent<CardDragHandler>();
+                handler.enabled = true;
+            }
+        }
+
     }
 }

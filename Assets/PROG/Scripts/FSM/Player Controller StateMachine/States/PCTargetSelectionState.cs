@@ -1,5 +1,7 @@
 using UnityEngine;
 using Wendogo;
+using static UnityEngine.Rendering.DebugUI;
+using static UnityEngine.UI.Image;
 
 namespace Wendogo
 {
@@ -12,9 +14,12 @@ namespace Wendogo
 		public override async void OnEnter()
 		{
 			base.OnEnter();
-			PlayerUI.Instance.ToggleTargetSelectUI();
+			//PlayerUI.Instance.ToggleTargetSelectUI();
 			//AwaitTarget();
-			ulong selectedTarget = _player.GetChosenTarget();
+			_player.ActiveCard.Card.CardEffect.ShowUI();
+			Debug.Log($"active card is : {_player.ActiveCard.Card.name}");
+            HandManager.ToggleOffMovingCards(_player._handManager._handCards);
+            ulong selectedTarget = _player.GetChosenTarget();
 			await _player.SelectTargetAsync(selectedTarget);
             StateMachine.ChangeState<PCPlayCardState>();
         }
@@ -26,8 +31,9 @@ namespace Wendogo
 
 		public override void OnExit()
 		{
-			PlayerUI.Instance.ToggleTargetSelectUI();
-			base.OnExit();
+            HandManager.ToggleOffMovingCards(_player._handManager._handCards);
+            _player.ActiveCard.Card.CardEffect.HideUI();
+            base.OnExit();
 		}
 
 		public void AwaitTarget()

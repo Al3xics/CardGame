@@ -9,12 +9,18 @@ namespace Wendogo
     public class WendigoAttack : CardEffect
     {
         public int damageDone = 1;
-        
+
+        [HideInInspector]
         public GameObject prefabUI;
+
+        private void Awake()
+        {
+            prefabUI = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject;
+        }
 
         public override void Apply(ulong owner, ulong target, int value = -1)
         {
-            PlayerController targetPlayer = PlayerController.GetPlayer(target);
+            var targetPlayer = PlayerController.GetPlayer(target);
             if (targetPlayer != null)
             {
                 targetPlayer.hiddenHealth -= damageDone;
@@ -23,11 +29,15 @@ namespace Wendogo
 
         public override void ShowUI()
         {
+            if (prefabUI == null)
+                prefabUI = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject;
             prefabUI.SetActive(true);
         }
-        
+
         public override void HideUI()
         {
+            if (prefabUI == null)
+                prefabUI = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject;
             prefabUI.SetActive(false);
         }
     }

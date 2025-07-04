@@ -9,7 +9,7 @@ namespace Wendogo
 
         public override void Apply(ulong owner, ulong target, int value = -1)
         {
-            var player = PlayerController.GetPlayer(owner);
+            var player = PlayerController.GetPlayer(target);
             player._playerPA += points;
         }
     }
