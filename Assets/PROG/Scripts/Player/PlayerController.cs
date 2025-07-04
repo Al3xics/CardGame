@@ -49,6 +49,8 @@ namespace Wendogo
         public CardDatabaseSO CardDatabaseSO;
 
         GameObject _pcSMObject;
+        
+        GameObject _prefabUI;
 
         public static PlayerController LocalPlayer;
         public static ulong LocalPlayerId;
@@ -105,6 +107,9 @@ namespace Wendogo
         private void Start()
         {
             name = IsLocalPlayer ? "LocalPlayer" : $"Player{OwnerClientId}";
+            
+            _prefabUI = GameObject.Find("UpdtatedSelectTargetCanvas");
+            _prefabUI.SetActive(false);
             
             if (IsOwner)
             {
@@ -359,9 +364,9 @@ namespace Wendogo
             return DataCollection.Instance.cardDatabase.GetCardByID(cardId);
         }
 
-        public void UseVoteUI(GameObject prefabUI, bool openOrClose)
+        public void UseVoteUI(bool openOrClose)
         {
-            prefabUI.SetActive(openOrClose);
+            _prefabUI.SetActive(openOrClose);
         }
 
         #endregion

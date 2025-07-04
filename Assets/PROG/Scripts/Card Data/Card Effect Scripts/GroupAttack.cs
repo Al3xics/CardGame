@@ -6,8 +6,6 @@ namespace Wendogo
     public class GroupAttack : CardEffect
     {
         public int attackValue = 2;
-        
-        public GameObject prefabUI;
 
         public override void Apply(ulong owner, ulong target, int value = -1)
         {
@@ -21,12 +19,12 @@ namespace Wendogo
         
         public override void ShowUI()
         {
-            ServerManager.Instance.UseAllUIForVotersRpc(prefabUI, true);
+            ServerManager.Instance.UseAllUIForVotersRpc(true);
         }
         
         public override void HideUI()
         {
-            ServerManager.Instance.UseAllUIForVotersRpc(prefabUI, false);
+            ServerManager.Instance.UseAllUIForVotersRpc(false);
         }
     }
 }
