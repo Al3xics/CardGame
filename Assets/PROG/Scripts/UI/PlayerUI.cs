@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
@@ -19,7 +21,7 @@ namespace Wendogo
         [SerializeField] private TextMeshProUGUI woodCount;
         [SerializeField] private GameObject[] heathVisuals;
 
-        public CardDropZone[] passiveCardDropZones;
+        [SerializeField] public List<Transform> cardSpaces = new List<Transform>();
 
         public static PlayerUI Instance { get; private set; }
 

@@ -3,6 +3,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using Sirenix.OdinInspector;
 using Cysharp.Threading.Tasks;
+using LitMotion;
+using LitMotion.Extensions;
 
 namespace Wendogo
 {
@@ -44,17 +46,23 @@ namespace Wendogo
 
                 if (cardData.isPassive)
                 {
-                    CardDropZone[] passiveCardDropZones = PlayerUI.Instance.passiveCardDropZones;  
 
-                    foreach (var zone in PlayerUI.Instance.passiveCardDropZones)
+
+                    foreach (var zone in PlayerUI.Instance.cardSpaces)
                     {
-                        if(!zone.isOccupied)
-                        {
-                            draggedCard.transform.SetPositionAndRotation(zone.gameObject.transform.position, zone.gameObject.transform.rotation);
-                            zone.isOccupied = true;
-                            continue;
-                        }
-                    } 
+                        LMotion.Create(
+                                draggedCard.transform.position,
+                                zone.transform.position,
+                                0.2f
+                            )
+                            .WithEase(Ease.OutQuad)
+                            .BindToPosition(draggedCard.transform);
+
+                        //draggedCard.transform.SetPositionAndRotation(zone.gameObject.transform.position, zone.gameObject.transform.rotation);
+                        PlayerUI.Instance.cardSpaces.Remove(zone);
+                        break;
+
+                    }
 
                 }
 
