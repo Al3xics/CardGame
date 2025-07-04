@@ -1390,6 +1390,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: UpdtatedSelectTargetCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 3263382433569448153, guid: b591182f062020c408595876a3e3ff76, type: 3}
+      propertyPath: _playerID
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4649182196134941445, guid: b591182f062020c408595876a3e3ff76, type: 3}
+      propertyPath: _playerID
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5066316092088746495, guid: b591182f062020c408595876a3e3ff76, type: 3}
+      propertyPath: _playerID
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6049365121470526921, guid: b591182f062020c408595876a3e3ff76, type: 3}
+      propertyPath: _playerID
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 7728155765000877774, guid: b591182f062020c408595876a3e3ff76, type: 3}
       propertyPath: m_Pivot.x
       value: 0

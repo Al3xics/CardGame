@@ -206,6 +206,20 @@ namespace Wendogo
             return _selectedTarget;
         }
 
+
+        public async UniTask<ulong> GroupSelectTargetAsync(ulong target)
+        {
+            TargetSelectionUI.OnTargetPicked += HandleTargetSelected;
+ 
+            await UniTask.WaitUntil(() => ServerManager.Instance.PlayerReadyCount.Value == 4);
+
+            TargetSelectionUI.OnTargetPicked -= HandleTargetSelected;
+
+            Debug.Log($"Selected target is {_selectedTarget} ");
+
+            return _selectedTarget;
+        }
+
         private void HandleDeckClicked(int deckId)
         {
             _selectedDeck = deckId;

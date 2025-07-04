@@ -17,6 +17,7 @@ namespace Wendogo
 
         [SerializeField] private TextMeshProUGUI foodCount;
         [SerializeField] private TextMeshProUGUI woodCount;
+        [SerializeField] private GameObject[] heathVisuals;
 
         public static PlayerUI Instance { get; private set; }
 
@@ -27,7 +28,6 @@ namespace Wendogo
             if (Instance == null)
             {
                 Instance = this;
-                DontDestroyOnLoad(gameObject);
             }
             else
             {
