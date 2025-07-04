@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 59a3627f0d5845fdb5c333e0c4e8c78d, type: 3}
-  m_Name: MultiplayerConfiguration
+  m_Name: DebugMultiplayerConfiguration
   m_EditorClassIdentifier: 
-  connectionType: 1
+  connectionType: 2
   connectionMode: 0
   listenIpAddress: 127.0.0.1
   publishIpAddress: 127.0.0.1
   port: 0
   sessionName: Session
-  maxPlayers: 4
+  maxPlayers: 2
   isLocked: 0
   isPrivate: 0
   enableVoiceChat: 1

@@ -12,21 +12,11 @@ namespace Wendogo
         public CardDatabaseSO cardDatabase;
         public DeckConfiguration resourcesDeck;
         public DeckConfiguration actionDeck;
-
-        // Runtime versions of the decks
-        public DeckConfiguration RuntimeResourcesDeck { get; private set; }
-        public DeckConfiguration RuntimeActionDeck { get; private set; }
-        public static DataCollection Instance { get; private set; }
         
+        public static DataCollection Instance { get; private set; }
+
         private void Awake()
         {
-            // Clone the ScriptableObjects at runtime to avoid modifying the original
-            RuntimeResourcesDeck = Instantiate(resourcesDeck);
-            RuntimeResourcesDeck.CardsDeck = new List<CardDataSO>(resourcesDeck.CardsDeck); // Initialize CardsDeck
-
-            RuntimeActionDeck = Instantiate(actionDeck);
-            RuntimeActionDeck.CardsDeck = new List<CardDataSO>(actionDeck.CardsDeck); // Initialize CardsDeck
-            
             if (Instance != null && Instance != this)
             {
                 Destroy(gameObject);
@@ -36,13 +26,57 @@ namespace Wendogo
             Instance = this;
             DontDestroyOnLoad(gameObject);
         }
+
+        // Runtime versions of the decks
+        private List<CardDataSO> _resourceDeck = new();
+        public List<CardDataSO> RuntimeResourcesDeck
+        {
+            get
+            {
+                //Lazy initialization of the deck
+                if (_resourceDeck.Count <= 0)
+                    _resourceDeck = CreateDeck(resourcesDeck.cardDeckData);
+        
+                return _resourceDeck;
+            }
+            set => _resourceDeck = value;
+        }
+        
+        private List<CardDataSO> _actionDeck = new();
+        public List<CardDataSO> RuntimeActionDeck
+        {
+            get
+            {
+                //Lazy initialization of the deck
+                if (_actionDeck.Count <= 0)
+                    _actionDeck = CreateDeck(actionDeck.cardDeckData);
+        
+                return _actionDeck;
+            }
+            set => _actionDeck = value;
+        }
+        
+        private List<CardDataSO> CreateDeck(CardDeckConfig[] cardDeckData)
+        {
+            //Construct a list of card instances based on their quantity settings
+            var list = new List<CardDataSO>();
+            foreach (CardDeckConfig data in cardDeckData)
+            {
+                for (int i = 0; i < data.quantity; i++)
+                {
+                    list.Add(data.CardData);
+                }
+            }
+        
+            return list;
+        }
         
         public List<CardDataSO> GetDeck(int deckID)
         {
-            if (RuntimeResourcesDeck.deckID == deckID)
-                return RuntimeResourcesDeck.CardsDeck;
-            else if(RuntimeActionDeck.deckID== deckID)
-                return RuntimeActionDeck.CardsDeck;
+            if (resourcesDeck.deckID == deckID)
+                return RuntimeResourcesDeck;
+            else if(actionDeck.deckID== deckID)
+                return RuntimeActionDeck;
             
             return null;
         }

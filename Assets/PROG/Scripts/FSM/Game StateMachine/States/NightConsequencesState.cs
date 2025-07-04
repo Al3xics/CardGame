@@ -24,7 +24,11 @@ namespace Wendogo
             sortedActions = StateMachine.NightActions.Where(card => card.CardPriorityIndex > 0).OrderBy(card => card.CardPriorityIndex).ToList();
             
             ServerManager.Instance.SynchronizePlayerValuesServerRpc(false);
-            ResolveCardNightConsequences(id);
+            
+            if (sortedActions.Count != 0)
+                ResolveCardNightConsequences(id);
+            else
+                NextState();
         }
 
         // todo
@@ -32,7 +36,7 @@ namespace Wendogo
         {
             ServerManager.Instance.OnResolveCardNightConsequences += OnResolveCardNightConsequences;
             
-            var card = StateMachine.dataCollectionScript.cardDatabase.GetCardByID(sortedActions[cpt].CardId);
+            var card = DataCollection.Instance.cardDatabase.GetCardByID(sortedActions[cpt].CardId);
             card.CardEffect.Apply(sortedActions[cpt].OriginId, sortedActions[cpt].TargetId);
             // Here, only card that needs an action from the players will execute. When they finish,
             // 'OnResolvedCardNightConsequences' will be called.

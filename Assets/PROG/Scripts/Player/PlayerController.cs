@@ -5,11 +5,9 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using Unity.Netcode;
 using UnityEngine.SceneManagement;
-using Unity.VisualScripting;
-using Cysharp.Threading.Tasks.Triggers;
-using UnityEngine.UIElements;
 using Button = UnityEngine.UI.Button;
 using System.Threading.Tasks;
+
 
 namespace Wendogo
 {
@@ -22,22 +20,24 @@ namespace Wendogo
         [SerializeField] public HandManager _handManager;
 
         private PlayerUI playerUIInstance;
+
         private bool uiInitialized = false;
 
         public NetworkVariable<RoleType> Role = new(
             value: RoleType.Survivor,
             readPerm: NetworkVariableReadPermission.Everyone,
             writePerm: NetworkVariableWritePermission.Server
-            );
+        );
 
         Dictionary<Button, PlayerController> playerTargets = new Dictionary<Button, PlayerController>();
 
         List<ulong> playerList = new List<ulong>();
 
+        public ulong target;
+        GameObject selectTargetCanvas;
 
         public int _playerPA;
 
-        public ulong target;
 
         private int _selectedDeck = -1;
         public int deckID;
@@ -45,12 +45,10 @@ namespace Wendogo
         public static event Action OnCardUsed;
 
         public bool TargetSelected;
-        private ulong _selectedTarget = 1;
+        private ulong _selectedTarget = 0;
         public CardDatabaseSO CardDatabaseSO;
 
         GameObject _pcSMObject;
-
-        private GameObject selectTargetCanvas;
 
         public static PlayerController LocalPlayer;
         public static ulong LocalPlayerId;
@@ -69,25 +67,34 @@ namespace Wendogo
         public NetworkVariable<int> health = new(
             10,
             NetworkVariableReadPermission.Everyone,
-            NetworkVariableWritePermission.Server
+            NetworkVariableWritePermission.Owner
         );
 
         public int hiddenWood;
         public NetworkVariable<int> wood = new(
             0,
             NetworkVariableReadPermission.Everyone,
-            NetworkVariableWritePermission.Server
+            NetworkVariableWritePermission.Owner
         );
 
         public int hiddenFood;
         public NetworkVariable<int> food = new(
             0,
             NetworkVariableReadPermission.Everyone,
-            NetworkVariableWritePermission.Server
+            NetworkVariableWritePermission.Owner
         );
 
-        public List<CardDataSO> HiddenPassiveCards { get; set; } = new();
-        public List<CardDataSO> PassiveCards { get; set; } = new();
+        public NetworkList<int> PassiveCards = new(
+            new List<int>(),
+            NetworkVariableReadPermission.Everyone,
+            NetworkVariableWritePermission.Owner
+        );
+
+        public NetworkList<int> HiddenPassiveCards = new(
+            new List<int>(),
+            NetworkVariableReadPermission.Everyone,
+            NetworkVariableWritePermission.Owner
+        );
 
         public bool IsSimulatingNight => ServerManager.GetCycle() == Cycle.Night && IsLocalPlayer;
 
@@ -97,12 +104,13 @@ namespace Wendogo
 
         private void Start()
         {
+            name = IsLocalPlayer ? "LocalPlayer" : $"Player{OwnerClientId}";
+            
             if (IsOwner)
             {
                 pcSMObject = new GameObject($"{nameof(PlayerControllerSM)}");
                 pcSMObject.AddComponent<PlayerControllerSM>();
             }
-            selectTargetCanvas = GameObject.Find("SelectTargetCanvas");
         }
 
         public override void OnNetworkSpawn()
@@ -112,6 +120,11 @@ namespace Wendogo
                 _inputEvent = GameObject.Find("EventSystem")?.GetComponent<EventSystem>();
                 if (_inputEvent != null) _inputEvent.enabled = false;
                 if (_handManager == null) _handManager = GameObject.FindWithTag("hand")?.GetComponent<HandManager>();
+                if (IsOwner)
+                {
+                    pcSMObject = new GameObject($"{nameof(PlayerControllerSM)}");
+                    pcSMObject.AddComponent<PlayerControllerSM>();
+                }
             }
             if (!IsOwner) return;
 
@@ -137,6 +150,8 @@ namespace Wendogo
                 _inputEvent = GameObject.Find("EventSystem")?.GetComponent<EventSystem>();
                 if (_inputEvent != null) _inputEvent.enabled = false;
                 if (_handManager == null) _handManager = GameObject.FindWithTag("hand")?.GetComponent<HandManager>();
+                //pcSMObject = new GameObject($"{nameof(PlayerControllerSM)}");
+                //pcSMObject.AddComponent<PlayerControllerSM>();
             }
         }
 
@@ -156,7 +171,7 @@ namespace Wendogo
             _selectedDeck = -1;
             DeckClickHandler.OnDeckClicked += HandleDeckClicked;
 
-            Debug.Log($"Vous devez piocher {missingCards} cartes : choisissez un deck.");
+            Debug.Log($"You have to draw {missingCards} cards : pick a deck.");
 
 
             await UniTask.WaitUntil(() => _selectedDeck >= 0);
@@ -164,18 +179,35 @@ namespace Wendogo
             DeckClickHandler.OnDeckClicked -= HandleDeckClicked;
 
 
-            Debug.Log($"Deck sélectionné : {_selectedDeck}");
+            Debug.Log($"Selected deck is : {_selectedDeck}");
 
             ServerManager.Instance.TransmitMissingCardsServerRpc(missingCards, _selectedDeck);
 
             return _selectedDeck;
         }
 
+        public async UniTask<ulong> SelectTargetAsync(ulong target)
+        {
 
+            TargetSelectionUI.OnTargetPicked += HandleTargetSelected;
+
+            await UniTask.WaitUntil(() => _selectedTarget > 0);
+
+            TargetSelectionUI.OnTargetPicked -= HandleTargetSelected;
+
+            Debug.Log($"Selected target is {_selectedTarget} ");
+
+            return _selectedTarget;
+        }
 
         private void HandleDeckClicked(int deckId)
         {
             _selectedDeck = deckId;
+        }
+
+        private void HandleTargetSelected(ulong targetID)
+        { 
+            _selectedTarget = targetID; 
         }
 
         public void SelectCard(CardObjectData card)
@@ -208,10 +240,10 @@ namespace Wendogo
         public async void SelectTarget()
         {
             //Implement select target
-            TargetSelected = false;
+            _selectedTarget = 0;
             //Target selection
             //Handled the cancel next
-            await UniTask.WaitUntil(() => TargetSelected);
+            await UniTask.WaitUntil(() => _selectedTarget > 0);
             Debug.Log("Target selected");
 
             ConfirmPlay();
@@ -300,14 +332,14 @@ namespace Wendogo
         {
             return _handManager._maxHandSize - _handManager._handCards.Count;
         }
-        
+
         public static PlayerController GetPlayer(ulong clientId)
         {
             if (NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out var networkClient))
             {
                 return networkClient.PlayerObject.GetComponent<PlayerController>();
             }
-        
+
             Debug.LogWarning($"PlayerController not found for clientId: {clientId}");
             return null;
         }
@@ -324,7 +356,17 @@ namespace Wendogo
         {
             
         }
+        
+        private List<int> GetPassiveCardCopy()
+        {
+            var copy = new List<int>();
+            var source = IsSimulatingNight ? HiddenPassiveCards : PassiveCards;
 
+            foreach (var cardId in source)
+                copy.Add(cardId);
+
+            return copy;
+        }
 
         #endregion
 
@@ -361,34 +403,44 @@ namespace Wendogo
         }
 
 
-        [ClientRpc]
-        public void TryApplyPassiveClientRpc(int playedCardId, ulong origin)
+        [Rpc(SendTo.SpecifiedInParams)]
+        public void TryApplyPassiveRpc(int playedCardId, ulong origin, RpcParams rpcParams)
         {
+            Debug.Log($" Try apply passive on player : {name}");
             bool isApplyPassive = false;
             int value = -1;
 
             // Get the CardDataSO of the played card
-            var copyHiddenCards = new List<CardDataSO>(IsSimulatingNight ? HiddenPassiveCards : PassiveCards);
-
-            foreach (var hiddenCard in copyHiddenCards)
+            var cardIds = GetPassiveCardCopy();
+            
+            foreach (var cardId in cardIds)
             {
+                var hiddenCard = DataCollection.Instance.cardDatabase.GetCardByID(cardId);
+
                 if (hiddenCard.CardEffect.ApplyPassive(playedCardId, origin, OwnerClientId, out value))
                 {
                     if (IsSimulatingNight)
-                        HiddenPassiveCards.Remove(hiddenCard);
+                        HiddenPassiveCards.Remove(cardId);
                     else
-                        PassiveCards.Remove(hiddenCard);
+                        PassiveCards.Remove(cardId);
                     isApplyPassive = true;
+                    break;
                 }
             }
-
-            ServerManager.Instance.RespondPassiveResultServerRpc(playedCardId, origin, OwnerClientId, isApplyPassive, value);
+            
+            var effect = DataCollection.Instance.cardDatabase.GetCardByID(playedCardId).CardEffect;
+            effect.Apply(origin, OwnerClientId, isApplyPassive ? value : -1);
+            FinishedCardPlayedRpc(RpcTarget.Me);
         }
 
-        [ClientRpc]
-        public void FinishedCheckCardPlayedClientRpc()
+        [Rpc(SendTo.SpecifiedInParams)]
+        public void FinishedCardPlayedRpc(RpcParams rpcParams)
         {
+            // todo --> il faut pas le faire ici vu que `SelectDeckAsync` est appelé par `PCNotifyMissingCardsState`
+            // c'est pour ça que on a un print qui dit de piocher une 0 carte
+            
             if (!IsOwner) return;
+            
             UniTask.Void(async () =>
             {
                 int missing = GetMissingCards();
@@ -397,24 +449,7 @@ namespace Wendogo
 
             });
         }
-        
-        [ClientRpc]
-        public void DestructAllTrapsClientRpc()
-        {
-            if (IsSimulatingNight)
-            {
-                for (int i = HiddenPassiveCards.Count - 1; i >= 0; i--)
-                    if (HiddenPassiveCards[i].CardEffect is Trap)
-                        HiddenPassiveCards.RemoveAt(i);
-            }
-            else
-            {
-                for (int i = PassiveCards.Count - 1; i >= 0; i--)
-                    if (PassiveCards[i].CardEffect is Trap)
-                        PassiveCards.RemoveAt(i);
-            }
-        }
-        
+
         /// <summary>
         /// Updates the hidden health, food, and wood values to match their respective public network variables.
         /// Also replicates the list of public passive cards into the hidden passive cards list.
@@ -426,7 +461,9 @@ namespace Wendogo
             hiddenFood = food.Value;
             hiddenWood = wood.Value;
 
-            HiddenPassiveCards = new List<CardDataSO>(PassiveCards);
+            HiddenPassiveCards.Clear();
+            foreach (var cardId in PassiveCards)
+                HiddenPassiveCards.Add(cardId);
         }
 
         /// <summary>
@@ -440,8 +477,43 @@ namespace Wendogo
             food.Value = hiddenFood;
             wood.Value = hiddenWood;
 
-            PassiveCards = new List<CardDataSO>(HiddenPassiveCards);
+            PassiveCards.Clear();
+            foreach (var cardId in HiddenPassiveCards)
+                PassiveCards.Add(cardId);
         }
+        
+        [ClientRpc]
+        public void DestructAllTrapsClientRpc()
+        {
+            if (IsSimulatingNight)
+            {
+                for (int i = HiddenPassiveCards.Count - 1; i >= 0; i--)
+                {
+                    var card = DataCollection.Instance.cardDatabase.GetCardByID(HiddenPassiveCards[i]);
+                    if (card.CardEffect is Trap) HiddenPassiveCards.RemoveAt(i);
+                }
+            }
+            else
+            {
+                for (int i = PassiveCards.Count - 1; i >= 0; i--)
+                {
+                    var card = DataCollection.Instance.cardDatabase.GetCardByID(HiddenPassiveCards[i]);
+                    if (card.CardEffect is Trap) PassiveCards.RemoveAt(i);
+                }
+            }
+        }
+        
+        [Rpc(SendTo.SpecifiedInParams)]
+        public void AddPassiveCardRpc(int cardId, RpcParams rpcParams) => PassiveCards.Add(cardId);
+
+        [Rpc(SendTo.SpecifiedInParams)]
+        public void RemovePassiveCardRpc(int cardId, RpcParams rpcParams) => PassiveCards.Remove(cardId);
+
+        [Rpc(SendTo.SpecifiedInParams)]
+        public void AddHiddenPassiveCardRpc(int cardId, RpcParams rpcParams) => HiddenPassiveCards.Add(cardId);
+
+        [Rpc(SendTo.SpecifiedInParams)]
+        public void RemoveHiddenPassiveCardRpc(int cardId, RpcParams rpcParams) => HiddenPassiveCards.Remove(cardId);
 
         #endregion
 
@@ -475,7 +547,7 @@ namespace Wendogo
             // Needs this player to select a target to play the card against
             // if (cardDataSO.HasTarget)
             //     _selectedTarget = cardDataSO.Target;
-            
+
             ServerManager.Instance.TransmitPlayedCardServerRpc(cardDataSO.ID, _selectedTarget);
             Debug.Log($"card {cardDataSO.Name} was sent to server ");
 
