@@ -20,6 +20,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Game Martin.unity
     guid: c89c98bc3b683e043838190a0803f5af
+  - enabled: 1
+    path: Assets/Scenes/Game Integration.unity
+    guid: 692e4a711e5256a4092dda1b54fd20d5
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
