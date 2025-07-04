@@ -192,23 +192,6 @@ Transform:
   - {fileID: 2972366806080926271}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &39773393 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 728514128433627386, guid: b591182f062020c408595876a3e3ff76, type: 3}
-  m_PrefabInstance: {fileID: 789824914}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &39773399
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 39773393}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0b510a9070e35824f97d0f2496ecf2cf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &382117218
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -378,10 +361,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: UpdtatedSelectTargetCanvas
       objectReference: {fileID: 0}
-    - target: {fileID: 728514128433627386, guid: b591182f062020c408595876a3e3ff76, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 7728155765000877774, guid: b591182f062020c408595876a3e3ff76, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -465,10 +444,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 728514128433627386, guid: b591182f062020c408595876a3e3ff76, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 39773399}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b591182f062020c408595876a3e3ff76, type: 3}
 --- !u!1 &916108406
 GameObject:

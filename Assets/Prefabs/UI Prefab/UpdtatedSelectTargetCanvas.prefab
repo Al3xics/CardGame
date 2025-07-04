@@ -12,14 +12,14 @@ GameObject:
   - component: {fileID: 7974164171383948591}
   - component: {fileID: 842921131418520115}
   - component: {fileID: 3654597654930510832}
-  - component: {fileID: 6194114278129204225}
+  - component: {fileID: 3951603715318367011}
   m_Layer: 5
   m_Name: UpdtatedSelectTargetCanvas
   m_TagString: TargetUI
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &7728155765000877774
 RectTransform:
   m_ObjectHideFlags: 0
@@ -103,7 +103,7 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 55
---- !u!114 &6194114278129204225
+--- !u!114 &3951603715318367011
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -112,10 +112,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 728514128433627386}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d8029fdb0c2c728448a629f25254f338, type: 3}
+  m_Script: {fileID: 11500000, guid: 0b510a9070e35824f97d0f2496ecf2cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerID: 0
 --- !u!1 &1816033498756740100
 GameObject:
   m_ObjectHideFlags: 0
@@ -208,8 +207,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
-  m_fontSizeBase: 24
+  m_fontSize: 50.84
+  m_fontSizeBase: 50.84
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -344,8 +343,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
-  m_fontSizeBase: 24
+  m_fontSize: 50.84
+  m_fontSizeBase: 50.84
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -560,8 +559,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
-  m_fontSizeBase: 24
+  m_fontSize: 50.84
+  m_fontSizeBase: 50.84
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -691,6 +690,7 @@ GameObject:
   - component: {fileID: 7659873734217559994}
   - component: {fileID: 5062885182088919422}
   - component: {fileID: 3460620748887797177}
+  - component: {fileID: 4649182196134941445}
   m_Layer: 5
   m_Name: ButtonPlayer3
   m_TagString: Untagged
@@ -799,7 +799,32 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5062885182088919422}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 4649182196134941445}
+        m_TargetAssemblyTypeName: Wendogo.TargetSelectionUI, Assembly-CSharp
+        m_MethodName: TargetSelection
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+--- !u!114 &4649182196134941445
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5068812383528188490}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8029fdb0c2c728448a629f25254f338, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _playerID: 3
 --- !u!1 &5929690449271564405
 GameObject:
   m_ObjectHideFlags: 0
@@ -812,6 +837,7 @@ GameObject:
   - component: {fileID: 729474226504996295}
   - component: {fileID: 3994543372880414364}
   - component: {fileID: 7702133878043985218}
+  - component: {fileID: 3263382433569448153}
   m_Layer: 5
   m_Name: ButtonPlayer2
   m_TagString: Untagged
@@ -920,7 +946,32 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 3994543372880414364}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3263382433569448153}
+        m_TargetAssemblyTypeName: Wendogo.TargetSelectionUI, Assembly-CSharp
+        m_MethodName: TargetSelection
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+--- !u!114 &3263382433569448153
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5929690449271564405}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8029fdb0c2c728448a629f25254f338, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _playerID: 2
 --- !u!1 &7037426664120106412
 GameObject:
   m_ObjectHideFlags: 0
@@ -1013,8 +1064,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
-  m_fontSizeBase: 24
+  m_fontSize: 50.84
+  m_fontSizeBase: 50.84
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1069,6 +1120,7 @@ GameObject:
   - component: {fileID: 4741547395467244248}
   - component: {fileID: 7225364357608588711}
   - component: {fileID: 3386941833691133101}
+  - component: {fileID: 6049365121470526921}
   m_Layer: 5
   m_Name: ButtonPlayer4
   m_TagString: Untagged
@@ -1177,7 +1229,32 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7225364357608588711}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 6049365121470526921}
+        m_TargetAssemblyTypeName: Wendogo.TargetSelectionUI, Assembly-CSharp
+        m_MethodName: TargetSelection
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+--- !u!114 &6049365121470526921
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8108513171194450551}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8029fdb0c2c728448a629f25254f338, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _playerID: 4
 --- !u!1 &8938818542201970320
 GameObject:
   m_ObjectHideFlags: 0
@@ -1190,6 +1267,7 @@ GameObject:
   - component: {fileID: 4178920657297797251}
   - component: {fileID: 3180410809021193325}
   - component: {fileID: 8261772965100130946}
+  - component: {fileID: 5066316092088746495}
   m_Layer: 5
   m_Name: ButtonPlayer1
   m_TagString: Untagged
@@ -1298,4 +1376,29 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 3180410809021193325}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 5066316092088746495}
+        m_TargetAssemblyTypeName: Wendogo.TargetSelectionUI, Assembly-CSharp
+        m_MethodName: TargetSelection
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
+--- !u!114 &5066316092088746495
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8938818542201970320}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8029fdb0c2c728448a629f25254f338, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _playerID: 1

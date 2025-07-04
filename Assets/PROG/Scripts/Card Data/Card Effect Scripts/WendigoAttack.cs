@@ -15,13 +15,11 @@ namespace Wendogo
 
         private void Awake()
         {
-            prefabUI = FindAnyObjectByType<TargetSelectionUI>(FindObjectsInactive.Include).gameObject;
+            prefabUI = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject;
         }
 
         public override void Apply(ulong owner, ulong target, int value = -1)
         {
-            
-
             var targetPlayer = PlayerController.GetPlayer(target);
             if (targetPlayer != null)
             {
@@ -31,12 +29,15 @@ namespace Wendogo
 
         public override void ShowUI()
         {
-            prefabUI = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject;
+            if (prefabUI == null)
+                prefabUI = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject;
             prefabUI.SetActive(true);
         }
-        
+
         public override void HideUI()
         {
+            if (prefabUI == null)
+                prefabUI = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject;
             prefabUI.SetActive(false);
         }
     }

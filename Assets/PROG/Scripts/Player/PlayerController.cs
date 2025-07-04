@@ -38,6 +38,7 @@ namespace Wendogo
 
         public int _playerPA;
 
+        private UniTask _waitForTargetTask = default;
 
         private int _selectedDeck = -1;
         public int deckID;
@@ -163,6 +164,14 @@ namespace Wendogo
 
             //Implement enable input
             Debug.Log("Input enabled");
+        }
+
+        private void EnsureWaitForTargetTask()
+        {
+            if (_waitForTargetTask.Status == UniTaskStatus.Pending)
+                return;
+
+            _waitForTargetTask = UniTask.WaitUntil(() => _selectedTarget > 0);
         }
 
         public async UniTask<int> SelectDeckAsync(int missingCards)
@@ -531,7 +540,7 @@ namespace Wendogo
 
         }
 
-        private void NotifyPlayedCard(CardDataSO cardDataSO)
+        private async void NotifyPlayedCard(CardDataSO cardDataSO)
         {
             if (cardDataSO.isPassive)
             {
@@ -539,11 +548,11 @@ namespace Wendogo
             }
 
             // Needs this player to select a target to play the card against
-            // if (cardDataSO.HasTarget)
-            //     _selectedTarget = cardDataSO.Target;
+            if (cardDataSO.HasTarget)
+                await UniTask.WaitUntil(() => _selectedTarget > 0);
 
             ServerManager.Instance.TransmitPlayedCardServerRpc(cardDataSO.ID, _selectedTarget);
-            Debug.Log($"card {cardDataSO.Name} was sent to server ");
+            Debug.Log($"card {cardDataSO.Name} was sent to server with target id number {_selectedTarget} ");
 
         }
         #endregion
