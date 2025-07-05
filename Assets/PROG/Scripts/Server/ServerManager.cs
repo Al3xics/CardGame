@@ -1,12 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Cysharp.Threading.Tasks;
-using NUnit.Framework;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
+
 
 namespace Wendogo
 {
@@ -225,7 +223,7 @@ namespace Wendogo
         }*/
         
         [Rpc(SendTo.Server)]
-        public void GetPlayerName(ulong clientID)
+        public void GetPlayerNameRpc(ulong clientID)
         {
             // On parcourt les joueurs pour trouver celui avec le bon ID
             var player = SessionManager.Instance.ActiveSession.Players
