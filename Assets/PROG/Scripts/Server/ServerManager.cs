@@ -240,21 +240,21 @@ namespace Wendogo
         }
 
         [Rpc(SendTo.Server)]
-        public void GetPlayerFood(ulong clientID)
+        public void GetPlayerFoodRpc(ulong clientID)
         {
             var player = PlayerController.GetPlayer(clientID);
             playerFoodAsked = player.food.Value;
         }
         
         [Rpc(SendTo.Server)]
-        public void GetPlayerWood(ulong clientID)
+        public void GetPlayerWoodRpc(ulong clientID)
         {
             var player = PlayerController.GetPlayer(clientID);
             playerWoodAsked = player.wood.Value;
         }
         
         [Rpc(SendTo.Server)]
-        public void GetPlayerHealth(ulong clientID)
+        public void GetPlayerHealthRpc(ulong clientID)
         {
             var player = PlayerController.GetPlayer(clientID);
             playerHealthAsked = player.health.Value;
