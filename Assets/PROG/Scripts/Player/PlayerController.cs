@@ -158,8 +158,11 @@ namespace Wendogo
                 if (_handManager == null) _handManager = GameObject.FindWithTag("hand")?.GetComponent<HandManager>();
                 pcSMObject = new GameObject($"{nameof(PlayerControllerSM)}");
                 pcSMObject.AddComponent<PlayerControllerSM>();
-                _prefabUI = GameObject.Find("UpdtatedSelectTargetCanvas");
+                
+                _prefabUI = GameObject.Find("UpdatedSelectTargetCanvas");
                 _prefabUI.SetActive(false);
+
+                ServerManager.Instance.IncrementPlayerFinishedLoadCountRpc();
             }
         }
 
@@ -402,9 +405,44 @@ namespace Wendogo
         public void UpdateHealth(int oldHealthValue, int newHealthValue)
         {
             //PlayerUI.Instance.hearts.Count;
-            for (int i = 0; i < oldHealthValue-newHealthValue; i++)
+            for (int i = 0; i < oldHealthValue - newHealthValue; i++)
             {
                 PlayerUI.Instance.hearts[i].gameObject.SetActive(false);
+            }
+        }
+
+        private void HandlePassiveCardTurnUpdate()
+        {
+            List<int> cardsToRemove = new List<int>();
+            var passiveCardsList = IsSimulatingNight ? HiddenPassiveCards : PassiveCards;
+        
+            foreach (var passiveCards in passiveCardsList)
+            {
+                var card = DataCollection.Instance.cardDatabase.GetCardByID(passiveCards);
+
+                if (card.turnsRemaining == -1) return;
+                
+                if (card.isPassive && card.turnsRemaining > 0)
+                {
+                    card.turnsRemaining--;
+        
+                    if (card.turnsRemaining <= 0)
+                    {
+                        Debug.Log($"Passive card {card.Name} has expired.");
+                        cardsToRemove.Add(passiveCards);
+                    }
+                }
+            }
+        
+            foreach (var cardId in cardsToRemove)
+            {
+                // todo --> Modify with this logic to visually destroy the cards
+                if (IsSimulatingNight)
+                    HiddenPassiveCards.Remove(cardId);
+                else
+                    PassiveCards.Remove(cardId);
+        
+                Debug.Log($"Removed card with ID: {cardId}");
             }
         }
 
@@ -468,6 +506,10 @@ namespace Wendogo
                     break;
                 }
             }
+            
+            
+            
+            
             
             var effect = DataCollection.Instance.cardDatabase.GetCardByID(playedCardId).CardEffect;
             effect.Apply(origin, OwnerClientId, isApplyPassive ? value : -1);
@@ -563,6 +605,7 @@ namespace Wendogo
         public void NotifyEndTurn()
         {
             _inputEvent.enabled = false;
+            HandlePassiveCardTurnUpdate();
             if (_pcSMObject != null)
             {
                 Debug.Log("Destroy the player controller");

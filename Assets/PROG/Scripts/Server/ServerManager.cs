@@ -37,6 +37,12 @@ namespace Wendogo
         public int playerFoodAsked;
         
         public int playerWoodAsked;
+
+        private NetworkVariable<int> _playerFinishSceneLoadedCpt = new(
+            0,
+            NetworkVariableReadPermission.Everyone,
+            NetworkVariableWritePermission.Server
+        );
         
         #endregion
 
@@ -62,18 +68,33 @@ namespace Wendogo
         // Also registers each player in the GameStateMachine.
         public void InitializePlayers()
         {
+            _playerFinishSceneLoadedCpt.Value = 0;
             _playersById = FindObjectsByType<PlayerController>(FindObjectsSortMode.None).ToDictionary(p => p.OwnerClientId);
 
             foreach (var player in _playersById.Values)
             {
                 GameStateMachine.Instance.RegisterPlayerID(player.OwnerClientId);
             }
-
-            /*// Disable GameStateMachine for clients because only the host can do things with it
-            GameObject gameStateMachineObject = GameObject.Find("GameStateMachine");
-            if (!IsServer && gameStateMachineObject)
-                gameStateMachineObject.GetComponent<GameStateMachine>().StartStateMachine();*/
         }
+        
+        [Rpc(SendTo.Server)]
+        public void IncrementPlayerFinishedLoadCountRpc()
+        {
+            _playerFinishSceneLoadedCpt.Value++;
+
+            if (!AutoSessionBootstrapper.AutoConnect)
+                if (_playerFinishSceneLoadedCpt.Value >= NetworkManager.Singleton.ConnectedClientsList.Count)
+                {
+                    Debug.Log("All Players are here.");
+                    GameStateMachine.Instance.StartStateMachine();
+                }
+                else
+                {
+                    Debug.Log("Waiting for all players to load the scene");
+                    Debug.Log($"_playerFinishSceneLoadedCpt = {_playerFinishSceneLoadedCpt}");
+                }
+        }
+
 
         // Starts loading the game scene from the server if it's not already active.
         public void LaunchGame()
@@ -257,6 +278,14 @@ namespace Wendogo
             var player = PlayerController.GetPlayer(clientID);
             playerHealthAsked = player.health.Value;
         }
+
+        [Rpc(SendTo.Server)]
+        public void AddRessourceToRitualRpc(bool isHiddenList, bool isFood, bool isRealResource)
+        {
+            var resourceType = isFood ? ResourceType.Food : ResourceType.Wood;
+            GameStateMachine.Instance.AddRessourceToRitual(isHiddenList, resourceType, isRealResource);
+        }
+
         #endregion
     }
 }

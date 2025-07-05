@@ -16,7 +16,9 @@ MonoBehaviour:
   Name: Wendogo
   CardEffect: {fileID: 11400000, guid: fbb7a4cd94c927e439a08c87f1fecde3, type: 2}
   isPassive: 1
+  isGroup: 0
   HasTarget: 0
   nightPriorityIndex: 0
+  turnsRemaining: -1
   ID: 10105
   Toggle: 1

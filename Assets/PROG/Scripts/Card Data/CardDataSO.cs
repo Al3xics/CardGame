@@ -36,6 +36,12 @@ public class CardDataSO : ScriptableObject
     private string _priorityIndexMessage = "";
     private bool _showWarning = false;
     private bool _showError = false;
+    
+    [VerticalGroup("CardData/Stats")]
+    [InfoBox("Turns Remaining '-1' means that the card has no limit on the number of turns it can be played.")]
+    [ShowIf("isPassive")]
+    [MinValue(-1)]
+    public int turnsRemaining = -1;
 
     [VerticalGroup("CardData/Left"), LabelWidth(200), MinValue(10100), MaxValue(10199)]
     [ShowIf("Toggle"), HideLabel]
