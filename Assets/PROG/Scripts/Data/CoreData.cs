@@ -59,5 +59,13 @@
         Survivor,
         Wendogo
     }
-    
+
+    /// <summary>
+    /// Enum representing the types of resources that can be used within the game.
+    /// </summary>
+    public enum ResourceType
+    {
+        Food,
+        Wood
+    }
 }

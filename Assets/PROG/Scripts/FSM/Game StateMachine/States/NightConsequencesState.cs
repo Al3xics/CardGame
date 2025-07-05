@@ -24,6 +24,7 @@ namespace Wendogo
             sortedActions = StateMachine.NightActions.Where(card => card.CardPriorityIndex > 0).OrderBy(card => card.CardPriorityIndex).ToList();
             
             ServerManager.Instance.SynchronizePlayerValuesRpc(false);
+            StateMachine.CopyHiddenToPublic();
             
             if (sortedActions.Count != 0)
                 ResolveCardNightConsequences(id);

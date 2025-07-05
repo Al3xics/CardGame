@@ -16,7 +16,9 @@ MonoBehaviour:
   Name: Mokoy
   CardEffect: {fileID: 11400000, guid: e0a719035c158b3428df08cdac4d1153, type: 2}
   isPassive: 0
+  isGroup: 0
   HasTarget: 0
   nightPriorityIndex: 0
+  turnsRemaining: -1
   ID: 10155
   Toggle: 1

@@ -97,15 +97,21 @@ namespace Wendogo
             
             ShowKickButtonIfConditionsAreMet();
             kickButton.onClick.AddListener(OnKickButtonClicked);
+            kickButton.enabled = true;
 
             ShowQuitButtonIfConditionsAreMet();
             quitButton.onClick.AddListener(OnQuitButtonClicked);
+            quitButton.enabled = true;
         }
 
         public void Reset()
         {
             kickButton.onClick.RemoveListener(OnKickButtonClicked);
+            kickButton.enabled = true;
+            
             quitButton.onClick.RemoveListener(OnQuitButtonClicked);
+            quitButton.enabled = true;
+            
             _playerId = null;
             if (_isLocalPlayer)
                 backgroundImage.color = _currentColor;
@@ -135,6 +141,7 @@ namespace Wendogo
 
         private async void OnQuitButtonClicked()
         {
+            quitButton.enabled = false;
             await SessionManager.Instance.LeaveSession();
             if (IsHost)
                 UIManager.Instance.SwitchFromHostToMainScreen();
