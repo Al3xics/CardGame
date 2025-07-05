@@ -69,7 +69,7 @@ namespace Wendogo
 
         public int hiddenHealth;
         public NetworkVariable<int> health = new(
-            10,
+            6,
             NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Owner
         );
@@ -109,9 +109,6 @@ namespace Wendogo
         private void Start()
         {
             name = IsLocalPlayer ? "LocalPlayer" : $"Player{OwnerClientId}";
-
-            _prefabUI = GameObject.Find("UpdtatedSelectTargetCanvas");
-            _prefabUI.SetActive(false);
         }
 
         public override void OnNetworkSpawn()
@@ -135,6 +132,7 @@ namespace Wendogo
 
             food.OnValueChanged += UpdateFoodText;
             wood.OnValueChanged += UpdateWoodText;
+            health.OnValueChanged += UpdateHealth;
             SceneManager.sceneLoaded += OnSceneLoaded;
             CardDropZone.OnCardDataDropped += NotifyPlayedCard;
         }
@@ -142,6 +140,7 @@ namespace Wendogo
         private new void OnDestroy()
         {
             SceneManager.sceneLoaded -= OnSceneLoaded;
+            health.OnValueChanged -= UpdateHealth;
             food.OnValueChanged -= UpdateFoodText;
             wood.OnValueChanged -= UpdateWoodText;
         }
@@ -159,6 +158,8 @@ namespace Wendogo
                 if (_handManager == null) _handManager = GameObject.FindWithTag("hand")?.GetComponent<HandManager>();
                 pcSMObject = new GameObject($"{nameof(PlayerControllerSM)}");
                 pcSMObject.AddComponent<PlayerControllerSM>();
+                _prefabUI = GameObject.Find("UpdtatedSelectTargetCanvas");
+                _prefabUI.SetActive(false);
             }
         }
 
@@ -396,6 +397,15 @@ namespace Wendogo
         public void UpdateWoodText(int oldWoodValue, int newWoodValue)
         {
             PlayerUI.Instance.DefineWoodText(newWoodValue);
+        }
+
+        public void UpdateHealth(int oldHealthValue, int newHealthValue)
+        {
+            //PlayerUI.Instance.hearts.Count;
+            for (int i = 0; i < oldHealthValue-newHealthValue; i++)
+            {
+                PlayerUI.Instance.hearts[i].gameObject.SetActive(false);
+            }
         }
 
         #endregion

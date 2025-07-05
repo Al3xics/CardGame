@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: WendigoAttack
   m_EditorClassIdentifier: 
   damageDone: 1
+  prefabUI: {fileID: 0}

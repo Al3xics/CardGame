@@ -3,6 +3,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using Sirenix.OdinInspector;
 using Cysharp.Threading.Tasks;
+using LitMotion;
+using LitMotion.Extensions;
 
 namespace Wendogo
 {
@@ -11,6 +13,8 @@ namespace Wendogo
     {
         public static event Action<CardDataSO> OnCardDataDropped;
         public static event Action<CardObjectData> OnCardDropped;
+
+        public bool isOccupied;
 
         enum ZoneType
         {
@@ -32,12 +36,34 @@ namespace Wendogo
                 CardObjectData cod = draggedCard.GetComponent<CardObjectData>();
                 CardDataSO cardData = cod.Card;
 
-                bool isActiveDrop = zoneType == ZoneType.Active && !cardData.isPassive;
-                bool isPassiveDrop = zoneType == ZoneType.Passive && cardData.isPassive;
-                if (!(isActiveDrop || isPassiveDrop))
+                //bool isActiveDrop = zoneType == ZoneType.Active && !cardData.isPassive;
+                //bool isPassiveDrop = zoneType == ZoneType.Passive && cardData.isPassive;
+                //if (!(isActiveDrop || isPassiveDrop))
+                //{
+                //    card.RevertPosition(); ;
+                //    return;  
+                //}
+
+                if (cardData.isPassive)
                 {
-                    card.RevertPosition(); ;
-                    return;  
+
+
+                    foreach (var zone in PlayerUI.Instance.cardSpaces)
+                    {
+                        LMotion.Create(
+                                draggedCard.transform.position,
+                                zone.transform.position,
+                                0.2f
+                            )
+                            .WithEase(Ease.OutQuad)
+                            .BindToPosition(draggedCard.transform);
+
+                        //draggedCard.transform.SetPositionAndRotation(zone.gameObject.transform.position, zone.gameObject.transform.rotation);
+                        PlayerUI.Instance.cardSpaces.Remove(zone);
+                        break;
+
+                    }
+
                 }
 
                 draggedCard.transform.SetPositionAndRotation(transform.position, transform.rotation);

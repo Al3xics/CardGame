@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using TMPro;
 using Unity.Netcode;
 using UnityEngine;
@@ -18,6 +20,9 @@ namespace Wendogo
         [SerializeField] private TextMeshProUGUI foodCount;
         [SerializeField] private TextMeshProUGUI woodCount;
         [SerializeField] private GameObject[] heathVisuals;
+
+        [SerializeField] public List<Transform> cardSpaces = new List<Transform>();
+        [SerializeField]public List<GameObject> hearts = new List<GameObject>();
 
         public static PlayerUI Instance { get; private set; }
 
@@ -46,11 +51,11 @@ namespace Wendogo
 
         public void DefineFoodText(int foodAmount)
         {
-            foodCount.text = $"{foodAmount.ToString()}/6";
+            foodCount.text = $"{foodAmount.ToString()}";
         }        
         public void DefineWoodText(int woodAmount)
         {
-            woodCount.text = $"{woodAmount.ToString()}/6";
+            woodCount.text = $"{woodAmount.ToString()}";
         }
 
         public void SendDebug(string message)
