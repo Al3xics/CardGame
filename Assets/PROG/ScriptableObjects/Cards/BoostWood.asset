@@ -16,7 +16,9 @@ MonoBehaviour:
   Name: BoostWood
   CardEffect: {fileID: 11400000, guid: 3b0f506b1e16d71409e3208f25c7444f, type: 2}
   isPassive: 1
+  isGroup: 0
   HasTarget: 0
   nightPriorityIndex: 0
+  turnsRemaining: 1
   ID: 10151
   Toggle: 1

@@ -11,6 +11,8 @@ namespace Wendogo
     //Defines a valid drop target for draggable card objects
     public class CardDropZone : SerializedMonoBehaviour, IDropHandler
     {
+        #region Variables
+
         public static event Action<CardDataSO> OnCardDataDropped;
         public static event Action<CardObjectData> OnCardDropped;
 
@@ -24,6 +26,8 @@ namespace Wendogo
 
         [SerializeField, EnumToggleButtons]
         private ZoneType zoneType = ZoneType.Active;
+
+        #endregion
 
         public async void OnDrop(PointerEventData eventData)
         {
@@ -44,9 +48,10 @@ namespace Wendogo
                 //    return;  
                 //}
 
-                if (cardData.isPassive)
+                if (cardData.isPassive && zoneType == ZoneType.Passive)
                 {
-
+                    var handManager = FindFirstObjectByType<HandManager>();
+                    handManager?.AddCardToPassiveZone(draggedCard);
 
                     foreach (var zone in PlayerUI.Instance.cardSpaces)
                     {

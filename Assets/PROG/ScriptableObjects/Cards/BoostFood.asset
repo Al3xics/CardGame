@@ -19,6 +19,6 @@ MonoBehaviour:
   isGroup: 0
   HasTarget: 0
   nightPriorityIndex: 0
-  turnsRemaining: -1
+  turnsRemaining: 2
   ID: 10105
   Toggle: 1
