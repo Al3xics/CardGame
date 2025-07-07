@@ -47,6 +47,7 @@ namespace Wendogo
 
         public bool TargetSelected;
         private ulong _selectedTarget = 0;
+        private int _intTarget = -1;
         public CardDatabaseSO CardDatabaseSO;
 
         GameObject _pcSMObject;
@@ -57,9 +58,9 @@ namespace Wendogo
         private GameObject pcSMObject;
 
         private int cardDataID;
-        
+
         public virtual event Action OnTargetDetection;
-        
+
         public int temporaryTask = -1;
         private GameObject _prefabUI;
 
@@ -71,7 +72,7 @@ namespace Wendogo
         public NetworkVariable<int> health = new(
             6,
             NetworkVariableReadPermission.Everyone,
-            NetworkVariableWritePermission.Owner
+             NetworkVariableWritePermission.Owner
         );
 
         public int hiddenWood;
@@ -123,17 +124,21 @@ namespace Wendogo
                     pcSMObject = new GameObject($"{nameof(PlayerControllerSM)}");
                     pcSMObject.AddComponent<PlayerControllerSM>();
                 }
-                PlayerUI.Instance.SetPlayerInfos();
+
+                if (_prefabUI == null) { _prefabUI = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject; }
+
+                //PlayerUI.Instance.SetPlayerInfos();
             }
             if (!IsOwner) return;
 
             LocalPlayer = this;
             LocalPlayerId = NetworkManager.Singleton.LocalClientId;
 
+            health.Value = Mathf.Clamp(health.Value, 0, 6);
 
             food.OnValueChanged += UpdateFoodText;
             wood.OnValueChanged += UpdateWoodText;
-            health.OnValueChanged += UpdateHealth;
+            health.OnValueChanged += UpdateHearts;
             SceneManager.sceneLoaded += OnSceneLoaded;
             CardDropZone.OnCardDataDropped += NotifyPlayedCard;
         }
@@ -141,7 +146,7 @@ namespace Wendogo
         private new void OnDestroy()
         {
             SceneManager.sceneLoaded -= OnSceneLoaded;
-            health.OnValueChanged -= UpdateHealth;
+            health.OnValueChanged -= UpdateHearts;
             food.OnValueChanged -= UpdateFoodText;
             wood.OnValueChanged -= UpdateWoodText;
         }
@@ -163,8 +168,7 @@ namespace Wendogo
                 Debug.Log($"This is my player id: {LocalPlayerId}");
                 PlayerUI.Instance.SetPlayerInfos();
 
-                _prefabUI = GameObject.Find("UpdatedSelectTargetCanvas");
-                _prefabUI.SetActive(false);
+                if (_prefabUI == null) { _prefabUI = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject; }
 
                 ServerManager.Instance.IncrementPlayerFinishedLoadCountRpc();
             }
@@ -202,32 +206,42 @@ namespace Wendogo
             return _selectedDeck;
         }
 
-        public async UniTask<ulong> SelectTargetAsync(ulong target)
+        public async UniTask SelectTargetAsync()
         {
-
+            _intTarget = -1;
             TargetSelectionUI.OnTargetPicked += HandleTargetSelected;
 
-            await UniTask.WaitUntil(() => _selectedTarget > 0);
+            await UniTask.WaitUntil(() => _intTarget >= 0);
 
             TargetSelectionUI.OnTargetPicked -= HandleTargetSelected;
 
-            Debug.Log($"Selected target is {_selectedTarget} ");
+            Debug.Log($"Selected target is {_intTarget} ");
 
-            return _selectedTarget;
         }
 
 
-        public async UniTask<ulong> GroupSelectTargetAsync(ulong target)
+        public async UniTask<int> GroupSelectTargetAsync(int target)
         {
+            _intTarget = -1;
             TargetSelectionUI.OnTargetPicked += HandleTargetSelected;
- 
-            await UniTask.WaitUntil(() => ServerManager.Instance.PlayerReadyCount.Value == 4);
+
+            await UniTask.WaitUntil(() => _intTarget >= 0);
+
+            ServerManager.Instance.PlayerReadyCount.Value++;
 
             TargetSelectionUI.OnTargetPicked -= HandleTargetSelected;
 
-            Debug.Log($"Selected target is {_selectedTarget} ");
+            Debug.Log($"Voted against target is {_intTarget} ");
 
-            return _selectedTarget;
+            ServerManager.Instance.Votes.Add(_intTarget);
+
+            Debug.Log($"Waiting for group vote to end");
+
+            await UniTask.WaitUntil(() => ServerManager.Instance.PlayerReadyCount.Value == 4);
+
+            Debug.Log($"Vote ended");
+
+            return _intTarget;
         }
 
         private void HandleDeckClicked(int deckId)
@@ -235,9 +249,9 @@ namespace Wendogo
             _selectedDeck = deckId;
         }
 
-        private void HandleTargetSelected(ulong targetID)
-        { 
-            _selectedTarget = targetID; 
+        private void HandleTargetSelected(int targetID)
+        {
+            _intTarget = targetID;
         }
 
         public void SelectCard(CardObjectData card)
@@ -273,7 +287,7 @@ namespace Wendogo
             _selectedTarget = 0;
             //Target selection
             //Handled the cancel next
-            await UniTask.WaitUntil(() => _selectedTarget > 0);
+            await UniTask.WaitUntil(() => _intTarget >= 0);
             Debug.Log("Target selected");
 
             ConfirmPlay();
@@ -354,9 +368,9 @@ namespace Wendogo
             return _playerPA > 0;
         }
 
-        public ulong GetChosenTarget()
+        public int GetChosenTarget()
         {
-            return _selectedTarget;
+            return _intTarget;
         }
 
         public int GetMissingCards()
@@ -374,7 +388,7 @@ namespace Wendogo
             Debug.LogWarning($"PlayerController not found for clientId: {clientId}");
             return null;
         }
-        
+
         private List<int> GetPassiveCardCopy()
         {
             var copy = new List<int>();
@@ -399,14 +413,19 @@ namespace Wendogo
         public void UpdateFoodText(int oldFoodValue, int newFoodValue)
         {
             PlayerUI.Instance.DefineFoodText(newFoodValue);
-        }        
+        }
 
         public void UpdateWoodText(int oldWoodValue, int newWoodValue)
         {
             PlayerUI.Instance.DefineWoodText(newWoodValue);
         }
 
-        public void UpdateHealth(int oldHealthValue, int newHealthValue)
+        public void ChangeHealth(int delta)
+        {
+            health.Value = Mathf.Clamp(health.Value + delta, 0, 6);
+        }
+
+        public void UpdateHearts(int oldHealthValue, int newHealthValue)
         {
             Debug.Log($"New health is: {newHealthValue} and old health is {oldHealthValue} ");
             if (newHealthValue < oldHealthValue)
@@ -414,7 +433,7 @@ namespace Wendogo
                 {
                     PlayerUI.Instance.hearts[i].gameObject.SetActive(false);
                 }
-            else if(newHealthValue > oldHealthValue)
+            else if (newHealthValue > oldHealthValue)
                 for (int i = oldHealthValue; i < newHealthValue; i++)
                 {
                     PlayerUI.Instance.hearts[i].gameObject.SetActive(true);
@@ -431,9 +450,9 @@ namespace Wendogo
             {
                 // var card = DataCollection.Instance.cardDatabase.GetCardByID(cardId);
                 var card = _handManager.GetCardDataInPassiveZone(cardId);
-                
+
                 if (card == null || !card.isPassive) continue;
-                
+
                 if (card.turnsRemaining == -1) continue;
                 if (card.turnsRemaining > 0) card.turnsRemaining--;
                 if (card.turnsRemaining <= 0)
@@ -446,7 +465,7 @@ namespace Wendogo
             }
 
             if (itemsToRemove.Count == 0) return;
-            
+
             foreach (var (cardId, cardObject) in itemsToRemove)
             {
                 passiveCardsList.Remove(cardId);
@@ -496,7 +515,7 @@ namespace Wendogo
 
             // Get the CardDataSO of the played card
             var cardIds = GetPassiveCardCopy();
-            
+
             foreach (var cardId in cardIds)
             {
                 var hiddenCard = DataCollection.Instance.cardDatabase.GetCardByID(cardId);
@@ -507,7 +526,7 @@ namespace Wendogo
                     break;
                 }
             }
-            
+
             var effect = DataCollection.Instance.cardDatabase.GetCardByID(playedCardId).CardEffect;
             effect.Apply(origin, OwnerClientId, isApplyPassive ? value : -1);
             FinishedCardPlayedRpc(RpcTarget.Me);
@@ -533,7 +552,7 @@ namespace Wendogo
             HiddenPassiveCards.Clear();
             foreach (var cardId in PassiveCards)
                 HiddenPassiveCards.Add(cardId);
-            
+
             Debug.Log($"[CopyPublicToHiddenRpc] RealHealth : {health.Value} RealFood : {food.Value} RealWood : {wood.Value}");
             Debug.Log($"[CopyPublicToHiddenRpc] PassiveCards : {PassiveCards.Count}");
         }
@@ -552,11 +571,11 @@ namespace Wendogo
             PassiveCards.Clear();
             foreach (var cardId in HiddenPassiveCards)
                 PassiveCards.Add(cardId);
-            
+
             Debug.Log($"[CopyHiddenToPublicRpc] RealHealth : {health.Value} RealFood : {food.Value} RealWood : {wood.Value}");
             Debug.Log($"[CopyPublicToHiddenRpc] PassiveCards : {PassiveCards.Count}");
         }
-        
+
         [Rpc(SendTo.SpecifiedInParams)]
         public void DestructAllTrapsRpc(RpcParams rpcParams)
         {
@@ -577,12 +596,13 @@ namespace Wendogo
                 }
             }
         }
-        
+
         [Rpc(SendTo.SpecifiedInParams)]
         public void AddPassiveCardRpc(int cardId, RpcParams rpcParams) => PassiveCards.Add(cardId);
 
         [Rpc(SendTo.SpecifiedInParams)]
         public void AddHiddenPassiveCardRpc(int cardId, RpcParams rpcParams) => HiddenPassiveCards.Add(cardId);
+
 
         #endregion
 
@@ -616,7 +636,11 @@ namespace Wendogo
 
             // Needs this player to select a target to play the card against
             if (cardDataSO.HasTarget)
-                await UniTask.WaitUntil(() => _selectedTarget > 0);
+            {
+                await UniTask.WaitUntil(() => _intTarget >= 0);
+                _selectedTarget = (ulong)_intTarget;
+
+            }
 
             ServerManager.Instance.TransmitPlayedCardRpc(cardDataSO.ID, _selectedTarget);
             Debug.Log($"card {cardDataSO.Name} was sent to server ");

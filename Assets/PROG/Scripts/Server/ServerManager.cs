@@ -30,6 +30,12 @@ namespace Wendogo
             NetworkVariableWritePermission.Owner
         );
 
+        public NetworkList<int> Votes = new(
+           new List<int>(),
+           NetworkVariableReadPermission.Everyone,
+           NetworkVariableWritePermission.Owner
+       );
+
         public string playerNameAsked;
         
         public int playerHealthAsked;

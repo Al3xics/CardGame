@@ -1419,7 +1419,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 728514128433627386, guid: b591182f062020c408595876a3e3ff76, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3263382433569448153, guid: b591182f062020c408595876a3e3ff76, type: 3}
       propertyPath: _playerID
@@ -7430,7 +7430,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f763a3e5009040c784f3b83ee9804456, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  autoConnect: 0
+  autoConnect: 1
   objectsToDestroy:
   - {fileID: 1425267997}
   - {fileID: 1479689065}
@@ -10546,12 +10546,12 @@ MonoBehaviour:
   - {fileID: 1626564658}
   - {fileID: 696679038}
   hearts:
-  - {fileID: 465609062}
-  - {fileID: 990458002}
-  - {fileID: 1145180023}
-  - {fileID: 1547650106}
-  - {fileID: 1750333798}
   - {fileID: 1667251397}
+  - {fileID: 1750333798}
+  - {fileID: 1547650106}
+  - {fileID: 1145180023}
+  - {fileID: 990458002}
+  - {fileID: 465609062}
 --- !u!1 &4038565035146118173
 GameObject:
   m_ObjectHideFlags: 0
