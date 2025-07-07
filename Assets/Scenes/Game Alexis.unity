@@ -1392,7 +1392,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 728514128433627386, guid: b591182f062020c408595876a3e3ff76, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3263382433569448153, guid: b591182f062020c408595876a3e3ff76, type: 3}
       propertyPath: _playerID
@@ -6864,6 +6864,10 @@ MonoBehaviour:
   gameSceneName: Game Valentin
   PlayerReadyCount:
     m_InternalValue: 0
+  playerNameAsked: 
+  playerHealthAsked: 0
+  playerFoodAsked: 0
+  playerWoodAsked: 0
 --- !u!114 &1479689067
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7698,7 +7702,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f763a3e5009040c784f3b83ee9804456, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  autoConnect: 0
+  autoConnect: 1
   objectsToDestroy:
   - {fileID: 1425267997}
   - {fileID: 1479689065}

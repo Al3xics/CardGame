@@ -361,7 +361,7 @@ namespace Wendogo
 
         public int GetMissingCards()
         {
-            return _handManager._maxHandSize - _handManager._handCards.Count;
+            return _handManager._maxHandSize - _handManager.handCards.Count;
         }
 
         public static PlayerController GetPlayer(ulong clientId)
@@ -423,36 +423,35 @@ namespace Wendogo
 
         private void HandlePassiveCardTurnUpdate()
         {
-            List<int> cardsToRemove = new List<int>();
             var passiveCardsList = IsSimulatingNight ? HiddenPassiveCards : PassiveCards;
-        
-            foreach (var passiveCards in passiveCardsList)
-            {
-                var card = DataCollection.Instance.cardDatabase.GetCardByID(passiveCards);
+            var itemsToRemove = new List<(int cardId, GameObject cardObject)>();
 
-                if (card.turnsRemaining == -1) return;
+            // Iterate through all logical passive cards (IDs)
+            foreach (var cardId in passiveCardsList)
+            {
+                // var card = DataCollection.Instance.cardDatabase.GetCardByID(cardId);
+                var card = _handManager.GetCardDataInPassiveZone(cardId);
                 
-                if (card.isPassive && card.turnsRemaining > 0)
+                if (card == null || !card.isPassive) continue;
+                
+                if (card.turnsRemaining == -1) continue;
+                if (card.turnsRemaining > 0) card.turnsRemaining--;
+                if (card.turnsRemaining <= 0)
                 {
-                    card.turnsRemaining--;
-        
-                    if (card.turnsRemaining <= 0)
-                    {
-                        Debug.Log($"Passive card {card.Name} has expired.");
-                        cardsToRemove.Add(passiveCards);
-                    }
+                    GameObject cardObject = _handManager.GetCardGameObjectInPassiveZone(cardId);
+                    itemsToRemove.Add((cardId, cardObject));
+                    Debug.Log($"Passive card {card.Name} expired.");
+                    break;
                 }
             }
-        
-            foreach (var cardId in cardsToRemove)
+
+            if (itemsToRemove.Count == 0) return;
+            
+            foreach (var (cardId, cardObject) in itemsToRemove)
             {
-                // todo --> Modify with this logic to visually destroy the cards
-                if (IsSimulatingNight)
-                    HiddenPassiveCards.Remove(cardId);
-                else
-                    PassiveCards.Remove(cardId);
-        
-                Debug.Log($"Removed card with ID: {cardId}");
+                passiveCardsList.Remove(cardId);
+                if (cardObject != null) _handManager.RemoveCardFromPassiveZone(cardObject);
+                Debug.Log($"Card with ID: {cardId} removed from {(IsSimulatingNight ? "HiddenPassiveCards" : "PassiveCards")}");
             }
         }
 
@@ -470,15 +469,12 @@ namespace Wendogo
         [Rpc(SendTo.SpecifiedInParams)]
         public void GetCardsRpc(int[] cardsID, RpcParams rpcParams)
         {
-            // do things with cards
-            // this will receive either the 5 first cards, or when this player's turn end, the drawn cards he needs to complete his hand
-            // need to handle both events
             foreach (int card in cardsID)
             {
-                CardDataSO DrawnCard = CardDatabaseSO.GetCardByID(card);
                 if (IsOwner)
                 {
-                    _handManager.DrawCard(DrawnCard);
+                    CardDataSO clonedCard = CardDataSO.Clone(CardDatabaseSO.GetCardByID(card));
+                    _handManager.DrawCard(clonedCard);
                 }
             }
         }
@@ -507,19 +503,10 @@ namespace Wendogo
 
                 if (hiddenCard.CardEffect.ApplyPassive(playedCardId, origin, OwnerClientId, out value))
                 {
-                    // todo --> Normal que l'effet boost ne s'applique pas la deuxième fois..... c'est supprimé ici......
-                    // if (IsSimulatingNight)
-                    //     HiddenPassiveCards.Remove(cardId); // OR --> RemoveHiddenPassiveCardRpc
-                    // else
-                    //     PassiveCards.Remove(cardId); // OR --> RemovePassiveCardRpc
                     isApplyPassive = true;
                     break;
                 }
             }
-            
-            
-            
-            
             
             var effect = DataCollection.Instance.cardDatabase.GetCardByID(playedCardId).CardEffect;
             effect.Apply(origin, OwnerClientId, isApplyPassive ? value : -1);
@@ -595,13 +582,7 @@ namespace Wendogo
         public void AddPassiveCardRpc(int cardId, RpcParams rpcParams) => PassiveCards.Add(cardId);
 
         [Rpc(SendTo.SpecifiedInParams)]
-        public void RemovePassiveCardRpc(int cardId, RpcParams rpcParams) => PassiveCards.Remove(cardId);
-
-        [Rpc(SendTo.SpecifiedInParams)]
         public void AddHiddenPassiveCardRpc(int cardId, RpcParams rpcParams) => HiddenPassiveCards.Add(cardId);
-
-        [Rpc(SendTo.SpecifiedInParams)]
-        public void RemoveHiddenPassiveCardRpc(int cardId, RpcParams rpcParams) => HiddenPassiveCards.Remove(cardId);
 
         #endregion
 

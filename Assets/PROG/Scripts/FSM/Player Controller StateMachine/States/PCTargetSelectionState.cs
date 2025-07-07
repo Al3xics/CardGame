@@ -18,7 +18,7 @@ namespace Wendogo
             //AwaitTarget();
             _player.ActiveCard.Card.CardEffect.ShowUI();
             Debug.Log($"active card is : {_player.ActiveCard.Card.name}");
-            _player._handManager.ToggleOffMovingCards(_player._handManager._handCards);
+            _player._handManager.ToggleOffMovingCards(_player._handManager.handCards);
 
             if (_player.ActiveCard.Card.isGroup)
             {
@@ -40,7 +40,7 @@ namespace Wendogo
 
         public override void OnExit()
         {
-            _player._handManager.ToggleOffMovingCards(_player._handManager._handCards);
+            _player._handManager.ToggleOffMovingCards(_player._handManager.handCards);
             _player.ActiveCard.Card.CardEffect.HideUI();
             base.OnExit();
         }
