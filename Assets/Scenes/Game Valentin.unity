@@ -227,7 +227,8 @@ MonoBehaviour:
   _spawnPoint: {fileID: 6622331089171285334}
   _handTransform: {fileID: 3699339715562952713}
   _cardsHandler: {fileID: 16459162}
-  _handCards: []
+  handCards: []
+  passiveZoneCards: []
   _isReplaced: 0
 --- !u!114 &16459162
 MonoBehaviour:
@@ -1414,7 +1415,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 728514128433627386, guid: b591182f062020c408595876a3e3ff76, type: 3}
       propertyPath: m_Name
-      value: UpdtatedSelectTargetCanvas
+      value: UpdatedSelectTargetCanvas
       objectReference: {fileID: 0}
     - target: {fileID: 728514128433627386, guid: b591182f062020c408595876a3e3ff76, type: 3}
       propertyPath: m_IsActive
