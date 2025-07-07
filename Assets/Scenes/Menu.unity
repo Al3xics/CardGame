@@ -5256,9 +5256,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  gameSceneName: Game Alexis
+  gameSceneName: Game Valentin
   PlayerReadyCount:
     m_InternalValue: 0
+  playerNameAsked: 
+  playerHealthAsked: 0
+  playerFoodAsked: 0
+  playerWoodAsked: 0
 --- !u!1001 &3218768946901839885
 PrefabInstance:
   m_ObjectHideFlags: 0

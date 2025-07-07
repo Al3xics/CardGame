@@ -123,6 +123,7 @@ namespace Wendogo
                     pcSMObject = new GameObject($"{nameof(PlayerControllerSM)}");
                     pcSMObject.AddComponent<PlayerControllerSM>();
                 }
+                PlayerUI.Instance.SetPlayerInfos();
             }
             if (!IsOwner) return;
 
@@ -158,7 +159,10 @@ namespace Wendogo
                 if (_handManager == null) _handManager = GameObject.FindWithTag("hand")?.GetComponent<HandManager>();
                 pcSMObject = new GameObject($"{nameof(PlayerControllerSM)}");
                 pcSMObject.AddComponent<PlayerControllerSM>();
-                
+
+                Debug.Log($"This is my player id: {LocalPlayerId}");
+                PlayerUI.Instance.SetPlayerInfos();
+
                 _prefabUI = GameObject.Find("UpdatedSelectTargetCanvas");
                 _prefabUI.SetActive(false);
 
@@ -404,11 +408,17 @@ namespace Wendogo
 
         public void UpdateHealth(int oldHealthValue, int newHealthValue)
         {
-            //PlayerUI.Instance.hearts.Count;
-            for (int i = 0; i < oldHealthValue - newHealthValue; i++)
-            {
-                PlayerUI.Instance.hearts[i].gameObject.SetActive(false);
-            }
+            Debug.Log($"New health is: {newHealthValue} and old health is {oldHealthValue} ");
+            if (newHealthValue < oldHealthValue)
+                for (int i = newHealthValue; i < oldHealthValue; i++)
+                {
+                    PlayerUI.Instance.hearts[i].gameObject.SetActive(false);
+                }
+            else if(newHealthValue > oldHealthValue)
+                for (int i = oldHealthValue; i < newHealthValue; i++)
+                {
+                    PlayerUI.Instance.hearts[i].gameObject.SetActive(true);
+                }
         }
 
         private void HandlePassiveCardTurnUpdate()
