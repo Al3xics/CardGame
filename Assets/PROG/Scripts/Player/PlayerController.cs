@@ -622,6 +622,12 @@ namespace Wendogo
             SessionPlayerId.Value = sessionPlayerId;
         }
 
+        [Rpc(SendTo.SpecifiedInParams)]
+        public void CheckPlayerHealthRPC(RpcParams rpcParams)
+        {
+
+        }    
+
         #endregion
 
         #region Notify

@@ -74,11 +74,11 @@ namespace Wendogo
             }
         }
 
-        public void DefineFoodText(int foodAmount)
+        public void DefineFoodText(int foodAmount, ulong target = 0)
         {
             foodCount.text = $"{foodAmount.ToString()}";
         }
-        public void DefineWoodText(int woodAmount)
+        public void DefineWoodText(int woodAmount, ulong target = 0)
         {
             woodCount.text = $"{woodAmount.ToString()}";
         }

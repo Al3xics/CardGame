@@ -32,9 +32,6 @@ namespace Wendogo
             base.OnExit();
         }
 
-
-
-
         public void ToggleDeck()
         {
             DeckClickHandler[] deckClickHandlers = Object.FindObjectsByType<DeckClickHandler>(FindObjectsSortMode.None);
