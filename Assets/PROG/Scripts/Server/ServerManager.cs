@@ -23,12 +23,6 @@ namespace Wendogo
 
         public string gameSceneName = "Game";
         public Dictionary<ulong, PlayerController> _playersById { get; private set;}
-        
-        public NetworkVariable<int> PlayerReadyCount = new(
-            0,
-            NetworkVariableReadPermission.Everyone,
-            NetworkVariableWritePermission.Owner
-        );
 
         public string playerNameAsked;
         
@@ -37,9 +31,25 @@ namespace Wendogo
         public int playerFoodAsked;
         
         public int playerWoodAsked;
+        
+        #endregion
+        
+        #region Network Variables
+        
+        public NetworkVariable<int> PlayerReadyCount = new(
+            0,
+            NetworkVariableReadPermission.Everyone,
+            NetworkVariableWritePermission.Owner
+        );
 
         private NetworkVariable<int> _playerFinishSceneLoadedCpt = new(
             0,
+            NetworkVariableReadPermission.Everyone,
+            NetworkVariableWritePermission.Server
+        );
+        
+        public NetworkVariable<Cycle> CurrentCycle = new(
+            Cycle.Day,
             NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Server
         );
@@ -103,7 +113,10 @@ namespace Wendogo
                 NetworkManager.SceneManager.LoadScene(gameSceneName, LoadSceneMode.Single);
         }
 
-        public static Cycle GetCycle() => GameStateMachine.Instance.Cycle;
+        public void UpdateCycle(Cycle newCycle)
+        {
+            if (IsServer) CurrentCycle.Value = newCycle;
+        }
 
         #endregion
 
@@ -234,15 +247,6 @@ namespace Wendogo
             }
         }
         
-        /*[Rpc(SendTo.Server)]
-        public string GetPlayerName(ulong clientID)
-        {
-            if (SessionManager.Instance.ActiveSession.CurrentPlayer.Properties.TryGetValue(SessionConstants.PlayerNamePropertyKey, out var playerName))
-                return playerName.Value;
-        
-            return "Unknown";
-        }*/
-        
         [Rpc(SendTo.Server)]
         public void GetPlayerNameRpc(ulong clientID)
         {
@@ -284,6 +288,15 @@ namespace Wendogo
         {
             var resourceType = isFood ? ResourceType.Food : ResourceType.Wood;
             GameStateMachine.Instance.AddRessourceToRitual(isHiddenList, resourceType, isRealResource);
+        }
+
+        [Rpc(SendTo.Server)]
+        public void CheckPlayerHealthRpc()
+        {
+            foreach (var player in _playersById.Values)
+            {
+                player.CheckPlayerHealthRpc();
+            }
         }
 
         #endregion

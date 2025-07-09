@@ -100,7 +100,7 @@ namespace Wendogo
             NetworkVariableWritePermission.Owner
         );
 
-        public bool IsSimulatingNight => ServerManager.GetCycle() == Cycle.Night && IsLocalPlayer;
+        public bool IsSimulatingNight => ServerManager.Instance.CurrentCycle.Value == Cycle.Night && IsLocalPlayer;
 
         #endregion
 
@@ -425,6 +425,9 @@ namespace Wendogo
         {
             var passiveCardsList = IsSimulatingNight ? HiddenPassiveCards : PassiveCards;
             var itemsToRemove = new List<(int cardId, GameObject cardObject)>();
+            
+            Debug.Log($"$$$$$ [PlayerController] ServerManager CurrentCycle : {ServerManager.Instance.CurrentCycle.Value.ToString()}");
+            Debug.Log($"$$$$$ [PlayerController] Passive cards list : {passiveCardsList.Count}, for player {GetPlayer(LocalPlayerId).name} ({GetPlayer(LocalPlayerId).OwnerClientId})");
 
             // Iterate through all logical passive cards (IDs)
             foreach (var cardId in passiveCardsList)
@@ -433,9 +436,11 @@ namespace Wendogo
                 var card = _handManager.GetCardDataInPassiveZone(cardId);
                 
                 if (card == null || !card.isPassive) continue;
+                Debug.Log($"$$$$$ [PlayerController] Current turns remaining for passive card {card.Name} : {card.turnsRemaining}");
                 
                 if (card.turnsRemaining == -1) continue;
                 if (card.turnsRemaining > 0) card.turnsRemaining--;
+                Debug.Log($"$$$$$ [PlayerController] Turns remaining for passive card {card.Name} : {card.turnsRemaining}");
                 if (card.turnsRemaining <= 0)
                 {
                     GameObject cardObject = _handManager.GetCardGameObjectInPassiveZone(cardId);
@@ -453,6 +458,14 @@ namespace Wendogo
                 if (cardObject != null) _handManager.RemoveCardFromPassiveZone(cardObject);
                 Debug.Log($"Card with ID: {cardId} removed from {(IsSimulatingNight ? "HiddenPassiveCards" : "PassiveCards")}");
             }
+            
+            Debug.Log($"$$$$$ [PlayerController] passiveCardsList Count : {passiveCardsList.Count}");
+            
+            if (IsSimulatingNight)
+                Debug.Log($"$$$$$ [PlayerController] HiddenPassiveCardsList Count : {HiddenPassiveCards.Count}");
+            else
+                Debug.Log($"$$$$$ [PlayerController] PassiveCards Count : {PassiveCards.Count}");
+                
         }
 
         #endregion
