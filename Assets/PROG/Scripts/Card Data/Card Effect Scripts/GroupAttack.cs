@@ -10,6 +10,7 @@ namespace Wendogo
         public override void Apply(ulong owner, ulong target, int value = -1)
         {
             var targetPlayer = PlayerController.GetPlayer(target);
+            
             if (targetPlayer != null)
             {
                 targetPlayer.health.Value -= attackValue;

@@ -7,6 +7,7 @@ using Unity.Netcode;
 using UnityEngine.SceneManagement;
 using Button = UnityEngine.UI.Button;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 
 
 namespace Wendogo
@@ -96,6 +97,18 @@ namespace Wendogo
 
         public NetworkList<int> HiddenPassiveCards = new(
             new List<int>(),
+            NetworkVariableReadPermission.Everyone,
+            NetworkVariableWritePermission.Owner
+        );
+        
+        public NetworkVariable<bool> asGardian = new(
+            false,
+            NetworkVariableReadPermission.Everyone,
+            NetworkVariableWritePermission.Owner
+        );
+        
+        public NetworkVariable<bool> eatPorc = new(
+            false,
             NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Owner
         );
