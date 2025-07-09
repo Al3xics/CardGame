@@ -285,6 +285,7 @@ namespace Wendogo
             
             if (ShowDebugLogs) Debug.LogWarning($"******************** Change cycle from {Cycle} to {newCycle} ! ********************");
             Cycle = newCycle;
+            ServerManager.Instance.UpdateCycle(newCycle);
         }
 
         /// <summary>

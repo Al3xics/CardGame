@@ -10,11 +10,7 @@ namespace Wendogo
         public override void Apply(ulong owner, ulong target, int value = -1)
         {
             Debug.Log($"Stealing resource from {target} by {owner}.");
-            if (value == -1)
-            {
-                
-            }
-            else
+            if (value != 1000)
             {
                 
             }
