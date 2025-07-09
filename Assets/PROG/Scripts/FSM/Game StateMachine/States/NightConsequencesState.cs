@@ -64,6 +64,7 @@ namespace Wendogo
         private void NextState()
         {
             StateMachine.NightActions.Clear();
+            ServerManager.Instance.CheckPlayerHealthRpc();
             StateMachine.ChangeState<CheckRitualState>();
         }
     }

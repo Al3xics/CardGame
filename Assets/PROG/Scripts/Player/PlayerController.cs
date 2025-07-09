@@ -66,9 +66,9 @@ namespace Wendogo
         private GameObject pcSMObject;
 
         private int cardDataID;
-
+        
         public virtual event Action OnTargetDetection;
-
+        
         public int temporaryTask = -1;
         private GameObject _prefabUI;
 
@@ -80,7 +80,7 @@ namespace Wendogo
         public NetworkVariable<int> health = new(
             6,
             NetworkVariableReadPermission.Everyone,
-             NetworkVariableWritePermission.Owner
+            NetworkVariableWritePermission.Owner
         );
 
         public int hiddenWood;
@@ -109,14 +109,12 @@ namespace Wendogo
             NetworkVariableWritePermission.Owner
         );
 
-        public bool IsSimulatingNight => ServerManager.GetCycle() == Cycle.Night && IsLocalPlayer;
+        public bool IsSimulatingNight => ServerManager.Instance.CurrentCycle.Value == Cycle.Night && IsLocalPlayer;
 
         #endregion
 
         #region Basic Method
-
- 
-
+        
         private void Start()
         {
             name = IsLocalPlayer ? "LocalPlayer" : $"Player{OwnerClientId}";
@@ -160,10 +158,7 @@ namespace Wendogo
             food.OnValueChanged -= UpdateFoodText;
             wood.OnValueChanged -= UpdateWoodText;
         }
-
-
-
-
+        
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
 
@@ -229,6 +224,7 @@ namespace Wendogo
 
             Debug.Log($"Selected target is {_intTarget} ");
 
+            return _selectedTarget;
         }
 
 
@@ -416,6 +412,7 @@ namespace Wendogo
         }
 
         #region UI Methods
+        
         public void UseVoteUI(bool openOrClose)
         {
             _prefabUI.SetActive(openOrClose);
@@ -457,17 +454,23 @@ namespace Wendogo
         {
             var passiveCardsList = IsSimulatingNight ? HiddenPassiveCards : PassiveCards;
             var itemsToRemove = new List<(int cardId, GameObject cardObject)>();
+            
+            Debug.Log($"$$$$$ [PlayerController] ServerManager CurrentCycle : {ServerManager.Instance.CurrentCycle.Value.ToString()}");
+            Debug.Log($"$$$$$ [PlayerController] Passive cards list : {passiveCardsList.Count}, for player {GetPlayer(LocalPlayerId).name} ({GetPlayer(LocalPlayerId).OwnerClientId})");
 
             // Iterate through all logical passive cards (IDs)
             foreach (var cardId in passiveCardsList)
             {
                 // var card = DataCollection.Instance.cardDatabase.GetCardByID(cardId);
                 var card = _handManager.GetCardDataInPassiveZone(cardId);
-
+                
                 if (card == null || !card.isPassive) continue;
-
+                
+                Debug.Log($"$$$$$ [PlayerController] Current turns remaining for passive card {card.Name} : {card.turnsRemaining}");
+                
                 if (card.turnsRemaining == -1) continue;
                 if (card.turnsRemaining > 0) card.turnsRemaining--;
+                Debug.Log($"$$$$$ [PlayerController] Turns remaining for passive card {card.Name} : {card.turnsRemaining}");
                 if (card.turnsRemaining <= 0)
                 {
                     GameObject cardObject = _handManager.GetCardGameObjectInPassiveZone(cardId);
@@ -478,13 +481,21 @@ namespace Wendogo
             }
 
             if (itemsToRemove.Count == 0) return;
-
+            
             foreach (var (cardId, cardObject) in itemsToRemove)
             {
                 passiveCardsList.Remove(cardId);
                 if (cardObject != null) _handManager.RemoveCardFromPassiveZone(cardObject);
                 Debug.Log($"Card with ID: {cardId} removed from {(IsSimulatingNight ? "HiddenPassiveCards" : "PassiveCards")}");
             }
+            
+            Debug.Log($"$$$$$ [PlayerController] passiveCardsList Count : {passiveCardsList.Count}");
+            
+            if (IsSimulatingNight)
+                Debug.Log($"$$$$$ [PlayerController] HiddenPassiveCardsList Count : {HiddenPassiveCards.Count}");
+            else
+                Debug.Log($"$$$$$ [PlayerController] PassiveCards Count : {PassiveCards.Count}");
+                
         }
 
         #endregion
@@ -528,7 +539,7 @@ namespace Wendogo
 
             // Get the CardDataSO of the played card
             var cardIds = GetPassiveCardCopy();
-
+            
             foreach (var cardId in cardIds)
             {
                 var hiddenCard = DataCollection.Instance.cardDatabase.GetCardByID(cardId);
@@ -539,7 +550,7 @@ namespace Wendogo
                     break;
                 }
             }
-
+            
             var effect = DataCollection.Instance.cardDatabase.GetCardByID(playedCardId).CardEffect;
             effect.Apply(origin, OwnerClientId, isApplyPassive ? value : -1);
             FinishedCardPlayedRpc(RpcTarget.Me);
@@ -565,7 +576,7 @@ namespace Wendogo
             HiddenPassiveCards.Clear();
             foreach (var cardId in PassiveCards)
                 HiddenPassiveCards.Add(cardId);
-
+            
             Debug.Log($"[CopyPublicToHiddenRpc] RealHealth : {health.Value} RealFood : {food.Value} RealWood : {wood.Value}");
             Debug.Log($"[CopyPublicToHiddenRpc] PassiveCards : {PassiveCards.Count}");
         }
@@ -584,11 +595,11 @@ namespace Wendogo
             PassiveCards.Clear();
             foreach (var cardId in HiddenPassiveCards)
                 PassiveCards.Add(cardId);
-
+            
             Debug.Log($"[CopyHiddenToPublicRpc] RealHealth : {health.Value} RealFood : {food.Value} RealWood : {wood.Value}");
             Debug.Log($"[CopyPublicToHiddenRpc] PassiveCards : {PassiveCards.Count}");
         }
-
+        
         [Rpc(SendTo.SpecifiedInParams)]
         public void DestructAllTrapsRpc(RpcParams rpcParams)
         {
@@ -609,7 +620,7 @@ namespace Wendogo
                 }
             }
         }
-
+        
         [Rpc(SendTo.SpecifiedInParams)]
         public void AddPassiveCardRpc(int cardId, RpcParams rpcParams) => PassiveCards.Add(cardId);
 
