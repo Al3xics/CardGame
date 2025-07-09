@@ -20,7 +20,10 @@ namespace Wendogo
             base.OnEnter();
             
             if (StateMachine.Cycle == Cycle.Night)
+            {
                 ServerManager.Instance.SynchronizePlayerValuesRpc(true);
+                StateMachine.CopyPublicToHidden();
+            }
             
             StartPlayerTurn(StateMachine.CurrentPlayerId);
         }

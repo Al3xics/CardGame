@@ -4462,6 +4462,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1654320523}
   - component: {fileID: 1654320524}
+  - component: {fileID: 1654320525}
   m_Layer: 5
   m_Name: Main Screen
   m_TagString: Untagged
@@ -4500,6 +4501,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 718971fa8139d6040896075f22c010de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1654320525
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1654320522}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5409d48b396b4ac8b210872232377c26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1670767532
@@ -5244,6 +5257,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   gameSceneName: Game Valentin
+  PlayerReadyCount:
+    m_InternalValue: 0
+  playerNameAsked: 
+  playerHealthAsked: 0
+  playerFoodAsked: 0
+  playerWoodAsked: 0
 --- !u!1001 &3218768946901839885
 PrefabInstance:
   m_ObjectHideFlags: 0

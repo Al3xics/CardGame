@@ -163,7 +163,7 @@ MonoBehaviour:
     - line: '|   loadStoreDebugModeEnabled: 0'
     - line: '|   visionOSBundleVersion: 1.0'
     - line: '|   tvOSBundleVersion: 1.0'
-    - line: '|   bundleVersion: 0.2.5'
+    - line: '|   bundleVersion: 0.3.3'
     - line: '|   preloadedAssets:'
     - line: '|   - {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b,
         type: 3}'
@@ -197,7 +197,7 @@ MonoBehaviour:
     - line: '|     iPhone: 0'
     - line: '|     tvOS: 0'
     - line: '|   overrideDefaultApplicationIdentifier: 0'
-    - line: '|   AndroidBundleVersionCode: 7'
+    - line: '|   AndroidBundleVersionCode: 11'
     - line: '|   AndroidMinSdkVersion: 23'
     - line: '|   AndroidTargetSdkVersion: 0'
     - line: '|   AndroidPreferredInstallLocation: 1'
@@ -291,7 +291,7 @@ MonoBehaviour:
     - line: '|   AndroidTargetArchitectures: 2'
     - line: '|   AndroidSplashScreenScale: 0'
     - line: '|   androidSplashScreen: {instanceID: 0}'
-    - line: '|   AndroidKeystoreName: ''{dedicated}: Downloads/WendogoKeystore.keystore'''
+    - line: '|   AndroidKeystoreName: ''{inproject}: WendogoKeystore.keystore'''
     - line: '|   AndroidKeyaliasName: wendogo key'
     - line: '|   AndroidEnableArmv9SecurityFeatures: 0'
     - line: '|   AndroidEnableArm64MTE: 0'
@@ -999,10 +999,10 @@ MonoBehaviour:
         m_BuildSubtarget: 0
         m_BuildSystem: 1
         m_ExportAsGoogleAndroidProject: 0
-        m_DebugSymbolLevel: 4
+        m_DebugSymbolLevel: 1
         m_DebugSymbolFormat: 6
-        m_CurrentDeploymentTargetId: __builtin__target_all
+        m_CurrentDeploymentTargetId: __builtin__target_default
         m_BuildType: 2
-        m_BuildAppBundle: 1
+        m_BuildAppBundle: 0
         m_IPAddressToConnect: 
         m_SymlinkSources: 0

@@ -28,14 +28,20 @@ public class CardDataSO : ScriptableObject
     public bool HasTarget; //Indicates whether the card needs a target to be played
 
     [VerticalGroup("CardData/Stats")]
-    [InfoBox("@_priorityIndexMessage", InfoMessageType.Warning, "@_showWarning")]
+    [InfoBox("@_priorityIndexMessage", InfoMessageType.Info, "@_showWarning")]
     [InfoBox("@_priorityIndexMessage", InfoMessageType.Error, "@_showError")]
-    [MinValue(0), OnValueChanged("ValidatePriorityIndex")]
+    [MinValue(0), ShowIf("isNotPassive"), OnValueChanged("ValidatePriorityIndex")]
     public int nightPriorityIndex = 0;
     private bool _hasPriorityIndexConflict = false;
     private string _priorityIndexMessage = "";
     private bool _showWarning = false;
     private bool _showError = false;
+    private bool isNotPassive => !isPassive;
+    
+    [VerticalGroup("CardData/Stats")]
+    [InfoBox("Turns Remaining '-1' means that the card has no limit on the number of turns it can be played.")]
+    [MinValue(-1), ShowIf("isPassive")]
+    public int turnsRemaining = -1;
 
     [VerticalGroup("CardData/Left"), LabelWidth(200), MinValue(10100), MaxValue(10199)]
     [ShowIf("Toggle"), HideLabel]
@@ -88,5 +94,15 @@ public class CardDataSO : ScriptableObject
             _showWarning = false;
         }
 #endif
+    }
+    
+    public static CardDataSO Clone(CardDataSO cardData)
+    {
+        // Create a clone of `CardDataSO` in memory
+        CardDataSO copy = Instantiate(cardData);
+        var turn = cardData.turnsRemaining;
+        copy.turnsRemaining = turn == -1 ? turn : turn * 2;
+        
+        return copy;
     }
 }

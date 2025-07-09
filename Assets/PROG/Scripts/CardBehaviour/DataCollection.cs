@@ -1,6 +1,7 @@
 using NUnit.Framework;
 using UnityEngine;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
@@ -9,23 +10,32 @@ namespace Wendogo
 
     public class DataCollection : MonoBehaviour
     {
+        #region Session Manager Instance
+        
+        private static DataCollection _instance;
+        public static DataCollection Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = FindFirstObjectByType<DataCollection>();
+                    if (_instance == null) Debug.LogError("DataCollection instance is missing in the scene and has not been set.");
+                }
+                return _instance;
+            }
+            private set => _instance = value;
+        }
+        
+        #endregion
+
+        #region Variables
+
         public CardDatabaseSO cardDatabase;
         public DeckConfiguration resourcesDeck;
         public DeckConfiguration actionDeck;
-        
-        public static DataCollection Instance { get; private set; }
 
-        private void Awake()
-        {
-            if (Instance != null && Instance != this)
-            {
-                Destroy(gameObject);
-                return;
-            }
-
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
+        #endregion
 
         // Runtime versions of the decks
         private List<CardDataSO> _resourceDeck = new();

@@ -43,7 +43,7 @@ namespace Wendogo
 
         public void OnEndDrag(PointerEventData eventData)
         {
-            _canvasGroup.blocksRaycasts = true;
+            //_canvasGroup.blocksRaycasts = true;
 
             //Check if the card was dropped on a valid drop zone
             if (eventData.pointerEnter == null || !eventData.pointerEnter.TryGetComponent(out CardDropZone zone))

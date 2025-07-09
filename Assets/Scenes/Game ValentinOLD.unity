@@ -160,7 +160,8 @@ MonoBehaviour:
   _spawnPoint: {fileID: 6622331089171285334}
   _handTransform: {fileID: 382117219}
   _cardsHandler: {fileID: 16459162}
-  _handCards: []
+  handCards: []
+  passiveZoneCards: []
   _isReplaced: 0
 --- !u!114 &16459162
 MonoBehaviour:
@@ -359,7 +360,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 728514128433627386, guid: b591182f062020c408595876a3e3ff76, type: 3}
       propertyPath: m_Name
-      value: UpdtatedSelectTargetCanvas
+      value: UpdatedSelectTargetCanvas
       objectReference: {fileID: 0}
     - target: {fileID: 7728155765000877774, guid: b591182f062020c408595876a3e3ff76, type: 3}
       propertyPath: m_Pivot.x
@@ -800,6 +801,10 @@ MonoBehaviour:
   gameSceneName: Game Valentin
   PlayerReadyCount:
     m_InternalValue: 0
+  playerNameAsked: 
+  playerHealthAsked: 0
+  playerFoodAsked: 0
+  playerWoodAsked: 0
 --- !u!114 &1479689067
 MonoBehaviour:
   m_ObjectHideFlags: 0

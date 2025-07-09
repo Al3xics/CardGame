@@ -1,13 +1,14 @@
+using System;
+using System.Collections.Generic;
 using TMPro;
-using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
-using Wendogo.Menu;
-using static UnityEngine.GraphicsBuffer;
+using Sirenix.Serialization;
+using Sirenix.OdinInspector;
 
 namespace Wendogo
 {
-    public class PlayerUI : MonoBehaviour
+    public class PlayerUI : SerializedMonoBehaviour
     {
         private TextMeshProUGUI playerTitle;
         private TextMeshProUGUI readyText;
@@ -17,7 +18,11 @@ namespace Wendogo
 
         [SerializeField] private TextMeshProUGUI foodCount;
         [SerializeField] private TextMeshProUGUI woodCount;
-        [SerializeField] private GameObject[] heathVisuals;
+
+        [SerializeField] public List<Transform> cardSpaces = new List<Transform>();
+        [SerializeField] public List<GameObject> hearts = new List<GameObject>();
+
+        public Dictionary<GameObject, ulong> UIPlayerID = new Dictionary<GameObject, ulong>();
 
         public static PlayerUI Instance { get; private set; }
 
@@ -44,13 +49,25 @@ namespace Wendogo
             if (endText != null) endText.gameObject.SetActive(false);
         }
 
+        public void SetPlayerInfos()
+        {
+            foreach (var item in UIPlayerID)
+            {
+                if (item.Key.activeSelf == false)
+                    continue;
+                playerTitle = item.Key.GetComponentInChildren<TextMeshProUGUI>();
+                ServerManager.Instance.GetPlayerNameRpc(item.Value);
+                playerTitle.text = ServerManager.Instance.playerNameAsked;
+            }
+        }
+
         public void DefineFoodText(int foodAmount)
         {
-            foodCount.text = $"{foodAmount.ToString()}/6";
-        }        
+            foodCount.text = $"{foodAmount.ToString()}";
+        }
         public void DefineWoodText(int woodAmount)
         {
-            woodCount.text = $"{woodAmount.ToString()}/6";
+            woodCount.text = $"{woodAmount.ToString()}";
         }
 
         public void SendDebug(string message)

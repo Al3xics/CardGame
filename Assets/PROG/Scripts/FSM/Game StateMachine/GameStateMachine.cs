@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Wendogo
 {
@@ -102,15 +102,54 @@ namespace Wendogo
         /// </summary>
         public Cycle Cycle { get; private set; } = Cycle.Day;
 
+        private bool _isRitualOver = false;
+        
         /// <summary>
         /// Indicates whether the ritual in the game has been completed or not.
         /// This property is used to control the flow of game states, transitioning
         /// to the end game state if the ritual is complete or proceeding
         /// with the normal game cycle.
         /// </summary>
-        public bool IsRitualOver {get; private set;} = false;
+        public bool IsRitualOver
+        {
+            get
+            {
+                if (CheckRitualOver())
+                    _isRitualOver = true;
+                return _isRitualOver;
+            }
+            private set => _isRitualOver = value;
+        }
+
+        /// <summary>
+        /// Represents a collection that tracks the status of collected food.
+        /// Each entry in the list indicates whether a particular food resource contributes meaningfully
+        /// to the ritual completion based on its validity.
+        /// </summary>
+        private List<bool> _foodCollected = new();
+
+        /// <summary>
+        /// Represents a private collection tracking the hidden food contributions by players
+        /// during the <see cref="Cycle.Night"/> cycle. See <see cref="_foodCollected"/>.
+        /// </summary>
+        private List<bool> _hiddenFoodCollected = new();
+
+        /// <summary>
+        /// Represents a collection that tracks the status of collected wood.
+        /// Each entry in the list indicates whether a particular wood resource contributes meaningfully
+        /// to the ritual completion based on its validity.
+        /// </summary>
+        private List<bool> _woodCollected = new();
+
+        /// <summary>
+        /// Represents a private collection tracking the hidden wood contributions by players
+        /// during the <see cref="Cycle.Night"/> cycle. See <see cref="_woodCollected"/>.
+        /// </summary>
+        private List<bool> _hiddenWoodCollected = new();
 
         #endregion
+
+        #region Basic Methods
 
         /// <summary>
         /// Initializes the GameStateMachine instance, ensuring that only one instance exists and
@@ -148,6 +187,74 @@ namespace Wendogo
             
             return turnOrderState;
         }
+
+        /// <summary>
+        /// Determines whether the ritual is completed by checking if the required amounts of food and wood
+        /// are collected, ensuring all collected items are valid.
+        /// </summary>
+        /// <returns>True if both the food and wood requirements are fulfilled; otherwise, false.</returns>
+        private bool CheckRitualOver()
+        {
+            _foodCollected.RemoveAll(item => item == false);
+            _woodCollected.RemoveAll(item => item == false);
+            
+            bool isFoodComplete = _foodCollected.Count == numberOfFoodToCompleteRitual && _foodCollected.All(item => item);
+            bool isWoodComplete = _woodCollected.Count == numberOfWoodToCompleteRitual && _woodCollected.All(item => item);
+
+            return isFoodComplete && isWoodComplete;
+
+        }
+
+        /// <summary>
+        /// Adds a specified type of resource to the ritual process, tracking whether it is a real or fake resource.
+        /// </summary>
+        /// <param name="isHiddenList">If we add the resource to the real, or hidden list. Used for visibility when cycle is <see cref="Cycle.Night"/></param>
+        /// <param name="resource">The type of resource to be added to the ritual, either Food or Wood.</param>
+        /// <param name="isRealResource">Indicates whether the resource being added is real (true) or fake (false).</param>
+        public void AddRessourceToRitual(bool isHiddenList, ResourceType resource, bool isRealResource)
+        {
+            switch (isHiddenList)
+            {
+                case true:
+                    if (resource == ResourceType.Food)
+                        _hiddenFoodCollected.Add(isRealResource);
+                    else if (resource == ResourceType.Wood)
+                        _hiddenWoodCollected.Add(isRealResource);
+                    break;
+                case false:
+                    if (resource == ResourceType.Food)
+                        _foodCollected.Add(isRealResource);
+                    else if (resource == ResourceType.Wood)
+                        _woodCollected.Add(isRealResource);
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Synchronizes the public food and wood collection lists with their respective hidden lists
+        /// by clearing the hidden lists and copying the contents of the public lists to them.
+        /// </summary>
+        public void CopyPublicToHidden()
+        {
+            _hiddenFoodCollected.Clear();
+            _hiddenFoodCollected.AddRange(_foodCollected);
+            _hiddenWoodCollected.Clear();
+            _hiddenWoodCollected.AddRange(_woodCollected);
+        }
+
+        /// <summary>
+        /// Synchronizes the hidden food and wood collection lists with their respective public lists
+        /// by clearing the public lists and copying the contents of the hidden lists to them.
+        /// </summary>
+        public void CopyHiddenToPublic()
+        {
+            _foodCollected.Clear();
+            _foodCollected.AddRange(_hiddenFoodCollected);
+            _woodCollected.Clear();
+            _woodCollected.AddRange(_hiddenWoodCollected);
+        }
+
+        #endregion
 
         #region Called By States
 
