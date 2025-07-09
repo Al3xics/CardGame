@@ -309,9 +309,7 @@ namespace Wendogo
         public void CheckPlayerHealthRpc()
         {
             foreach (var player in _playersById.Values)
-            {
-                player.CheckPlayerHealthRpc();
-            }
+                player.CheckPlayerHealthRpc(RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
         }
 
         #endregion

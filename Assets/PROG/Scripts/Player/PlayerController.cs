@@ -223,8 +223,6 @@ namespace Wendogo
             TargetSelectionUI.OnTargetPicked -= HandleTargetSelected;
 
             Debug.Log($"Selected target is {_intTarget} ");
-
-            return _selectedTarget;
         }
 
 
@@ -631,6 +629,12 @@ namespace Wendogo
         public void RegisterSessionIdServerRpc(string sessionPlayerId)
         {
             SessionPlayerId.Value = sessionPlayerId;
+        }
+
+        [Rpc(SendTo.SpecifiedInParams)]
+        public void CheckPlayerHealthRpc(RpcParams rpcParams)
+        {
+            // todo
         }
 
         #endregion
