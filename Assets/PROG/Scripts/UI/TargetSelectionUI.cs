@@ -7,8 +7,8 @@ namespace Wendogo
 {
     public class TargetSelectionUI : MonoBehaviour
     {
-        [SerializeField] private ulong _playerID;
-        public static event Action<ulong> OnTargetPicked;
+        [SerializeField] private int _playerID;
+        public static event Action<int> OnTargetPicked;
 
         public void TargetSelection()
         {

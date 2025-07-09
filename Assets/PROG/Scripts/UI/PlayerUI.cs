@@ -19,6 +19,8 @@ namespace Wendogo
         [SerializeField] private TextMeshProUGUI foodCount;
         [SerializeField] private TextMeshProUGUI woodCount;
 
+        [SerializeField] private TextMeshProUGUI foodCountP2;
+
         [SerializeField] public List<Transform> cardSpaces = new List<Transform>();
         [SerializeField] public List<GameObject> hearts = new List<GameObject>();
 
@@ -55,9 +57,20 @@ namespace Wendogo
             {
                 if (item.Key.activeSelf == false)
                     continue;
-                playerTitle = item.Key.GetComponentInChildren<TextMeshProUGUI>();
-                ServerManager.Instance.GetPlayerNameRpc(item.Value);
-                playerTitle.text = ServerManager.Instance.playerNameAsked;
+
+                var currentplayer = PlayerController.GetPlayer(item.Value);
+
+                var woodGameObject = item.Key.transform.Find("Ritual_Wood_Text").gameObject;
+                var currentWoodText = woodGameObject.GetComponent<TextMeshProUGUI>();
+                currentWoodText.text = $"{currentplayer.wood.Value.ToString()}";
+
+                var foodGameObject = item.Key.transform.Find("Ritual_Food_Text").gameObject;
+                var currentFoodText = foodGameObject.GetComponent<TextMeshProUGUI>();
+                currentFoodText.text = $"{currentplayer.food.Value.ToString()}";
+
+                //playerTitle = item.Key.GetComponentInChildren<TextMeshProUGUI>();
+                //ServerManager.Instance.GetPlayerNameRpc(item.Value);
+                //playerTitle.text = ServerManager.Instance.playerNameAsked;
             }
         }
 

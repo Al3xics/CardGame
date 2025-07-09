@@ -717,7 +717,6 @@ RectTransform:
   m_Children:
   - {fileID: 1726789891}
   - {fileID: 819056534}
-  - {fileID: 1835593508}
   m_Father: {fileID: 269364776}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -1249,7 +1248,9 @@ RectTransform:
   - {fileID: 321495530}
   - {fileID: 758808253}
   - {fileID: 117541001}
+  - {fileID: 1835593508}
   - {fileID: 1493631335}
+  - {fileID: 2137617996}
   - {fileID: 1869327652}
   - {fileID: 563712822}
   - {fileID: 452228408}
@@ -1419,7 +1420,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 728514128433627386, guid: b591182f062020c408595876a3e3ff76, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3263382433569448153, guid: b591182f062020c408595876a3e3ff76, type: 3}
       propertyPath: _playerID
@@ -6666,7 +6667,6 @@ RectTransform:
   m_Children:
   - {fileID: 1798810519}
   - {fileID: 254433747}
-  - {fileID: 2137617996}
   m_Father: {fileID: 269364776}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -7430,7 +7430,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f763a3e5009040c784f3b83ee9804456, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  autoConnect: 0
+  autoConnect: 1
   objectsToDestroy:
   - {fileID: 1425267997}
   - {fileID: 1479689065}
@@ -8525,14 +8525,14 @@ RectTransform:
   m_GameObject: {fileID: 1835593507}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.69714344, y: 0.69714344, z: 0.69714344}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 117541001}
+  m_Father: {fileID: 269364776}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 30, y: -4}
+  m_AnchoredPosition: {x: -89.08567, y: -255.78857}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1835593509
@@ -8555,7 +8555,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 0
+  m_text: '77
+
+'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -9942,14 +9944,14 @@ RectTransform:
   m_GameObject: {fileID: 2137617995}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.69714344, y: 0.69714344, z: 0.69714344}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1493631335}
+  m_Father: {fileID: 269364776}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 30, y: -4}
+  m_AnchoredPosition: {x: 130.9143, y: -255.78857}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2137617997
@@ -10540,18 +10542,19 @@ MonoBehaviour:
       Data: 
   foodCount: {fileID: 1540466910}
   woodCount: {fileID: 1656168350}
+  foodCountP2: {fileID: 2137617997}
   cardSpaces:
   - {fileID: 1058928656}
   - {fileID: 123995244}
   - {fileID: 1626564658}
   - {fileID: 696679038}
   hearts:
-  - {fileID: 465609062}
-  - {fileID: 990458002}
-  - {fileID: 1145180023}
-  - {fileID: 1547650106}
-  - {fileID: 1750333798}
   - {fileID: 1667251397}
+  - {fileID: 1750333798}
+  - {fileID: 1547650106}
+  - {fileID: 1145180023}
+  - {fileID: 990458002}
+  - {fileID: 465609062}
 --- !u!1 &4038565035146118173
 GameObject:
   m_ObjectHideFlags: 0

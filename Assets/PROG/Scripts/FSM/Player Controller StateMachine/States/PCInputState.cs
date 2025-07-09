@@ -15,6 +15,7 @@ namespace Wendogo
             if (!isTurnBeginning)
             {
                 _player._playerPA = 2;
+                PlayerUI.Instance.SetPlayerInfos();
                 isTurnBeginning = true;
             }
             CardDropZone.OnCardDropped += ReceiveSelectedEvent;

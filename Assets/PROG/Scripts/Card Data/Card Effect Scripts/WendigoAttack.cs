@@ -18,7 +18,7 @@ namespace Wendogo
             var targetPlayer = PlayerController.GetPlayer(target);
             if (targetPlayer != null)
             {
-                targetPlayer.hiddenHealth -= damageDone;
+                targetPlayer.ChangeHealth(-damageDone);
             }
         }
 

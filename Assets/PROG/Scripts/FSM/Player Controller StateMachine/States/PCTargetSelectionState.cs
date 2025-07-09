@@ -14,21 +14,18 @@ namespace Wendogo
         public override async void OnEnter()
         {
             base.OnEnter();
-            //PlayerUI.Instance.ToggleTargetSelectUI();
-            //AwaitTarget();
             _player.ActiveCard.Card.CardEffect.ShowUI();
             Debug.Log($"active card is : {_player.ActiveCard.Card.name}");
             _player._handManager.ToggleOffMovingCards(_player._handManager.handCards);
 
             if (_player.ActiveCard.Card.isGroup)
             {
-                ulong selectedTarget = _player.GetChosenTarget();
-                await _player.GroupSelectTargetAsync(selectedTarget);
+                await _player.GroupSelectTargetAsync();
             }
             else
             {
-                ulong selectedTarget = _player.GetChosenTarget();
-                await _player.SelectTargetAsync(selectedTarget);
+                await _player.SelectTargetAsync();
+
             }
             StateMachine.ChangeState<PCPlayCardState>();
         }
@@ -43,12 +40,6 @@ namespace Wendogo
             _player._handManager.ToggleOffMovingCards(_player._handManager.handCards);
             _player.ActiveCard.Card.CardEffect.HideUI();
             base.OnExit();
-        }
-
-        public void AwaitTarget()
-        {
-            _player.SelectTarget();
-
         }
     }
 }
