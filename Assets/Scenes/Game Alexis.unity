@@ -232,7 +232,8 @@ MonoBehaviour:
   _spawnPoint: {fileID: 6622331089171285334}
   _handTransform: {fileID: 382117219}
   _cardsHandler: {fileID: 16459162}
-  _handCards: []
+  handCards: []
+  passiveZoneCards: []
   _isReplaced: 0
 --- !u!114 &16459162
 MonoBehaviour:
@@ -2755,7 +2756,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6f4b5964f1343d1973fec3448adb572, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  showDebugLogs: 0
+  showDebugLogs: 1
   maximumTurn: 10
   startingActionDeckAmount: 3
   startingResourceDeckAmount: 2
