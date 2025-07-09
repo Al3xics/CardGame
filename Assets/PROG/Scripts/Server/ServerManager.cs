@@ -239,7 +239,7 @@ namespace Wendogo
                 player.UseVoteUI(openOrClose);
             }
         }
-        
+
         /*[Rpc(SendTo.Server)]
         public string GetPlayerName(ulong clientID)
         {
@@ -248,17 +248,25 @@ namespace Wendogo
         
             return "Unknown";
         }*/
-        
-        [Rpc(SendTo.Server)]
-        public void GetPlayerNameRpc(ulong clientID)
-        {
-            // On parcourt les joueurs pour trouver celui avec le bon ID
-            var player = SessionManager.Instance.ActiveSession.Players
-                .FirstOrDefault(p => p.Id == clientID.ToString());
 
-            if (player != null && player.Properties.TryGetValue(SessionConstants.PlayerNamePropertyKey, out var playerName))
+        [Rpc(SendTo.Server)]
+        public void GetPlayerNameRpc(ulong clientId)
+        {
+            if (_playersById.TryGetValue(clientId, out var pc))
             {
-                playerNameAsked = playerName.Value;
+                // pull the string ID out of the PCfs NetworkVariable
+                var sessionId = pc.SessionPlayerId.Value.ToString();
+
+                // find that player in the Unity Services session
+                var sessionPlayer = SessionManager.Instance.ActiveSession.Players
+                    .FirstOrDefault(p => p.Id == sessionId);
+
+                if (sessionPlayer != null
+                 && sessionPlayer.Properties.TryGetValue(SessionConstants.PlayerNamePropertyKey, out var nm))
+                {
+                    playerNameAsked = nm.Value;
+                    return;
+                }
             }
 
             playerNameAsked = "Unknown";

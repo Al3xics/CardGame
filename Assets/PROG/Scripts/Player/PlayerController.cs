@@ -7,6 +7,7 @@ using Unity.Netcode;
 using UnityEngine.SceneManagement;
 using Button = UnityEngine.UI.Button;
 using System.Threading.Tasks;
+using Unity.Collections;
 
 
 namespace Wendogo
@@ -28,6 +29,13 @@ namespace Wendogo
             readPerm: NetworkVariableReadPermission.Everyone,
             writePerm: NetworkVariableWritePermission.Server
         );
+
+        public NetworkVariable<FixedString128Bytes> SessionPlayerId =
+    new NetworkVariable<FixedString128Bytes>(
+        default,
+        NetworkVariableReadPermission.Everyone,
+        NetworkVariableWritePermission.Server
+    );
 
         Dictionary<Button, PlayerController> playerTargets = new Dictionary<Button, PlayerController>();
 
@@ -107,6 +115,8 @@ namespace Wendogo
 
         #region Basic Method
 
+ 
+
         private void Start()
         {
             name = IsLocalPlayer ? "LocalPlayer" : $"Player{OwnerClientId}";
@@ -150,6 +160,8 @@ namespace Wendogo
             food.OnValueChanged -= UpdateFoodText;
             wood.OnValueChanged -= UpdateWoodText;
         }
+
+
 
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -220,7 +232,7 @@ namespace Wendogo
         }
 
 
-        public async UniTask<int> GroupSelectTargetAsync(int target)
+        public async UniTask GroupSelectTargetAsync()
         {
             _intTarget = -1;
             TargetSelectionUI.OnTargetPicked += HandleTargetSelected;
@@ -240,8 +252,6 @@ namespace Wendogo
             await UniTask.WaitUntil(() => ServerManager.Instance.PlayerReadyCount.Value == 4);
 
             Debug.Log($"Vote ended");
-
-            return _intTarget;
         }
 
         private void HandleDeckClicked(int deckId)
@@ -405,6 +415,7 @@ namespace Wendogo
             return DataCollection.Instance.cardDatabase.GetCardByID(cardId);
         }
 
+        #region UI Methods
         public void UseVoteUI(bool openOrClose)
         {
             _prefabUI.SetActive(openOrClose);
@@ -439,6 +450,8 @@ namespace Wendogo
                     PlayerUI.Instance.hearts[i].gameObject.SetActive(true);
                 }
         }
+
+        #endregion
 
         private void HandlePassiveCardTurnUpdate()
         {
@@ -603,6 +616,11 @@ namespace Wendogo
         [Rpc(SendTo.SpecifiedInParams)]
         public void AddHiddenPassiveCardRpc(int cardId, RpcParams rpcParams) => HiddenPassiveCards.Add(cardId);
 
+        [Rpc(SendTo.Server)]
+        public void RegisterSessionIdServerRpc(string sessionPlayerId)
+        {
+            SessionPlayerId.Value = sessionPlayerId;
+        }
 
         #endregion
 
