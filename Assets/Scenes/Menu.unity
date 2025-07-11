@@ -2668,6 +2668,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c6d1f87d12b4d8d93e3a0be66788578, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  useAnalytics: 1
 --- !u!4 &857811006
 Transform:
   m_ObjectHideFlags: 0
@@ -5256,13 +5257,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  gameSceneName: Game Valentin
-  PlayerReadyCount:
-    m_InternalValue: 0
+  gameSceneName: Game Alexis
   playerNameAsked: 
   playerHealthAsked: 0
   playerFoodAsked: 0
   playerWoodAsked: 0
+  PlayerReadyCount:
+    m_InternalValue: 0
+  CurrentCycle:
+    m_InternalValue: 0
 --- !u!1001 &3218768946901839885
 PrefabInstance:
   m_ObjectHideFlags: 0

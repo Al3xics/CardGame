@@ -3,6 +3,7 @@ using Unity.Services.Core;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Unity.Services.Analytics;
 using Unity.Services.Authentication;
 using Unity.Services.Multiplayer;
 using Unity.Services.Vivox;
@@ -37,6 +38,8 @@ namespace Wendogo
         #endregion
         
         #region Variables
+        
+        public bool useAnalytics = true;
 
         private ISession _activeSession;
         public ISession ActiveSession
@@ -87,6 +90,7 @@ namespace Wendogo
             _instance = this;
             DontDestroyOnLoad(gameObject);
             _ = SessionEventDispatcher.Instance;
+            if (useAnalytics) _ = AnalyticsManager.Instance;
         }
         
         private async void Start()
@@ -110,6 +114,8 @@ namespace Wendogo
                     await VivoxService.InitializeAsync();
                     Debug.Log("Initialized Voice Chat");
                 }
+                
+                if (useAnalytics) AnalyticsManager.Instance.StartDataCollection();
             }
             catch (Exception e)
             {
@@ -157,9 +163,11 @@ namespace Wendogo
                 {
                     case SessionAction.Create:
                         ActiveSession = await MultiplayerService.CreateSessionAsync(options);
+                        AnalyticsManager.Instance.RecordEvent(new CustomEvent("lobbyCreated"));
                         break;
                     case SessionAction.JoinByCode:
                         ActiveSession = await MultiplayerService.JoinSessionByCodeAsync(sessionData.JoinCode, joinSessionOptions);
+                        AnalyticsManager.Instance.RecordEvent(new CustomEvent("lobbyJoined"));
                         break;
                     case SessionAction.Invalid:
                     default:
@@ -167,7 +175,10 @@ namespace Wendogo
                 }
 
                 if (sessionData.MultiplayerConfiguration.enableVoiceChat && VivoxService != null && !VivoxService.ActiveChannels.ContainsKey(ActiveSession.Name))
+                {
                     await VivoxService.JoinGroupChannelAsync(ActiveSession.Name, ChatCapability.AudioOnly);
+                    AnalyticsManager.Instance.RecordEvent(new CustomEvent("vivoxGroupChannelJoined"));
+                }
             }
             catch (SessionException e)
             {
@@ -323,6 +334,8 @@ namespace Wendogo
                 await LeaveVoiceChannel();
                 UnregisterSessionEvents();
                 await ActiveSession.LeaveAsync();
+                
+                AnalyticsManager.Instance.RecordEvent(new CustomEvent("lobbyLeft"));
             }
             catch (Exception e)
             {
@@ -360,6 +373,8 @@ namespace Wendogo
             {
                 await VivoxService.LeaveChannelAsync(ActiveSession.Name);
                 Debug.Log("[Vivox] Left voice channel.");
+                
+                AnalyticsManager.Instance.RecordEvent(new CustomEvent("vivoxGroupChannelLeft"));
             }
             catch (Exception ex)
             {
