@@ -60,13 +60,13 @@ namespace Wendogo
 
                 var currentplayer = PlayerController.GetPlayer(item.Value);
 
-                var woodGameObject = item.Key.transform.Find("Ritual_Wood_Text").gameObject;
-                var currentWoodText = woodGameObject.GetComponent<TextMeshProUGUI>();
-                currentWoodText.text = $"{currentplayer.wood.Value.ToString()}";
+                //var woodGameObject = item.Key.transform.Find("Ritual_Wood_Text").gameObject;
+                //var currentWoodText = woodGameObject.GetComponent<TextMeshProUGUI>();
+                //currentWoodText.text = $"{currentplayer.wood.Value.ToString()}";
 
-                var foodGameObject = item.Key.transform.Find("Ritual_Food_Text").gameObject;
-                var currentFoodText = foodGameObject.GetComponent<TextMeshProUGUI>();
-                currentFoodText.text = $"{currentplayer.food.Value.ToString()}";
+                //var foodGameObject = item.Key.transform.Find("Ritual_Food_Text").gameObject;
+                //var currentFoodText = foodGameObject.GetComponent<TextMeshProUGUI>();
+                //currentFoodText.text = $"{currentplayer.food.Value.ToString()}";
 
                 //playerTitle = item.Key.GetComponentInChildren<TextMeshProUGUI>();
                 //ServerManager.Instance.GetPlayerNameRpc(item.Value);
@@ -74,12 +74,14 @@ namespace Wendogo
             }
         }
 
-        public void DefineFoodText(int foodAmount)
+        public void DefineFoodText(int foodAmount, ulong target = 0)
         {
+            if(target == 0)
             foodCount.text = $"{foodAmount.ToString()}";
         }
-        public void DefineWoodText(int woodAmount)
+        public void DefineWoodText(int woodAmount, ulong target = 0)
         {
+            if(target == 0)
             woodCount.text = $"{woodAmount.ToString()}";
         }
 

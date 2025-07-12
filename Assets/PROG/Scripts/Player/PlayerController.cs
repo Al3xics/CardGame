@@ -34,12 +34,11 @@ namespace Wendogo
             writePerm: NetworkVariableWritePermission.Server
         );
 
-        public NetworkVariable<FixedString128Bytes> SessionPlayerId =
-    new NetworkVariable<FixedString128Bytes>(
-        default,
-        NetworkVariableReadPermission.Everyone,
-        NetworkVariableWritePermission.Server
-    );
+        public NetworkVariable<FixedString128Bytes> SessionPlayerId = new(
+            default,
+            NetworkVariableReadPermission.Everyone,
+            NetworkVariableWritePermission.Server
+        );
 
         Dictionary<Button, PlayerController> playerTargets = new Dictionary<Button, PlayerController>();
 
@@ -55,8 +54,6 @@ namespace Wendogo
         private int _selectedDeck = -1;
         public int deckID;
 
-        public static event Action OnCardUsed;
-
         public bool TargetSelected;
         private ulong _selectedTarget = 0;
         private int _intTarget = -1;
@@ -70,9 +67,7 @@ namespace Wendogo
         private GameObject pcSMObject;
 
         private int cardDataID;
-        
-        public virtual event Action OnTargetDetection;
-        
+
         public int temporaryTask = -1;
         private GameObject _prefabUI;
 
@@ -81,8 +76,9 @@ namespace Wendogo
         #region Health & Food & Wood & Cards
 
         public int hiddenHealth;
+        public int maxHealth;
         public NetworkVariable<int> health = new(
-            6,
+            8,
             NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Owner
         );
@@ -130,6 +126,10 @@ namespace Wendogo
         #endregion
 
         #region Action
+        
+        public static event Action OnCardUsed;
+        
+        public virtual event Action OnTargetDetection;
 
         public event Action OnFinishedCardPlayed;
 
@@ -191,7 +191,7 @@ namespace Wendogo
             LocalPlayer = this;
             LocalPlayerId = NetworkManager.Singleton.LocalClientId;
 
-            health.Value = Mathf.Clamp(health.Value, 0, 6);
+            health.Value = Mathf.Clamp(health.Value, 0, maxHealth);
 
             food.OnValueChanged += UpdateFoodText;
             wood.OnValueChanged += UpdateWoodText;
@@ -283,7 +283,9 @@ namespace Wendogo
 
         public async UniTask GroupSelectTargetAsync()
         {
+            _inputEvent.enabled = true;
             _intTarget = -1;
+
             TargetSelectionUI.OnTargetPicked += HandleTargetSelected;
 
             await UniTask.WaitUntil(() => _intTarget >= 0);
@@ -293,6 +295,8 @@ namespace Wendogo
             TargetSelectionUI.OnTargetPicked -= HandleTargetSelected;
 
             Debug.Log($"Voted against target is {_intTarget} ");
+
+            _inputEvent.enabled = false;
 
             ServerManager.Instance.Votes.Add(_intTarget);
 
@@ -303,9 +307,11 @@ namespace Wendogo
             Debug.Log($"Vote ended");
         }
 
-        private async UniTask GroupSelectTargetVoteAsync()
+        public async UniTask GroupSelectTargetVoteAsync()
         {
+            _inputEvent.enabled = true;
             _intTarget = -1;
+
             TargetSelectionUI.OnTargetPicked += HandleTargetSelected;
 
             await UniTask.WaitUntil(() => _intTarget >= 0);
@@ -315,6 +321,8 @@ namespace Wendogo
             TargetSelectionUI.OnTargetPicked -= HandleTargetSelected;
 
             Debug.Log($"Voted against target is {_intTarget} ");
+
+            _inputEvent.enabled = false;
 
             ServerManager.Instance.Votes.Add(_intTarget);
 
@@ -336,7 +344,7 @@ namespace Wendogo
         {
             _intTarget = targetID;
         }
-
+        
         public void SelectCard(CardObjectData card)
         {
             //Implement select card

@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4c4af47719ad294e9daacd12912804b, type: 3}
   m_Name: ScavengeFood
   m_EditorClassIdentifier: 
-  CardVisual: {fileID: 2800000, guid: 29be5888969cbe144812641b907a2e3c, type: 3}
-  Name: Mokoy
+  CardVisual: {fileID: 2800000, guid: 253efabfd65fcf34c8b060e094db3078, type: 3}
+  Name: Scavenge Food
   CardEffect: {fileID: 11400000, guid: e0a719035c158b3428df08cdac4d1153, type: 2}
   isPassive: 0
   isGroup: 0
   HasTarget: 0
   nightPriorityIndex: 0
   turnsRemaining: -1
-  ID: 10155
+  ID: 10106
   Toggle: 1
