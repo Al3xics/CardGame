@@ -1,6 +1,8 @@
 ﻿using Cysharp.Threading.Tasks;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Unity.Netcode;
@@ -8,6 +10,7 @@ using UnityEngine.SceneManagement;
 using Button = UnityEngine.UI.Button;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
+using TMPro;
 using Unity.Collections;
 
 
@@ -126,11 +129,44 @@ namespace Wendogo
 
         #endregion
 
+        #region Action
+
+        public event Action OnFinishedCardPlayed;
+
+        #endregion
+
+        #region Animation
+
+        /// <summary>
+        /// Represents a reference to the pop-up GameObject in the scene.
+        /// This field is initialized during the Awake method by finding the GameObject
+        /// with the "Pop-up" tag. Provides functionality for pop-up interactions
+        /// within the game state machine.
+        /// </summary>
+        private GameObject _popup;
+
+        /// <summary>
+        /// Represents the Animator component associated with the pop-up UI element.
+        /// This variable provides control over the animations of the pop-up,
+        /// allowing transitions and effects to be triggered programmatically.
+        /// </summary>
+        private Animator _popupAnimator;
+        
+        private TMP_Text _popupText;
+
+        #endregion
+
         #region Basic Method
         
         private void Start()
         {
             name = IsLocalPlayer ? "LocalPlayer" : $"Player{OwnerClientId}";
+            
+            // Reference to Pop-up
+            _popup = GameObject.FindWithTag("Pop-up");
+            if (_popup ==null) throw new System.Exception("Pop-up not found");
+            _popupAnimator = _popup.GetComponent<Animator>();
+            _popupText = _popup.GetComponentInChildren<TMP_Text>();
         }
 
         public override void OnNetworkSpawn()
@@ -138,7 +174,7 @@ namespace Wendogo
             if (AutoSessionBootstrapper.AutoConnect)
             {
                 _inputEvent = GameObject.Find("EventSystem")?.GetComponent<EventSystem>();
-                if (_inputEvent != null) _inputEvent.enabled = false;
+                if (_inputEvent != null && _inputEvent.enabled) _inputEvent.enabled = false;
                 if (_handManager == null) _handManager = GameObject.FindWithTag("hand")?.GetComponent<HandManager>();
                 if (IsOwner)
                 {
@@ -180,7 +216,7 @@ namespace Wendogo
             if (scene.name == ServerManager.Instance.gameSceneName)
             {
                 _inputEvent = GameObject.Find("EventSystem")?.GetComponent<EventSystem>();
-                if (_inputEvent != null) _inputEvent.enabled = false;
+                if (_inputEvent != null && _inputEvent.enabled) _inputEvent.enabled = false;
                 if (_handManager == null) _handManager = GameObject.FindWithTag("hand")?.GetComponent<HandManager>();
                 pcSMObject = new GameObject($"{nameof(PlayerControllerSM)}");
                 pcSMObject.AddComponent<PlayerControllerSM>();
@@ -202,7 +238,14 @@ namespace Wendogo
             Debug.Log("Input enabled");
         }
 
+        public void DisableInput()
+        {
+            _inputEvent.enabled = false;
 
+            //Implement enable input
+            Debug.Log("Input disabled");
+        }
+        
         public async UniTask<int> SelectDeckAsync(int missingCards)
         {
             if (!IsOwner)
@@ -238,7 +281,6 @@ namespace Wendogo
             Debug.Log($"Selected target is {_intTarget} ");
         }
 
-
         public async UniTask GroupSelectTargetAsync()
         {
             _intTarget = -1;
@@ -259,6 +301,30 @@ namespace Wendogo
             await UniTask.WaitUntil(() => ServerManager.Instance.PlayerReadyCount.Value == 4);
 
             Debug.Log($"Vote ended");
+        }
+
+        private async UniTask GroupSelectTargetVoteAsync()
+        {
+            _intTarget = -1;
+            TargetSelectionUI.OnTargetPicked += HandleTargetSelected;
+
+            await UniTask.WaitUntil(() => _intTarget >= 0);
+
+            ServerManager.Instance.PlayerReadyCount.Value++;
+
+            TargetSelectionUI.OnTargetPicked -= HandleTargetSelected;
+
+            Debug.Log($"Voted against target is {_intTarget} ");
+
+            ServerManager.Instance.Votes.Add(_intTarget);
+
+            Debug.Log($"Waiting for group vote to end");
+
+            await UniTask.WaitUntil(() => ServerManager.Instance.PlayerReadyCount.Value == 4);
+
+            Debug.Log($"Vote ended");
+
+            ServerManager.Instance.FinishedVotingStateRpc();
         }
 
         private void HandleDeckClicked(int deckId)
@@ -309,8 +375,7 @@ namespace Wendogo
 
             ConfirmPlay();
         }
-
-
+        
         public void BurnCard()
         {
             //Implement burn card
@@ -422,45 +487,6 @@ namespace Wendogo
             return DataCollection.Instance.cardDatabase.GetCardByID(cardId);
         }
 
-        #region UI Methods
-        
-        public void UseVoteUI(bool openOrClose)
-        {
-            _prefabUI.SetActive(openOrClose);
-        }
-
-        public void UpdateFoodText(int oldFoodValue, int newFoodValue)
-        {
-            PlayerUI.Instance.DefineFoodText(newFoodValue);
-        }
-
-        public void UpdateWoodText(int oldWoodValue, int newWoodValue)
-        {
-            PlayerUI.Instance.DefineWoodText(newWoodValue);
-        }
-
-        public void ChangeHealth(int delta)
-        {
-            health.Value = Mathf.Clamp(health.Value + delta, 0, 6);
-        }
-
-        public void UpdateHearts(int oldHealthValue, int newHealthValue)
-        {
-            Debug.Log($"New health is: {newHealthValue} and old health is {oldHealthValue} ");
-            if (newHealthValue < oldHealthValue)
-                for (int i = newHealthValue; i < oldHealthValue; i++)
-                {
-                    PlayerUI.Instance.hearts[i].gameObject.SetActive(false);
-                }
-            else if (newHealthValue > oldHealthValue)
-                for (int i = oldHealthValue; i < newHealthValue; i++)
-                {
-                    PlayerUI.Instance.hearts[i].gameObject.SetActive(true);
-                }
-        }
-
-        #endregion
-
         private void HandlePassiveCardTurnUpdate()
         {
             var passiveCardsList = IsSimulatingNight ? HiddenPassiveCards : PassiveCards;
@@ -508,6 +534,85 @@ namespace Wendogo
                 Debug.Log($"$$$$$ [PlayerController] PassiveCards Count : {PassiveCards.Count}");
                 
         }
+        
+        private async void PlayAndWaitAnimation(Animator animator, string animationName, ulong playerId)
+        {
+            try
+            {
+                animator.enabled = true;
+                if (playerId == LocalPlayerId)
+                {
+                    DisableInput();
+                    _popupText.text = PopupSentences.Instance.thisPlayerTurnText;
+                }
+                else
+                {
+                    // todo --> the name is the the correct one
+                    _popupText.text = PopupSentences.Instance.ReplaceX(PopupSentences.Instance.otherPlayerTurnText, name);
+                }
+                
+                animator.Play(animationName, 0, 0f);
+
+                var clip = animator.runtimeAnimatorController.animationClips.FirstOrDefault(c => c.name == animationName);
+
+                if (clip) await UniTask.WaitForSeconds(clip.length);
+                else Debug.LogWarning($"Animation {animationName} not found");
+            
+                animator.enabled = false;
+                if (playerId == LocalPlayerId) EnableInput();
+                _popupText.text = "";
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e);
+            }
+        }
+
+        #endregion
+        
+        #region UI Methods
+
+        public void UpdateFoodText(int oldFoodValue, int newFoodValue)
+        {
+            PlayerUI.Instance.DefineFoodText(newFoodValue);
+        }
+
+        public void UpdateWoodText(int oldWoodValue, int newWoodValue)
+        {
+            PlayerUI.Instance.DefineWoodText(newWoodValue);
+        }
+
+        public void ChangeHealth(int delta)
+        {
+            health.Value = Mathf.Clamp(health.Value + delta, 0, 6);
+        }
+
+        public void UpdateHearts(int oldHealthValue, int newHealthValue)
+        {
+            Debug.Log($"New health is: {newHealthValue} and old health is {oldHealthValue} ");
+            if (newHealthValue < oldHealthValue)
+                for (int i = newHealthValue; i < oldHealthValue; i++)
+                {
+                    PlayerUI.Instance.hearts[i].gameObject.SetActive(false);
+                }
+            else if (newHealthValue > oldHealthValue)
+                for (int i = oldHealthValue; i < newHealthValue; i++)
+                {
+                    PlayerUI.Instance.hearts[i].gameObject.SetActive(true);
+                }
+        }
+
+        private async UniTaskVoid HandleVoteUIAsync()
+        {
+            try
+            {
+                await GroupSelectTargetVoteAsync();
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e);
+            }
+        }
 
         #endregion
 
@@ -539,8 +644,7 @@ namespace Wendogo
             if (IsOwner)
                 pcSMObject.GetComponent<PlayerControllerSM>().StartStateMachine();
         }
-
-
+        
         [Rpc(SendTo.SpecifiedInParams)]
         public void TryApplyPassiveRpc(int playedCardId, ulong origin, RpcParams rpcParams)
         {
@@ -570,7 +674,7 @@ namespace Wendogo
         [Rpc(SendTo.SpecifiedInParams)]
         public void FinishedCardPlayedRpc(RpcParams rpcParams)
         {
-
+            OnFinishedCardPlayed?.Invoke();
         }
 
         /// <summary>
@@ -648,6 +752,33 @@ namespace Wendogo
         public void CheckPlayerHealthRpc(RpcParams rpcParams)
         {
             // todo
+        }
+        
+        [Rpc(SendTo.SpecifiedInParams)]
+        public void UseVoteUIRpc(bool setUIActive, bool activePlayerInput, RpcParams rpcParams)
+        {
+            _prefabUI.SetActive(setUIActive);
+
+            if (activePlayerInput)
+                _ = HandleVoteUIAsync(); // Fire-and-forget
+        }
+        
+        [Rpc(SendTo.SpecifiedInParams)]
+        public void StartPlayAnimationRpc(bool playAndWait, int animatorName, string animationName, ulong playerId, RpcParams rpcParams)
+        {
+            Animator animator;
+            
+            switch (animatorName)
+            {
+                case 0:
+                    animator = _popup.GetComponent<Animator>();
+                    break;
+                
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(animatorName), animatorName, null);
+            }
+
+            PlayAndWaitAnimation(animator, animationName, playerId);
         }
 
         #endregion

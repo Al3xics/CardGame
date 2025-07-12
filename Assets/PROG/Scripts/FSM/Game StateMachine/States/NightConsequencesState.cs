@@ -32,7 +32,10 @@ namespace Wendogo
                 NextState();
         }
 
-        // todo
+        /// <summary>
+        /// Resolves the consequences of a card during the night phase in the game.
+        /// </summary>
+        /// <param name="cpt">The index of the current card to be resolved from the sorted actions list.</param>
         private void ResolveCardNightConsequences(int cpt)
         {
             ServerManager.Instance.OnResolveCardNightConsequences += OnResolveCardNightConsequences;
@@ -43,7 +46,10 @@ namespace Wendogo
             // 'OnResolvedCardNightConsequences' will be called.
         }
 
-        // todo
+        /// <summary>
+        /// This method is triggered when the current card's effect completes its execution,
+        /// progressing to the next card or transitioning to the next state if all cards have been processed.
+        /// </summary>
         private void OnResolveCardNightConsequences()
         {
             ServerManager.Instance.OnResolveCardNightConsequences -= OnResolveCardNightConsequences;

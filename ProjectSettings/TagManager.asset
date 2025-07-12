@@ -6,6 +6,7 @@ TagManager:
   tags:
   - hand
   - TargetUI
+  - Pop-up
   layers:
   - Default
   - TransparentFX

@@ -18,6 +18,7 @@ namespace Wendogo
         public event Action OnDrawCard;
         public event Action OnPlayerTurnEnded;
         public event Action OnResolveCardNightConsequences;
+        public event Action OnCheckTriggerVote;
 
         public event Action<ulong, ulong> OnTargetSelected;
 
@@ -246,11 +247,11 @@ namespace Wendogo
         }
 
         [Rpc(SendTo.Server)]
-        public void UseAllUIForVotersRpc(bool openOrClose)
+        public void UseAllUIForVotersRpc(bool setUIActive, bool activePlayerInput)
         {
             foreach (var player in _playersById.Values)
             {
-                player.UseVoteUI(openOrClose);
+                player.UseVoteUIRpc(setUIActive, activePlayerInput, RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
             }
         }
         
@@ -310,6 +311,28 @@ namespace Wendogo
         {
             foreach (var player in _playersById.Values)
                 player.CheckPlayerHealthRpc(RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
+        }
+
+        [Rpc(SendTo.Server)]
+        public void FinishedPlayGroupCardRpc()
+        {
+            // todo --> call this method when a group card is finished (all players have chosen a target)
+            OnResolveCardNightConsequences?.Invoke();
+        }
+
+        [Rpc(SendTo.Server)]
+        public void FinishedVotingStateRpc()
+        {
+            OnCheckTriggerVote?.Invoke();
+        }
+        
+        [Rpc(SendTo.Server)]
+        public void StartPlayAnimationRpc(bool playAndWait, int animatorName, string animationName, ulong playerId)
+        {
+            foreach (var player in _playersById.Values)
+            {
+                player.StartPlayAnimationRpc(playAndWait, animatorName, animationName, playerId, RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));;
+            }
         }
 
         #endregion

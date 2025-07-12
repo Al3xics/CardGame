@@ -64,12 +64,12 @@ namespace Wendogo
 
         public override void ShowUI()
         {
-            ServerManager.Instance.UseAllUIForVotersRpc(true);
+            ServerManager.Instance.UseAllUIForVotersRpc(true, false);
         }
 
         public override void HideUI()
         {
-            ServerManager.Instance.UseAllUIForVotersRpc(false);
+            ServerManager.Instance.UseAllUIForVotersRpc(false, false);
         }
     }
 }
