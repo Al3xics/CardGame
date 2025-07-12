@@ -16,13 +16,13 @@ MonoBehaviour:
   - CardData: {fileID: 11400000, guid: 0a317f580c8ea75419dac16871435e5b, type: 2}
     quantity: 30
   - CardData: {fileID: 11400000, guid: c51dcd943ac9fed4cabb67b4f295b501, type: 2}
-    quantity: 30
+    quantity: 300
   - CardData: {fileID: 11400000, guid: 9aa288262a939f5448d3a2ef7026e76f, type: 2}
     quantity: 30
   - CardData: {fileID: 11400000, guid: 0f961ec93fae9e94385cca09e6aa1c19, type: 2}
     quantity: 30
   - CardData: {fileID: 11400000, guid: 0f0dc0dc6f5db2944b1960d0bee62926, type: 2}
     quantity: 30
-  - CardData: {fileID: 11400000, guid: 8d30ef1d3be60bf4280bd755dcddc2c2, type: 2}
+  - CardData: {fileID: 11400000, guid: 08ad546ff71f48f42bf39cd5054bea53, type: 2}
     quantity: 30
   deckID: 0

@@ -69,7 +69,8 @@ namespace Wendogo
         private int cardDataID;
         
         public virtual event Action OnTargetDetection;
-        
+        public event Action OnFinishedCardPlayed;
+
         public int temporaryTask = -1;
         private GameObject _prefabUI;
 
@@ -78,8 +79,9 @@ namespace Wendogo
         #region Health & Food & Wood & Cards
 
         public int hiddenHealth;
+        public int maxHealth;
         public NetworkVariable<int> health = new(
-            6,
+            8,
             NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Owner
         );
@@ -138,7 +140,7 @@ namespace Wendogo
             if (AutoSessionBootstrapper.AutoConnect)
             {
                 _inputEvent = GameObject.Find("EventSystem")?.GetComponent<EventSystem>();
-                if (_inputEvent != null) _inputEvent.enabled = false;
+                //if (_inputEvent != null) _inputEvent.enabled = false;
                 if (_handManager == null) _handManager = GameObject.FindWithTag("hand")?.GetComponent<HandManager>();
                 if (IsOwner)
                 {
@@ -155,7 +157,7 @@ namespace Wendogo
             LocalPlayer = this;
             LocalPlayerId = NetworkManager.Singleton.LocalClientId;
 
-            health.Value = Mathf.Clamp(health.Value, 0, 6);
+            health.Value = Mathf.Clamp(health.Value, 0, maxHealth);
 
             food.OnValueChanged += UpdateFoodText;
             wood.OnValueChanged += UpdateWoodText;
@@ -180,7 +182,7 @@ namespace Wendogo
             if (scene.name == ServerManager.Instance.gameSceneName)
             {
                 _inputEvent = GameObject.Find("EventSystem")?.GetComponent<EventSystem>();
-                if (_inputEvent != null) _inputEvent.enabled = false;
+                if (_inputEvent != null && _inputEvent.enabled) _inputEvent.enabled = false;
                 if (_handManager == null) _handManager = GameObject.FindWithTag("hand")?.GetComponent<HandManager>();
                 pcSMObject = new GameObject($"{nameof(PlayerControllerSM)}");
                 pcSMObject.AddComponent<PlayerControllerSM>();
@@ -200,6 +202,14 @@ namespace Wendogo
 
             //Implement enable input
             Debug.Log("Input enabled");
+        }
+
+        public void DisableInput()
+        {
+            _inputEvent.enabled = false;
+
+            //Implement enable input
+            Debug.Log("Input disabled");
         }
 
 
@@ -241,7 +251,9 @@ namespace Wendogo
 
         public async UniTask GroupSelectTargetAsync()
         {
+            _inputEvent.enabled = true;
             _intTarget = -1;
+
             TargetSelectionUI.OnTargetPicked += HandleTargetSelected;
 
             await UniTask.WaitUntil(() => _intTarget >= 0);
@@ -252,6 +264,8 @@ namespace Wendogo
 
             Debug.Log($"Voted against target is {_intTarget} ");
 
+            _inputEvent.enabled = false;
+
             ServerManager.Instance.Votes.Add(_intTarget);
 
             Debug.Log($"Waiting for group vote to end");
@@ -259,6 +273,48 @@ namespace Wendogo
             await UniTask.WaitUntil(() => ServerManager.Instance.PlayerReadyCount.Value == 4);
 
             Debug.Log($"Vote ended");
+        }
+
+        public async UniTask GroupSelectTargetVoteAsync()
+        {
+            _inputEvent.enabled = true;
+            _intTarget = -1;
+
+            TargetSelectionUI.OnTargetPicked += HandleTargetSelected;
+
+            await UniTask.WaitUntil(() => _intTarget >= 0);
+
+            ServerManager.Instance.PlayerReadyCount.Value++;
+
+            TargetSelectionUI.OnTargetPicked -= HandleTargetSelected;
+
+            Debug.Log($"Voted against target is {_intTarget} ");
+
+            _inputEvent.enabled = false;
+
+            ServerManager.Instance.Votes.Add(_intTarget);
+
+            Debug.Log($"Waiting for group vote to end");
+
+            await UniTask.WaitUntil(() => ServerManager.Instance.PlayerReadyCount.Value == 4);
+
+            Debug.Log($"Vote ended");
+
+            //to do
+            //implement 
+            //ServerManager.Instance.Votes()
+        }
+
+        private async UniTaskVoid HandleVoteUIAsync()
+        {
+            try
+            {
+                await GroupSelectTargetAsync();
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e);
+            }
         }
 
         private void HandleDeckClicked(int deckId)
@@ -270,6 +326,8 @@ namespace Wendogo
         {
             _intTarget = targetID;
         }
+
+
 
         public void SelectCard(CardObjectData card)
         {
@@ -441,7 +499,7 @@ namespace Wendogo
 
         public void ChangeHealth(int delta)
         {
-            health.Value = Mathf.Clamp(health.Value + delta, 0, 6);
+            health.Value = Mathf.Clamp(health.Value + delta, 0, maxHealth);
         }
 
         public void UpdateHearts(int oldHealthValue, int newHealthValue)
@@ -570,7 +628,8 @@ namespace Wendogo
         [Rpc(SendTo.SpecifiedInParams)]
         public void FinishedCardPlayedRpc(RpcParams rpcParams)
         {
-
+            //If need to wait for animation etc
+            OnFinishedCardPlayed?.Invoke();
         }
 
         /// <summary>
@@ -648,6 +707,15 @@ namespace Wendogo
         public void CheckPlayerHealthRpc(RpcParams rpcParams)
         {
             // todo
+        }
+
+        [Rpc(SendTo.SpecifiedInParams)]
+        public void UseVoteUIRpc(bool setUIActive, bool activePlayerInput, RpcParams rpcParams)
+        {
+            _prefabUI.SetActive(setUIActive);
+
+            if (activePlayerInput)
+                _ = HandleVoteUIAsync(); 
         }
 
         #endregion
