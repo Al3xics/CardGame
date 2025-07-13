@@ -59,13 +59,6 @@ namespace Wendogo
         /// </summary>
         public int numberOfWoodToCompleteRitual = 6;
 
-        /// <summary>
-        /// Represents the card that triggers a voting phase every two turns in the game.
-        /// This variable holds a reference to a specific card configuration implemented
-        /// as a ScriptableObject of type <see cref="CardDataSO"/>.
-        /// </summary>
-        public CardDataSO votingCardEvery2Turns;
-
         /* --------------- Hide in Inspector --------------- */
         /// <summary>
         /// Tracks the current turn count within the game cycle.

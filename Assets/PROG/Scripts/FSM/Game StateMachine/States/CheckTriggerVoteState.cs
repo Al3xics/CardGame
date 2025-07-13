@@ -26,17 +26,15 @@ namespace Wendogo
         private void CheckTriggerVote()
         {
             if (StateMachine.CheckVotingTurn())
-            {
-                // We are in a voting state, so do things
-                Log("Do things inside the voting state.");
-
                 ServerManager.Instance.UseAllUIForVotersRpc(true, true);
-            }
+            else
+                OnCheckTriggerVote();
         }
 
         private void OnCheckTriggerVote()
         {
             ServerManager.Instance.OnCheckTriggerVote -= OnCheckTriggerVote;
+            ServerManager.Instance.UseAllUIForVotersRpc(false, true);
             StateMachine.ChangeState<CheckLastTurnState>();
         }
 
