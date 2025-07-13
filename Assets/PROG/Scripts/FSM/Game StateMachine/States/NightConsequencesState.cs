@@ -48,10 +48,11 @@ namespace Wendogo
         private void OnResolveCardNightConsequences()
         {
             ServerManager.Instance.OnResolveCardNightConsequences -= OnResolveCardNightConsequences;
+            ServerManager.Instance.UseAllUIForVotersRpc(false, true);
             
             id++;
             bool isLast = id >= sortedActions.Count;
-            
+
             if (isLast)
                 NextState();
             else
