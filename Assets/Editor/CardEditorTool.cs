@@ -38,7 +38,7 @@ namespace Wendogo
             }
 
 
-            foreach (var card in CardDatabase.CardList)
+            foreach (var card in CardDatabase.cardList)
             {
                 if (IsCardVisible(card))
                 {
@@ -88,7 +88,7 @@ namespace Wendogo
             {
                 int startID = 10100;
                 int maxID = 10199;
-                HashSet<int> usedIDs = new HashSet<int>(_database.CardList.Select(c => c.ID));
+                HashSet<int> usedIDs = new HashSet<int>(_database.cardList.Select(c => c.ID));
 
                 for (int id = startID; id <= maxID; id++)
                 {
@@ -110,7 +110,7 @@ namespace Wendogo
                     AssetDatabase.CreateAsset(NewCard, path);
                     AssetDatabase.SaveAssets();
 
-                    _database.CardList.Add(NewCard);
+                    _database.cardList.Add(NewCard);
                     EditorUtility.SetDirty(_database);
                     AssetDatabase.SaveAssets();
 

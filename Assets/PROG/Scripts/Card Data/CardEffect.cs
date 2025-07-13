@@ -1,9 +1,9 @@
+using Sirenix.OdinInspector;
 using UnityEngine;
-using System.Threading.Tasks;
-using System;
 
 namespace Wendogo
 {
+    [HideMonoScript]
     public abstract class CardEffect : ScriptableObject
     {
         //public virtual event Action OnTargetDetection;

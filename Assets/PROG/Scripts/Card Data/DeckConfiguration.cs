@@ -1,13 +1,17 @@
-﻿using System.Collections.Generic;
-using Sirenix.OdinInspector;
+﻿using Sirenix.OdinInspector;
 using UnityEngine;
-using Wendogo;
 
 [CreateAssetMenu(fileName = "DeckConfig", menuName = "Scriptable Objects/DeckConfig")]
+[HideMonoScript]
 public class DeckConfiguration : ScriptableObject
 {
-    public CardDeckConfig[] cardDeckData; //Array of cards and their quantities for this deck
+    #region Variables
+
     public int deckID; //Identifier for this specific deck configuration
+    [Space(10)]
+    public CardDeckConfig[] cardDeckData; //Array of cards and their quantities for this deck
+
+    #endregion
 }
 
 //Configuration structure for each card entry in the deck
