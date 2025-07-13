@@ -688,7 +688,7 @@ namespace Wendogo
         [Rpc(SendTo.SpecifiedInParams)]
         public void CheckPlayerHealthRpc(RpcParams rpcParams)
         {
-            // todo --> check health every begining turn
+            // todo --> check health every beginning turn
         }
         
         [Rpc(SendTo.SpecifiedInParams)]

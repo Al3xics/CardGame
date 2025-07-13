@@ -21,13 +21,7 @@ namespace Wendogo
             if (_player.ActiveCard.Card.isGroup)
             {
                 CardDataSO cardToUse = _player.ActiveCard.Card;
-
-                //for (int i = 0; i < 4; i++)
-                //{
-                //    PlayerController numberedPlayer = PlayerController.GetPlayer((ulong)i);
-
-                //    numberedPlayer.UseVoteUI(true);
-                //}
+                
                 _player.ActiveCard.Card.CardEffect.ShowUI();
                 await _player.GroupSelectTargetAsync();
                 Debug.Log("reached the end");

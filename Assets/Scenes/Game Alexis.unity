@@ -7244,6 +7244,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   gameSceneName: Game Valentin
+  playerHealthAsked: 0
+  playerFoodAsked: 0
+  playerWoodAsked: 0
   PlayerReadyCount:
     m_InternalValue: 0
   CurrentCycle:
@@ -8085,7 +8088,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f763a3e5009040c784f3b83ee9804456, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  autoConnect: 1
+  autoConnect: 0
   objectsToDestroy:
   - {fileID: 1425267997}
   - {fileID: 1479689065}
@@ -10828,8 +10831,6 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  isOccupied: 0
-  zoneType: 0
 --- !u!1 &461257112291276141
 GameObject:
   m_ObjectHideFlags: 0
@@ -10924,8 +10925,6 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  isOccupied: 0
-  zoneType: 0
 --- !u!224 &1055131348756407064
 RectTransform:
   m_ObjectHideFlags: 0
@@ -11174,8 +11173,6 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  isOccupied: 0
-  zoneType: 0
 --- !u!4 &3699339715562952713
 Transform:
   m_ObjectHideFlags: 0
@@ -11271,14 +11268,29 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
+    - Name: CardSpaces
+      Entry: 7
+      Data: 2|System.Collections.Generic.Dictionary`2[[UnityEngine.Transform, UnityEngine.CoreModule],[UnityEngine.GameObject,
+        UnityEngine.CoreModule]], mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 3|System.Collections.Generic.ObjectEqualityComparer`1[[UnityEngine.Transform,
+        UnityEngine.CoreModule]], mscorlib
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
   foodCount: {fileID: 1540466910}
   woodCount: {fileID: 1656168350}
   foodCountP2: {fileID: 2137617997}
-  cardSpaces:
-  - {fileID: 1058928656}
-  - {fileID: 123995244}
-  - {fileID: 1626564658}
-  - {fileID: 696679038}
   hearts:
   - {fileID: 1667251397}
   - {fileID: 1750333798}
@@ -11481,8 +11493,6 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  isOccupied: 0
-  zoneType: 0
 --- !u!1 &5827722536142724040
 GameObject:
   m_ObjectHideFlags: 0
@@ -11540,8 +11550,6 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  isOccupied: 0
-  zoneType: 0
 --- !u!224 &6143607596434390368
 RectTransform:
   m_ObjectHideFlags: 0
