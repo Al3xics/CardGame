@@ -20,11 +20,9 @@ namespace Wendogo
                 
                 if (targetPlayer != null)
                 {
-                    targetPlayer.health.Value -= attackValue;
+                    targetPlayer.RequestHealthChangeRpc(-attackValue);
                 }
             }
-            
-            ServerManager.Instance.Votes.Clear();
         }
         ulong VoteResult(NetworkList<int> votes)
         {
@@ -64,7 +62,7 @@ namespace Wendogo
 
         public override void ShowUI()
         {
-            ServerManager.Instance.UseAllUIForVotersRpc(true, false);
+            ServerManager.Instance.UseAllUIForVotersRpc(true, true);
         }
 
         public override void HideUI()

@@ -22,13 +22,15 @@ namespace Wendogo
             {
                 CardDataSO cardToUse = _player.ActiveCard.Card;
 
-                for (int i = 0; i < 4; i++)
-                {
-                    PlayerController numberedPlayer = PlayerController.GetPlayer((ulong)i);
+                //for (int i = 0; i < 4; i++)
+                //{
+                //    PlayerController numberedPlayer = PlayerController.GetPlayer((ulong)i);
 
-                    //numberedPlayer.UseVoteUI(true);
-                }
-                   await _player.GroupSelectTargetAsync();
+                //    numberedPlayer.UseVoteUI(true);
+                //}
+                _player.ActiveCard.Card.CardEffect.ShowUI();
+                await _player.GroupSelectTargetAsync();
+                Debug.Log("reached the end");
             }
             else
             {

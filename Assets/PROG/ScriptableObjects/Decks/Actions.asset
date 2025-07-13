@@ -20,11 +20,9 @@ MonoBehaviour:
   - CardData: {fileID: 11400000, guid: 9aa288262a939f5448d3a2ef7026e76f, type: 2}
     quantity: 30
   - CardData: {fileID: 11400000, guid: 0ba482c45070095489ccc50ea02bd0dc, type: 2}
-    quantity: 30
+    quantity: 300
   - CardData: {fileID: 11400000, guid: 0f961ec93fae9e94385cca09e6aa1c19, type: 2}
     quantity: 30
   - CardData: {fileID: 11400000, guid: 0f0dc0dc6f5db2944b1960d0bee62926, type: 2}
     quantity: 30
-  - CardData: {fileID: 11400000, guid: 8d30ef1d3be60bf4280bd755dcddc2c2, type: 2}
-    quantity: 300
   deckID: 0

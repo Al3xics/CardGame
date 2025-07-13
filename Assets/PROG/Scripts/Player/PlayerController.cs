@@ -24,7 +24,7 @@ namespace Wendogo
         [SerializeField] public EventSystem _inputEvent;
         [SerializeField] public HandManager _handManager;
 
-        private PlayerUI playerUIInstance;
+        [SerializeField] private PlayerUI playerUIInstance;
 
         private bool uiInitialized = false;
 
@@ -80,7 +80,7 @@ namespace Wendogo
         public NetworkVariable<int> health = new(
             8,
             NetworkVariableReadPermission.Everyone,
-            NetworkVariableWritePermission.Owner
+            NetworkVariableWritePermission.Server
         );
 
         public int hiddenWood;
@@ -191,7 +191,7 @@ namespace Wendogo
             LocalPlayer = this;
             LocalPlayerId = NetworkManager.Singleton.LocalClientId;
 
-            health.Value = Mathf.Clamp(health.Value, 0, maxHealth);
+            //health.Value = Mathf.Clamp(health.Value, 0, maxHealth);
 
             food.OnValueChanged += UpdateFoodText;
             wood.OnValueChanged += UpdateWoodText;
@@ -283,28 +283,9 @@ namespace Wendogo
 
         public async UniTask GroupSelectTargetAsync()
         {
-            _inputEvent.enabled = true;
-            _intTarget = -1;
-
-            TargetSelectionUI.OnTargetPicked += HandleTargetSelected;
-
-            await UniTask.WaitUntil(() => _intTarget >= 0);
-
-            ServerManager.Instance.PlayerReadyCount.Value++;
-
-            TargetSelectionUI.OnTargetPicked -= HandleTargetSelected;
-
-            Debug.Log($"Voted against target is {_intTarget} ");
-
-            _inputEvent.enabled = false;
-
-            ServerManager.Instance.Votes.Add(_intTarget);
-
-            Debug.Log($"Waiting for group vote to end");
-
-            await UniTask.WaitUntil(() => ServerManager.Instance.PlayerReadyCount.Value == 4);
-
-            Debug.Log($"Vote ended");
+            await UniTask.WaitUntil(() => ServerManager.Instance.PlayerReadyCount.Value == 2);
+            EnableInput();
+            ServerManager.Instance.ClearVoteRpc();
         }
 
         public async UniTask GroupSelectTargetVoteAsync()
@@ -316,19 +297,18 @@ namespace Wendogo
 
             await UniTask.WaitUntil(() => _intTarget >= 0);
 
-            ServerManager.Instance.PlayerReadyCount.Value++;
-
             TargetSelectionUI.OnTargetPicked -= HandleTargetSelected;
 
             Debug.Log($"Voted against target is {_intTarget} ");
 
             _inputEvent.enabled = false;
 
-            ServerManager.Instance.Votes.Add(_intTarget);
+            ServerManager.Instance.SendVoteRpc(_intTarget);
 
             Debug.Log($"Waiting for group vote to end");
 
-            await UniTask.WaitUntil(() => ServerManager.Instance.PlayerReadyCount.Value == 4);
+            //todo change the value to the number of players in the session
+            await UniTask.WaitUntil(() => ServerManager.Instance.PlayerReadyCount.Value == 2);
 
             Debug.Log($"Vote ended");
 
@@ -357,9 +337,6 @@ namespace Wendogo
             //TweeningManager.CardUp(card.gameObject.transform);
             card.isSelected = true;
 
-            if (ActiveCard.Card.HasTarget)
-                SelectTarget();
-
             Debug.Log("Card selected");
         }
 
@@ -372,17 +349,10 @@ namespace Wendogo
             card.isSelected = false;
         }
 
-        public async void SelectTarget()
-        {
-            //Implement select target
-            _selectedTarget = 0;
-            //Target selection
-            //Handled the cancel next
-            await UniTask.WaitUntil(() => _intTarget >= 0);
-            Debug.Log("Target selected");
-
-            ConfirmPlay();
-        }
+        //public async void SelectTarget()
+        //{
+            //todo move the method in the select state here
+        //}
 
         public void BurnCard()
         {
@@ -595,7 +565,7 @@ namespace Wendogo
         {
             health.Value = Mathf.Clamp(health.Value + delta, 0, maxHealth);
         }
-        
+
 
         public void UpdateHearts(int oldHealthValue, int newHealthValue)
         {
@@ -791,6 +761,12 @@ namespace Wendogo
             PlayAndWaitAnimation(animator, animationName, playerId);
         }
 
+        [Rpc(SendTo.Server)]
+        public void RequestHealthChangeRpc(int delta)
+        {
+            ChangeHealth(delta);
+        }
+
         #endregion
 
         #region Notify
@@ -822,13 +798,16 @@ namespace Wendogo
             }
 
             // Needs this player to select a target to play the card against
-            if (cardDataSO.HasTarget)
+            if (cardDataSO.HasTarget && !cardDataSO.isGroup)
             {
                 await UniTask.WaitUntil(() => _intTarget >= 0);
                 _selectedTarget = (ulong)_intTarget;
 
             }
-
+            else if (cardDataSO.isGroup)
+            {
+                await UniTask.WaitUntil(() => ServerManager.Instance.PlayerReadyCount.Value == 2);
+            }
             ServerManager.Instance.TransmitPlayedCardRpc(cardDataSO.ID, _selectedTarget);
             Debug.Log($"card {cardDataSO.Name} was sent to server ");
         }

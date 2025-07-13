@@ -23,25 +23,25 @@ namespace Wendogo
         public event Action<ulong, ulong> OnTargetSelected;
 
         public string gameSceneName = "Game";
-        
-        public Dictionary<ulong, PlayerController> _playersById { get; private set;}
+
+        public Dictionary<ulong, PlayerController> _playersById { get; private set; }
 
         public string playerNameAsked;
-        
+
         public int playerHealthAsked;
-        
+
         public int playerFoodAsked;
-        
+
         public int playerWoodAsked;
-        
+
         #endregion
-        
+
         #region Network Variables
-        
+
         public NetworkVariable<int> PlayerReadyCount = new(
             0,
             NetworkVariableReadPermission.Everyone,
-            NetworkVariableWritePermission.Owner
+            NetworkVariableWritePermission.Server
         );
 
         private NetworkVariable<int> _playerFinishSceneLoadedCpt = new(
@@ -49,19 +49,19 @@ namespace Wendogo
             NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Server
         );
-        
+
         public NetworkList<int> Votes = new(
             new List<int>(),
             NetworkVariableReadPermission.Everyone,
-            NetworkVariableWritePermission.Owner
+            NetworkVariableWritePermission.Server
         );
-        
+
         public NetworkVariable<Cycle> CurrentCycle = new(
             Cycle.Day,
             NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Server
         );
-        
+
         #endregion
 
         #region Basic Method
@@ -94,7 +94,7 @@ namespace Wendogo
                 GameStateMachine.Instance.RegisterPlayerID(player.OwnerClientId);
             }
         }
-        
+
         [Rpc(SendTo.Server)]
         public void IncrementPlayerFinishedLoadCountRpc()
         {
@@ -142,7 +142,7 @@ namespace Wendogo
 
                 if (_playersById.TryGetValue(id, out var player))
                 {
-                    player.GetRoleRpc(role, RpcTarget.Single(id, RpcTargetUse.Temp));;
+                    player.GetRoleRpc(role, RpcTarget.Single(id, RpcTargetUse.Temp)); ;
                 }
             }
 
@@ -173,7 +173,7 @@ namespace Wendogo
         {
             if (_playersById.TryGetValue(playerId, out var player))
             {
-                player.StartMyTurnRpc(RpcTarget.Single(playerId, RpcTargetUse.Temp));;
+                player.StartMyTurnRpc(RpcTarget.Single(playerId, RpcTargetUse.Temp)); ;
             }
         }
 
@@ -254,7 +254,7 @@ namespace Wendogo
                 player.UseVoteUIRpc(setUIActive, activePlayerInput, RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
             }
         }
-        
+
         [Rpc(SendTo.Server)]
         public void GetPlayerNameRpc(ulong clientId)
         {
@@ -284,14 +284,14 @@ namespace Wendogo
             var player = PlayerController.GetPlayer(clientID);
             playerFoodAsked = player.food.Value;
         }
-        
+
         [Rpc(SendTo.Server)]
         public void GetPlayerWoodRpc(ulong clientID)
         {
             var player = PlayerController.GetPlayer(clientID);
             playerWoodAsked = player.wood.Value;
         }
-        
+
         [Rpc(SendTo.Server)]
         public void GetPlayerHealthRpc(ulong clientID)
         {
@@ -325,15 +325,32 @@ namespace Wendogo
         {
             OnCheckTriggerVote?.Invoke();
         }
-        
+
         [Rpc(SendTo.Server)]
         public void StartPlayAnimationRpc(bool playAndWait, int animatorName, string animationName, ulong playerId)
         {
             foreach (var player in _playersById.Values)
             {
-                player.StartPlayAnimationRpc(playAndWait, animatorName, animationName, playerId, RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));;
+                player.StartPlayAnimationRpc(playAndWait, animatorName, animationName, playerId, RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp)); ;
             }
         }
+
+        [Rpc(SendTo.Server)]
+        public void SendVoteRpc(int chosenTarget)
+        {
+            PlayerReadyCount.Value++;
+            Votes.Add(chosenTarget);
+            Debug.Log($"Vote done with {chosenTarget} and player ready count at {PlayerReadyCount.Value}");
+        }
+
+        [Rpc(SendTo.Server)]
+        public void ClearVoteRpc()
+        {
+            Debug.LogWarning("Votes Cleared");
+            Votes.Clear();
+            PlayerReadyCount.Value = 0;
+        }
+
 
         #endregion
     }
