@@ -17,8 +17,6 @@ namespace Wendogo
         public static event Action<CardDataSO> OnCardDataDropped;
         public static event Action<CardObjectData> OnCardDropped;
 
-        public bool isOccupied;
-
         #endregion
 
 
