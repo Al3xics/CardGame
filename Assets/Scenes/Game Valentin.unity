@@ -10833,7 +10833,6 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   isOccupied: 0
-  zoneType: 0
 --- !u!1 &461257112291276141
 GameObject:
   m_ObjectHideFlags: 0
@@ -10929,7 +10928,6 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   isOccupied: 0
-  zoneType: 0
 --- !u!224 &1055131348756407064
 RectTransform:
   m_ObjectHideFlags: 0
@@ -11179,7 +11177,6 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   isOccupied: 0
-  zoneType: 0
 --- !u!4 &3699339715562952713
 Transform:
   m_ObjectHideFlags: 0
@@ -11214,6 +11211,10 @@ MonoBehaviour:
     - {fileID: 269364775}
     - {fileID: 706423815}
     - {fileID: 795052079}
+    - {fileID: 588981839563565080}
+    - {fileID: 2300106859553685330}
+    - {fileID: 1666380176865254792}
+    - {fileID: 6831133762993424868}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -11275,14 +11276,77 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
+    - Name: CardSpaces
+      Entry: 7
+      Data: 2|System.Collections.Generic.Dictionary`2[[UnityEngine.Transform, UnityEngine.CoreModule],[UnityEngine.GameObject,
+        UnityEngine.CoreModule]], mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 3|System.Collections.Generic.ObjectEqualityComparer`1[[UnityEngine.Transform,
+        UnityEngine.CoreModule]], mscorlib
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 4
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 10
+      Data: 3
+    - Name: $v
+      Entry: 6
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 10
+      Data: 4
+    - Name: $v
+      Entry: 6
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 10
+      Data: 5
+    - Name: $v
+      Entry: 6
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 10
+      Data: 6
+    - Name: $v
+      Entry: 6
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
   foodCount: {fileID: 1540466910}
   woodCount: {fileID: 1656168350}
   foodCountP2: {fileID: 2137617997}
-  cardSpaces:
-  - {fileID: 1058928656}
-  - {fileID: 123995244}
-  - {fileID: 1626564658}
-  - {fileID: 696679038}
   hearts:
   - {fileID: 1667251397}
   - {fileID: 1750333798}
@@ -11486,7 +11550,6 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   isOccupied: 0
-  zoneType: 0
 --- !u!1 &5827722536142724040
 GameObject:
   m_ObjectHideFlags: 0
@@ -11545,7 +11608,6 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   isOccupied: 0
-  zoneType: 0
 --- !u!224 &6143607596434390368
 RectTransform:
   m_ObjectHideFlags: 0

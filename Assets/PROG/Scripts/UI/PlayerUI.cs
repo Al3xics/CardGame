@@ -21,10 +21,10 @@ namespace Wendogo
 
         [SerializeField] private TextMeshProUGUI foodCountP2;
 
-        [SerializeField] public List<Transform> cardSpaces = new List<Transform>();
         [SerializeField] public List<GameObject> hearts = new List<GameObject>();
 
         public Dictionary<GameObject, ulong> UIPlayerID = new Dictionary<GameObject, ulong>();
+        public Dictionary<Transform, GameObject> CardSpaces = new Dictionary<Transform, GameObject>();
 
         public static PlayerUI Instance { get; private set; }
 
@@ -76,13 +76,13 @@ namespace Wendogo
 
         public void DefineFoodText(int foodAmount, ulong target = 0)
         {
-            if(target == 0)
-            foodCount.text = $"{foodAmount.ToString()}";
+            if (target == 0)
+                foodCount.text = $"{foodAmount.ToString()}";
         }
         public void DefineWoodText(int woodAmount, ulong target = 0)
         {
-            if(target == 0)
-            woodCount.text = $"{woodAmount.ToString()}";
+            if (target == 0)
+                woodCount.text = $"{woodAmount.ToString()}";
         }
 
         public void SendDebug(string message)
