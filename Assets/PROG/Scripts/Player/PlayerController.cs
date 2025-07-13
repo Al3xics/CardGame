@@ -80,7 +80,7 @@ namespace Wendogo
         public NetworkVariable<int> health = new(
             8,
             NetworkVariableReadPermission.Everyone,
-            NetworkVariableWritePermission.Server
+            NetworkVariableWritePermission.Owner
         );
 
         public int hiddenWood;
@@ -284,6 +284,7 @@ namespace Wendogo
         public async UniTask GroupSelectTargetAsync()
         {
             await UniTask.WaitUntil(() => ServerManager.Instance.PlayerReadyCount.Value == 2);
+            await UniTask.WaitForEndOfFrame();
             EnableInput();
             ServerManager.Instance.ClearVoteRpc();
         }
@@ -761,8 +762,8 @@ namespace Wendogo
             PlayAndWaitAnimation(animator, animationName, playerId);
         }
 
-        [Rpc(SendTo.Server)]
-        public void RequestHealthChangeRpc(int delta)
+        [Rpc(SendTo.SpecifiedInParams)]
+        public void RequestHealthChangeRpc(int delta, RpcParams rpcParams)
         {
             ChangeHealth(delta);
         }

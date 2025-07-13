@@ -20,7 +20,7 @@ namespace Wendogo
                 
                 if (targetPlayer != null)
                 {
-                    targetPlayer.RequestHealthChangeRpc(-attackValue);
+                    ServerManager.Instance.ChangePlayerHealthRpc(-attackValue, targetPlayer.OwnerClientId);
                 }
             }
         }

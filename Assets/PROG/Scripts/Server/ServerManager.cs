@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
+using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static UnityEngine.GraphicsBuffer;
 
 
 namespace Wendogo
@@ -351,7 +353,12 @@ namespace Wendogo
             PlayerReadyCount.Value = 0;
         }
 
-
+        [Rpc(SendTo.Server)]
+        public void ChangePlayerHealthRpc(int damage, ulong playerId)
+        {
+            var player = PlayerController.GetPlayer(playerId);
+            player.RequestHealthChangeRpc(damage, RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
+        }
         #endregion
     }
 }
