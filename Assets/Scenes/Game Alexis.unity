@@ -7244,10 +7244,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   gameSceneName: Game Valentin
-  playerNameAsked: 
-  playerHealthAsked: 0
-  playerFoodAsked: 0
-  playerWoodAsked: 0
   PlayerReadyCount:
     m_InternalValue: 0
   CurrentCycle:

@@ -69,12 +69,12 @@ public class CardDataSO : ScriptableObject
 #if UNITY_EDITOR
     private void Awake()
     {
-        GenerateID();
+        if (!EditorApplication.isPlayingOrWillChangePlaymode) GenerateID();
     }
 
     private void OnValidate()
     {
-        GenerateID();
+        if (!EditorApplication.isPlayingOrWillChangePlaymode) GenerateID();
     }
 
     private void ValidatePriorityIndex()

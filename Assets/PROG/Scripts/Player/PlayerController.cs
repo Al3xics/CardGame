@@ -34,11 +34,11 @@ namespace Wendogo
             writePerm: NetworkVariableWritePermission.Server
         );
 
-        public NetworkVariable<FixedString128Bytes> SessionPlayerId = new(
-            default,
-            NetworkVariableReadPermission.Everyone,
-            NetworkVariableWritePermission.Server
-        );
+        // public NetworkVariable<FixedString128Bytes> SessionPlayerId = new(
+        //     default,
+        //     NetworkVariableReadPermission.Everyone,
+        //     NetworkVariableWritePermission.Server
+        // );
 
         Dictionary<Button, PlayerController> playerTargets = new Dictionary<Button, PlayerController>();
 
@@ -162,11 +162,14 @@ namespace Wendogo
         {
             name = IsLocalPlayer ? "LocalPlayer" : $"Player{OwnerClientId}";
             
-            // Reference to Pop-up
-            _popup = GameObject.FindWithTag("Pop-up");
-            if (_popup ==null) throw new System.Exception("Pop-up not found");
-            _popupAnimator = _popup.GetComponent<Animator>();
-            _popupText = _popup.GetComponentInChildren<TMP_Text>();
+            if (AutoSessionBootstrapper.AutoConnect)
+            {
+                // Reference to Pop-up
+                _popup = GameObject.FindWithTag("Pop-up");
+                if (_popup ==null) throw new Exception("Pop-up not found");
+                _popupAnimator = _popup.GetComponent<Animator>();
+                _popupText = _popup.GetComponentInChildren<TMP_Text>();
+            }
         }
 
         public override void OnNetworkSpawn()
@@ -215,11 +218,23 @@ namespace Wendogo
 
             if (scene.name == ServerManager.Instance.gameSceneName)
             {
+                if (!AutoSessionBootstrapper.AutoConnect)
+                {
+                    name = SessionManager.Instance.ActiveSession.CurrentPlayer.Properties[SessionConstants.PlayerNamePropertyKey].Value;
+                    ServerManager.Instance.RegisterPlayerNameRpc(OwnerClientId, name);
+                }
+                
                 _inputEvent = GameObject.Find("EventSystem")?.GetComponent<EventSystem>();
                 if (_inputEvent != null && _inputEvent.enabled) _inputEvent.enabled = false;
                 if (_handManager == null) _handManager = GameObject.FindWithTag("hand")?.GetComponent<HandManager>();
                 pcSMObject = new GameObject($"{nameof(PlayerControllerSM)}");
                 pcSMObject.AddComponent<PlayerControllerSM>();
+
+                // Reference to Pop-up
+                _popup = GameObject.FindWithTag("Pop-up");
+                if (_popup ==null) throw new Exception("Pop-up not found");
+                _popupAnimator = _popup.GetComponent<Animator>();
+                _popupText = _popup.GetComponentInChildren<TMP_Text>();
 
                 Debug.Log($"This is my player id: {LocalPlayerId}");
                 PlayerUI.Instance.SetPlayerInfos();
@@ -555,8 +570,12 @@ namespace Wendogo
                 }
                 else
                 {
-                    // todo --> the name is the the correct one
-                    _popupText.text = PopupSentences.Instance.ReplaceX(PopupSentences.Instance.otherPlayerTurnText, name);
+                    string playerName;
+                    if (AutoSessionBootstrapper.AutoConnect)
+                        playerName = GetPlayer(playerId).name;
+                    else
+                        playerName = ServerManager.Instance.GetPlayerName(playerId);
+                    _popupText.text = PopupSentences.Instance.ReplaceX(PopupSentences.Instance.otherPlayerTurnText, $"{playerName}");
                 }
                 
                 animator.Play(animationName, 0, 0f);
@@ -750,11 +769,11 @@ namespace Wendogo
         [Rpc(SendTo.SpecifiedInParams)]
         public void AddHiddenPassiveCardRpc(int cardId, RpcParams rpcParams) => HiddenPassiveCards.Add(cardId);
 
-        [Rpc(SendTo.Server)]
-        public void RegisterSessionIdServerRpc(string sessionPlayerId)
-        {
-            SessionPlayerId.Value = sessionPlayerId;
-        }
+        // [Rpc(SendTo.Server)]
+        // public void RegisterSessionIdServerRpc(string sessionPlayerId)
+        // {
+        //     SessionPlayerId.Value = sessionPlayerId;
+        // }
 
         [Rpc(SendTo.SpecifiedInParams)]
         public void CheckPlayerHealthRpc(RpcParams rpcParams)
@@ -830,6 +849,7 @@ namespace Wendogo
             ServerManager.Instance.TransmitPlayedCardRpc(cardDataSO.ID, _selectedTarget);
             Debug.Log($"card {cardDataSO.Name} was sent to server ");
         }
+        
         #endregion
     }
 }
