@@ -5,8 +5,11 @@ using UnityEngine;
 using Wendogo;
 
 [CreateAssetMenu(fileName = "CardData", menuName = "Scriptable Objects/CardData")]
+[HideMonoScript]
 public class CardDataSO : ScriptableObject
 {
+    #region Variables
+
     [Title("Card Visual")]
     [HorizontalGroup("CardData", 100), VerticalGroup("CardData/Left", PaddingBottom = 5)]
     [PreviewField(100, ObjectFieldAlignment.Left), HideLabel]
@@ -43,7 +46,7 @@ public class CardDataSO : ScriptableObject
     [MinValue(-1), ShowIf("isPassive")]
     public int turnsRemaining = -1;
 
-    [VerticalGroup("CardData/Left"), LabelWidth(200), MinValue(10100), MaxValue(10199)]
+    [VerticalGroup("CardData/Left"), LabelWidth(200), ReadOnly]
     [ShowIf("Toggle"), HideLabel]
     public int ID; //Unique identifier for this card
 
@@ -59,9 +62,23 @@ public class CardDataSO : ScriptableObject
         this.Toggle = !this.Toggle;
     }
 
+    #endregion
+
+    #region Basic Methods
+
+#if UNITY_EDITOR
+    private void Awake()
+    {
+        if (!EditorApplication.isPlayingOrWillChangePlaymode) GenerateID();
+    }
+
+    private void OnValidate()
+    {
+        if (!EditorApplication.isPlayingOrWillChangePlaymode) GenerateID();
+    }
+
     private void ValidatePriorityIndex()
     {
-#if UNITY_EDITOR
         var allCardData = AssetDatabase.FindAssets("t:CardDataSO")
             .Select(AssetDatabase.GUIDToAssetPath)
             .Select(AssetDatabase.LoadAssetAtPath<CardDataSO>)
@@ -93,8 +110,38 @@ public class CardDataSO : ScriptableObject
             _showError = false;
             _showWarning = false;
         }
-#endif
     }
+    
+    public void GenerateID()
+    {
+        int prefix = isPassive ? 2 : 1;
+        int min = prefix * 1000 + 1;
+        int max = prefix * 1000 + 999;
+
+        var allCards = AssetDatabase.FindAssets("t:CardDataSO")
+            .Select(AssetDatabase.GUIDToAssetPath)
+            .Select(AssetDatabase.LoadAssetAtPath<CardDataSO>)
+            .Where(c => c != null && c != this && c.isPassive == this.isPassive)
+            .ToList();
+
+        var usedIDs = allCards.Select(c => c.ID).ToHashSet();
+
+        for (int candidate = min; candidate <= max; candidate++)
+        {
+            if (!usedIDs.Contains(candidate))
+            {
+                ID = candidate;
+                EditorUtility.SetDirty(this);
+                AssetDatabase.SaveAssets();
+                Debug.Log($"[CardDataSO] ID généré : {ID} pour {name}");
+                return;
+            }
+        }
+
+        Debug.LogError($"[CardDataSO] Aucun ID disponible pour les cartes {(isPassive ? "passives" : "actives")}");
+    }
+
+#endif
     
     public static CardDataSO Clone(CardDataSO cardData)
     {
@@ -105,4 +152,6 @@ public class CardDataSO : ScriptableObject
         
         return copy;
     }
+
+    #endregion
 }

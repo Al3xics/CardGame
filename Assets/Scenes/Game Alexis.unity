@@ -7244,10 +7244,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   gameSceneName: Game Valentin
-  playerNameAsked: 
-  playerHealthAsked: 0
-  playerFoodAsked: 0
-  playerWoodAsked: 0
   PlayerReadyCount:
     m_InternalValue: 0
   CurrentCycle:
@@ -11461,7 +11457,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 325, y: -464}
+  m_AnchoredPosition: {x: 335, y: -464}
   m_SizeDelta: {x: 125, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &5685235688839812457

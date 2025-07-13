@@ -26,16 +26,15 @@ namespace Wendogo
 
         public string gameSceneName = "Game";
 
-        public Dictionary<ulong, PlayerController> _playersById { get; private set; }
-
-        public string playerNameAsked;
+        private Dictionary<ulong, PlayerController> PlayersById { get; set;}
+        public static Dictionary<ulong, string> GlobalPlayersByName { get; set; } = new();
 
         public int playerHealthAsked;
 
         public int playerFoodAsked;
 
         public int playerWoodAsked;
-
+        
         #endregion
 
         #region Network Variables
@@ -51,19 +50,19 @@ namespace Wendogo
             NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Server
         );
-
+        
         public NetworkList<int> Votes = new(
             new List<int>(),
             NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Server
         );
-
+        
         public NetworkVariable<Cycle> CurrentCycle = new(
             Cycle.Day,
             NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Server
         );
-
+        
         #endregion
 
         #region Basic Method
@@ -89,14 +88,14 @@ namespace Wendogo
         public void InitializePlayers()
         {
             _playerFinishSceneLoadedCpt.Value = 0;
-            _playersById = FindObjectsByType<PlayerController>(FindObjectsSortMode.None).ToDictionary(p => p.OwnerClientId);
+            PlayersById = FindObjectsByType<PlayerController>(FindObjectsSortMode.None).ToDictionary(p => p.OwnerClientId);
 
-            foreach (var player in _playersById.Values)
+            foreach (var player in PlayersById.Values)
             {
                 GameStateMachine.Instance.RegisterPlayerID(player.OwnerClientId);
             }
         }
-
+        
         [Rpc(SendTo.Server)]
         public void IncrementPlayerFinishedLoadCountRpc()
         {
@@ -114,8 +113,7 @@ namespace Wendogo
                     Debug.Log($"_playerFinishSceneLoadedCpt = {_playerFinishSceneLoadedCpt}");
                 }
         }
-
-
+        
         // Starts loading the game scene from the server if it's not already active.
         public void LaunchGame()
         {
@@ -126,6 +124,11 @@ namespace Wendogo
         public void UpdateCycle(Cycle newCycle)
         {
             if (IsServer) CurrentCycle.Value = newCycle;
+        }
+        
+        public string GetPlayerName(ulong clientId)
+        {
+            return GlobalPlayersByName.GetValueOrDefault(clientId, "Unknown Player");
         }
 
         #endregion
@@ -142,9 +145,9 @@ namespace Wendogo
                 ulong id = clientIds[i];
                 RoleType role = roles[i];
 
-                if (_playersById.TryGetValue(id, out var player))
+                if (PlayersById.TryGetValue(id, out var player))
                 {
-                    player.GetRoleRpc(role, RpcTarget.Single(id, RpcTargetUse.Temp)); ;
+                    player.GetRoleRpc(role, RpcTarget.Single(id, RpcTargetUse.Temp));
                 }
             }
 
@@ -161,7 +164,7 @@ namespace Wendogo
                 ulong id = target[i];
                 int[] cards = intArray[i];
 
-                if (_playersById.TryGetValue(id, out var player))
+                if (PlayersById.TryGetValue(id, out var player))
                 {
                     player.GetCardsRpc(cards, RpcTarget.Single(id, RpcTargetUse.Temp));
                 }
@@ -173,9 +176,9 @@ namespace Wendogo
         [Rpc(SendTo.Server)]
         public void PlayerTurnRpc(ulong playerId)
         {
-            if (_playersById.TryGetValue(playerId, out var player))
+            if (PlayersById.TryGetValue(playerId, out var player))
             {
-                player.StartMyTurnRpc(RpcTarget.Single(playerId, RpcTargetUse.Temp)); ;
+                player.StartMyTurnRpc(RpcTarget.Single(playerId, RpcTargetUse.Temp));
             }
         }
 
@@ -205,14 +208,14 @@ namespace Wendogo
         [Rpc(SendTo.Server)]
         public void TryApplyPassiveRpc(int playedCardId, ulong origin, ulong target)
         {
-            if (_playersById.TryGetValue(target, out var player))
+            if (PlayersById.TryGetValue(target, out var player))
                 player.TryApplyPassiveRpc(playedCardId, origin, RpcTarget.Single(target, RpcTargetUse.Temp));
         }
 
         [Rpc(SendTo.Server)]
         public void FinishedPassiveCardPlayedRpc(int cardId, ulong origin, bool isHiddenPassiveCards)
         {
-            if (_playersById.TryGetValue(origin, out var player))
+            if (PlayersById.TryGetValue(origin, out var player))
             {
                 if (isHiddenPassiveCards)
                     player.AddHiddenPassiveCardRpc(cardId, RpcTarget.Single(origin, RpcTargetUse.Temp));
@@ -226,7 +229,7 @@ namespace Wendogo
         [Rpc(SendTo.Server)]
         public void SynchronizePlayerValuesRpc(bool copyToHidden)
         {
-            foreach (var player in _playersById.Values)
+            foreach (var player in PlayersById.Values)
             {
                 if (copyToHidden)
                     player.CopyPublicToHiddenRpc(RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
@@ -238,10 +241,10 @@ namespace Wendogo
         [Rpc(SendTo.Server)]
         public void AskToDestructTrapsRpc()
         {
-            foreach (var playerId in _playersById)
+            foreach (var playerId in PlayersById)
             {
                 var id = playerId.Key;
-                if (_playersById.TryGetValue(id, out var player))
+                if (PlayersById.TryGetValue(id, out var player))
                 {
                     player.DestructAllTrapsRpc(RpcTarget.Single(id, RpcTargetUse.Temp));
                 }
@@ -251,33 +254,48 @@ namespace Wendogo
         [Rpc(SendTo.Server)]
         public void UseAllUIForVotersRpc(bool setUIActive, bool activePlayerInput)
         {
-            foreach (var player in _playersById.Values)
+            foreach (var player in PlayersById.Values)
             {
                 player.UseVoteUIRpc(setUIActive, activePlayerInput, RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
             }
         }
-
+        
         [Rpc(SendTo.Server)]
-        public void GetPlayerNameRpc(ulong clientId)
+        public void RegisterPlayerNameRpc(ulong clientId, string playerName)
         {
-            if (_playersById.TryGetValue(clientId, out var pc))
+            // Adding a new user
+            GlobalPlayersByName[clientId] = playerName;
+
+            // Inform all customers of the network-side change (RPC)
+            UpdateGlobalNameListClientRpc(clientId, playerName);
+        }
+        
+        [Rpc(SendTo.Server)]
+        public void UnregisterPlayerNameRpc(ulong clientId)
+        {
+            if (IsServer && GlobalPlayersByName.ContainsKey(clientId))
             {
-                // pull the string ID out of the PC�fs NetworkVariable
-                var sessionId = pc.SessionPlayerId.Value.ToString();
+                GlobalPlayersByName.Remove(clientId);
 
-                // find that player in the Unity Services session
-                var sessionPlayer = SessionManager.Instance.ActiveSession.Players
-                    .FirstOrDefault(p => p.Id == sessionId);
-
-                if (sessionPlayer != null
-                 && sessionPlayer.Properties.TryGetValue(SessionConstants.PlayerNamePropertyKey, out var nm))
-                {
-                    playerNameAsked = nm.Value;
-                    return;
-                }
+                // Inform all customers of the network-side change (RPC)
+                UpdateGlobalNameListClientRpc(clientId, null);
             }
+        }
 
-            playerNameAsked = "Unknown";
+        [Rpc(SendTo.Everyone)]
+        private void UpdateGlobalNameListClientRpc(ulong clientId, string playerName)
+        {
+            if (playerName != null)
+            {
+                // Adding or updating the client-side name
+                GlobalPlayersByName[clientId] = playerName;
+            }
+            else
+            {
+                // Client-side player removal
+                if (GlobalPlayersByName.ContainsKey(clientId))
+                    GlobalPlayersByName.Remove(clientId);
+            }
         }
 
         [Rpc(SendTo.Server)]
@@ -286,14 +304,14 @@ namespace Wendogo
             var player = PlayerController.GetPlayer(clientID);
             playerFoodAsked = player.food.Value;
         }
-
+        
         [Rpc(SendTo.Server)]
         public void GetPlayerWoodRpc(ulong clientID)
         {
             var player = PlayerController.GetPlayer(clientID);
             playerWoodAsked = player.wood.Value;
         }
-
+        
         [Rpc(SendTo.Server)]
         public void GetPlayerHealthRpc(ulong clientID)
         {
@@ -311,12 +329,12 @@ namespace Wendogo
         [Rpc(SendTo.Server)]
         public void CheckPlayerHealthRpc()
         {
-            foreach (var player in _playersById.Values)
+            foreach (var player in PlayersById.Values)
                 player.CheckPlayerHealthRpc(RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
         }
 
         [Rpc(SendTo.Server)]
-        public void FinishedPlayGroupCardRpc()
+        public void FinishedPlayGroupCardRpc() // todo
         {
             // todo --> call this method when a group card is finished (all players have chosen a target)
             OnResolveCardNightConsequences?.Invoke();
@@ -331,9 +349,9 @@ namespace Wendogo
         [Rpc(SendTo.Server)]
         public void StartPlayAnimationRpc(bool playAndWait, int animatorName, string animationName, ulong playerId)
         {
-            foreach (var player in _playersById.Values)
+            foreach (var player in PlayersById.Values)
             {
-                player.StartPlayAnimationRpc(playAndWait, animatorName, animationName, playerId, RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp)); ;
+                player.StartPlayAnimationRpc(playAndWait, animatorName, animationName, playerId, RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
             }
         }
 
