@@ -47,14 +47,8 @@ public class CardDatabaseSO : ScriptableObject
             .Where(c => c != null)
             .ToList();
 
-        int updated = 0;
         foreach (var card in allCards)
-        {
-            int previous = card.ID;
             card.GenerateID();
-            if (card.ID != previous)
-                updated++;
-        }
 
         AssetDatabase.SaveAssets();
     }
@@ -138,11 +132,12 @@ public class CardDatabaseSO : ScriptableObject
 
     private void Initialize()
     {
+        _cardDictionary.Clear();
+        
         //Populate the dictionary from the list
         foreach (CardDataSO card in cardList)
         {
-            //Add cards to the dictionary for quick ID-based access
-            _cardDictionary.Add(card.ID, card);
+            _cardDictionary.TryAdd(card.ID, card);
         }
     }
 
