@@ -7,6 +7,8 @@ namespace Wendogo
     /// </summary>
     public class CheckTriggerVoteState : State<GameStateMachine>
     {
+        private bool _useAllUICalledPreviously;
+        
         /// <summary>
         /// Represents a state within the game logic that checks whether certain conditions for triggering a vote have been met.
         /// </summary>
@@ -26,7 +28,10 @@ namespace Wendogo
         private void CheckTriggerVote()
         {
             if (StateMachine.CheckVotingTurn())
+            {
+                _useAllUICalledPreviously = true;
                 ServerManager.Instance.UseAllUIForVotersRpc(true, true);
+            }
             else
                 OnCheckTriggerVote();
         }
@@ -34,7 +39,7 @@ namespace Wendogo
         private void OnCheckTriggerVote()
         {
             ServerManager.Instance.OnCheckTriggerVote -= OnCheckTriggerVote;
-            ServerManager.Instance.UseAllUIForVotersRpc(false, true);
+            if (_useAllUICalledPreviously) ServerManager.Instance.UseAllUIForVotersRpc(false, false);
             StateMachine.ChangeState<CheckLastTurnState>();
         }
 
@@ -42,6 +47,7 @@ namespace Wendogo
         {
             base.OnExit();
             StateMachine.IncreaseCptTurnForVote();
+            _useAllUICalledPreviously = false;
         }
     }
 }
