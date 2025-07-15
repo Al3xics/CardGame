@@ -183,8 +183,6 @@ namespace Wendogo
                 }
 
                 if (_prefabUI == null) { _prefabUI = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject; }
-
-                //PlayerUI.Instance.SetPlayerInfos();
             }
             if (!IsOwner) return;
 
@@ -588,6 +586,7 @@ namespace Wendogo
             try
             {
                 await GroupSelectTargetVoteAsync();
+                ServerManager.Instance.FinishedPlayGroupCardRpc();
             }
             catch (Exception e)
             {

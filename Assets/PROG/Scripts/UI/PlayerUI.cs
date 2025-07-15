@@ -68,9 +68,8 @@ namespace Wendogo
                 //var currentFoodText = foodGameObject.GetComponent<TextMeshProUGUI>();
                 //currentFoodText.text = $"{currentplayer.food.Value.ToString()}";
 
-                //playerTitle = item.Key.GetComponentInChildren<TextMeshProUGUI>();
-                //ServerManager.Instance.GetPlayerNameRpc(item.Value);
-                //playerTitle.text = ServerManager.Instance.playerNameAsked;
+                playerTitle = item.Key.GetComponentInChildren<TextMeshProUGUI>();
+                playerTitle.text = currentplayer.name;
             }
         }
 
