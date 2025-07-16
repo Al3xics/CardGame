@@ -22,3 +22,4 @@ MonoBehaviour:
   turnsRemaining: -1
   ID: 1002
   Toggle: 1
+  effectDescription: "R\xE9colte une unit\xE9 de bois.\u200B"

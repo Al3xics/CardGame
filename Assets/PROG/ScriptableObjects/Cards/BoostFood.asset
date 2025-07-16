@@ -19,6 +19,9 @@ MonoBehaviour:
   isGroup: 0
   HasTarget: 0
   nightPriorityIndex: 0
-  turnsRemaining: 2
+  turnsRemaining: 3
   ID: 2002
   Toggle: 1
+  effectDescription: "\xC0 chaque action de r\xE9colte de nourriture (Ressource Nourriture),
+    le joueur obtient +1 nourriture suppl\xE9mentaire. La carte est d\xE9truite apr\xE8s
+    deux tours.\u200B"

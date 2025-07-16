@@ -24,12 +24,12 @@ public enum SortOrder
 [System.Flags]
 public enum CardFilterType
 {
-    All         = Passive | Active | Group | HasTarget,
-    Passive     = 1 << 0,
-    Active      = 1 << 1,
-    Group       = 1 << 2,
-    HasTarget   = 1 << 3,
-    None        = 0
+    All = Passive | Active | Group | HasTarget,
+    Passive = 1 << 0,
+    Active = 1 << 1,
+    Group = 1 << 2,
+    HasTarget = 1 << 3,
+    None = 0
 }
 
 
@@ -96,6 +96,41 @@ public class CardDatabaseSO : ScriptableObject
 
     #endregion
 
+    #region Quick Add Card
+
+#if UNITY_EDITOR
+    [Button("Add Card", ButtonSizes.Medium), GUIColor(0.4f, 1f, 0.4f)]
+    [PropertyOrder(-8), PropertySpace(5, 10)]
+    private void AddCard([AssetsOnly] CardDataSO newCard)
+    {
+        if (newCard == null)
+        {
+            EditorUtility.DisplayDialog(
+                "Add Card",
+                "Please select a CardDataSO asset to add.",
+                "OK"
+            );
+            return;
+        }
+
+        if (cardList.Contains(newCard))
+        {
+            EditorUtility.DisplayDialog(
+                "Add Card",
+                $"\"{newCard.Name}\" is already in the database.",
+                "OK"
+            );
+            return;
+        }
+
+        cardList.Add(newCard);
+        EditorUtility.SetDirty(this);
+        AssetDatabase.SaveAssets();
+    }
+#endif
+
+    #endregion
+
     #region Tools
 
     [BoxGroup("Tools"), PropertyOrder(-8)]
@@ -107,7 +142,7 @@ public class CardDatabaseSO : ScriptableObject
     [EnumToggleButtons, LabelText("Sort By"), LabelWidth(70)]
     [OnValueChanged(nameof(SortCards))]
     public SortField sortField = SortField.ID;
-    
+
     [BoxGroup("Tools")]
     [EnumToggleButtons, LabelText("Filter"), LabelWidth(70)]
     public CardFilterType filter = CardFilterType.All;
@@ -140,14 +175,14 @@ public class CardDatabaseSO : ScriptableObject
             sorted = sorted.Reverse();
 
         cardList = sorted.ToList();
-    
+
 #if UNITY_EDITOR
         EditorUtility.SetDirty(this);
 #endif
     }
-    
+
     #endregion
-    
+
     #region Variables
 
     [FormerlySerializedAs("CardList")]
@@ -173,7 +208,7 @@ public class CardDatabaseSO : ScriptableObject
     private void Initialize()
     {
         _cardDictionary.Clear();
-        
+
         //Populate the dictionary from the list
         foreach (CardDataSO card in cardList)
         {
@@ -209,4 +244,57 @@ public class CardDatabaseSO : ScriptableObject
     }
 
     #endregion
+
+#if UNITY_EDITOR
+    [InitializeOnLoad]
+    private static class Validator
+    {
+        static Validator()
+        {
+            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+        }
+
+        private static void OnPlayModeStateChanged(PlayModeStateChange state)
+        {
+            if (state != PlayModeStateChange.ExitingEditMode) return;
+
+            // Find all CardDatabaseSO assets with null entries
+            var dbPaths = AssetDatabase.FindAssets("t:CardDatabaseSO")
+                .Select(AssetDatabase.GUIDToAssetPath)
+                .ToList();
+
+            var invalidDbs = new List<CardDatabaseSO>();
+            foreach (var path in dbPaths)
+            {
+                var db = AssetDatabase.LoadAssetAtPath<CardDatabaseSO>(path);
+                if (db != null && db.cardList.Any(c => c == null))
+                    invalidDbs.Add(db);
+            }
+
+            if (invalidDbs.Count == 0) return;
+
+            bool remove = EditorUtility.DisplayDialog(
+                "Invalid Card Database",
+                "One or more entries in your CardDatabaseSO assets are null.\n" +
+                "Click \"Remove Nulls\" to strip them out and continue, or \"Cancel\" to abort Play Mode.",
+                "Remove Nulls",
+                "Cancel"
+            );
+
+            if (remove)
+            {
+                foreach (var db in invalidDbs)
+                {
+                    db.cardList.RemoveAll(c => c == null);
+                    EditorUtility.SetDirty(db);
+                }
+                AssetDatabase.SaveAssets();
+            }
+            else
+            {
+                EditorApplication.isPlaying = false;
+            }
+        }
+    }
+#endif
 }

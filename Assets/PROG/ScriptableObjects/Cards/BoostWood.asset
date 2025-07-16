@@ -22,3 +22,6 @@ MonoBehaviour:
   turnsRemaining: 2
   ID: 2003
   Toggle: 1
+  effectDescription: "\xC0 chaque action de r\xE9colte de bois (Ressource Bois),
+    le joueur re\xE7oit +1 bois suppl\xE9mentaire. La carte est d\xE9truite apr\xE8s
+    deux tours."

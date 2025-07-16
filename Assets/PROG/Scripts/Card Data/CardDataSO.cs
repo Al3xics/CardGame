@@ -63,6 +63,19 @@ public class CardDataSO : ScriptableObject
         this.Toggle = !this.Toggle;
     }
 
+    // Effect Description toggle & field
+    [HideInInspector]
+    private bool showEffectDescription;
+
+    [Button("Effect Description", ButtonSizes.Small, Stretch = false, ButtonAlignment = 0.5f)]
+    private void EffectDescriptionButton()
+    {
+        showEffectDescription = !showEffectDescription;
+    }
+
+    [ShowIf("showEffectDescription"), MultiLineProperty, LabelText("Effect Description")]
+    public string effectDescription;
+
     #endregion
 
     #region Basic Methods
