@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using JetBrains.Annotations;
 using TMPro;
 using Unity.Collections;
+using UnityEngine.SocialPlatforms;
 
 
 namespace Wendogo
@@ -152,7 +153,7 @@ namespace Wendogo
 
         #region Basic Method
         
-        private void Start()
+        private async void Start()
         {
             name = IsLocalPlayer ? "LocalPlayer" : $"Player{OwnerClientId}";
 
@@ -162,6 +163,12 @@ namespace Wendogo
                 _popup = GameObject.FindWithTag("Pop-up");
                 if (_popup ==null) throw new Exception("Pop-up not found");
                 _popupText = _popup.GetComponentInChildren<TMP_Text>();
+
+              
+                //Todo call at the same time the the game state machine starts instead
+                await UniTask.WaitForSeconds(25);
+                //Init UI for the other players
+                PlayerUI.Instance.SetPlayerInfos(LocalPlayerId, RpcTarget.Me);
             }
         }
 
@@ -179,13 +186,12 @@ namespace Wendogo
                 }
 
                 if (_prefabUI == null) { _prefabUI = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject; }
+
             }
             if (!IsOwner) return;
 
             LocalPlayer = this;
             LocalPlayerId = NetworkManager.Singleton.LocalClientId;
-
-            //health.Value = Mathf.Clamp(health.Value, 0, maxHealth);
 
             food.OnValueChanged += UpdateFoodText;
             wood.OnValueChanged += UpdateWoodText;
@@ -227,7 +233,8 @@ namespace Wendogo
                 _popupText = _popup.GetComponentInChildren<TMP_Text>();
 
                 Debug.Log($"This is my player id: {LocalPlayerId}");
-                //PlayerUI.Instance.SetPlayerInfos(RpcTarget.Me);
+
+                PlayerUI.Instance.SetPlayerInfos(LocalPlayerId, RpcTarget.Me);
 
                 if (_prefabUI == null) { _prefabUI = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject; }
 

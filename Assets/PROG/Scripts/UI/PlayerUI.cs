@@ -21,6 +21,8 @@ namespace Wendogo
         [SerializeField] private TextMeshProUGUI foodCount;
         [SerializeField] private TextMeshProUGUI woodCount;
 
+        private readonly HashSet<ulong> _subscribedPlayers = new HashSet<ulong>();
+
         [SerializeField] private TextMeshProUGUI foodCountP2;
 
         [SerializeField] public List<GameObject> hearts = new List<GameObject>();
@@ -89,22 +91,48 @@ namespace Wendogo
         [Rpc(SendTo.SpecifiedInParams)]
         public void SetPlayerInfos(ulong localPLayerID,RpcParams rpcParams)
         {
+            //todo call the method in server manager in a loop for all players 
+            //when the game starts
             KeyValuePair<GameObject, ulong>[] snapshot = UIPlayerID.ToArray();
 
             foreach (var kvp in snapshot)
             {
                 GameObject go = kvp.Key;
-                ulong value = kvp.Value;
+                ulong id = kvp.Value;
 
                 if (!go.activeSelf)
                     continue;
 
-                if (value == localPLayerID)
+                ulong trueID =id;
+                if (id == localPLayerID)
                 {
                     UIPlayerID[go] = 0;
+                    trueID = 0;
                 }
 
-                var player = PlayerController.GetPlayer(value);
+                var player = PlayerController.GetPlayer(trueID);
+
+                if (!_subscribedPlayers.Contains(trueID))
+                {
+                    GameObject slot = go;
+
+                    player.wood.OnValueChanged += (oldVal, newVal) =>
+                    {
+                        var txt = slot.transform
+                                      .Find("Ritual_Wood_Text")
+                                      .GetComponent<TextMeshProUGUI>();
+                        txt.text = newVal.ToString();
+                    };
+                    player.food.OnValueChanged += (oldVal, newVal) =>
+                    {
+                        var txt = slot.transform
+                                      .Find("Ritual_Food_Text")
+                                      .GetComponent<TextMeshProUGUI>();
+                        txt.text = newVal.ToString();
+                    };
+                    _subscribedPlayers.Add(id);
+                }
+
                 var woodText = go.transform
                                  .Find("Ritual_Wood_Text")
                                  .GetComponent<TextMeshProUGUI>();
