@@ -5,6 +5,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using Sirenix.Serialization;
 using Sirenix.OdinInspector;
+using Unity.Netcode;
+using System.Linq;
 
 namespace Wendogo
 {
@@ -51,27 +53,7 @@ namespace Wendogo
             if (endText != null) endText.gameObject.SetActive(false);
         }
 
-        public void SetPlayerInfos()
-        {
-            foreach (var item in UIPlayerID)
-            {
-                if (item.Key.activeSelf == false)
-                    continue;
 
-                var currentplayer = PlayerController.GetPlayer(item.Value);
-
-                //var woodGameObject = item.Key.transform.Find("Ritual_Wood_Text").gameObject;
-                //var currentWoodText = woodGameObject.GetComponent<TextMeshProUGUI>();
-                //currentWoodText.text = $"{currentplayer.wood.Value.ToString()}";
-
-                //var foodGameObject = item.Key.transform.Find("Ritual_Food_Text").gameObject;
-                //var currentFoodText = foodGameObject.GetComponent<TextMeshProUGUI>();
-                //currentFoodText.text = $"{currentplayer.food.Value.ToString()}";
-
-                playerTitle = item.Key.GetComponentInChildren<TextMeshProUGUI>();
-                playerTitle.text = currentplayer.name;
-            }
-        }
 
         public void DefineFoodText(int foodAmount, ulong target = 0)
         {
@@ -103,5 +85,40 @@ namespace Wendogo
             if (endText != null)
                 endText.gameObject.SetActive(true);
         }
+
+        [Rpc(SendTo.SpecifiedInParams)]
+        public void SetPlayerInfos(ulong localPLayerID,RpcParams rpcParams)
+        {
+            KeyValuePair<GameObject, ulong>[] snapshot = UIPlayerID.ToArray();
+
+            foreach (var kvp in snapshot)
+            {
+                GameObject go = kvp.Key;
+                ulong value = kvp.Value;
+
+                if (!go.activeSelf)
+                    continue;
+
+                if (value == localPLayerID)
+                {
+                    UIPlayerID[go] = 0;
+                }
+
+                var player = PlayerController.GetPlayer(value);
+                var woodText = go.transform
+                                 .Find("Ritual_Wood_Text")
+                                 .GetComponent<TextMeshProUGUI>();
+                woodText.text = player.wood.Value.ToString();
+
+                var foodText = go.transform
+                                 .Find("Ritual_Food_Text")
+                                 .GetComponent<TextMeshProUGUI>();
+                foodText.text = player.food.Value.ToString();
+
+                var title = go.GetComponentInChildren<TextMeshProUGUI>();
+                title.text = player.name;
+            }
+        }
+
     }
 }

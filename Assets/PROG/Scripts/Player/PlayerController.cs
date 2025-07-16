@@ -62,7 +62,7 @@ namespace Wendogo
         GameObject _pcSMObject;
 
         public static PlayerController LocalPlayer;
-        public static ulong LocalPlayerId;
+        public /*static*/ ulong LocalPlayerId;
 
         private GameObject pcSMObject;
 
@@ -70,6 +70,7 @@ namespace Wendogo
 
         public int temporaryTask = -1;
         private GameObject _prefabUI;
+        Action<int,int> playerAction;
 
         #endregion
 
@@ -220,7 +221,7 @@ namespace Wendogo
                 pcSMObject.AddComponent<PlayerControllerSM>();
 
                 Debug.Log($"This is my player id: {LocalPlayerId}");
-                PlayerUI.Instance.SetPlayerInfos();
+                //PlayerUI.Instance.SetPlayerInfos(RpcTarget.Me);
 
                 if (_prefabUI == null) { _prefabUI = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject; }
 
