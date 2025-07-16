@@ -110,11 +110,13 @@ namespace Wendogo
             NetworkVariableWritePermission.Owner
         );
         
-        public NetworkVariable<bool> asGardian = new(
+        public NetworkVariable<bool> hasGardian = new(
             false,
             NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Owner
         );
+        
+        public PlayerController gardian;
         
         public NetworkVariable<bool> eatPorc = new(
             false,
@@ -441,7 +443,14 @@ namespace Wendogo
 
         public void ChangeHealth(int delta)
         {
-            health.Value = Mathf.Clamp(health.Value + delta, 0, 6);
+            if (IsSimulatingNight)
+            {
+                hiddenHealth = Mathf.Clamp(health.Value + delta, 0, 6);
+            }
+            else
+            {
+                health.Value = Mathf.Clamp(health.Value + delta, 0, 6);
+            }
         }
 
         public void UpdateHearts(int oldHealthValue, int newHealthValue)

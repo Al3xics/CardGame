@@ -20,7 +20,15 @@ namespace Wendogo
                 
                 if (targetPlayer != null)
                 {
-                    targetPlayer.health.Value -= attackValue;
+                    if (!targetPlayer.hasGardian.Value)
+                    {
+                        targetPlayer.ChangeHealth(-attackValue);
+                    }
+                    else
+                    {
+                        targetPlayer.gardian.ChangeHealth(-attackValue);
+                        targetPlayer.hasGardian.Value = false;
+                    }
                 }
             }
             

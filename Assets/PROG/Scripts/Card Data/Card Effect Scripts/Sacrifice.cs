@@ -13,8 +13,15 @@ namespace Wendogo
             var targetPlayer = PlayerController.GetPlayer(target);
             if (targetPlayer != null)
             {
-                targetPlayer.asGardian.Value = true;
+                targetPlayer.hasGardian.Value = true;
+                targetPlayer.gardian = PlayerController.GetPlayer(owner);
             }
+        }
+
+        public override bool ApplyPassive(int playedCardId, ulong origin, ulong target, out int value)
+        {
+            value = -1;
+            return false;
         }
 
         public override void ShowUI()

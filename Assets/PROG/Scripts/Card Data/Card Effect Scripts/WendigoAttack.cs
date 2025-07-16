@@ -18,7 +18,15 @@ namespace Wendogo
             var targetPlayer = PlayerController.GetPlayer(target);
             if (targetPlayer != null)
             {
-                targetPlayer.ChangeHealth(-damageDone);
+                if (!targetPlayer.hasGardian.Value)
+                {
+                    targetPlayer.ChangeHealth(-damageDone);
+                }
+                else
+                {
+                    targetPlayer.gardian.ChangeHealth(-damageDone);
+                    targetPlayer.hasGardian.Value = false;
+                }
             }
         }
 
