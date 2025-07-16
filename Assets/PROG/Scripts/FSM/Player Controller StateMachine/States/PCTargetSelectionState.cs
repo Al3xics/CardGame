@@ -21,7 +21,7 @@ namespace Wendogo
             if (_player.ActiveCard.Card.isGroup)
             {
                 CardDataSO cardToUse = _player.ActiveCard.Card;
-                
+
                 _player.ActiveCard.Card.CardEffect.ShowUI();
                 await _player.GroupSelectTargetAsync();
                 Debug.Log("reached the end");

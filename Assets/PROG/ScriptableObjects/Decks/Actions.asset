@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9592994fb65ae4346bf93e970c81c9d7, type: 3}
   m_Name: Actions
   m_EditorClassIdentifier: 
+  deckID: 0
   cardDeckData:
   - CardData: {fileID: 11400000, guid: 0a317f580c8ea75419dac16871435e5b, type: 2}
     quantity: 30
@@ -25,4 +26,5 @@ MonoBehaviour:
     quantity: 30
   - CardData: {fileID: 11400000, guid: 0f0dc0dc6f5db2944b1960d0bee62926, type: 2}
     quantity: 30
-  deckID: 0
+  - CardData: {fileID: 11400000, guid: 8d30ef1d3be60bf4280bd755dcddc2c2, type: 2}
+    quantity: 30

@@ -8,7 +8,10 @@ using UnityEngine.EventSystems;
 using Unity.Netcode;
 using UnityEngine.SceneManagement;
 using Button = UnityEngine.UI.Button;
+using System.Threading.Tasks;
+using JetBrains.Annotations;
 using TMPro;
+using Unity.Collections;
 
 
 namespace Wendogo
@@ -25,11 +28,9 @@ namespace Wendogo
 
         private bool uiInitialized = false;
 
-        public NetworkVariable<RoleType> Role = new(
-            value: RoleType.Survivor,
-            readPerm: NetworkVariableReadPermission.Everyone,
-            writePerm: NetworkVariableWritePermission.Server
-        );
+        Dictionary<Button, PlayerController> playerTargets = new Dictionary<Button, PlayerController>();
+
+        List<ulong> playerList = new List<ulong>();
 
         public ulong target;
         GameObject selectTargetCanvas;
@@ -39,6 +40,7 @@ namespace Wendogo
         private UniTask _waitForTargetTask = default;
 
         private int _selectedDeck = -1;
+        public int deckID;
 
         public bool TargetSelected;
         private ulong _selectedTarget = 0;
@@ -48,17 +50,19 @@ namespace Wendogo
         GameObject _pcSMObject;
 
         public static PlayerController LocalPlayer;
-        public static ulong LocalPlayerId;
+        public /*static*/ ulong LocalPlayerId;
 
         private GameObject pcSMObject;
 
         private int cardDataID;
 
+        public int temporaryTask = -1;
         private GameObject _prefabUI;
+        Action<int,int> playerAction;
 
         #endregion
 
-        #region Health & Food & Wood & Cards
+        #region Network Variables
 
         public int hiddenHealth;
         public int maxHealth = 8;
@@ -80,6 +84,18 @@ namespace Wendogo
             0,
             NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Owner
+        );
+
+        public NetworkVariable<RoleType> Role = new(
+            value: RoleType.Survivor,
+            readPerm: NetworkVariableReadPermission.Everyone,
+            writePerm: NetworkVariableWritePermission.Server
+        );
+
+        public NetworkVariable<FixedString128Bytes> SessionPlayerId = new(
+            default,
+            NetworkVariableReadPermission.Everyone,
+            NetworkVariableWritePermission.Server
         );
 
         public NetworkList<int> PassiveCards = new(
@@ -108,7 +124,7 @@ namespace Wendogo
             NetworkVariableWritePermission.Owner
         );
 
-        public bool IsSimulatingNight => ServerManager.Instance.CurrentCycle.Value == Cycle.Night && IsLocalPlayer;
+        public bool IsSimulatingNight => ServerManager.Instance.currentCycle.Value == Cycle.Night && IsLocalPlayer;
 
         #endregion
 
@@ -165,8 +181,6 @@ namespace Wendogo
                 }
 
                 if (_prefabUI == null) { _prefabUI = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject; }
-
-                //PlayerUI.Instance.SetPlayerInfos();
             }
             if (!IsOwner) return;
 
@@ -215,7 +229,7 @@ namespace Wendogo
                 _popupText = _popup.GetComponentInChildren<TMP_Text>();
 
                 Debug.Log($"This is my player id: {LocalPlayerId}");
-                PlayerUI.Instance.SetPlayerInfos();
+                //PlayerUI.Instance.SetPlayerInfos(RpcTarget.Me);
 
                 if (_prefabUI == null) { _prefabUI = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject; }
 
@@ -277,7 +291,7 @@ namespace Wendogo
         public async UniTask GroupSelectTargetAsync()
         {
             await UniTask.WaitUntil(() => ServerManager.Instance.PlayerReadyCount.Value == 2);
-            await UniTask.WaitForEndOfFrame();
+            await UniTask.WaitForSeconds(0.1f);
             EnableInput();
             ServerManager.Instance.ClearVoteRpc();
         }
@@ -432,7 +446,6 @@ namespace Wendogo
         {
             var passiveCardsList = IsSimulatingNight ? HiddenPassiveCards : PassiveCards;
             var itemsToRemove = new List<(int cardId, GameObject cardObject)>();
-
             Debug.Log($"$$$$$ [PlayerController] ServerManager CurrentCycle : {ServerManager.Instance.CurrentCycle.Value.ToString()}");
             Debug.Log($"$$$$$ [PlayerController] Passive cards list : {passiveCardsList.Count}, for player {GetPlayer(LocalPlayerId).name} ({GetPlayer(LocalPlayerId).OwnerClientId})");
 
@@ -554,6 +567,7 @@ namespace Wendogo
             try
             {
                 await GroupSelectTargetVoteAsync();
+                ServerManager.Instance.FinishedPlayGroupCardRpc();
             }
             catch (Exception e)
             {
@@ -692,7 +706,14 @@ namespace Wendogo
         [Rpc(SendTo.SpecifiedInParams)]
         public void CheckPlayerHealthRpc(RpcParams rpcParams)
         {
-            // todo --> check health every beginning turn
+            if (food.Value >= 1)
+            {
+                food.Value--;
+            }
+            else
+            {
+                ServerManager.Instance.ChangePlayerHealthRpc(-1, LocalPlayerId);
+            }
         }
         
         [Rpc(SendTo.SpecifiedInParams)]
@@ -702,6 +723,8 @@ namespace Wendogo
 
             if (activePlayerInput)
                 _ = HandleVoteUIAsync(); // Fire-and-forget
+            else
+                ServerManager.Instance.ClearVoteRpc();
         }
         
         [Rpc(SendTo.SpecifiedInParams)]

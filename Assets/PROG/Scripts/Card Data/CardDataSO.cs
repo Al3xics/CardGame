@@ -23,7 +23,9 @@ public class CardDataSO : ScriptableObject
     public CardEffect CardEffect; //Reference to the card's effect
 
     [VerticalGroup("CardData/Stats"), LabelWidth(120)]
+    [OnValueChanged("GenerateID")]
     public bool isPassive; //Whether the card is passive or not
+    private bool _previousIsPassive;
     [VerticalGroup("CardData/Stats"), LabelWidth(120)]
     public bool isGroup; //Whether the card is passive or not
 
@@ -35,7 +37,6 @@ public class CardDataSO : ScriptableObject
     [InfoBox("@_priorityIndexMessage", InfoMessageType.Error, "@_showError")]
     [MinValue(0), ShowIf("isNotPassive"), OnValueChanged("ValidatePriorityIndex")]
     public int nightPriorityIndex = 0;
-    private bool _hasPriorityIndexConflict = false;
     private string _priorityIndexMessage = "";
     private bool _showWarning = false;
     private bool _showError = false;
@@ -69,12 +70,26 @@ public class CardDataSO : ScriptableObject
 #if UNITY_EDITOR
     private void Awake()
     {
-        if (!EditorApplication.isPlayingOrWillChangePlaymode) GenerateID();
+        _previousIsPassive = isPassive;
+        if (ShouldSkipProcessing()) GenerateID();
     }
 
-    private void OnValidate()
+    // private void OnValidate()
+    // {
+    //     if (ShouldSkipProcessing()) return;
+    //     
+    //     // Check if the "isPassive" field has been changed
+    //     if (_previousIsPassive != isPassive)
+    //     {
+    //         // Update _previousIsPassive to reflect the new state
+    //         _previousIsPassive = isPassive;
+    //         GenerateID();
+    //     }
+    // }
+
+    private bool ShouldSkipProcessing()
     {
-        if (!EditorApplication.isPlayingOrWillChangePlaymode) GenerateID();
+        return EditorApplication.isUpdating || EditorApplication.isPlayingOrWillChangePlaymode;
     }
 
     private void ValidatePriorityIndex()
@@ -89,14 +104,12 @@ public class CardDataSO : ScriptableObject
 
         if (nightPriorityIndex == 0 && conflicting.Count > 0)
         {
-            _hasPriorityIndexConflict = true;
             _priorityIndexMessage = $"The value 0 is shared with {conflicting.Count} other card(s). Execution order will not be guaranteed.";
             _showWarning = true;
             _showError = false;
         }
         else if (nightPriorityIndex != 0 && conflicting.Count > 0)
         {
-            _hasPriorityIndexConflict = true;
             _priorityIndexMessage = $"The {nightPriorityIndex} value is already in use by: {string.Join(", ", conflicting.Select(c => c.Name))}. It has been reset to 0.";
             nightPriorityIndex = 0;
             _showError = true;
@@ -105,7 +118,6 @@ public class CardDataSO : ScriptableObject
         }
         else
         {
-            _hasPriorityIndexConflict = false;
             _priorityIndexMessage = "";
             _showError = false;
             _showWarning = false;
@@ -114,6 +126,9 @@ public class CardDataSO : ScriptableObject
     
     public void GenerateID()
     {
+        // Skip if Unity is importing assets
+        if (ShouldSkipProcessing()) return;
+        
         int prefix = isPassive ? 2 : 1;
         int min = prefix * 1000 + 1;
         int max = prefix * 1000 + 999;
@@ -133,7 +148,6 @@ public class CardDataSO : ScriptableObject
                 ID = candidate;
                 EditorUtility.SetDirty(this);
                 AssetDatabase.SaveAssets();
-                Debug.Log($"[CardDataSO] ID généré : {ID} pour {name}");
                 return;
             }
         }

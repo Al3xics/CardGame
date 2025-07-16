@@ -5,6 +5,9 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
 
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 public enum SortField
 {
@@ -38,7 +41,7 @@ public class CardDatabaseSO : ScriptableObject
 
 #if UNITY_EDITOR
     [Button("Re-generate all Cards IDs", ButtonSizes.Large), GUIColor(0.2f, 0.8f, 1f)]
-    [PropertyOrder(-10), PropertySpace(10, 30)]
+    [PropertyOrder(-10), PropertySpace(10, 5)]
     private void GenerateAllIDs()
     {
         var allCards = AssetDatabase.FindAssets("t:CardDataSO")
@@ -47,15 +50,46 @@ public class CardDatabaseSO : ScriptableObject
             .Where(c => c != null)
             .ToList();
 
-        int updated = 0;
         foreach (var card in allCards)
-        {
-            int previous = card.ID;
             card.GenerateID();
-            if (card.ID != previous)
-                updated++;
+
+        AssetDatabase.SaveAssets();
+    }
+#endif
+
+    #endregion
+
+    #region Sync With Decks
+
+#if UNITY_EDITOR
+    [Button("Sync with Decks", ButtonSizes.Large), GUIColor(1f, 0.8f, 0.2f)]
+    [PropertyOrder(-9), PropertySpace(5, 30)]
+    private void SyncWithDecks()
+    {
+        string[] deckGuids = AssetDatabase.FindAssets("t:DeckConfiguration");
+
+        HashSet<CardDataSO> cardsInDecks = new();
+
+        foreach (var guid in deckGuids)
+        {
+            string path = AssetDatabase.GUIDToAssetPath(guid);
+            DeckConfiguration deck = AssetDatabase.LoadAssetAtPath<DeckConfiguration>(path);
+
+            if (deck == null || deck.cardDeckData == null)
+                continue;
+
+            foreach (CardDeckConfig config in deck.cardDeckData)
+            {
+                if (config == null || config.CardData == null)
+                    continue;
+
+                cardsInDecks.Add(config.CardData);
+            }
         }
 
+        cardList = cardsInDecks.ToList();
+
+        EditorUtility.SetDirty(this);
         AssetDatabase.SaveAssets();
     }
 #endif
@@ -64,7 +98,7 @@ public class CardDatabaseSO : ScriptableObject
 
     #region Tools
 
-    [BoxGroup("Tools"), PropertyOrder(-9)]
+    [BoxGroup("Tools"), PropertyOrder(-8)]
     [EnumToggleButtons, LabelText("Order"), LabelWidth(70)]
     [OnValueChanged(nameof(SortCards))]
     public SortOrder sortOrder = SortOrder.Ascending;
@@ -138,11 +172,12 @@ public class CardDatabaseSO : ScriptableObject
 
     private void Initialize()
     {
+        _cardDictionary.Clear();
+        
         //Populate the dictionary from the list
         foreach (CardDataSO card in cardList)
         {
-            //Add cards to the dictionary for quick ID-based access
-            _cardDictionary.Add(card.ID, card);
+            _cardDictionary.TryAdd(card.ID, card);
         }
     }
 

@@ -96,6 +96,8 @@ public class FilteredCardListDrawer : OdinAttributeDrawer<FilteredCardListAttrib
 
         EditorGUILayout.EndScrollView();
         EditorGUILayout.EndVertical();
+        
+        DisposeUnusedPropertyTrees(list);
     }
     
     private bool MatchesFilter(CardDataSO card, CardFilterType filter)
@@ -109,5 +111,24 @@ public class FilteredCardListDrawer : OdinAttributeDrawer<FilteredCardListAttrib
             ((filter & CardFilterType.Group) != 0 && card.isGroup) ||
             ((filter & CardFilterType.HasTarget) != 0 && card.HasTarget);
     }
+    
+    private void DisposeUnusedPropertyTrees(List<CardDataSO> currentCards)
+    {
+        var keysToRemove = new List<CardDataSO>();
 
+        foreach (var kvp in propertyTrees)
+        {
+            if (!currentCards.Contains(kvp.Key))
+            {
+                kvp.Value?.Dispose();
+                keysToRemove.Add(kvp.Key);
+            }
+        }
+
+        foreach (var key in keysToRemove)
+        {
+            propertyTrees.Remove(key);
+            foldouts.Remove(key);
+        }
+    }
 }

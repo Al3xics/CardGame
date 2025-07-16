@@ -19,6 +19,8 @@ namespace Wendogo
         public override void OnEnter()
         {
             base.OnEnter();
+            StateMachine.NightActions.Clear();
+            
             id = 0;
             // Sort `NightActions` by priority index and process them
             sortedActions = StateMachine.NightActions.Where(card => card.CardPriorityIndex > 0).OrderBy(card => card.CardPriorityIndex).ToList();
@@ -48,10 +50,11 @@ namespace Wendogo
         private void OnResolveCardNightConsequences()
         {
             ServerManager.Instance.OnResolveCardNightConsequences -= OnResolveCardNightConsequences;
+            ServerManager.Instance.UseAllUIForVotersRpc(false, false);
             
             id++;
             bool isLast = id >= sortedActions.Count;
-            
+
             if (isLast)
                 NextState();
             else
@@ -64,7 +67,6 @@ namespace Wendogo
         /// </summary>
         private void NextState()
         {
-            StateMachine.NightActions.Clear();
             ServerManager.Instance.CheckPlayerHealthRpc();
             StateMachine.ChangeState<CheckRitualState>();
         }
