@@ -9,8 +9,7 @@ namespace Wendogo
     public class WendigoAttack : CardEffect
     {
         public int damageDone = 1;
-
-        [HideInInspector]
+        
         public GameObject prefabUI;
 
         public override void Apply(ulong owner, ulong target, int value = -1)

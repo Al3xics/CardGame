@@ -427,55 +427,6 @@ namespace Wendogo
 
             return copy;
         }
-        
-        // public CardDataSO GetCardByID(int cardId)
-        // {
-        //     return DataCollection.Instance.cardDatabase.GetCardByID(cardId);
-        // }
-
-        // #region UI Methods
-
-        // public void UseVoteUI(bool openOrClose)
-        // {
-        //     _prefabUI.SetActive(openOrClose);
-        // }
-
-        // public void UpdateFoodText(int oldFoodValue, int newFoodValue)
-        // {
-        //     PlayerUI.Instance.DefineFoodText(newFoodValue);
-        // }
-
-        // public void UpdateWoodText(int oldWoodValue, int newWoodValue)
-        // {
-        //     PlayerUI.Instance.DefineWoodText(newWoodValue);
-        // }
-
-        // public void ChangeHealth(int delta)
-        // {
-        //     if (IsSimulatingNight)
-        //     {
-        //         hiddenHealth = Mathf.Clamp(health.Value + delta, 0, 6);
-        //     }
-        //     else
-        //     {
-        //         health.Value = Mathf.Clamp(health.Value + delta, 0, 6);
-        //     }
-        // }
-
-        // public void UpdateHearts(int oldHealthValue, int newHealthValue)
-        // {
-        //     Debug.Log($"New health is: {newHealthValue} and old health is {oldHealthValue} ");
-        //     if (newHealthValue < oldHealthValue)
-        //         for (int i = newHealthValue; i < oldHealthValue; i++)
-        //         {
-        //             PlayerUI.Instance.hearts[i].gameObject.SetActive(false);
-        //         }
-        //     else if (newHealthValue > oldHealthValue)
-        //         for (int i = oldHealthValue; i < newHealthValue; i++)
-        //         {
-        //             PlayerUI.Instance.hearts[i].gameObject.SetActive(true);
-        //         }
-        // }
 
         private void HandlePassiveCardTurnUpdate()
         {
@@ -561,6 +512,8 @@ namespace Wendogo
                 Debug.LogError(e);
             }
         }
+        
+        public void ShowCard(int card) {}
 
         #endregion
         

@@ -6,6 +6,7 @@ using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using static UnityEngine.GraphicsBuffer;
+using Object = System.Object;
 
 
 namespace Wendogo
@@ -130,6 +131,14 @@ namespace Wendogo
         {
             return GlobalPlayersByName.GetValueOrDefault(clientId, "Unknown Player");
         }
+        
+        public List<PlayerController> GetAllPlayers()
+        {
+            // Récupère tous les PlayerController sans tri (plus rapide)
+            PlayerController[] foundPlayers = FindObjectsByType<PlayerController>(FindObjectsSortMode.None);
+            return new List<PlayerController>(foundPlayers);
+        }
+
 
         #endregion
 
@@ -376,6 +385,11 @@ namespace Wendogo
         {
             var player = PlayerController.GetPlayer(playerId);
             player.RequestHealthChangeRpc(damage, RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
+        }
+        
+        public void RevealCardsRpc(ulong playerOwnerClientId, List<GameObject> ints)
+        {
+            // Logique
         }
         #endregion
     }

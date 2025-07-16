@@ -1,28 +1,27 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace Wendogo
 {
-    [CreateAssetMenu(fileName = "Spy", menuName = "Card Effects/Spy")]
-    public class Spy : CardEffect
+    [CreateAssetMenu(fileName = "RevealNightActions", menuName = "Card Effects/RevealNightActions")]
+    public class RevealNightActions : CardEffect
     {
-        [HideInInspector]
         public GameObject prefabUI;
         
-        [HideInInspector]
-        public GameObject prefabShowCard;
         public override void Apply(ulong owner, ulong target, int value = -1)
         {
-            var targetPlayer = PlayerController.GetPlayer(target);
-
-            if (targetPlayer != null && targetPlayer.PassiveCards != null && targetPlayer.PassiveCards.Count != 0)
+            var nightActions = GameStateMachine.Instance.NightActions;
+            List<PlayerAction> playerActions = new List<PlayerAction>();
+            for (int i = 0; i < nightActions.Count; i++)
             {
-                int index = Random.Range(0, targetPlayer.PassiveCards.Count);
-                int selectedCard = targetPlayer.PassiveCards[index];
-                
-                value = selectedCard;
+                if (nightActions[i].OriginId == target)
+                {
+                    playerActions.Add(nightActions[i]);
+                }
             }
-            
+            // Afficher playerActions
         }
+        
         public override void ShowUI()
         {
             if (prefabUI == null)
