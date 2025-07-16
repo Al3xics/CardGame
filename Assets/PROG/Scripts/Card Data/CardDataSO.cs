@@ -23,6 +23,7 @@ public class CardDataSO : ScriptableObject
     public CardEffect CardEffect; //Reference to the card's effect
 
     [VerticalGroup("CardData/Stats"), LabelWidth(120)]
+    [OnValueChanged("GenerateID")]
     public bool isPassive; //Whether the card is passive or not
     private bool _previousIsPassive;
     [VerticalGroup("CardData/Stats"), LabelWidth(120)]
@@ -73,18 +74,18 @@ public class CardDataSO : ScriptableObject
         if (ShouldSkipProcessing()) GenerateID();
     }
 
-    private void OnValidate()
-    {
-        if (ShouldSkipProcessing()) return;
-        
-        // Check if the "isPassive" field has been changed
-        if (_previousIsPassive != isPassive)
-        {
-            // Update _previousIsPassive to reflect the new state
-            _previousIsPassive = isPassive;
-            GenerateID();
-        }
-    }
+    // private void OnValidate()
+    // {
+    //     if (ShouldSkipProcessing()) return;
+    //     
+    //     // Check if the "isPassive" field has been changed
+    //     if (_previousIsPassive != isPassive)
+    //     {
+    //         // Update _previousIsPassive to reflect the new state
+    //         _previousIsPassive = isPassive;
+    //         GenerateID();
+    //     }
+    // }
 
     private bool ShouldSkipProcessing()
     {
@@ -147,7 +148,6 @@ public class CardDataSO : ScriptableObject
                 ID = candidate;
                 EditorUtility.SetDirty(this);
                 AssetDatabase.SaveAssets();
-                Debug.Log($"[CardDataSO] ID généré : {ID} pour {name}");
                 return;
             }
         }

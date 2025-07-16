@@ -55,7 +55,10 @@ namespace Wendogo
                 StateMachine.CurrentPlayerId = 0;
                 
                 if (StateMachine.PreviousState is not NightConsequencesState)
+                {
+                    StateMachine.NightActions.Clear();
                     StateMachine.SwitchCycle();
+                }
             }
         }
     }

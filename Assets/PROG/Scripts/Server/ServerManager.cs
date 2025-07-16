@@ -5,6 +5,7 @@ using Unity.Netcode;
 using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 using static UnityEngine.GraphicsBuffer;
 
 
@@ -57,8 +58,14 @@ namespace Wendogo
             NetworkVariableWritePermission.Server
         );
         
-        public NetworkVariable<Cycle> CurrentCycle = new(
+        public NetworkVariable<Cycle> currentCycle = new(
             Cycle.Day,
+            NetworkVariableReadPermission.Everyone,
+            NetworkVariableWritePermission.Server
+        );
+        
+        public NetworkVariable<int> currentTurn = new(
+            0,
             NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Server
         );
@@ -123,7 +130,12 @@ namespace Wendogo
 
         public void UpdateCycle(Cycle newCycle)
         {
-            if (IsServer) CurrentCycle.Value = newCycle;
+            if (IsServer) currentCycle.Value = newCycle;
+        }
+
+        public void UpdateTurn(int turn)
+        {
+            if (IsServer) currentTurn.Value = turn;
         }
         
         public string GetPlayerName(ulong clientId)

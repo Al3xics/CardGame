@@ -278,6 +278,7 @@ namespace Wendogo
                 case Cycle.Night:
                     newCycle = Cycle.Day;
                     _cptTurn++;
+                    ServerManager.Instance.UpdateTurn(_cptTurn);
                     break;
                 default:
                     throw new System.Exception("Invalid cycle value.");
