@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.Splines;
 using Cysharp.Threading.Tasks;
 using System;
+using System.Linq;
 using JetBrains.Annotations;
 using UnityEngine.Serialization;
 
@@ -28,7 +29,7 @@ namespace Wendogo
 
         public List<GameObject> handCards = new(); //List of all cards currently in hand
         public List<GameObject> passiveZoneCards = new();
-        
+
         public bool _isReplaced;
         public event Action _onHandsfull;
 
@@ -40,7 +41,7 @@ namespace Wendogo
                 _handTransform = GameObject.FindWithTag("hand").transform;
 
         }
-        
+
         public void Discard(GameObject discardedCard)
         {
             //Remove discarded card from hand list
@@ -115,7 +116,7 @@ namespace Wendogo
                 handler.enabled = false;
             }
         }
-        
+
         public void ToggleOnMovingCards(List<GameObject> cardsInHand)
         {
             foreach (GameObject card in cardsInHand)
@@ -139,13 +140,24 @@ namespace Wendogo
             if (passiveZoneCards.Contains(card))
             {
                 passiveZoneCards.Remove(card);
+
+                var targetKey = PlayerUI.Instance.CardSpaces
+                .Where(kv => kv.Value == card)
+                .Select(kv => kv.Key)
+                .ToList();
+
+                foreach (var key in targetKey)
+                {
+                    PlayerUI.Instance.CardSpaces[key] = null;
+                }
+
                 Destroy(card); // Détruire visuellement
                 Debug.Log($"Card {card.name} removed from passive zone and destroyed.");
             }
         }
-    
+
         public List<GameObject> GetPassiveZoneCards() => passiveZoneCards;
-        
+
         public GameObject GetCardGameObjectInPassiveZone(int cardId)
         {
             foreach (var obj in passiveZoneCards)

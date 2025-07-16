@@ -15,20 +15,28 @@ namespace Wendogo
         public override void OnEnter()
         {
             base.OnEnter();
+            ServerManager.Instance.OnCheckTriggerVote += OnCheckTriggerVote;
             CheckTriggerVote();
         }
 
-        // todo
+        /// <summary>
+        /// Checks the conditions to determine if a vote should be triggered within the game state logic.
+        /// Transitions to the next appropriate game state based on the result of the check.
+        /// </summary>
         private void CheckTriggerVote()
         {
             if (StateMachine.CheckVotingTurn())
             {
                 // We are in a voting state, so do things
-                // todo
-                
                 Log("Do things inside the voting state.");
+
+                ServerManager.Instance.UseAllUIForVotersRpc(true, true);
             }
-            
+        }
+
+        private void OnCheckTriggerVote()
+        {
+            ServerManager.Instance.OnCheckTriggerVote -= OnCheckTriggerVote;
             StateMachine.ChangeState<CheckLastTurnState>();
         }
 

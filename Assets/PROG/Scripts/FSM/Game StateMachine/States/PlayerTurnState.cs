@@ -37,6 +37,7 @@ namespace Wendogo
             Log($"Player {StateMachine.CurrentPlayerId} Begin Turn");
             ServerManager.Instance.OnPlayerTurnEnded += OnPlayerTurnEnded;
             ServerManager.Instance.PlayerTurnRpc(StateMachine.PlayersID[id]);
+            ServerManager.Instance.StartPlayAnimationRpc(false, (int)AnimatorName.Popup, "Pop-up Animation", StateMachine.PlayersID[id]);
         }
 
         /// <summary>

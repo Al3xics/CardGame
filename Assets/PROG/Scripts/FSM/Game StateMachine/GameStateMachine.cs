@@ -59,6 +59,13 @@ namespace Wendogo
         /// </summary>
         public int numberOfWoodToCompleteRitual = 6;
 
+        /// <summary>
+        /// Represents the card that triggers a voting phase every two turns in the game.
+        /// This variable holds a reference to a specific card configuration implemented
+        /// as a ScriptableObject of type <see cref="CardDataSO"/>.
+        /// </summary>
+        public CardDataSO votingCardEvery2Turns;
+
         /* --------------- Hide in Inspector --------------- */
         /// <summary>
         /// Tracks the current turn count within the game cycle.
@@ -122,30 +129,30 @@ namespace Wendogo
         }
 
         /// <summary>
-        /// Represents a collection that tracks the status of collected food.
+        /// Represents a collection that tracks the status of collected food for the ritual.
         /// Each entry in the list indicates whether a particular food resource contributes meaningfully
         /// to the ritual completion based on its validity.
         /// </summary>
-        private List<bool> _foodCollected = new();
+        private readonly List<bool> _ritualFoodCollected = new();
 
         /// <summary>
         /// Represents a private collection tracking the hidden food contributions by players
-        /// during the <see cref="Cycle.Night"/> cycle. See <see cref="_foodCollected"/>.
+        /// during the <see cref="Cycle.Night"/> cycle. See <see cref="_ritualFoodCollected"/> for the ritual.
         /// </summary>
-        private List<bool> _hiddenFoodCollected = new();
+        private readonly List<bool> _hiddenRitualFoodCollected = new();
 
         /// <summary>
-        /// Represents a collection that tracks the status of collected wood.
+        /// Represents a collection that tracks the status of collected wood for the ritual.
         /// Each entry in the list indicates whether a particular wood resource contributes meaningfully
         /// to the ritual completion based on its validity.
         /// </summary>
-        private List<bool> _woodCollected = new();
+        private readonly List<bool> _ritualWoodCollected = new();
 
         /// <summary>
         /// Represents a private collection tracking the hidden wood contributions by players
-        /// during the <see cref="Cycle.Night"/> cycle. See <see cref="_woodCollected"/>.
+        /// during the <see cref="Cycle.Night"/> cycle. See <see cref="_ritualWoodCollected"/> for the ritual.
         /// </summary>
-        private List<bool> _hiddenWoodCollected = new();
+        private readonly List<bool> _hiddenRitualWoodCollected = new();
 
         #endregion
 
@@ -195,11 +202,11 @@ namespace Wendogo
         /// <returns>True if both the food and wood requirements are fulfilled; otherwise, false.</returns>
         private bool CheckRitualOver()
         {
-            _foodCollected.RemoveAll(item => item == false);
-            _woodCollected.RemoveAll(item => item == false);
+            _ritualFoodCollected.RemoveAll(item => item == false);
+            _ritualWoodCollected.RemoveAll(item => item == false);
             
-            bool isFoodComplete = _foodCollected.Count == numberOfFoodToCompleteRitual && _foodCollected.All(item => item);
-            bool isWoodComplete = _woodCollected.Count == numberOfWoodToCompleteRitual && _woodCollected.All(item => item);
+            bool isFoodComplete = _ritualFoodCollected.Count == numberOfFoodToCompleteRitual && _ritualFoodCollected.All(item => item);
+            bool isWoodComplete = _ritualWoodCollected.Count == numberOfWoodToCompleteRitual && _ritualWoodCollected.All(item => item);
 
             return isFoodComplete && isWoodComplete;
 
@@ -217,15 +224,15 @@ namespace Wendogo
             {
                 case true:
                     if (resource == ResourceType.Food)
-                        _hiddenFoodCollected.Add(isRealResource);
+                        _hiddenRitualFoodCollected.Add(isRealResource);
                     else if (resource == ResourceType.Wood)
-                        _hiddenWoodCollected.Add(isRealResource);
+                        _hiddenRitualWoodCollected.Add(isRealResource);
                     break;
                 case false:
                     if (resource == ResourceType.Food)
-                        _foodCollected.Add(isRealResource);
+                        _ritualFoodCollected.Add(isRealResource);
                     else if (resource == ResourceType.Wood)
-                        _woodCollected.Add(isRealResource);
+                        _ritualWoodCollected.Add(isRealResource);
                     break;
             }
         }
@@ -236,10 +243,10 @@ namespace Wendogo
         /// </summary>
         public void CopyPublicToHidden()
         {
-            _hiddenFoodCollected.Clear();
-            _hiddenFoodCollected.AddRange(_foodCollected);
-            _hiddenWoodCollected.Clear();
-            _hiddenWoodCollected.AddRange(_woodCollected);
+            _hiddenRitualFoodCollected.Clear();
+            _hiddenRitualFoodCollected.AddRange(_ritualFoodCollected);
+            _hiddenRitualWoodCollected.Clear();
+            _hiddenRitualWoodCollected.AddRange(_ritualWoodCollected);
         }
 
         /// <summary>
@@ -248,10 +255,10 @@ namespace Wendogo
         /// </summary>
         public void CopyHiddenToPublic()
         {
-            _foodCollected.Clear();
-            _foodCollected.AddRange(_hiddenFoodCollected);
-            _woodCollected.Clear();
-            _woodCollected.AddRange(_hiddenWoodCollected);
+            _ritualFoodCollected.Clear();
+            _ritualFoodCollected.AddRange(_hiddenRitualFoodCollected);
+            _ritualWoodCollected.Clear();
+            _ritualWoodCollected.AddRange(_hiddenRitualWoodCollected);
         }
 
         #endregion

@@ -21,10 +21,10 @@ namespace Wendogo
 
         [SerializeField] private TextMeshProUGUI foodCountP2;
 
-        [SerializeField] public List<Transform> cardSpaces = new List<Transform>();
         [SerializeField] public List<GameObject> hearts = new List<GameObject>();
 
         public Dictionary<GameObject, ulong> UIPlayerID = new Dictionary<GameObject, ulong>();
+        public Dictionary<Transform, GameObject> CardSpaces = new Dictionary<Transform, GameObject>();
 
         public static PlayerUI Instance { get; private set; }
 
@@ -60,13 +60,13 @@ namespace Wendogo
 
                 var currentplayer = PlayerController.GetPlayer(item.Value);
 
-                var woodGameObject = item.Key.transform.Find("Ritual_Wood_Text").gameObject;
-                var currentWoodText = woodGameObject.GetComponent<TextMeshProUGUI>();
-                currentWoodText.text = $"{currentplayer.wood.Value.ToString()}";
+                //var woodGameObject = item.Key.transform.Find("Ritual_Wood_Text").gameObject;
+                //var currentWoodText = woodGameObject.GetComponent<TextMeshProUGUI>();
+                //currentWoodText.text = $"{currentplayer.wood.Value.ToString()}";
 
-                var foodGameObject = item.Key.transform.Find("Ritual_Food_Text").gameObject;
-                var currentFoodText = foodGameObject.GetComponent<TextMeshProUGUI>();
-                currentFoodText.text = $"{currentplayer.food.Value.ToString()}";
+                //var foodGameObject = item.Key.transform.Find("Ritual_Food_Text").gameObject;
+                //var currentFoodText = foodGameObject.GetComponent<TextMeshProUGUI>();
+                //currentFoodText.text = $"{currentplayer.food.Value.ToString()}";
 
                 //playerTitle = item.Key.GetComponentInChildren<TextMeshProUGUI>();
                 //ServerManager.Instance.GetPlayerNameRpc(item.Value);
@@ -74,13 +74,15 @@ namespace Wendogo
             }
         }
 
-        public void DefineFoodText(int foodAmount)
+        public void DefineFoodText(int foodAmount, ulong target = 0)
         {
-            foodCount.text = $"{foodAmount.ToString()}";
+            if (target == 0)
+                foodCount.text = $"{foodAmount.ToString()}";
         }
-        public void DefineWoodText(int woodAmount)
+        public void DefineWoodText(int woodAmount, ulong target = 0)
         {
-            woodCount.text = $"{woodAmount.ToString()}";
+            if (target == 0)
+                woodCount.text = $"{woodAmount.ToString()}";
         }
 
         public void SendDebug(string message)

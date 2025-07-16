@@ -1,14 +1,14 @@
 ﻿using Cysharp.Threading.Tasks;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Unity.Netcode;
 using UnityEngine.SceneManagement;
 using Button = UnityEngine.UI.Button;
-using System.Threading.Tasks;
-using JetBrains.Annotations;
-using Unity.Collections;
+using TMPro;
 
 
 namespace Wendogo
@@ -21,7 +21,7 @@ namespace Wendogo
         [SerializeField] public EventSystem _inputEvent;
         [SerializeField] public HandManager _handManager;
 
-        private PlayerUI playerUIInstance;
+        [SerializeField] private PlayerUI playerUIInstance;
 
         private bool uiInitialized = false;
 
@@ -31,17 +31,6 @@ namespace Wendogo
             writePerm: NetworkVariableWritePermission.Server
         );
 
-        public NetworkVariable<FixedString128Bytes> SessionPlayerId =
-    new NetworkVariable<FixedString128Bytes>(
-        default,
-        NetworkVariableReadPermission.Everyone,
-        NetworkVariableWritePermission.Server
-    );
-
-        Dictionary<Button, PlayerController> playerTargets = new Dictionary<Button, PlayerController>();
-
-        List<ulong> playerList = new List<ulong>();
-
         public ulong target;
         GameObject selectTargetCanvas;
 
@@ -50,9 +39,6 @@ namespace Wendogo
         private UniTask _waitForTargetTask = default;
 
         private int _selectedDeck = -1;
-        public int deckID;
-
-        public static event Action OnCardUsed;
 
         public bool TargetSelected;
         private ulong _selectedTarget = 0;
@@ -67,10 +53,7 @@ namespace Wendogo
         private GameObject pcSMObject;
 
         private int cardDataID;
-        
-        public virtual event Action OnTargetDetection;
-        
-        public int temporaryTask = -1;
+
         private GameObject _prefabUI;
 
         #endregion
@@ -78,8 +61,9 @@ namespace Wendogo
         #region Health & Food & Wood & Cards
 
         public int hiddenHealth;
+        public int maxHealth = 8;
         public NetworkVariable<int> health = new(
-            6,
+            8,
             NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Owner
         );
@@ -128,11 +112,43 @@ namespace Wendogo
 
         #endregion
 
+        #region Action
+        
+        public static event Action OnCardUsed;
+        
+        public virtual event Action OnTargetDetection;
+
+        public event Action OnFinishedCardPlayed;
+
+        #endregion
+
+        #region Animation
+
+        /// <summary>
+        /// Represents a reference to the pop-up GameObject in the scene.
+        /// This field is initialized during the Awake method by finding the GameObject
+        /// with the "Pop-up" tag. Provides functionality for pop-up interactions
+        /// within the game state machine.
+        /// </summary>
+        private GameObject _popup;
+        
+        private TMP_Text _popupText;
+
+        #endregion
+
         #region Basic Method
         
         private void Start()
         {
             name = IsLocalPlayer ? "LocalPlayer" : $"Player{OwnerClientId}";
+
+            if (AutoSessionBootstrapper.AutoConnect)
+            {
+                // Reference to Pop-up
+                _popup = GameObject.FindWithTag("Pop-up");
+                if (_popup ==null) throw new Exception("Pop-up not found");
+                _popupText = _popup.GetComponentInChildren<TMP_Text>();
+            }
         }
 
         public override void OnNetworkSpawn()
@@ -140,7 +156,7 @@ namespace Wendogo
             if (AutoSessionBootstrapper.AutoConnect)
             {
                 _inputEvent = GameObject.Find("EventSystem")?.GetComponent<EventSystem>();
-                if (_inputEvent != null) _inputEvent.enabled = false;
+                if (_inputEvent != null && _inputEvent.enabled) _inputEvent.enabled = false;
                 if (_handManager == null) _handManager = GameObject.FindWithTag("hand")?.GetComponent<HandManager>();
                 if (IsOwner)
                 {
@@ -157,7 +173,7 @@ namespace Wendogo
             LocalPlayer = this;
             LocalPlayerId = NetworkManager.Singleton.LocalClientId;
 
-            health.Value = Mathf.Clamp(health.Value, 0, 6);
+            //health.Value = Mathf.Clamp(health.Value, 0, maxHealth);
 
             food.OnValueChanged += UpdateFoodText;
             wood.OnValueChanged += UpdateWoodText;
@@ -181,11 +197,22 @@ namespace Wendogo
 
             if (scene.name == ServerManager.Instance.gameSceneName)
             {
+                if (!AutoSessionBootstrapper.AutoConnect)
+                {
+                    name = SessionManager.Instance.ActiveSession.CurrentPlayer.Properties[SessionConstants.PlayerNamePropertyKey].Value;
+                    ServerManager.Instance.RegisterPlayerNameRpc(OwnerClientId, name);
+                }
+                
                 _inputEvent = GameObject.Find("EventSystem")?.GetComponent<EventSystem>();
-                if (_inputEvent != null) _inputEvent.enabled = false;
+                if (_inputEvent != null && _inputEvent.enabled) _inputEvent.enabled = false;
                 if (_handManager == null) _handManager = GameObject.FindWithTag("hand")?.GetComponent<HandManager>();
                 pcSMObject = new GameObject($"{nameof(PlayerControllerSM)}");
                 pcSMObject.AddComponent<PlayerControllerSM>();
+
+                // Reference to Pop-up
+                _popup = GameObject.FindWithTag("Pop-up");
+                if (_popup ==null) throw new Exception("Pop-up not found");
+                _popupText = _popup.GetComponentInChildren<TMP_Text>();
 
                 Debug.Log($"This is my player id: {LocalPlayerId}");
                 PlayerUI.Instance.SetPlayerInfos();
@@ -204,7 +231,14 @@ namespace Wendogo
             Debug.Log("Input enabled");
         }
 
+        public void DisableInput()
+        {
+            _inputEvent.enabled = false;
 
+            //Implement enable input
+            Debug.Log("Input disabled");
+        }
+        
         public async UniTask<int> SelectDeckAsync(int missingCards)
         {
             if (!IsOwner)
@@ -240,27 +274,39 @@ namespace Wendogo
             Debug.Log($"Selected target is {_intTarget} ");
         }
 
-
         public async UniTask GroupSelectTargetAsync()
         {
+            await UniTask.WaitUntil(() => ServerManager.Instance.PlayerReadyCount.Value == 2);
+            await UniTask.WaitForEndOfFrame();
+            EnableInput();
+            ServerManager.Instance.ClearVoteRpc();
+        }
+
+        public async UniTask GroupSelectTargetVoteAsync()
+        {
+            _inputEvent.enabled = true;
             _intTarget = -1;
+
             TargetSelectionUI.OnTargetPicked += HandleTargetSelected;
 
             await UniTask.WaitUntil(() => _intTarget >= 0);
-
-            ServerManager.Instance.PlayerReadyCount.Value++;
 
             TargetSelectionUI.OnTargetPicked -= HandleTargetSelected;
 
             Debug.Log($"Voted against target is {_intTarget} ");
 
-            ServerManager.Instance.Votes.Add(_intTarget);
+            _inputEvent.enabled = false;
+
+            ServerManager.Instance.SendVoteRpc(_intTarget);
 
             Debug.Log($"Waiting for group vote to end");
 
-            await UniTask.WaitUntil(() => ServerManager.Instance.PlayerReadyCount.Value == 4);
+            //todo change the value to the number of players in the session
+            await UniTask.WaitUntil(() => ServerManager.Instance.PlayerReadyCount.Value == 2);
 
             Debug.Log($"Vote ended");
+
+            ServerManager.Instance.FinishedVotingStateRpc();
         }
 
         private void HandleDeckClicked(int deckId)
@@ -272,7 +318,7 @@ namespace Wendogo
         {
             _intTarget = targetID;
         }
-
+        
         public void SelectCard(CardObjectData card)
         {
             //Implement select card
@@ -284,9 +330,6 @@ namespace Wendogo
 
             //TweeningManager.CardUp(card.gameObject.transform);
             card.isSelected = true;
-
-            if (ActiveCard.Card.HasTarget)
-                SelectTarget();
 
             Debug.Log("Card selected");
         }
@@ -300,18 +343,10 @@ namespace Wendogo
             card.isSelected = false;
         }
 
-        public async void SelectTarget()
-        {
-            //Implement select target
-            _selectedTarget = 0;
-            //Target selection
-            //Handled the cancel next
-            await UniTask.WaitUntil(() => _intTarget >= 0);
-            Debug.Log("Target selected");
-
-            ConfirmPlay();
-        }
-
+        //public async void SelectTarget()
+        //{
+            //todo move the method in the select state here
+        //}
 
         public void BurnCard()
         {
@@ -324,7 +359,6 @@ namespace Wendogo
             HandleUsedCard();
             //Placeholder for sending card lacking to server        
             //NotifyMissingCards();
-            //CheckPA();
         }
 
         public void ConfirmPlay()
@@ -343,7 +377,6 @@ namespace Wendogo
             //NotifyPlayedCard();
 
             HandleUsedCard();
-            //CheckPA();
 
         }
 
@@ -363,33 +396,9 @@ namespace Wendogo
             }
         }
 
-        public void CheckPA()
-        {
-            //Check player PA
-            if (_playerPA > 0)
-                return;
-
-            else
-            {
-                //Placeholder for sending card lacking to server        
-                //NotifyMissingCards();
-                Debug.Log("Turn is over");
-                //Send informations to server
-                NotifyEndTurn();
-                //Send IDs of played cards to server
-                Debug.Log("Sending to server");
-                _inputEvent.enabled = false;
-            }
-        }
-
         public bool HasEnoughPA()
         {
             return _playerPA > 0;
-        }
-
-        public int GetChosenTarget()
-        {
-            return _intTarget;
         }
 
         public int GetMissingCards()
@@ -418,18 +427,144 @@ namespace Wendogo
 
             return copy;
         }
-
-        public CardDataSO GetCardByID(int cardId)
-        {
-            return DataCollection.Instance.cardDatabase.GetCardByID(cardId);
-        }
-
-        #region UI Methods
         
-        public void UseVoteUI(bool openOrClose)
+        // public CardDataSO GetCardByID(int cardId)
+        // {
+        //     return DataCollection.Instance.cardDatabase.GetCardByID(cardId);
+        // }
+
+        // #region UI Methods
+
+        // public void UseVoteUI(bool openOrClose)
+        // {
+        //     _prefabUI.SetActive(openOrClose);
+        // }
+
+        // public void UpdateFoodText(int oldFoodValue, int newFoodValue)
+        // {
+        //     PlayerUI.Instance.DefineFoodText(newFoodValue);
+        // }
+
+        // public void UpdateWoodText(int oldWoodValue, int newWoodValue)
+        // {
+        //     PlayerUI.Instance.DefineWoodText(newWoodValue);
+        // }
+
+        // public void ChangeHealth(int delta)
+        // {
+        //     if (IsSimulatingNight)
+        //     {
+        //         hiddenHealth = Mathf.Clamp(health.Value + delta, 0, 6);
+        //     }
+        //     else
+        //     {
+        //         health.Value = Mathf.Clamp(health.Value + delta, 0, 6);
+        //     }
+        // }
+
+        // public void UpdateHearts(int oldHealthValue, int newHealthValue)
+        // {
+        //     Debug.Log($"New health is: {newHealthValue} and old health is {oldHealthValue} ");
+        //     if (newHealthValue < oldHealthValue)
+        //         for (int i = newHealthValue; i < oldHealthValue; i++)
+        //         {
+        //             PlayerUI.Instance.hearts[i].gameObject.SetActive(false);
+        //         }
+        //     else if (newHealthValue > oldHealthValue)
+        //         for (int i = oldHealthValue; i < newHealthValue; i++)
+        //         {
+        //             PlayerUI.Instance.hearts[i].gameObject.SetActive(true);
+        //         }
+        // }
+
+        private void HandlePassiveCardTurnUpdate()
         {
-            _prefabUI.SetActive(openOrClose);
+            var passiveCardsList = IsSimulatingNight ? HiddenPassiveCards : PassiveCards;
+            var itemsToRemove = new List<(int cardId, GameObject cardObject)>();
+
+            Debug.Log($"$$$$$ [PlayerController] ServerManager CurrentCycle : {ServerManager.Instance.CurrentCycle.Value.ToString()}");
+            Debug.Log($"$$$$$ [PlayerController] Passive cards list : {passiveCardsList.Count}, for player {GetPlayer(LocalPlayerId).name} ({GetPlayer(LocalPlayerId).OwnerClientId})");
+
+            // Iterate through all logical passive cards (IDs)
+            foreach (var cardId in passiveCardsList)
+            {
+                // var card = DataCollection.Instance.cardDatabase.GetCardByID(cardId);
+                var card = _handManager.GetCardDataInPassiveZone(cardId);
+
+                if (card == null || !card.isPassive) continue;
+
+                Debug.Log($"$$$$$ [PlayerController] Current turns remaining for passive card {card.Name} : {card.turnsRemaining}");
+
+                if (card.turnsRemaining == -1) continue;
+                if (card.turnsRemaining > 0) card.turnsRemaining--;
+                Debug.Log($"$$$$$ [PlayerController] Turns remaining for passive card {card.Name} : {card.turnsRemaining}");
+                if (card.turnsRemaining <= 0)
+                {
+                    GameObject cardObject = _handManager.GetCardGameObjectInPassiveZone(cardId);
+                    itemsToRemove.Add((cardId, cardObject));
+                    Debug.Log($"Passive card {card.Name} expired.");
+                    break;
+                }
+            }
+
+            if (itemsToRemove.Count == 0) return;
+
+            foreach (var (cardId, cardObject) in itemsToRemove)
+            {
+                passiveCardsList.Remove(cardId);
+                if (cardObject != null) _handManager.RemoveCardFromPassiveZone(cardObject);
+                Debug.Log($"Card with ID: {cardId} removed from {(IsSimulatingNight ? "HiddenPassiveCards" : "PassiveCards")}");
+            }
+
+            Debug.Log($"$$$$$ [PlayerController] passiveCardsList Count : {passiveCardsList.Count}");
+
+            if (IsSimulatingNight)
+                Debug.Log($"$$$$$ [PlayerController] HiddenPassiveCardsList Count : {HiddenPassiveCards.Count}");
+            else
+                Debug.Log($"$$$$$ [PlayerController] PassiveCards Count : {PassiveCards.Count}");
+
         }
+        
+        private async void PlayAndWaitAnimation(Animator animator, string animationName, ulong playerId)
+        {
+            try
+            {
+                animator.enabled = true;
+                if (playerId == LocalPlayerId)
+                {
+                    DisableInput();
+                    _popupText.text = PopupSentences.Instance.thisPlayerTurnText;
+                }
+                else
+                {
+                    string playerName;
+                    if (AutoSessionBootstrapper.AutoConnect)
+                        playerName = GetPlayer(playerId).name;
+                    else
+                        playerName = ServerManager.Instance.GetPlayerName(playerId);
+                    _popupText.text = PopupSentences.Instance.ReplaceX(PopupSentences.Instance.otherPlayerTurnText, $"{playerName}");
+                }
+                
+                animator.Play(animationName, 0, 0f);
+
+                var clip = animator.runtimeAnimatorController.animationClips.FirstOrDefault(c => c.name == animationName);
+
+                if (clip) await UniTask.WaitForSeconds(clip.length);
+                else Debug.LogWarning($"Animation {animationName} not found");
+            
+                animator.enabled = false;
+                if (playerId == LocalPlayerId) EnableInput();
+                _popupText.text = "";
+            }
+            catch (Exception e)
+            {
+                Debug.LogError(e);
+            }
+        }
+
+        #endregion
+        
+        #region UI Methods
 
         public void UpdateFoodText(int oldFoodValue, int newFoodValue)
         {
@@ -440,19 +575,12 @@ namespace Wendogo
         {
             PlayerUI.Instance.DefineWoodText(newWoodValue);
         }
-
+        
         public void ChangeHealth(int delta)
         {
-            if (IsSimulatingNight)
-            {
-                hiddenHealth = Mathf.Clamp(health.Value + delta, 0, 6);
-            }
-            else
-            {
-                health.Value = Mathf.Clamp(health.Value + delta, 0, 6);
-            }
+            health.Value = Mathf.Clamp(health.Value + delta, 0, maxHealth);
         }
-
+        
         public void UpdateHearts(int oldHealthValue, int newHealthValue)
         {
             Debug.Log($"New health is: {newHealthValue} and old health is {oldHealthValue} ");
@@ -468,54 +596,16 @@ namespace Wendogo
                 }
         }
 
-        #endregion
-
-        private void HandlePassiveCardTurnUpdate()
+        private async UniTaskVoid HandleVoteUIAsync()
         {
-            var passiveCardsList = IsSimulatingNight ? HiddenPassiveCards : PassiveCards;
-            var itemsToRemove = new List<(int cardId, GameObject cardObject)>();
-            
-            Debug.Log($"$$$$$ [PlayerController] ServerManager CurrentCycle : {ServerManager.Instance.CurrentCycle.Value.ToString()}");
-            Debug.Log($"$$$$$ [PlayerController] Passive cards list : {passiveCardsList.Count}, for player {GetPlayer(LocalPlayerId).name} ({GetPlayer(LocalPlayerId).OwnerClientId})");
-
-            // Iterate through all logical passive cards (IDs)
-            foreach (var cardId in passiveCardsList)
+            try
             {
-                // var card = DataCollection.Instance.cardDatabase.GetCardByID(cardId);
-                var card = _handManager.GetCardDataInPassiveZone(cardId);
-                
-                if (card == null || !card.isPassive) continue;
-                
-                Debug.Log($"$$$$$ [PlayerController] Current turns remaining for passive card {card.Name} : {card.turnsRemaining}");
-                
-                if (card.turnsRemaining == -1) continue;
-                if (card.turnsRemaining > 0) card.turnsRemaining--;
-                Debug.Log($"$$$$$ [PlayerController] Turns remaining for passive card {card.Name} : {card.turnsRemaining}");
-                if (card.turnsRemaining <= 0)
-                {
-                    GameObject cardObject = _handManager.GetCardGameObjectInPassiveZone(cardId);
-                    itemsToRemove.Add((cardId, cardObject));
-                    Debug.Log($"Passive card {card.Name} expired.");
-                    break;
-                }
+                await GroupSelectTargetVoteAsync();
             }
-
-            if (itemsToRemove.Count == 0) return;
-            
-            foreach (var (cardId, cardObject) in itemsToRemove)
+            catch (Exception e)
             {
-                passiveCardsList.Remove(cardId);
-                if (cardObject != null) _handManager.RemoveCardFromPassiveZone(cardObject);
-                Debug.Log($"Card with ID: {cardId} removed from {(IsSimulatingNight ? "HiddenPassiveCards" : "PassiveCards")}");
+                Debug.LogError(e);
             }
-            
-            Debug.Log($"$$$$$ [PlayerController] passiveCardsList Count : {passiveCardsList.Count}");
-            
-            if (IsSimulatingNight)
-                Debug.Log($"$$$$$ [PlayerController] HiddenPassiveCardsList Count : {HiddenPassiveCards.Count}");
-            else
-                Debug.Log($"$$$$$ [PlayerController] PassiveCards Count : {PassiveCards.Count}");
-                
         }
 
         #endregion
@@ -548,8 +638,7 @@ namespace Wendogo
             if (IsOwner)
                 pcSMObject.GetComponent<PlayerControllerSM>().StartStateMachine();
         }
-
-
+        
         [Rpc(SendTo.SpecifiedInParams)]
         public void TryApplyPassiveRpc(int playedCardId, ulong origin, RpcParams rpcParams)
         {
@@ -579,7 +668,7 @@ namespace Wendogo
         [Rpc(SendTo.SpecifiedInParams)]
         public void FinishedCardPlayedRpc(RpcParams rpcParams)
         {
-
+            OnFinishedCardPlayed?.Invoke();
         }
 
         /// <summary>
@@ -647,26 +736,48 @@ namespace Wendogo
         [Rpc(SendTo.SpecifiedInParams)]
         public void AddHiddenPassiveCardRpc(int cardId, RpcParams rpcParams) => HiddenPassiveCards.Add(cardId);
 
-        [Rpc(SendTo.Server)]
-        public void RegisterSessionIdServerRpc(string sessionPlayerId)
-        {
-            SessionPlayerId.Value = sessionPlayerId;
-        }
-
         [Rpc(SendTo.SpecifiedInParams)]
         public void CheckPlayerHealthRpc(RpcParams rpcParams)
         {
-            // todo
+            // todo --> check health every beginning turn
+        }
+        
+        [Rpc(SendTo.SpecifiedInParams)]
+        public void UseVoteUIRpc(bool setUIActive, bool activePlayerInput, RpcParams rpcParams)
+        {
+            _prefabUI.SetActive(setUIActive);
+
+            if (activePlayerInput)
+                _ = HandleVoteUIAsync(); // Fire-and-forget
+        }
+        
+        [Rpc(SendTo.SpecifiedInParams)]
+        public void StartPlayAnimationRpc(bool playAndWait, int animatorName, string animationName, ulong playerId, RpcParams rpcParams)
+        {
+            Animator animator;
+            
+            switch (animatorName)
+            {
+                case 0:
+                    animator = _popup.GetComponent<Animator>();
+                    break;
+                
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(animatorName), animatorName, null);
+            }
+
+            PlayAndWaitAnimation(animator, animationName, playerId);
+        }
+
+        [Rpc(SendTo.SpecifiedInParams)]
+        public void RequestHealthChangeRpc(int delta, RpcParams rpcParams)
+        {
+            ChangeHealth(delta);
         }
 
         #endregion
 
         #region Notify
-
-        public void NotifyMissingCards(int missingCards, int deckID)
-        {
-            ServerManager.Instance.TransmitMissingCardsRpc(GetMissingCards(), deckID);
-        }
 
         public void NotifyEndTurn()
         {
@@ -690,16 +801,20 @@ namespace Wendogo
             }
 
             // Needs this player to select a target to play the card against
-            if (cardDataSO.HasTarget)
+            if (cardDataSO.HasTarget && !cardDataSO.isGroup)
             {
                 await UniTask.WaitUntil(() => _intTarget >= 0);
                 _selectedTarget = (ulong)_intTarget;
 
             }
-
+            else if (cardDataSO.isGroup)
+            {
+                await UniTask.WaitUntil(() => ServerManager.Instance.PlayerReadyCount.Value == 2);
+            }
             ServerManager.Instance.TransmitPlayedCardRpc(cardDataSO.ID, _selectedTarget);
             Debug.Log($"card {cardDataSO.Name} was sent to server ");
         }
+        
         #endregion
     }
 }

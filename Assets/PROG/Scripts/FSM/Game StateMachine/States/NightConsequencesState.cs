@@ -27,23 +27,24 @@ namespace Wendogo
             StateMachine.CopyHiddenToPublic();
             
             if (sortedActions.Count != 0)
-                ResolveCardNightConsequences(id);
+                ResolveCardNightConsequences();
             else
                 NextState();
         }
 
-        // todo
-        private void ResolveCardNightConsequences(int cpt)
+        /// <summary>
+        /// Resolves the consequences of a card during the night phase in the game.
+        /// </summary>
+        private void ResolveCardNightConsequences()
         {
             ServerManager.Instance.OnResolveCardNightConsequences += OnResolveCardNightConsequences;
-            
-            var card = DataCollection.Instance.cardDatabase.GetCardByID(sortedActions[cpt].CardId);
-            card.CardEffect.Apply(sortedActions[cpt].OriginId, sortedActions[cpt].TargetId);
-            // Here, only card that needs an action from the players will execute. When they finish,
-            // 'OnResolvedCardNightConsequences' will be called.
+            ServerManager.Instance.UseAllUIForVotersRpc(true, true);
         }
 
-        // todo
+        /// <summary>
+        /// This method is triggered when the current card's effect completes its execution,
+        /// progressing to the next card or transitioning to the next state if all cards have been processed.
+        /// </summary>
         private void OnResolveCardNightConsequences()
         {
             ServerManager.Instance.OnResolveCardNightConsequences -= OnResolveCardNightConsequences;
@@ -54,7 +55,7 @@ namespace Wendogo
             if (isLast)
                 NextState();
             else
-                ResolveCardNightConsequences(id);
+                ResolveCardNightConsequences();
         }
 
         /// <summary>

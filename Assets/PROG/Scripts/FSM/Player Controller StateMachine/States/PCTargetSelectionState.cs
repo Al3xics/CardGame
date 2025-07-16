@@ -14,16 +14,21 @@ namespace Wendogo
         public override async void OnEnter()
         {
             base.OnEnter();
-            _player.ActiveCard.Card.CardEffect.ShowUI();
+
             Debug.Log($"active card is : {_player.ActiveCard.Card.name}");
             _player._handManager.ToggleOffMovingCards(_player._handManager.handCards);
 
             if (_player.ActiveCard.Card.isGroup)
             {
+                CardDataSO cardToUse = _player.ActiveCard.Card;
+                
+                _player.ActiveCard.Card.CardEffect.ShowUI();
                 await _player.GroupSelectTargetAsync();
+                Debug.Log("reached the end");
             }
             else
             {
+                _player.ActiveCard.Card.CardEffect.ShowUI();
                 await _player.SelectTargetAsync();
 
             }

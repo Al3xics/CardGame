@@ -22,17 +22,15 @@ namespace Wendogo
                 {
                     if (!targetPlayer.hasGardian.Value)
                     {
-                        targetPlayer.ChangeHealth(-attackValue);
+                        ServerManager.Instance.ChangePlayerHealthRpc(-attackValue, targetPlayer.OwnerClientId);
                     }
                     else
                     {
-                        targetPlayer.gardian.ChangeHealth(-attackValue);
+                        ServerManager.Instance.ChangePlayerHealthRpc(-attackValue, targetPlayer.gardian.OwnerClientId);
                         targetPlayer.hasGardian.Value = false;
                     }
                 }
             }
-            
-            ServerManager.Instance.Votes.Clear();
         }
         ulong VoteResult(NetworkList<int> votes)
         {
@@ -72,12 +70,12 @@ namespace Wendogo
 
         public override void ShowUI()
         {
-            ServerManager.Instance.UseAllUIForVotersRpc(true);
+            ServerManager.Instance.UseAllUIForVotersRpc(true, true);
         }
 
         public override void HideUI()
         {
-            ServerManager.Instance.UseAllUIForVotersRpc(false);
+            ServerManager.Instance.UseAllUIForVotersRpc(false, false);
         }
     }
 }

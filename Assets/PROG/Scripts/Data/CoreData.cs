@@ -68,4 +68,13 @@
         Food,
         Wood
     }
+
+    /// <summary>
+    /// Enum representing the names of animators used within the application.
+    /// </summary>
+    public enum AnimatorName
+    {
+        Popup,
+        
+    }
 }
