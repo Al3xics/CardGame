@@ -446,7 +446,7 @@ namespace Wendogo
         {
             var passiveCardsList = IsSimulatingNight ? HiddenPassiveCards : PassiveCards;
             var itemsToRemove = new List<(int cardId, GameObject cardObject)>();
-            Debug.Log($"$$$$$ [PlayerController] ServerManager CurrentCycle : {ServerManager.Instance.CurrentCycle.Value.ToString()}");
+            Debug.Log($"$$$$$ [PlayerController] ServerManager CurrentCycle : {ServerManager.Instance.currentCycle.Value.ToString()}");
             Debug.Log($"$$$$$ [PlayerController] Passive cards list : {passiveCardsList.Count}, for player {GetPlayer(LocalPlayerId).name} ({GetPlayer(LocalPlayerId).OwnerClientId})");
 
             // Iterate through all logical passive cards (IDs)
