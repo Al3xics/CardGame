@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace Wendogo
@@ -58,6 +59,20 @@ namespace Wendogo
         /// ritual-related goals within the game.
         /// </summary>
         public int numberOfWoodToCompleteRitual = 6;
+        
+        /* --------------- Read Only --------------- */
+        /// <summary>
+        /// Only to have a read-only value in the inspector.
+        /// </summary>
+        [Header("Read Only Values")]
+        [ShowInInspector, ReadOnly]
+        private int _foodInRitual;
+        
+        /// <summary>
+        /// Only to have a read-only value in the inspector.
+        /// </summary>
+        [ShowInInspector, ReadOnly]
+        private int _woodInRitual;
 
         /* --------------- Hide in Inspector --------------- */
         /// <summary>
@@ -211,23 +226,27 @@ namespace Wendogo
         /// <param name="isHiddenList">If we add the resource to the real, or hidden list. Used for visibility when cycle is <see cref="Cycle.Night"/></param>
         /// <param name="resource">The type of resource to be added to the ritual, either Food or Wood.</param>
         /// <param name="isRealResource">Indicates whether the resource being added is real (true) or fake (false).</param>
-        public void AddRessourceToRitual(bool isHiddenList, ResourceType resource, bool isRealResource)
+        /// <param name="value">The number of resources to add in the list.</param>
+        public void AddRessourceToRitual(bool isHiddenList, ResourceType resource, bool isRealResource, int value)
         {
             switch (isHiddenList)
             {
                 case true:
                     if (resource == ResourceType.Food)
-                        _hiddenRitualFoodCollected.Add(isRealResource);
+                        _hiddenRitualFoodCollected.AddRange(Enumerable.Repeat(isRealResource, value));
                     else if (resource == ResourceType.Wood)
-                        _hiddenRitualWoodCollected.Add(isRealResource);
+                        _hiddenRitualWoodCollected.AddRange(Enumerable.Repeat(isRealResource, value));
                     break;
                 case false:
                     if (resource == ResourceType.Food)
-                        _ritualFoodCollected.Add(isRealResource);
+                        _ritualFoodCollected.AddRange(Enumerable.Repeat(isRealResource, value));
                     else if (resource == ResourceType.Wood)
-                        _ritualWoodCollected.Add(isRealResource);
+                        _ritualWoodCollected.AddRange(Enumerable.Repeat(isRealResource, value));
                     break;
             }
+            
+            _foodInRitual = _ritualFoodCollected.Count(item => item);
+            _woodInRitual = _ritualWoodCollected.Count(item => item);
         }
 
         /// <summary>
@@ -343,9 +362,11 @@ namespace Wendogo
         /// <param name="playedCardID">The ID of the card that has been played.</param>
         /// <param name="origin">The ID of the player who does the action.</param>
         /// <param name="target">The ID of the target player, if applicable.</param>
-        public void CheckCardPlayed(int playedCardID, ulong origin, ulong target)
+        /// <param name="nbFood">Specific to the BuildRitual card. If different from -1, then the BuildRitual card was played.</param>
+        /// <param name="nbWood">Specific to the BuildRitual card. If different from -1, then the BuildRitual card was played.</param>
+        public void CheckCardPlayed(int playedCardID, ulong origin, ulong target, int nbFood, int nbWood)
         {
-            GetConcreteState<PlayerTurnState>().CheckCardPlayed(playedCardID, origin, target);
+            GetConcreteState<PlayerTurnState>().CheckCardPlayed(playedCardID, origin, target, nbFood, nbWood);
         }
         
         /// <summary>

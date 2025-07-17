@@ -32,7 +32,6 @@ namespace Wendogo
 
         List<ulong> playerList = new List<ulong>();
 
-        public ulong target;
         GameObject selectTargetCanvas;
 
         public int _playerPA;
@@ -45,6 +44,8 @@ namespace Wendogo
         public bool TargetSelected;
         private ulong _selectedTarget = 0;
         private int _intTarget = -1;
+        private int _intFood= -1;
+        private int _intWood= -1;
         public CardDatabaseSO CardDatabaseSO;
 
         GameObject _pcSMObject;
@@ -138,12 +139,6 @@ namespace Wendogo
 
         #region Animation
 
-        /// <summary>
-        /// Represents a reference to the pop-up GameObject in the scene.
-        /// This field is initialized during the Awake method by finding the GameObject
-        /// with the "Pop-up" tag. Provides functionality for pop-up interactions
-        /// within the game state machine.
-        /// </summary>
         private GameObject _popup;
         
         private TMP_Text _popupText;
@@ -630,8 +625,33 @@ namespace Wendogo
         }
 
         [Rpc(SendTo.SpecifiedInParams)]
+        public void ApplyBuildRitualRpc(int playedCardID, ulong origin, int nbFood, int nbWood, RpcParams rpcParams)
+        {
+            var card = DataCollection.Instance.cardDatabase.GetCardByID(playedCardID);
+            var buildRitual = card.CardEffect as BuildRitual;
+            if (buildRitual == null) throw new Exception("Card effect is not a BuildRitual, but it should be !");
+            
+            // Replace -1 by 0
+            if (nbFood <= -1) nbFood = 0;
+            if (nbWood <= -1) nbWood = 0;
+            
+            // Check if both resources combined are inferior or equal to the maximum use of this card BuildRitual
+            var value = nbFood + nbWood;
+            if (value > buildRitual.RitualCost)
+                // todo --> normalement ça arrive jamais car Valentin vérifie que le total est correcte avant que le joueur valide
+                throw new Exception("The sum of the food and wood resources used by the card is superior to the maximum use of this card BuildRitual !");
+            
+            if (nbFood > 0) buildRitual.ApplyRitualEffect(origin, ResourceType.Food, nbFood);
+            if (nbWood > 0) buildRitual.ApplyRitualEffect(origin, ResourceType.Wood, nbWood);
+            
+            FinishedCardPlayedRpc(RpcTarget.Me);
+        }
+
+        [Rpc(SendTo.SpecifiedInParams)]
         public void FinishedCardPlayedRpc(RpcParams rpcParams)
         {
+            // todo -> pourquoi le 'OnFinishedCardPlayed' de 'PCPlayedCardState' est utilisé mais sert à rien ?
+            // la méthode 'CardResolutionOver' du state est en commentaire...
             OnFinishedCardPlayed?.Invoke();
         }
 
@@ -773,18 +793,30 @@ namespace Wendogo
                 _selectedTarget = LocalPlayerId;
             }
 
+            int nbFood = -1;
+            int nbWood = -1;
+            
             // Needs this player to select a target to play the card against
             if (cardDataSO.HasTarget && !cardDataSO.isGroup)
             {
-                await UniTask.WaitUntil(() => _intTarget >= 0);
-                _selectedTarget = (ulong)_intTarget;
+                if (cardDataSO.CardEffect is BuildRitual)
+                {
+                    _selectedTarget = LocalPlayerId;
+                    nbFood = _intFood;
+                    nbWood = _intWood;
+                }
+                else
+                {
+                    await UniTask.WaitUntil(() => _intTarget >= 0);
+                    _selectedTarget = (ulong)_intTarget;
+                }
 
             }
             else if (cardDataSO.isGroup)
             {
                 await UniTask.WaitUntil(() => ServerManager.Instance.PlayerReadyCount.Value == 2);
             }
-            ServerManager.Instance.TransmitPlayedCardRpc(cardDataSO.ID, _selectedTarget);
+            ServerManager.Instance.TransmitPlayedCardRpc(cardDataSO.ID, _selectedTarget, nbFood, nbWood);
             Debug.Log($"card {cardDataSO.Name} was sent to server ");
         }
         

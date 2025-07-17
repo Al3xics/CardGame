@@ -8,55 +8,37 @@ namespace Wendogo
     {
         public GameObject SelectResourcePrefab;
         public int RitualCost = 1;
-
-        public void ApplyRitualEffect(ulong origin, List<int> resourceList)
+        
+        public void ApplyRitualEffect(ulong owner, ResourceType resourceType, int value)
         {
-            var player = PlayerController.GetPlayer(origin);
-            if (resourceList.Count > 0)
+            if (value <= 0) return;
+
+            var player = PlayerController.GetPlayer(owner);
+            if (!player) return;
+
+            bool isNight = player.IsSimulatingNight;
+            bool isWendogo = player.Role.Value is RoleType.Wendogo;
+            bool isFood = resourceType == ResourceType.Food;
+
+            if (isFood)
             {
-                foreach (var resource in resourceList)
-                {
-                    if (resource == 0 && player.IsSimulatingNight)
-                    {
-                        player.hiddenFood -= RitualCost;
-                        if (player.Role.Value is RoleType.Wendogo)
-                            //add un false dans la liste cachée food
-                            ServerManager.Instance.AddRessourceToRitualRpc(true, true, false);
-                        else
-                            //add un true dans la liste cachée food
-                            ServerManager.Instance.AddRessourceToRitualRpc(true, true, true);
-                    } 
-                    else if (resource == 0 && !player.IsSimulatingNight)
-                    {
-                        player.food.Value -= RitualCost;
-                        if (player.Role.Value is RoleType.Wendogo)
-                            //add un false dans la liste food
-                            ServerManager.Instance.AddRessourceToRitualRpc(false, true, false);
-                        else
-                            //add un true dans la liste food
-                            ServerManager.Instance.AddRessourceToRitualRpc(false, true, true);
-                    }
-                    else if (resource == 1 && player.IsSimulatingNight)
-                    {
-                        player.hiddenWood -= RitualCost;
-                        if (player.Role.Value is RoleType.Wendogo)
-                            //add un false dans la liste cachée wood
-                            ServerManager.Instance.AddRessourceToRitualRpc(true, false, false);
-                        else
-                            //add un true dans la liste cachée wood
-                            ServerManager.Instance.AddRessourceToRitualRpc(true, false, true);
-                    }
-                    else if (resource == 1 && !player.IsSimulatingNight)
-                    {
-                        player.wood.Value -= RitualCost;
-                        if (player.Role.Value is RoleType.Wendogo)
-                            //add un false dans la liste wood
-                            ServerManager.Instance.AddRessourceToRitualRpc(false, false, false);
-                        else
-                            //add un true dans la liste wood
-                            ServerManager.Instance.AddRessourceToRitualRpc(false, false, true);
-                    }
-                }
+                // Handle food
+                if (isNight)
+                    player.hiddenFood -= value;
+                else
+                    player.food.Value -= value;
+
+                ServerManager.Instance.AddRessourceToRitualRpc(isNight, true, !isWendogo, value);
+            }
+            else
+            {
+                // Handle wood
+                if (isNight)
+                    player.hiddenWood -= value;
+                else
+                    player.wood.Value -= value;
+
+                ServerManager.Instance.AddRessourceToRitualRpc(isNight, false, !isWendogo, value);
             }
         }
         
