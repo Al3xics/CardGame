@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4c4af47719ad294e9daacd12912804b, type: 3}
+  m_Name: BuildRitual
+  m_EditorClassIdentifier: 
+  CardVisual: {fileID: 2800000, guid: ba707d8219ae3004a9c69e85676a916e, type: 3}
+  Name: Build Ritual
+  CardEffect: {fileID: 11400000, guid: 501553fff6e762e44b75a0033b1faae5, type: 2}
+  isPassive: 0
+  isGroup: 0
+  HasTarget: 1
+  nightPriorityIndex: 0
+  turnsRemaining: -1
+  ID: 1007
+  Toggle: 1

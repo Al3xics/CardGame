@@ -220,10 +220,10 @@ namespace Wendogo
         }
 
         [Rpc(SendTo.Server)]
-        public void TransmitPlayedCardRpc(int cardID, ulong target, RpcParams rpcParams = default)
+        public void TransmitPlayedCardRpc(int cardID, ulong target, int nbFood, int nbWood, RpcParams rpcParams = default)
         {
             ulong origin = rpcParams.Receive.SenderClientId;
-            GameStateMachine.Instance.CheckCardPlayed(cardID, origin, target);
+            GameStateMachine.Instance.CheckCardPlayed(cardID, origin, target, nbFood, nbWood);
         }
 
         [Rpc(SendTo.Server)]
@@ -231,6 +231,13 @@ namespace Wendogo
         {
             if (PlayersById.TryGetValue(target, out var player))
                 player.TryApplyPassiveRpc(playedCardId, origin, RpcTarget.Single(target, RpcTargetUse.Temp));
+        }
+
+        [Rpc(SendTo.Server)]
+        public void ApplyBuildRitualRpc(int playedCardID, ulong origin, int nbFood, int nbWood)
+        {
+            if (PlayersById.TryGetValue(origin, out var player))
+                player.ApplyBuildRitualRpc(playedCardID, origin,  nbFood, nbWood, RpcTarget.Single(origin, RpcTargetUse.Temp));
         }
 
         [Rpc(SendTo.Server)]
@@ -341,10 +348,10 @@ namespace Wendogo
         }
 
         [Rpc(SendTo.Server)]
-        public void AddRessourceToRitualRpc(bool isHiddenList, bool isFood, bool isRealResource)
+        public void AddRessourceToRitualRpc(bool isHiddenList, bool isFood, bool isRealResource, int value)
         {
             var resourceType = isFood ? ResourceType.Food : ResourceType.Wood;
-            GameStateMachine.Instance.AddRessourceToRitual(isHiddenList, resourceType, isRealResource);
+            GameStateMachine.Instance.AddRessourceToRitual(isHiddenList, resourceType, isRealResource, value);
         }
 
         [Rpc(SendTo.Server)]
@@ -355,9 +362,8 @@ namespace Wendogo
         }
 
         [Rpc(SendTo.Server)]
-        public void FinishedPlayGroupCardRpc() // todo
+        public void FinishedPlayGroupCardRpc()
         {
-            // todo --> call this method when a group card is finished (all players have chosen a target)
             OnResolveCardNightConsequences?.Invoke();
         }
 

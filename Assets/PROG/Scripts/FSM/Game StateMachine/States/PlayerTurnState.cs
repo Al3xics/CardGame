@@ -46,10 +46,16 @@ namespace Wendogo
         /// <param name="playedCardID">The unique identifier of the card that was played.</param>
         /// <param name="origin">The unique identifier of the player who played the card.</param>
         /// <param name="target">The unique identifier of the target player, if applicable.</param>
+        /// <param name="nbFood">Specific to the BuildRitual card. If different from -1, then the BuildRitual card was played.</param>
+        /// <param name="nbWood">Specific to the BuildRitual card. If different from -1, then the BuildRitual card was played.</param>
         /// <exception cref="ArgumentOutOfRangeException">Thrown when the game cycle value is invalid or unhandled.</exception>
-        public void CheckCardPlayed(int playedCardID, ulong origin, ulong target)
+        public void CheckCardPlayed(int playedCardID, ulong origin, ulong target, int nbFood, int nbWood)
         {
             var card = DataCollection.Instance.cardDatabase.GetCardByID(playedCardID);
+
+            // if true, it is the BuildRitual card (there should not be any other card that uses this value)
+            if (nbFood > -1 || nbWood > -1 && card.CardEffect is BuildRitual)
+                ServerManager.Instance.ApplyBuildRitualRpc(playedCardID, origin, nbFood, nbWood);
             
             switch (StateMachine.Cycle)
             {
