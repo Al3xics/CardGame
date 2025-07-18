@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using Unity.Netcode;
+using Unity.Services.Analytics;
 
 namespace Wendogo
 {
@@ -13,6 +14,8 @@ namespace Wendogo
             {
                 RevealRandomCards(player);
             }
+            
+            AnalyticsManager.Instance.RecordEvent(new CustomEvent("divinationActiveCardWasApplied"));
         }
 
         private void RevealRandomCards(PlayerController player)

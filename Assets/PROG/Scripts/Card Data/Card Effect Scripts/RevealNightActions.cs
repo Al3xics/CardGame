@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Unity.Services.Analytics;
 using UnityEngine;
 
 namespace Wendogo
@@ -20,6 +21,8 @@ namespace Wendogo
                 }
             }
             // Afficher playerActions
+            
+            AnalyticsManager.Instance.RecordEvent(new CustomEvent("revealNightActionsActiveCardWasApplied"));
         }
         
         public override void ShowUI()

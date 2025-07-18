@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Unity.Services.Analytics;
+using UnityEngine;
 
 namespace Wendogo
 {
@@ -20,6 +21,7 @@ namespace Wendogo
             {
                 value = boostAttackBy;
                 Debug.Log($"Defense by {value}");
+                AnalyticsManager.Instance.RecordEvent(new CustomEvent("boostAttackPassiveCardWasApplied"));
                 return true;
             }
 

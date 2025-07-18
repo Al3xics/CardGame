@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Unity.Services.Analytics;
+using UnityEngine;
 
 namespace Wendogo
 {
@@ -20,6 +21,8 @@ namespace Wendogo
                 int selectedCard = targetPlayer.PassiveCards[index];
                 
                 value = selectedCard;
+                
+                AnalyticsManager.Instance.RecordEvent(new CustomEvent("spyActiveCardWasApplied"));
             }
             
         }

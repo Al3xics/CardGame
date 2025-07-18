@@ -1,9 +1,10 @@
+using Unity.Services.Analytics;
 using UnityEngine;
 
 namespace Wendogo
 {
-    [CreateAssetMenu(fileName = "StealResourceEffect", menuName = "Card Effects/Steal Resource")]
-    public class StealResourceEffect : CardEffect
+    [CreateAssetMenu(fileName = "StealResource", menuName = "Card Effects/Steal Resource")]
+    public class StealResource : CardEffect
     {
         public int ResourceAmount = 1;
         
@@ -13,6 +14,7 @@ namespace Wendogo
             if (value != 1000)
             {
                 
+                AnalyticsManager.Instance.RecordEvent(new CustomEvent("stealResourceActiveCardWasApplied"));
             }
         }
     }

@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using JetBrains.Annotations;
 using TMPro;
 using Unity.Collections;
+using Unity.Services.Analytics;
 
 
 namespace Wendogo
@@ -624,6 +625,7 @@ namespace Wendogo
             
             var effect = DataCollection.Instance.cardDatabase.GetCardByID(playedCardId).CardEffect;
             effect.Apply(origin, OwnerClientId, isApplyPassive ? value : -1);
+            AnalyticsManager.Instance.RecordEvent(new CustomEvent("activeCardPlayed"));
             FinishedCardPlayedRpc(RpcTarget.Me);
         }
 
@@ -653,8 +655,6 @@ namespace Wendogo
         [Rpc(SendTo.SpecifiedInParams)]
         public void FinishedCardPlayedRpc(RpcParams rpcParams)
         {
-            // todo -> pourquoi le 'OnFinishedCardPlayed' de 'PCPlayedCardState' est utilisé mais sert à rien ?
-            // la méthode 'CardResolutionOver' du state est en commentaire...
             OnFinishedCardPlayed?.Invoke();
         }
 

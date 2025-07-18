@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Unity.Services.Analytics;
 using UnityEngine;
 
 namespace Wendogo
@@ -41,6 +42,8 @@ namespace Wendogo
                         targetPlayer.gardian.hiddenHealth -= boostDamage;
                     }
                 }
+                
+                AnalyticsManager.Instance.RecordEvent(new CustomEvent("bloodBountyPassiveCardWasApplied"));
                 return true;
             }
             

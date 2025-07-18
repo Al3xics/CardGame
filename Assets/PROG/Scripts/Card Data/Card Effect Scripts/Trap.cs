@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Unity.Services.Analytics;
+using UnityEngine;
 using UnityEngine.Serialization;
 
 namespace Wendogo
@@ -19,6 +20,7 @@ namespace Wendogo
             {
                 value = defenseValue;
                 Debug.Log($"Defense by {value}");
+                AnalyticsManager.Instance.RecordEvent(new CustomEvent("trapPassiveCardWasApplied"));
                 return true;
             }
             

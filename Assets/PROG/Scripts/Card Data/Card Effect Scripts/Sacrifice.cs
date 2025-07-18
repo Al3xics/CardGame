@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Unity.Services.Analytics;
+using UnityEngine;
 
 namespace Wendogo
 {
@@ -15,6 +16,7 @@ namespace Wendogo
             {
                 targetPlayer.hasGardian.Value = true;
                 targetPlayer.gardian = PlayerController.GetPlayer(owner);
+                AnalyticsManager.Instance.RecordEvent(new CustomEvent("sacrificeActiveCardWasApplied"));
             }
         }
 

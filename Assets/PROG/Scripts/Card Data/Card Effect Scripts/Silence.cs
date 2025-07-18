@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Unity.Services.Analytics;
+using UnityEngine;
 
 namespace Wendogo
 {
@@ -9,6 +10,8 @@ namespace Wendogo
         public override void Apply(ulong owner, ulong target, int value = -1)
         {
             // Silence target
+            
+            AnalyticsManager.Instance.RecordEvent(new CustomEvent("silenceActiveCardWasApplied"));
         }
         
         public override void ShowUI()

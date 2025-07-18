@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Unity.Services.Analytics;
 using UnityEngine;
 
 namespace Wendogo
@@ -19,6 +20,8 @@ namespace Wendogo
             bool isNight = player.IsSimulatingNight;
             bool isWendogo = player.Role.Value is RoleType.Wendogo;
             bool isFood = resourceType == ResourceType.Food;
+            
+            AnalyticsManager.Instance.RecordEvent(new CustomEvent("buildRitualActiveCardWasApplied"));
 
             if (isFood)
             {

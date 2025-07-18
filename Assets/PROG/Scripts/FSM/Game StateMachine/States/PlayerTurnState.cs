@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Unity.Netcode;
+using Unity.Services.Analytics;
 using UnityEngine;
 
 namespace Wendogo
@@ -63,6 +64,7 @@ namespace Wendogo
                     // For passive cards
                     if (card.isPassive)
                     {
+                        AnalyticsManager.Instance.RecordEvent(new CustomEvent("passiveCardPlayed"));
                         ServerManager.Instance.FinishedPassiveCardPlayedRpc(playedCardID, origin, false);
                         return;
                     }
@@ -75,6 +77,7 @@ namespace Wendogo
                     // For passive cards
                     if (card.isPassive)
                     {
+                        AnalyticsManager.Instance.RecordEvent(new CustomEvent("passiveCardPlayed"));
                         ServerManager.Instance.FinishedPassiveCardPlayedRpc(playedCardID, origin, true);
                         return;
                     }

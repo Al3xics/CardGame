@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Unity.Services.Analytics;
+using UnityEngine;
 
 namespace Wendogo
 {
@@ -10,10 +11,11 @@ namespace Wendogo
             value = -1;
             var card = DataCollection.Instance.cardDatabase.GetCardByID(playedCardId);
             
-            if (card.CardEffect is StealResourceEffect)
+            if (card.CardEffect is StealResource)
             {
                 value = 1000;
                 Debug.Log($"Et non ! C'était du porc !");
+                AnalyticsManager.Instance.RecordEvent(new CustomEvent("stealProtectPassiveCardWasApplied"));
                 return true;
             }
             return false;

@@ -2,6 +2,7 @@
 using UnityEngine;
 using System.Threading.Tasks;
 using System;
+using Unity.Services.Analytics;
 
 namespace Wendogo
 {
@@ -17,6 +18,8 @@ namespace Wendogo
             var targetPlayer = PlayerController.GetPlayer(target);
             if (targetPlayer != null)
             {
+                AnalyticsManager.Instance.RecordEvent(new CustomEvent("wendigoAttackActiveCardWasApplied"));
+                
                 if (!targetPlayer.hasGardian.Value)
                 {
                     targetPlayer.ChangeHealth(-damageDone);

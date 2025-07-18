@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Unity.Services.Analytics;
 using UnityEngine;
 
 namespace Wendogo
@@ -17,6 +18,7 @@ namespace Wendogo
             {
                 value = boostFoodBy;
                 Debug.Log($"BoostFood passive applied! Boost by {value}");
+                AnalyticsManager.Instance.RecordEvent(new CustomEvent("boostFoodPassiveCardWasApplied"));
                 return true;
             }
             

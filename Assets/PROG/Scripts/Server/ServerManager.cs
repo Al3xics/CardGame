@@ -18,12 +18,6 @@ namespace Wendogo
 
         public static ServerManager Instance { get; private set; }
 
-        public event Action OnAssignedRoles;
-        public event Action OnDrawCard;
-        public event Action OnPlayerTurnEnded;
-        public event Action OnResolveCardNightConsequences;
-        public event Action OnCheckTriggerVote;
-
         public event Action<ulong, ulong> OnTargetSelected;
 
         public string gameSceneName = "Game";
@@ -37,6 +31,17 @@ namespace Wendogo
 
         public int playerWoodAsked;
         
+        #endregion
+
+        #region Action
+        
+        public event Action OnAssignedRoles;
+        public event Action OnDrawCard;
+        public event Action OnPlayerTurnEnded;
+        public event Action OnResolveCardNightConsequences;
+        public event Action OnCheckTriggerVote;
+        public event Action OnAnimationFinished;
+
         #endregion
 
         #region Network Variables

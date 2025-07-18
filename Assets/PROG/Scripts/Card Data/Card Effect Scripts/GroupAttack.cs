@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Unity.Netcode;
+using Unity.Services.Analytics;
 using UnityEngine;
 
 namespace Wendogo
@@ -20,6 +21,8 @@ namespace Wendogo
                 
                 if (targetPlayer != null)
                 {
+                    AnalyticsManager.Instance.RecordEvent(new CustomEvent("groupAttackActiveCardWasApplied"));
+                    
                     if (!targetPlayer.hasGardian.Value)
                     {
                         ServerManager.Instance.ChangePlayerHealthRpc(-attackValue, targetPlayer.OwnerClientId);

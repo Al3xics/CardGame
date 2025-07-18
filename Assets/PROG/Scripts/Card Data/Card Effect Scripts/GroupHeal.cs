@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Unity.Netcode;
+using Unity.Services.Analytics;
 using UnityEngine;
 
 namespace Wendogo
@@ -19,9 +20,11 @@ namespace Wendogo
                 
                 if (targetPlayer != null)
                 {
-                    targetPlayer.health.Value -= healValue;
+                    targetPlayer.health.Value += healValue;
                 }
             }
+            
+            AnalyticsManager.Instance.RecordEvent(new CustomEvent("groupHealActiveCardWasApplied"));
             ServerManager.Instance.Votes.Clear();
         }
         

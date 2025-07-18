@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Unity.Services.Analytics;
+using UnityEngine;
 
 namespace Wendogo
 {
@@ -15,6 +16,7 @@ namespace Wendogo
             {
                 value = boostWoodBy;
                 Debug.Log($"BoostWood passive applied! Boost by {value}");
+                AnalyticsManager.Instance.RecordEvent(new CustomEvent("boostWoodPassiveCardWasApplied"));
                 return true;
             }
             

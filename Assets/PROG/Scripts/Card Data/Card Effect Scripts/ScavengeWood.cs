@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Unity.Services.Analytics;
+using UnityEngine;
 
 namespace Wendogo
 {
@@ -18,6 +19,8 @@ namespace Wendogo
                 player.hiddenWood += wood; // Night, so apply only for local player
             else
                 player.wood.Value += wood; // Day, so apply for all players
+            
+            AnalyticsManager.Instance.RecordEvent(new CustomEvent("scavengeWoodActiveCardWasApplied"));
         }
     }
 }

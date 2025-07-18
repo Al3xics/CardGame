@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Unity.Services.Analytics;
+using UnityEngine;
 
 namespace Wendogo
 {
@@ -11,6 +12,7 @@ namespace Wendogo
         {
             var player = PlayerController.GetPlayer(target);
             player._playerPA += points;
+            AnalyticsManager.Instance.RecordEvent(new CustomEvent("pointActionActiveCardWasApplied"));
         }
     }
 }
