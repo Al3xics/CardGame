@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using UnityEngine;
 using Unity.Netcode;
 using Unity.Multiplayer.Playmode;
+using Unity.Services.Core;
 
 namespace Wendogo
 {
@@ -72,11 +73,17 @@ namespace Wendogo
         /// based on the value of the autoConnect property. Attaches the OnClientConnected event
         /// handler if auto connection is enabled.
         /// </summary>
-        private void Awake()
+        private async void Awake()
         {
             AutoConnect = autoConnect;
             ExpectedPlayersCount = expectedPlayersCount;
             if (AutoConnect) networkManager.OnClientConnectedCallback += OnClientConnected;
+                
+            if (UnityServices.State != ServicesInitializationState.Initialized)
+            {
+                await UnityServices.InitializeAsync();
+                Debug.Log("Initialized Unity Services");
+            }
         }
 
         /// <summary>
@@ -106,6 +113,8 @@ namespace Wendogo
                     //playerPrefab.GetComponent<PlayerController>().SceneLoaded();
                     Debug.Log("[Bootstrap] Client started.");
                 }
+
+                AnalyticsManager.Instance.StartDataCollection();
             }
             else
             {

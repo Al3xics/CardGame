@@ -38,8 +38,6 @@ namespace Wendogo
         #endregion
         
         #region Variables
-        
-        public bool useAnalytics = true;
 
         private ISession _activeSession;
         public ISession ActiveSession
@@ -90,7 +88,6 @@ namespace Wendogo
             _instance = this;
             DontDestroyOnLoad(gameObject);
             _ = SessionEventDispatcher.Instance;
-            if (useAnalytics) _ = AnalyticsManager.Instance;
         }
         
         private async void Start()
@@ -115,7 +112,7 @@ namespace Wendogo
                     Debug.Log("Initialized Voice Chat");
                 }
                 
-                if (useAnalytics) AnalyticsManager.Instance.StartDataCollection();
+                AnalyticsManager.Instance.StartDataCollection();
             }
             catch (Exception e)
             {
