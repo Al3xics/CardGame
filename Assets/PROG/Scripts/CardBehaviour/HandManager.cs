@@ -135,7 +135,7 @@ namespace Wendogo
             }
         }
 
-        public void RemoveCardFromPassiveZone(GameObject card)
+        public async void RemoveCardFromPassiveZone(GameObject card)
         {
             if (passiveZoneCards.Contains(card))
             {
@@ -151,8 +151,25 @@ namespace Wendogo
                     PlayerUI.Instance.CardSpaces[key] = null;
                 }
 
+                await UniTask.WaitForEndOfFrame();
                 Destroy(card); // Détruire visuellement
                 Debug.Log($"Card {card.name} removed from passive zone and destroyed.");
+            }
+        }
+
+        public void DestroyPassiveCard(string cardName)
+        {
+            foreach (GameObject passiveCard in passiveZoneCards)
+            {
+                CardObjectData cardObjectData;
+                cardObjectData = passiveCard.GetComponent<CardObjectData>();
+
+                if (cardObjectData.Card.Name == cardName)
+                {
+                    RemoveCardFromPassiveZone(passiveCard);
+                }
+                break;
+
             }
         }
 

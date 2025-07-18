@@ -8,7 +8,7 @@ namespace Wendogo
     [CreateAssetMenu(fileName = "WendigoAttack", menuName = "Card Effects/Wendigo Attack")]
     public class WendigoAttack : CardEffect
     {
-        public int damageDone = 1;
+        public int damageDone = -1;
 
         [HideInInspector]
         public GameObject prefabUI;
@@ -18,8 +18,11 @@ namespace Wendogo
             var targetPlayer = PlayerController.GetPlayer(target);
             if (targetPlayer != null)
             {
-                targetPlayer.ChangeHealth(-damageDone);
+                targetPlayer.ChangeHealth(value);
             }
+            HandManager handManager = FindFirstObjectByType<HandManager>();
+
+            handManager.DestroyPassiveCard("Trap");
         }
 
         public override void ShowUI()

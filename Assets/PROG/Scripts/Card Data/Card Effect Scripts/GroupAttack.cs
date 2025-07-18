@@ -7,10 +7,11 @@ namespace Wendogo
     [CreateAssetMenu(fileName = "GroupAttack", menuName = "Card Effects/Group Attack")]
     public class GroupAttack : CardEffect
     {
-        public int attackValue = 2;
+        public int attackValue = -2;
 
-        public override void Apply(ulong owner, ulong target, int value = -1)
+        public override void Apply(ulong owner, ulong target, int value = -2)
         {
+            value = attackValue;
             var votes = ServerManager.Instance.Votes;
             ulong votedPlayer = VoteResult(votes);
 
@@ -20,7 +21,7 @@ namespace Wendogo
                 
                 if (targetPlayer != null)
                 {
-                    ServerManager.Instance.ChangePlayerHealthRpc(-attackValue, targetPlayer.OwnerClientId);
+                    ServerManager.Instance.ChangePlayerHealthRpc(value, targetPlayer.OwnerClientId);
                 }
             }
         }

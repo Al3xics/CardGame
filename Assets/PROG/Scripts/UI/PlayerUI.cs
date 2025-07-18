@@ -30,6 +30,8 @@ namespace Wendogo
         public Dictionary<GameObject, ulong> UIPlayerID = new Dictionary<GameObject, ulong>();
         public Dictionary<Transform, GameObject> CardSpaces = new Dictionary<Transform, GameObject>();
 
+        [SerializeField] private GameObject _ritualObject;
+
         public static PlayerUI Instance { get; private set; }
 
 
@@ -91,6 +93,8 @@ namespace Wendogo
         [Rpc(SendTo.SpecifiedInParams)]
         public void SetPlayerInfos(ulong localPLayerID,RpcParams rpcParams)
         {
+
+
             //todo call the method in server manager in a loop for all players 
             //when the game starts
             KeyValuePair<GameObject, ulong>[] snapshot = UIPlayerID.ToArray();
@@ -147,6 +151,5 @@ namespace Wendogo
                 title.text = player.name;
             }
         }
-
     }
 }
