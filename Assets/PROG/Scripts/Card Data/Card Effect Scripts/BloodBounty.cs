@@ -15,41 +15,37 @@ namespace Wendogo
             var card = DataCollection.Instance.cardDatabase.GetCardByID(playedCardId);
             
             PlayerController originPlayer = PlayerController.GetPlayer(origin);
+            PlayerController targetPlayer = PlayerController.GetPlayer(target);
             
             if (card.CardEffect is WendigoAttack || (card.CardEffect is FightOrFlight && originPlayer.Role.Value == RoleType.Wendogo) || card.CardEffect is GroupAttack)
             {
-                value = boostDamage;
-                Debug.Log($"Attack boosted by {value}");
+                if (!targetPlayer.IsSimulatingNight)
+                {
+                    if (!targetPlayer.hasGardian.Value)
+                    {
+                        targetPlayer.health.Value -= boostDamage;
+                    }
+                    else
+                    {
+                        targetPlayer.gardian.health.Value -= boostDamage;
+                    }
+                }
+                else if (targetPlayer.IsSimulatingNight)
+                {
+                    if (!targetPlayer.hasGardian.Value)
+                    {
+                        targetPlayer.hiddenHealth -= boostDamage;
+                    }
+                    else
+                    {
+                        targetPlayer.gardian.hiddenHealth -= boostDamage;
+                    }
+                }
                 return true;
             }
             
             value = -1;
             return false;
-        }
-
-        public void ApplyRitualEffect(ulong origin, List<int> resourceList)
-        {
-            var player = PlayerController.GetPlayer(origin);
-
-            foreach (var resource in resourceList)
-            {
-                if (resource == 0 && player.IsSimulatingNight) //food
-                {
-                    player.hiddenFood += 1;
-                }
-                else if (resource == 1 && player.IsSimulatingNight) //wood
-                {
-                    player.hiddenWood += 1;
-                }
-                else if (resource == 0 && !player.IsSimulatingNight) //food
-                {
-                    player.food.Value += 1;
-                }
-                else if (resource == 1 && !player.IsSimulatingNight) //wood
-                {
-                    player.wood.Value += 1;
-                }
-            }
         }
         
         public override void ShowUI()
