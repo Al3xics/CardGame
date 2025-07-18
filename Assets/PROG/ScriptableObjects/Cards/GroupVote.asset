@@ -22,3 +22,8 @@ MonoBehaviour:
   turnsRemaining: -1
   ID: 1001
   Toggle: 1
+  effectDescription: "D\xE9clenche une phase de vote avec un temps limit\xE9 \xE0
+    1 minute, durant laquelle les joueurs peuvent discuter et voter. \xC0 la fin
+    du d\xE9compte, les r\xE9sultats sont r\xE9v\xE9l\xE9s et le joueur ayant obtenu
+    le plus de votes subit 2 points de d\xE9g\xE2ts. Si la carte est jou\xE9e durant
+    la nuit, le vote sera d\xE9clench\xE9 au d\xE9but du jour suivant.\u200B"

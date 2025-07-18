@@ -15,7 +15,6 @@ namespace Wendogo
             if (!isTurnBeginning)
             {
                 _player._playerPA = 2;
-                PlayerUI.Instance.SetPlayerInfos(_player.LocalPlayerId,_player.RpcTarget.Me);
                 isTurnBeginning = true;
             }
             //if (ServerManager.Instance.CurrentCycle.Value == Cycle.Night && _player.Role.Value == RoleType.Wendogo)

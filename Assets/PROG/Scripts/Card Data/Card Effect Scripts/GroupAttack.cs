@@ -12,6 +12,8 @@ namespace Wendogo
 
         public override void Apply(ulong owner, ulong target, int value = -1)
         {
+            if (value <= -1) value = 0;
+            var newValue = attackValue + value;
             var votes = ServerManager.Instance.Votes;
             ulong votedPlayer = VoteResult(votes);
 
@@ -25,11 +27,11 @@ namespace Wendogo
                     
                     if (!targetPlayer.hasGardian.Value)
                     {
-                        ServerManager.Instance.ChangePlayerHealthRpc(-attackValue, targetPlayer.OwnerClientId);
+                        ServerManager.Instance.ChangePlayerHealthRpc(-newValue, targetPlayer.OwnerClientId);
                     }
                     else
                     {
-                        ServerManager.Instance.ChangePlayerHealthRpc(-attackValue, targetPlayer.gardian.OwnerClientId);
+                        ServerManager.Instance.ChangePlayerHealthRpc(-newValue, targetPlayer.gardian.OwnerClientId);
                         targetPlayer.hasGardian.Value = false;
                     }
                 }

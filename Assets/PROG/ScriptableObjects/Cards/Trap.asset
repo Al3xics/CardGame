@@ -22,3 +22,5 @@ MonoBehaviour:
   turnsRemaining: -1
   ID: 2003
   Toggle: 1
+  effectDescription: "R\xE9duit de 1 PV les d\xE9g\xE2ts subis lors d\u2019une attaque.
+    La carte est d\xE9truite apr\xE8s activation.\u200B"

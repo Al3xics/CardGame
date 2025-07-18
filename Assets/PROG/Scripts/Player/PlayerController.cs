@@ -13,6 +13,7 @@ using JetBrains.Annotations;
 using TMPro;
 using Unity.Collections;
 using Unity.Services.Analytics;
+using UnityEngine.SocialPlatforms;
 
 
 namespace Wendogo
@@ -150,7 +151,7 @@ namespace Wendogo
 
         #region Basic Method
         
-        private void Start()
+        private async void Start()
         {
             name = IsLocalPlayer ? "LocalPlayer" : $"Player{OwnerClientId}";
 
@@ -160,6 +161,12 @@ namespace Wendogo
                 _popup = GameObject.FindWithTag("Pop-up");
                 if (_popup ==null) throw new Exception("Pop-up not found");
                 _popupText = _popup.GetComponentInChildren<TMP_Text>();
+
+              
+                //Todo call at the same time the the game state machine starts instead
+                await UniTask.WaitForSeconds(25);
+                //Init UI for the other players
+                PlayerUI.Instance.SetPlayerInfos(LocalPlayerId, RpcTarget.Me);
             }
         }
 
@@ -182,8 +189,6 @@ namespace Wendogo
 
             LocalPlayer = this;
             LocalPlayerId = NetworkManager.Singleton.LocalClientId;
-
-            //health.Value = Mathf.Clamp(health.Value, 0, maxHealth);
 
             food.OnValueChanged += UpdateFoodText;
             wood.OnValueChanged += UpdateWoodText;
@@ -225,7 +230,8 @@ namespace Wendogo
                 _popupText = _popup.GetComponentInChildren<TMP_Text>();
 
                 Debug.Log($"This is my player id: {LocalPlayerId}");
-                //PlayerUI.Instance.SetPlayerInfos(RpcTarget.Me);
+
+                PlayerUI.Instance.SetPlayerInfos(LocalPlayerId, RpcTarget.Me);
 
                 if (_prefabUI == null) { _prefabUI = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject; }
 
@@ -450,11 +456,11 @@ namespace Wendogo
             {
                 // var card = DataCollection.Instance.cardDatabase.GetCardByID(cardId);
                 var card = _handManager.GetCardDataInPassiveZone(cardId);
-
+                
                 if (card == null || !card.isPassive) continue;
-
+                
                 Debug.Log($"$$$$$ [PlayerController] Current turns remaining for passive card {card.Name} : {card.turnsRemaining}");
-
+                
                 if (card.turnsRemaining == -1) continue;
                 if (card.turnsRemaining > 0) card.turnsRemaining--;
                 Debug.Log($"$$$$$ [PlayerController] Turns remaining for passive card {card.Name} : {card.turnsRemaining}");
@@ -468,21 +474,21 @@ namespace Wendogo
             }
 
             if (itemsToRemove.Count == 0) return;
-
+            
             foreach (var (cardId, cardObject) in itemsToRemove)
             {
                 passiveCardsList.Remove(cardId);
                 if (cardObject != null) _handManager.RemoveCardFromPassiveZone(cardObject);
                 Debug.Log($"Card with ID: {cardId} removed from {(IsSimulatingNight ? "HiddenPassiveCards" : "PassiveCards")}");
             }
-
+            
             Debug.Log($"$$$$$ [PlayerController] passiveCardsList Count : {passiveCardsList.Count}");
-
+            
             if (IsSimulatingNight)
                 Debug.Log($"$$$$$ [PlayerController] HiddenPassiveCardsList Count : {HiddenPassiveCards.Count}");
             else
                 Debug.Log($"$$$$$ [PlayerController] PassiveCards Count : {PassiveCards.Count}");
-
+                
         }
         
         private async void PlayAndWaitAnimation(Animator animator, string animationName, ulong playerId)
@@ -521,8 +527,11 @@ namespace Wendogo
                 Debug.LogError(e);
             }
         }
-        
-        public void ShowCard(int card) {}
+
+        public void ShowCard(int card)
+        {
+            
+        }
 
         #endregion
         
@@ -625,7 +634,6 @@ namespace Wendogo
             
             var effect = DataCollection.Instance.cardDatabase.GetCardByID(playedCardId).CardEffect;
             effect.Apply(origin, OwnerClientId, isApplyPassive ? value : -1);
-            AnalyticsManager.Instance.RecordEvent(new CustomEvent("activeCardPlayed"));
             FinishedCardPlayedRpc(RpcTarget.Me);
         }
 

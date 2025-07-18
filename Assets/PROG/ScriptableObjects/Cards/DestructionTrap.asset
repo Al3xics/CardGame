@@ -22,3 +22,5 @@ MonoBehaviour:
   turnsRemaining: -1
   ID: 1005
   Toggle: 1
+  effectDescription: "D\xE9truit l\u2019ensemble des cartes Pi\xE8ge (Trap) actuellement
+    en jeu, y compris celles contr\xF4l\xE9es par le joueur qui utilise cet effet.\u200B"

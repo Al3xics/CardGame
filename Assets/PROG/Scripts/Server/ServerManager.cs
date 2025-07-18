@@ -52,7 +52,7 @@ namespace Wendogo
             NetworkVariableWritePermission.Server
         );
 
-        private NetworkVariable<int> _playerFinishSceneLoadedCpt = new(
+        public NetworkVariable<int> PlayerFinishSceneLoadedCpt = new(
             0,
             NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Server
@@ -100,7 +100,7 @@ namespace Wendogo
         // Also registers each player in the GameStateMachine.
         public void InitializePlayers()
         {
-            _playerFinishSceneLoadedCpt.Value = 0;
+            PlayerFinishSceneLoadedCpt.Value = 0;
             PlayersById = FindObjectsByType<PlayerController>(FindObjectsSortMode.None).ToDictionary(p => p.OwnerClientId);
 
             foreach (var player in PlayersById.Values)
@@ -112,10 +112,10 @@ namespace Wendogo
         [Rpc(SendTo.Server)]
         public void IncrementPlayerFinishedLoadCountRpc()
         {
-            _playerFinishSceneLoadedCpt.Value++;
+            PlayerFinishSceneLoadedCpt.Value++;
 
             if (!AutoSessionBootstrapper.AutoConnect)
-                if (_playerFinishSceneLoadedCpt.Value >= NetworkManager.Singleton.ConnectedClientsList.Count)
+                if (PlayerFinishSceneLoadedCpt.Value >= NetworkManager.Singleton.ConnectedClientsList.Count)
                 {
                     Debug.Log("All Players are here.");
                     GameStateMachine.Instance.StartStateMachine();
@@ -123,7 +123,7 @@ namespace Wendogo
                 else
                 {
                     Debug.Log("Waiting for all players to load the scene");
-                    Debug.Log($"_playerFinishSceneLoadedCpt = {_playerFinishSceneLoadedCpt}");
+                    Debug.Log($"_playerFinishSceneLoadedCpt = {PlayerFinishSceneLoadedCpt}");
                 }
         }
         

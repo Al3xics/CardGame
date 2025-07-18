@@ -15,6 +15,9 @@ namespace Wendogo
 
         public override void Apply(ulong owner, ulong target, int value = -1)
         {
+            if (value <= -1) value = 0;
+            var newValue = damageDone + value;
+            
             var targetPlayer = PlayerController.GetPlayer(target);
             if (targetPlayer != null)
             {
@@ -22,14 +25,17 @@ namespace Wendogo
                 
                 if (!targetPlayer.hasGardian.Value)
                 {
-                    targetPlayer.ChangeHealth(-damageDone);
+                    targetPlayer.ChangeHealth(-newValue);
                 }
                 else
                 {
-                    targetPlayer.gardian.ChangeHealth(-damageDone);
+                    targetPlayer.gardian.ChangeHealth(-newValue);
                     targetPlayer.hasGardian.Value = false;
                 }
             }
+            
+            HandManager handManager = FindFirstObjectByType<HandManager>();
+            handManager.DestroyPassiveCard("Trap");
         }
 
         public override void ShowUI()
