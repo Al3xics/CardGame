@@ -414,6 +414,12 @@ namespace Wendogo
         {
             // Logique
         }
+
+        [Rpc(SendTo.Server)]
+        public void AskToUnlockRessoucesRpc(bool isFood, bool isBlock)
+        {
+            GameStateMachine.Instance.AskToUnlockRessouces(isFood, isBlock);
+        }
         #endregion
     }
 }

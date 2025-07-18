@@ -14,11 +14,11 @@ namespace Wendogo
             
             if (value == 0)
             {
-                // Sabotage Food
+                ServerManager.Instance.AskToUnlockRessoucesRpc(true, true);
             } 
             else if (value == 1)
             {
-                // Sabotage Wood
+                ServerManager.Instance.AskToUnlockRessoucesRpc(false, true);
             }
         }
         

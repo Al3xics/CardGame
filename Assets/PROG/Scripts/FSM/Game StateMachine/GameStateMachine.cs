@@ -398,5 +398,10 @@ namespace Wendogo
         }
 
         #endregion
+
+        public void AskToUnlockRessouces(bool isFood, bool isBlock)
+        {
+            
+        }
     }
 }
