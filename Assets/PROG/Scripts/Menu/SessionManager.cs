@@ -38,6 +38,8 @@ namespace Wendogo
         #endregion
         
         #region Variables
+        
+        private static bool _isInitialized = false;
 
         private ISession _activeSession;
         public ISession ActiveSession
@@ -85,6 +87,7 @@ namespace Wendogo
 
         private void Awake()
         {
+            if (_instance != null) return;
             _instance = this;
             DontDestroyOnLoad(gameObject);
             _ = SessionEventDispatcher.Instance;
@@ -92,6 +95,9 @@ namespace Wendogo
         
         private async void Start()
         {
+            if (_isInitialized) return;
+            _isInitialized = true;
+            
             try
             {
                 if (UnityServices.State != ServicesInitializationState.Initialized)
@@ -106,7 +112,7 @@ namespace Wendogo
                     Debug.Log($"Signed in anonymously. Name: {AuthenticationService.PlayerName}. ID: {AuthenticationService.PlayerId}");
                 }
                 
-                if (VivoxService != null)
+                if (VivoxService is { IsLoggedIn: false })
                 {
                     await VivoxService.InitializeAsync();
                     Debug.Log("Initialized Voice Chat");

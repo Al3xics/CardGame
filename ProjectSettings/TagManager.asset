@@ -7,6 +7,8 @@ TagManager:
   - hand
   - TargetUI
   - Pop-up
+  - ResourcesUI
+  - WinLoseUI
   layers:
   - Default
   - TransparentFX

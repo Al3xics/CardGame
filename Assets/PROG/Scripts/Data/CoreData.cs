@@ -1,4 +1,6 @@
-﻿namespace Wendogo
+﻿using UnityEngine;
+
+namespace Wendogo
 {
     /// <summary>
     /// Enum representing the type of action to perform when setting up a session.
@@ -74,7 +76,21 @@
     /// </summary>
     public enum AnimatorName
     {
+        None,
         Popup,
-        
+        WinLoseUI
+    }
+
+    /// <summary>
+    /// Enum containing all the data that was serialized in <see cref="AnimationParams"/> + the reference to the actual animator.
+    /// </summary>
+    public struct AnimationContext
+    {
+        public Animator Animator;
+        public AnimatorName AnimatorName;
+        public bool WaitForAnimation;
+        public string Trigger;
+        public ulong PlayerId;
+        public bool IsSurvivorWin;
     }
 }
