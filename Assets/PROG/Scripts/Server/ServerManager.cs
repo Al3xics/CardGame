@@ -21,6 +21,7 @@ namespace Wendogo
 
         public event Action<ulong, ulong> OnTargetSelected;
 
+        public string menuSceneName = "Menu";
         public string gameSceneName = "Game";
 
         private Dictionary<ulong, PlayerController> PlayersById { get; set;}
@@ -89,6 +90,11 @@ namespace Wendogo
             NetworkVariableWritePermission.Server
         );
 
+        public NetworkVariable<int> endGameAnimationFinishedCpt = new(
+            0,
+            NetworkVariableReadPermission.Everyone,
+            NetworkVariableWritePermission.Server
+        );
 
         #endregion
 
@@ -123,29 +129,17 @@ namespace Wendogo
             }
         }
         
-        [Rpc(SendTo.Server)]
-        public void IncrementPlayerFinishedLoadCountRpc()
-        {
-            PlayerFinishSceneLoadedCpt.Value++;
-
-            if (!AutoSessionBootstrapper.AutoConnect)
-                if (PlayerFinishSceneLoadedCpt.Value >= NetworkManager.Singleton.ConnectedClientsList.Count)
-                {
-                    Debug.Log("All Players are here.");
-                    GameStateMachine.Instance.StartStateMachine();
-                }
-                else
-                {
-                    Debug.Log("Waiting for all players to load the scene");
-                    Debug.Log($"_playerFinishSceneLoadedCpt = {PlayerFinishSceneLoadedCpt}");
-                }
-        }
-        
         // Starts loading the game scene from the server if it's not already active.
         public void LaunchGame()
         {
             if (IsServer && SceneManager.GetActiveScene().name != gameSceneName)
                 NetworkManager.SceneManager.LoadScene(gameSceneName, LoadSceneMode.Single);
+        }
+        
+        // When the game is over, go back to the menu scene
+        public void ReturnToMenu()
+        {
+            if (IsServer) NetworkManager.SceneManager.LoadScene(menuSceneName, LoadSceneMode.Single);
         }
 
         public void UpdateCycle(Cycle newCycle)
@@ -297,6 +291,32 @@ namespace Wendogo
                 }
             }
         }
+        
+        [Rpc(SendTo.Server)]
+        public void IncrementPlayerFinishedLoadCountRpc()
+        {
+            PlayerFinishSceneLoadedCpt.Value++;
+
+            if (!AutoSessionBootstrapper.AutoConnect)
+                if (PlayerFinishSceneLoadedCpt.Value >= NetworkManager.Singleton.ConnectedClientsList.Count)
+                {
+                    Debug.Log("All Players are here.");
+                    GameStateMachine.Instance.StartStateMachine();
+                }
+                else
+                {
+                    Debug.Log("Waiting for all players to load the scene");
+                    Debug.Log($"_playerFinishSceneLoadedCpt = {PlayerFinishSceneLoadedCpt}");
+                }
+        }
+
+        [Rpc(SendTo.Server)]
+        public void IncrementEndGameAnimationFinishedCptRpc()
+        {
+            endGameAnimationFinishedCpt.Value++;
+            if (endGameAnimationFinishedCpt.Value >= PlayersById.Count)
+                OnAnimationFinished?.Invoke();
+        }
 
         [Rpc(SendTo.Server)]
         public void UseAllUIForVotersRpc(bool setUIActive, bool activePlayerInput)
@@ -393,11 +413,11 @@ namespace Wendogo
         }
 
         [Rpc(SendTo.Server)]
-        public void StartPlayAnimationRpc(bool playAndWait, int animatorName, string animationName, ulong playerId)
+        public void StartPlayAnimationRpc(AnimationParams animParams)
         {
             foreach (var player in PlayersById.Values)
             {
-                player.StartPlayAnimationRpc(playAndWait, animatorName, animationName, playerId, RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
+                player.StartPlayAnimationRpc(animParams, RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
             }
         }
 
@@ -422,6 +442,12 @@ namespace Wendogo
         {
             var player = PlayerController.GetPlayer(playerId);
             player.RequestHealthChangeRpc(damage, RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
+        }
+        
+        [Rpc(SendTo.Server)]
+        public void AskToUnlockResourcesRpc(bool isFood, bool isBlock)
+        {
+            GameStateMachine.Instance.AskToUnlockResources(isFood, isBlock);
         }
         
         public void RevealCardsRpc(ulong playerOwnerClientId, List<GameObject> ints)

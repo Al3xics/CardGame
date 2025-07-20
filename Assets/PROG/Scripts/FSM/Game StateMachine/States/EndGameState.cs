@@ -21,26 +21,19 @@
 
         private void CheckWhoWon()
         {
-            // todo
-            // 
-            // lancer l'animation en fonction de qui a gagné
-            // 
-            // si 'StateMachine.IsRitualOver' est true, c'est que les 'Survivor' on gagné --> afficher l'UI de WIN pour tous ceux là
-            //          et donc le 'Wendogo' a perdu --> afficher l'UI LOST seulement pour lui
-            // sinon, c'est que c'est le 'Wendigo' a gagné --> afficher l'UI WIN seulement pour lui
-            //          et donc les 'Survivor' ont perdu --> afficher l'UI LOST pour tous ceux là
-            
-            
-            // todo --> ou est-ce qu'on stocke l'UI de WIN et LOSE pour le Wendogo et les Players ????????
+            // if true, survivors WIN, else wendogo WIN
+            ServerManager.Instance.StartPlayAnimationRpc(new AnimationParams
+            {
+                animatorName = AnimatorName.WinLoseUI,
+                waitForAnimation = true,
+                isSurvivorWin = StateMachine.IsRitualOver,
+            });
         }
 
         private void OnAnimationsFinished()
         {
             ServerManager.Instance.OnAnimationFinished -= OnAnimationsFinished;
-            
-            // todo
-            //
-            // changer de scène ici et retourner au menu pour tout le monde
+            ServerManager.Instance.ReturnToMenu();
         }
     }
 }
