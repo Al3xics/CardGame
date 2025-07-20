@@ -7,8 +7,9 @@ namespace Wendogo
     public class BuildRitual : CardEffect
     {
         public GameObject SelectResourcePrefab;
+        private GameObject _ressouceCanvaInstance;
         public int RitualCost = 1;
-        
+
         public void ApplyRitualEffect(ulong owner, ResourceType resourceType, int value)
         {
             if (value <= 0) return;
@@ -41,15 +42,17 @@ namespace Wendogo
                 ServerManager.Instance.AddRessourceToRitualRpc(isNight, false, !isWendogo, value);
             }
         }
-        
+
         public override void ShowUI()
         {
-            SelectResourcePrefab.SetActive(true);
+            if (_ressouceCanvaInstance == null)
+                _ressouceCanvaInstance = Instantiate(SelectResourcePrefab);
+            _ressouceCanvaInstance.SetActive(true);
         }
-        
+
         public override void HideUI()
         {
-            SelectResourcePrefab.SetActive(false);
+            _ressouceCanvaInstance.SetActive(false);
         }
     }
 }

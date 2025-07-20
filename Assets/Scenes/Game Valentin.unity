@@ -7355,6 +7355,10 @@ MonoBehaviour:
     m_InternalValue: 0
   currentTurn:
     m_InternalValue: 0
+  _foodInRitual:
+    m_InternalValue: 0
+  _woodInRitual:
+    m_InternalValue: 0
 --- !u!114 &1479689067
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11456,7 +11460,7 @@ MonoBehaviour:
   - {fileID: 465609062}
   - {fileID: 1463815537}
   - {fileID: 817968534}
-  _ritualObject: {fileID: 0}
+  _ritualObject: {fileID: 419120849}
 --- !u!1 &4038565035146118173
 GameObject:
   m_ObjectHideFlags: 0

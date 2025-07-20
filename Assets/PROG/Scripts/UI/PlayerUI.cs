@@ -30,7 +30,7 @@ namespace Wendogo
         public Dictionary<GameObject, ulong> UIPlayerID = new Dictionary<GameObject, ulong>();
         public Dictionary<Transform, GameObject> CardSpaces = new Dictionary<Transform, GameObject>();
 
-        [SerializeField] private GameObject _ritualObject;
+        [SerializeField] private RectTransform _ritualObject;
 
         public static PlayerUI Instance { get; private set; }
 
@@ -91,9 +91,9 @@ namespace Wendogo
         }
 
         [Rpc(SendTo.SpecifiedInParams)]
-        public void SetPlayerInfos(ulong localPLayerID,RpcParams rpcParams)
+        public void SetUIInfos(ulong localPLayerID,RpcParams rpcParams)
         {
-
+            SetRitualUI();
 
             //todo call the method in server manager in a loop for all players 
             //when the game starts
@@ -107,7 +107,7 @@ namespace Wendogo
                 if (!go.activeSelf)
                     continue;
 
-                ulong trueID =id;
+                ulong trueID = id;
                 if (id == localPLayerID)
                 {
                     UIPlayerID[go] = 0;
@@ -150,6 +150,28 @@ namespace Wendogo
                 var title = go.GetComponentInChildren<TextMeshProUGUI>();
                 title.text = player.name;
             }
+        }
+
+        private void SetRitualUI()
+        {
+            TextMeshProUGUI ritualWood = _ritualObject.transform
+                                      .Find("Ritual_Wood_Text")
+                                      .GetComponent<TextMeshProUGUI>();
+            ritualWood.text = ServerManager.Instance._woodInRitual.Value.ToString() + "/6";
+            ServerManager.Instance._woodInRitual.OnValueChanged += (oldVal, newVal) =>
+            {
+                ritualWood.text = newVal.ToString() + "/6";
+            };
+
+
+            TextMeshProUGUI ritualFood = _ritualObject.transform
+                                      .Find("Ritual_Food_Text")
+                                      .GetComponent<TextMeshProUGUI>();
+            ritualFood.text = ServerManager.Instance._foodInRitual.Value.ToString() + "/6";
+            ServerManager.Instance._foodInRitual.OnValueChanged += (oldVal, newVal) =>
+            {
+                ritualFood.text = newVal.ToString() + "/6";
+            };
         }
     }
 }

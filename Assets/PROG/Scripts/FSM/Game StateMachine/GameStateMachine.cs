@@ -60,20 +60,6 @@ namespace Wendogo
         /// </summary>
         public int numberOfWoodToCompleteRitual = 6;
         
-        /* --------------- Read Only --------------- */
-        /// <summary>
-        /// Only to have a read-only value in the inspector.
-        /// </summary>
-        [Header("Read Only Values")]
-        [ShowInInspector, ReadOnly]
-        private int _foodInRitual;
-        
-        /// <summary>
-        /// Only to have a read-only value in the inspector.
-        /// </summary>
-        [ShowInInspector, ReadOnly]
-        private int _woodInRitual;
-
         /* --------------- Hide in Inspector --------------- */
         /// <summary>
         /// Tracks the current turn count within the game cycle.
@@ -245,8 +231,8 @@ namespace Wendogo
                     break;
             }
             
-            _foodInRitual = _ritualFoodCollected.Count(item => item);
-            _woodInRitual = _ritualWoodCollected.Count(item => item);
+            ServerManager.Instance._foodInRitual.Value = _ritualFoodCollected.Count(item => item);
+            ServerManager.Instance._woodInRitual.Value = _ritualWoodCollected.Count(item => item);
         }
 
         /// <summary>
