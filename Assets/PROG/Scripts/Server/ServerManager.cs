@@ -431,7 +431,11 @@ namespace Wendogo
             player.RequestHealthChangeRpc(damage, RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
         }
         
-        // todo -> rajouter méthode de martin
+        [Rpc(SendTo.Server)]
+        public void AskToUnlockResourcesRpc(bool isFood, bool isBlock)
+        {
+            GameStateMachine.Instance.AskToUnlockResources(isFood, isBlock);
+        }
         
         public void RevealCardsRpc(ulong playerOwnerClientId, List<GameObject> ints)
         {

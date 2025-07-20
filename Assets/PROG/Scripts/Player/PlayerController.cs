@@ -686,6 +686,7 @@ namespace Wendogo
         [Rpc(SendTo.SpecifiedInParams)]
         public void GetRoleRpc(RoleType role, RpcParams rpcParams)
         {
+            Role.Value = role;
             playerUIInstance?.GetRole(role.ToString());
         }
 
