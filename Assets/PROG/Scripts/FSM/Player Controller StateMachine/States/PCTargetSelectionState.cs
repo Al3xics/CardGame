@@ -26,6 +26,11 @@ namespace Wendogo
                 await _player.GroupSelectTargetAsync();
                 Debug.Log("reached the end");
             }
+            else if(_player.ActiveCard.Card.CardEffect is BuildRitual)
+            {
+                _player.ActiveCard.Card.CardEffect.ShowUI();
+                await _player.SelectRessourceAsync();
+            }
             else
             {
                 _player.ActiveCard.Card.CardEffect.ShowUI();

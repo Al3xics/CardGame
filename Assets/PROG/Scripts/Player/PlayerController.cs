@@ -1,6 +1,5 @@
 ﻿using Cysharp.Threading.Tasks;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -8,8 +7,6 @@ using UnityEngine.EventSystems;
 using Unity.Netcode;
 using UnityEngine.SceneManagement;
 using Button = UnityEngine.UI.Button;
-using System.Threading.Tasks;
-using JetBrains.Annotations;
 using TMPro;
 using Unity.Collections;
 using Unity.Services.Analytics;
@@ -166,7 +163,7 @@ namespace Wendogo
                 //Todo call at the same time the the game state machine starts instead
                 await UniTask.WaitForSeconds(25);
                 //Init UI for the other players
-                PlayerUI.Instance.SetPlayerInfos(LocalPlayerId, RpcTarget.Me);
+                PlayerUI.Instance.SetUIInfos(LocalPlayerId, RpcTarget.Me);
             }
         }
 
@@ -231,7 +228,7 @@ namespace Wendogo
 
                 Debug.Log($"This is my player id: {LocalPlayerId}");
 
-                PlayerUI.Instance.SetPlayerInfos(LocalPlayerId, RpcTarget.Me);
+                PlayerUI.Instance.SetUIInfos(LocalPlayerId, RpcTarget.Me);
 
                 if (_prefabUI == null) { _prefabUI = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject; }
 
@@ -289,6 +286,40 @@ namespace Wendogo
 
             Debug.Log($"Selected target is {_intTarget} ");
         }
+
+
+        public async UniTask SelectRessourceAsync()
+        {
+            _intFood = -1;
+            _intWood = -1;
+            _intTarget = -1;
+            TargetSelectionUI.OnTargetPicked += HandleTargetSelected;
+
+            await UniTask.WaitUntil(() => _intTarget >= 0);
+
+            //todo change logic for the wendigo offering
+            if(_intTarget == 0)
+            {
+                if (wood.Value == 0)
+                    return;
+
+                _intWood = 0;
+                _intWood++;
+            }
+            else if (_intTarget == 1)
+            {
+                if (food.Value == 0)
+                    return;
+
+                _intFood = 0;
+                _intFood++;
+            }
+
+            TargetSelectionUI.OnTargetPicked -= HandleTargetSelected;
+
+            Debug.Log($"Selected target is {_intTarget} with {_intFood} food and {_intWood} wood. ");
+        }
+
 
         public async UniTask GroupSelectTargetAsync()
         {
@@ -813,6 +844,8 @@ namespace Wendogo
                 if (cardDataSO.CardEffect is BuildRitual)
                 {
                     _selectedTarget = LocalPlayerId;
+                    await UniTask.WaitUntil(() => _intTarget >= 0);
+                    await UniTask.WaitForEndOfFrame();
                     nbFood = _intFood;
                     nbWood = _intWood;
                 }

@@ -12,4 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5070574600fb9834e9776d0c6ef83d19, type: 3}
   m_Name: BuildRitual
   m_EditorClassIdentifier: 
+  SelectResourcePrefab: {fileID: 4381171416163836051, guid: 3754eafd9fe02ef48ab8b11bd0d5749a, type: 3}
   RitualCost: 1

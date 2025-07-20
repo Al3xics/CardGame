@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4c4af47719ad294e9daacd12912804b, type: 3}
   m_Name: BuildRitual
   m_EditorClassIdentifier: 
-  CardVisual: {fileID: 2800000, guid: ba707d8219ae3004a9c69e85676a916e, type: 3}
+  CardVisual: {fileID: 2800000, guid: 6897770c58a5bda4b890c91cbb7a56b3, type: 3}
   Name: Build Ritual
   CardEffect: {fileID: 11400000, guid: 501553fff6e762e44b75a0033b1faae5, type: 2}
   isPassive: 0
@@ -22,3 +22,5 @@ MonoBehaviour:
   turnsRemaining: -1
   ID: 1007
   Toggle: 1
+  effectDescription: "Permet au joueur de s\xE9lectionner une ressource de sa propre
+    r\xE9serve et de l\u2019ajouter au rituel central."
