@@ -157,6 +157,11 @@ namespace Wendogo
             return new List<PlayerController>(foundPlayers);
         }
 
+        public void ResetEndGameAnimationFinishedCpt()
+        {
+            endGameAnimationFinishedCpt.Value = 0;
+        }
+
         #endregion
 
         #region RPC
