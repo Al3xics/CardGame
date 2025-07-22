@@ -17,10 +17,10 @@ namespace Wendogo
                 _player._playerPA = 2;
                 isTurnBeginning = true;
             }
-            //if (ServerManager.Instance.CurrentCycle.Value == Cycle.Night && _player.Role.Value == RoleType.Wendogo)
-            //{
-            //    _player._handManager.DrawCard(_player.GetCardByID(10199));
-            //}
+            if (ServerManager.Instance.currentCycle.Value == Cycle.Night && _player.Role.Value == RoleType.Wendogo)
+            {
+                _player._handManager._attackButton.SetActive(true);
+            }
             CardDropZone.OnCardDropped += ReceiveSelectedEvent;
             _player.EnableInput();
         }

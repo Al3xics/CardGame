@@ -11,7 +11,7 @@ namespace Wendogo
     public class GameStateMachine : StateMachine<GameStateMachine>
     {
         #region Instance
-        
+
         /// <summary>
         /// Gets the singleton instance of the <see cref="GameStateMachine"/>.
         /// This property provides access to the single, globally accessible instance
@@ -20,9 +20,9 @@ namespace Wendogo
         public static GameStateMachine Instance { get; private set; }
 
         #endregion
-        
+
         #region Variables
-        
+
         /* --------------- Show in Inspector --------------- */
         /// <summary>
         /// Represents the maximum number of turns allowed in the game.
@@ -59,7 +59,7 @@ namespace Wendogo
         /// ritual-related goals within the game.
         /// </summary>
         public int numberOfWoodToCompleteRitual = 6;
-        
+
         /* --------------- Hide in Inspector --------------- */
         /// <summary>
         /// Tracks the current turn count within the game cycle.
@@ -83,14 +83,14 @@ namespace Wendogo
         /// during the night cycle state transitions.
         /// </summary>
         public readonly List<PlayerAction> NightActions = new();
-        
+
         /// <summary>
         /// Represents the ID of the current player whose turn is active in the game.
         /// This variable helps manage the game flow by tracking which player's turn is currently in progress.
         /// It is incremented sequentially to move to the next player in <see cref="PlayerTurnState.OnPlayerTurnEnded"/>.
         /// </summary>
         public int CurrentPlayerId { get; set; } = 0;
-        
+
         /// <summary>
         /// Represents a list containing the unique identifiers (IDs) of all players currently
         /// participating in the game. Used to manage player-specific data and turn orders.
@@ -104,7 +104,7 @@ namespace Wendogo
         public Cycle Cycle { get; private set; } = Cycle.Day;
 
         private bool _isRitualOver = false;
-        
+
         /// <summary>
         /// Indicates whether the ritual in the game has been completed or not.
         /// This property is used to control the flow of game states, transitioning
@@ -160,7 +160,7 @@ namespace Wendogo
         {
             if (!Instance)
                 Instance = this;
-            
+
             if (!AutoSessionBootstrapper.AutoConnect)
                 ServerManager.Instance.InitializePlayers();
         }
@@ -175,7 +175,7 @@ namespace Wendogo
         protected override State<GameStateMachine> GetInitialState()
         {
             var turnOrderState = new DefineTurnOrderState(this);
-            
+
             AddState(new AssignRolesState(this));
             AddState(new CheckLastTurnState(this));
             AddState(new CheckRitualState(this));
@@ -185,7 +185,7 @@ namespace Wendogo
             AddState(new EndGameState(this));
             AddState(new NightConsequencesState(this));
             AddState(new PlayerTurnState(this));
-            
+
             return turnOrderState;
         }
 
@@ -198,7 +198,7 @@ namespace Wendogo
         {
             _ritualFoodCollected.RemoveAll(item => item == false);
             _ritualWoodCollected.RemoveAll(item => item == false);
-            
+
             bool isFoodComplete = _ritualFoodCollected.Count == numberOfFoodToCompleteRitual && _ritualFoodCollected.All(item => item);
             bool isWoodComplete = _ritualWoodCollected.Count == numberOfWoodToCompleteRitual && _ritualWoodCollected.All(item => item);
 
@@ -215,22 +215,37 @@ namespace Wendogo
         /// <param name="value">The number of resources to add in the list.</param>
         public void AddRessourceToRitual(bool isHiddenList, ResourceType resource, bool isRealResource, int value)
         {
-            switch (isHiddenList)
+            List<bool> targetList = null;
+
+            if (isHiddenList)
             {
-                case true:
-                    if (resource == ResourceType.Food)
-                        _hiddenRitualFoodCollected.AddRange(Enumerable.Repeat(isRealResource, value));
-                    else if (resource == ResourceType.Wood)
-                        _hiddenRitualWoodCollected.AddRange(Enumerable.Repeat(isRealResource, value));
-                    break;
-                case false:
-                    if (resource == ResourceType.Food)
-                        _ritualFoodCollected.AddRange(Enumerable.Repeat(isRealResource, value));
-                    else if (resource == ResourceType.Wood)
-                        _ritualWoodCollected.AddRange(Enumerable.Repeat(isRealResource, value));
-                    break;
+                targetList = resource switch
+                {
+                    ResourceType.Food => _hiddenRitualFoodCollected,
+                    ResourceType.Wood => _hiddenRitualWoodCollected,
+                    _ => null
+                };
             }
-            
+            else
+            {
+                targetList = resource switch
+                {
+                    ResourceType.Food => _ritualFoodCollected,
+                    ResourceType.Wood => _ritualWoodCollected,
+                    _ => null
+                };
+            }
+
+            if (targetList == null) return;
+
+            // Add resources
+            targetList.AddRange(Enumerable.Repeat(isRealResource, value));
+
+            // Clamp to the maximum size
+            int max = resource == ResourceType.Food ? numberOfFoodToCompleteRitual : numberOfWoodToCompleteRitual;
+            if (targetList.Count > max)
+                targetList.RemoveRange(max, targetList.Count - max);
+
             ServerManager.Instance._foodInRitual.Value = _ritualFoodCollected.Count(item => item);
             ServerManager.Instance._woodInRitual.Value = _ritualWoodCollected.Count(item => item);
         }
@@ -288,7 +303,7 @@ namespace Wendogo
                 default:
                     throw new System.Exception("Invalid cycle value.");
             }
-            
+
             if (ShowDebugLogs) Debug.LogWarning($"******************** Change cycle from {Cycle} to {newCycle} ! ********************");
             Cycle = newCycle;
             ServerManager.Instance.UpdateCycle(newCycle);
@@ -325,7 +340,7 @@ namespace Wendogo
         /// Increments the counter tracking the number of turns passed until a vote is triggered.
         /// </summary>
         public void IncreaseCptTurnForVote() => _cptTurnForVote++;
-        
+
         public void ResetCptTurnForVote() => _cptTurnForVote = 1;
 
         #endregion
@@ -354,7 +369,7 @@ namespace Wendogo
         {
             GetConcreteState<PlayerTurnState>().CheckCardPlayed(playedCardID, origin, target, nbFood, nbWood);
         }
-        
+
         /// <summary>
         /// Draws a specified number of cards from a given deck for a specified player.
         /// </summary>
@@ -365,16 +380,16 @@ namespace Wendogo
         {
             var deck = DataCollection.Instance.GetDeck(deckID);
             if (deck == null || deck.Count == 0) return;
-            
+
             Dictionary<ulong, List<int>> playerCards = new();
             playerCards[playerID] = new List<int>();
-            
+
             int cardsToDraw = Mathf.Min(amount, deck.Count);
             for (var i = 0; i < cardsToDraw; i++)
             {
                 int randomIndex = Random.Range(0, deck.Count);
                 int cardID = deck[randomIndex].ID;
-                
+
                 playerCards[playerID].Add(cardID);
                 deck.RemoveAt(randomIndex);
             }

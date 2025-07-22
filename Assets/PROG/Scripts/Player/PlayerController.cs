@@ -156,7 +156,7 @@ namespace Wendogo
 
               
                 //Todo call at the same time the the game state machine starts instead
-                await UniTask.WaitForSeconds(25);
+                await UniTask.WaitForSeconds(40);
                 //Init UI for the other players
                 PlayerUI.Instance.SetUIInfos(LocalPlayerId, RpcTarget.Me);
             }
