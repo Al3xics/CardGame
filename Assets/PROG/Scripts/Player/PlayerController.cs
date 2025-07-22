@@ -764,6 +764,7 @@ namespace Wendogo
             
             var effect = DataCollection.Instance.cardDatabase.GetCardByID(playedCardId).CardEffect;
             effect.Apply(origin, OwnerClientId, isApplyPassive ? value : -1);
+            AnalyticsManager.Instance.RecordEvent(new CustomEvent("activeCardPlayed"));
             FinishedCardPlayedRpc(RpcTarget.Me);
         }
 
