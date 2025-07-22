@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Wendogo
 {
@@ -61,10 +63,21 @@ namespace Wendogo
         public int numberOfWoodToCompleteRitual = 6;
         
         /* --------------- Hide in Inspector --------------- */
+        private int _cptTurn = 1;
+
         /// <summary>
         /// Tracks the current turn count within the game cycle.
         /// </summary>
-        private int _cptTurn = 0;
+        public int CptTurn
+        {
+            get => _cptTurn;
+            protected set
+            {
+                if (_cptTurn == value) return;
+                _cptTurn = value;
+                OnTurnChanged?.Invoke(value);
+            }
+        }
 
         /// <summary>
         /// Tracks the number of turns since the last vote triggered.
@@ -97,11 +110,22 @@ namespace Wendogo
         /// </summary>
         public List<ulong> PlayersID { get; private set; } = new();
 
+        private Cycle _cycle = Cycle.Day;
+        
         /// <summary>
         /// Represents the current <see cref="Cycle"/> of the game, which can be either Day or Night.
         /// The state of the cycle determines the flow of the game's behavior and logic.
         /// </summary>
-        public Cycle Cycle { get; private set; } = Cycle.Day;
+        public Cycle Cycle
+        {
+            get => _cycle;
+            protected set
+            {
+                if (_cycle == value) return;
+                _cycle = value;
+                OnCycleChanged?.Invoke(value);
+            }
+        }
 
         private bool _isRitualOver = false;
         
@@ -159,6 +183,13 @@ namespace Wendogo
         /// is blocked and inaccessible for players.
         /// </summary>
         private bool _canScavengeWood = true;
+
+        #endregion
+
+        #region Action
+
+        public event Action<int> OnTurnChanged;
+        public event Action<Cycle> OnCycleChanged;
 
         #endregion
 
@@ -309,8 +340,7 @@ namespace Wendogo
                     break;
                 case Cycle.Night:
                     newCycle = Cycle.Day;
-                    _cptTurn++;
-                    ServerManager.Instance.UpdateTurn(_cptTurn);
+                    CptTurn++;
                     break;
                 default:
                     throw new System.Exception("Invalid cycle value.");
@@ -318,7 +348,6 @@ namespace Wendogo
             
             if (ShowDebugLogs) Debug.LogWarning($"******************** Change cycle from {Cycle} to {newCycle} ! ********************");
             Cycle = newCycle;
-            ServerManager.Instance.UpdateCycle(newCycle);
         }
 
         /// <summary>
@@ -327,8 +356,8 @@ namespace Wendogo
         /// <returns>Returns true if the current turn is greater than or equal to the maximum turn limit; otherwise, false.</returns>
         public bool CheckMaximumTurnReached()
         {
-            if (ShowDebugLogs) Debug.Log($"Current turn : {_cptTurn} / {maximumTurn}");
-            return _cptTurn >= maximumTurn;
+            if (ShowDebugLogs) Debug.Log($"Current turn : {CptTurn} / {maximumTurn}");
+            return CptTurn > maximumTurn;
         }
 
         /// <summary>
@@ -358,6 +387,15 @@ namespace Wendogo
         #endregion
 
         #region Called By ServerManager
+        
+        /// <summary>
+        /// Synchronize the value from the server and the state machine.
+        /// </summary>
+        public void ForceInitialSync()
+        {
+            OnTurnChanged?.Invoke(CptTurn);
+            OnCycleChanged?.Invoke(Cycle);
+        }
 
         /// <summary>
         /// Register a player ID to maintain a reference to all players in the State Machine.
