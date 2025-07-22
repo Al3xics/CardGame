@@ -22,7 +22,7 @@ namespace Wendogo
             {
                 if (!targetPlayer.IsSimulatingNight)
                 {
-                    if (!targetPlayer.hasGardian.Value)
+                    if (!targetPlayer.hasGuardian.Value)
                     {
                         targetPlayer.health.Value -= boostDamage;
                     }
@@ -33,7 +33,7 @@ namespace Wendogo
                 }
                 else if (targetPlayer.IsSimulatingNight)
                 {
-                    if (!targetPlayer.hasGardian.Value)
+                    if (!targetPlayer.hasGuardian.Value)
                     {
                         targetPlayer.hiddenHealth -= boostDamage;
                     }

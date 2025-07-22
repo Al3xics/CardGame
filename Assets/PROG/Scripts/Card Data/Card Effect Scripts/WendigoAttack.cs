@@ -23,14 +23,14 @@ namespace Wendogo
             {
                 AnalyticsManager.Instance.RecordEvent(new CustomEvent("wendigoAttackActiveCardWasApplied"));
                 
-                if (!targetPlayer.hasGardian.Value)
+                if (!targetPlayer.hasGuardian.Value)
                 {
                     targetPlayer.ChangeHealth(-newValue);
                 }
                 else
                 {
                     targetPlayer.gardian.ChangeHealth(-newValue);
-                    targetPlayer.hasGardian.Value = false;
+                    targetPlayer.hasGuardian.Value = false;
                 }
             }
             

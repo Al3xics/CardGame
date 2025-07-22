@@ -110,7 +110,7 @@ namespace Wendogo
             NetworkVariableWritePermission.Owner
         );
         
-        public NetworkVariable<bool> hasGardian = new(
+        public NetworkVariable<bool> hasGuardian = new(
             false,
             NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Owner
