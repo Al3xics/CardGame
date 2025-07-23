@@ -89,7 +89,7 @@ namespace Wendogo
         public NetworkVariable<RoleType> Role = new(
             value: RoleType.Survivor,
             readPerm: NetworkVariableReadPermission.Everyone,
-            writePerm: NetworkVariableWritePermission.Server
+            writePerm: NetworkVariableWritePermission.Owner
         );
 
         public NetworkVariable<FixedString128Bytes> SessionPlayerId = new(
