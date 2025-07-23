@@ -448,7 +448,7 @@ namespace Wendogo
         }
         
         [Rpc(SendTo.Server)]
-        public void RevealCardsRpc(ulong playerOwnerClientId, List<GameObject> ints)
+        public void RevealCardsRpc(ulong[] playerID, int[][] arrayCardsID)
         {
             // Logique
         }
