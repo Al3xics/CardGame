@@ -555,7 +555,7 @@ namespace Wendogo
         
         public void ChangeHealth(int delta)
         {
-            health.Value = Mathf.Clamp(health.Value + delta, 0, maxHealth);
+            health.Value = Mathf.Clamp(health.Value - delta, 0, maxHealth);
         }
         
         public void UpdateHearts(int oldHealthValue, int newHealthValue)

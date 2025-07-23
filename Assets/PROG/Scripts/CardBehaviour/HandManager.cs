@@ -8,6 +8,7 @@ using System;
 using System.Linq;
 using JetBrains.Annotations;
 using UnityEngine.Serialization;
+using UnityEngine.EventSystems;
 
 
 namespace Wendogo
@@ -23,6 +24,9 @@ namespace Wendogo
 
         public Transform _spawnPoint; //World position where new cards appear initially
         public Transform _handTransform; //Parent transform that holds all card objects
+
+        public GameObject _attackButton;
+        public CardDataSO _attackCard;
 
         //temp
         [SerializeField] CardsHandler _cardsHandler;  //Handles assigning data and visuals to cards
@@ -201,6 +205,17 @@ namespace Wendogo
             }
 
             return null;
+        }
+
+        public void PlayAttackCard()
+        {
+            GameObject card = Instantiate(_cardPrefab);
+            card.transform.localScale = Vector3.one;
+            CardObjectData cardObjectData = card.GetComponent<CardObjectData>();
+            CardDataSO cardDataSO = _attackCard;
+            _cardsHandler.ApplyCardData(card, cardDataSO);
+
+            CardDropZone.CallZoneDropEvents(cardObjectData, cardDataSO);
         }
     }
 }

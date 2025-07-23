@@ -148,7 +148,11 @@ namespace Wendogo
                 foodText.text = player.food.Value.ToString();
 
                 var title = go.GetComponentInChildren<TextMeshProUGUI>();
-                title.text = player.name;
+                if (AutoSessionBootstrapper.AutoConnect)
+                    title.text = player.name;
+                else
+                    title.text = ServerManager.Instance.GetPlayerName(player.LocalPlayerId);
+
             }
         }
 

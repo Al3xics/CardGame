@@ -37,7 +37,7 @@ namespace Wendogo
                 handManager?.AddCardToPassiveZone(draggedCard);
 
                 var slots = PlayerUI.Instance.CardSpaces;
-                foreach (Transform zone in slots.Keys.ToList())  
+                foreach (Transform zone in slots.Keys.ToList())
                 {
                     if (slots[zone] == null)
                     {
@@ -50,6 +50,11 @@ namespace Wendogo
             }
 
             dragHandler.enabled = false;
+            CallZoneDropEvents(cod, cardData);
+        }
+
+        public static void CallZoneDropEvents(CardObjectData cod, CardDataSO cardData)
+        {
             OnCardDataDropped?.Invoke(cardData);
             OnCardDropped?.Invoke(cod);
         }
