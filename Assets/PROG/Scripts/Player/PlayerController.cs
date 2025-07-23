@@ -89,7 +89,7 @@ namespace Wendogo
         public NetworkVariable<RoleType> Role = new(
             value: RoleType.Survivor,
             readPerm: NetworkVariableReadPermission.Everyone,
-            writePerm: NetworkVariableWritePermission.Server
+            writePerm: NetworkVariableWritePermission.Owner
         );
 
         public NetworkVariable<FixedString128Bytes> SessionPlayerId = new(
@@ -110,13 +110,13 @@ namespace Wendogo
             NetworkVariableWritePermission.Owner
         );
         
-        public NetworkVariable<bool> hasGardian = new(
+        public NetworkVariable<bool> hasGuardian = new(
             false,
             NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Owner
         );
         
-        public PlayerController gardian;
+        public PlayerController guardian;
         
         public NetworkVariable<bool> eatPorc = new(
             false,
@@ -764,6 +764,7 @@ namespace Wendogo
             
             var effect = DataCollection.Instance.cardDatabase.GetCardByID(playedCardId).CardEffect;
             effect.Apply(origin, OwnerClientId, isApplyPassive ? value : -1);
+            AnalyticsManager.Instance.RecordEvent(new CustomEvent("activeCardPlayed"));
             FinishedCardPlayedRpc(RpcTarget.Me);
         }
 

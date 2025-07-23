@@ -2,13 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
-using UnityEditor.PackageManager;
-using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
-using static UnityEngine.GraphicsBuffer;
-using Object = System.Object;
 
 
 namespace Wendogo
@@ -115,6 +110,14 @@ namespace Wendogo
             }
         }
 
+        private void Start()
+        {
+            GameStateMachine.Instance.OnTurnChanged += newTurn => currentTurn.Value = newTurn;
+            GameStateMachine.Instance.OnCycleChanged += newCycle => currentCycle.Value = newCycle;
+
+            GameStateMachine.Instance.ForceInitialSync();
+        }
+
         // Initializes the dictionary of players present in the scene,
         // mapping their network ID to their corresponding PlayerController.
         // Also registers each player in the GameStateMachine.
@@ -141,16 +144,6 @@ namespace Wendogo
         {
             if (IsServer) NetworkManager.SceneManager.LoadScene(menuSceneName, LoadSceneMode.Single);
         }
-
-        public void UpdateCycle(Cycle newCycle)
-        {
-            if (IsServer) currentCycle.Value = newCycle;
-        }
-
-        public void UpdateTurn(int turn)
-        {
-            if (IsServer) currentTurn.Value = turn;
-        }
         
         public string GetPlayerName(ulong clientId)
         {
@@ -164,6 +157,10 @@ namespace Wendogo
             return new List<PlayerController>(foundPlayers);
         }
 
+        public void ResetEndGameAnimationFinishedCpt()
+        {
+            endGameAnimationFinishedCpt.Value = 0;
+        }
 
         #endregion
 

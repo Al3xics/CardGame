@@ -25,14 +25,14 @@ namespace Wendogo
                 {
                     AnalyticsManager.Instance.RecordEvent(new CustomEvent("groupAttackActiveCardWasApplied"));
                     
-                    if (!targetPlayer.hasGardian.Value)
+                    if (!targetPlayer.hasGuardian.Value)
                     {
                         ServerManager.Instance.ChangePlayerHealthRpc(-newValue, targetPlayer.OwnerClientId);
                     }
                     else
                     {
-                        ServerManager.Instance.ChangePlayerHealthRpc(-newValue, targetPlayer.gardian.OwnerClientId);
-                        targetPlayer.hasGardian.Value = false;
+                        ServerManager.Instance.ChangePlayerHealthRpc(-newValue, targetPlayer.guardian.OwnerClientId);
+                        targetPlayer.hasGuardian.Value = false;
                     }
                 }
             }

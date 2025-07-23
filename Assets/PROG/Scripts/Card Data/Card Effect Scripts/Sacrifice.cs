@@ -14,8 +14,8 @@ namespace Wendogo
             var targetPlayer = PlayerController.GetPlayer(target);
             if (targetPlayer != null)
             {
-                targetPlayer.hasGardian.Value = true;
-                targetPlayer.gardian = PlayerController.GetPlayer(owner);
+                targetPlayer.hasGuardian.Value = true;
+                targetPlayer.guardian = PlayerController.GetPlayer(owner);
                 AnalyticsManager.Instance.RecordEvent(new CustomEvent("sacrificeActiveCardWasApplied"));
             }
         }

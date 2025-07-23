@@ -33,6 +33,7 @@
         private void OnAnimationsFinished()
         {
             ServerManager.Instance.OnAnimationFinished -= OnAnimationsFinished;
+            ServerManager.Instance.ResetEndGameAnimationFinishedCpt();
             ServerManager.Instance.ReturnToMenu();
         }
     }

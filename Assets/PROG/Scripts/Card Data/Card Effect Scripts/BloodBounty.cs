@@ -22,24 +22,24 @@ namespace Wendogo
             {
                 if (!targetPlayer.IsSimulatingNight)
                 {
-                    if (!targetPlayer.hasGardian.Value)
+                    if (!targetPlayer.hasGuardian.Value)
                     {
                         targetPlayer.health.Value -= boostDamage;
                     }
                     else
                     {
-                        targetPlayer.gardian.health.Value -= boostDamage;
+                        targetPlayer.guardian.health.Value -= boostDamage;
                     }
                 }
                 else if (targetPlayer.IsSimulatingNight)
                 {
-                    if (!targetPlayer.hasGardian.Value)
+                    if (!targetPlayer.hasGuardian.Value)
                     {
                         targetPlayer.hiddenHealth -= boostDamage;
                     }
                     else
                     {
-                        targetPlayer.gardian.hiddenHealth -= boostDamage;
+                        targetPlayer.guardian.hiddenHealth -= boostDamage;
                     }
                 }
                 
