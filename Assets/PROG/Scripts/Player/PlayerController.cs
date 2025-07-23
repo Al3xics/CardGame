@@ -156,7 +156,7 @@ namespace Wendogo
 
               
                 //Todo call at the same time the the game state machine starts instead
-                await UniTask.WaitForSeconds(40);
+                await UniTask.WaitForSeconds(25);
                 //Init UI for the other players
                 PlayerUI.Instance.SetUIInfos(LocalPlayerId, RpcTarget.Me);
             }
@@ -572,7 +572,7 @@ namespace Wendogo
         
         public void ChangeHealth(int delta)
         {
-            health.Value = Mathf.Clamp(health.Value + delta, 0, maxHealth);
+            health.Value = Mathf.Clamp(health.Value - delta, 0, maxHealth);
         }
         
         public void UpdateHearts(int oldHealthValue, int newHealthValue)
