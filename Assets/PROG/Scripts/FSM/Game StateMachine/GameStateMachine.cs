@@ -461,10 +461,5 @@ namespace Wendogo
         public bool GetCanScavengeWood() => _canScavengeWood;
 
         #endregion
-
-        public void AskToUnlockRessouces(bool isFood, bool isBlock)
-        {
-            
-        }
     }
 }
