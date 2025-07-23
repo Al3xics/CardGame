@@ -15,10 +15,13 @@ namespace Wendogo
             var player = PlayerController.GetPlayer(target);
             Debug.Log($"Scavenge wood by {wood}");
             
-            if (player.IsSimulatingNight)
-                player.hiddenWood += wood; // Night, so apply only for local player
-            else
-                player.wood.Value += wood; // Day, so apply for all players
+            if (GameStateMachine.Instance.GetCanScavengeWood())
+            {
+                if (player.IsSimulatingNight)
+                    player.hiddenWood += wood; // Night, so apply only for local player
+                else
+                    player.wood.Value += wood; // Day, so apply for all players
+            }
             
             AnalyticsManager.Instance.RecordEvent(new CustomEvent("scavengeWoodActiveCardWasApplied"));
         }

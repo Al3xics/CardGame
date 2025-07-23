@@ -15,10 +15,13 @@ namespace Wendogo
             var player = PlayerController.GetPlayer(target);
             Debug.Log($"Scavenge food by {food}");
             
-            if (player.IsSimulatingNight)
-                player.hiddenFood += food; // Night, so apply only for local player
-            else
-                player.food.Value += food; // Day, so apply for all players
+            if (GameStateMachine.Instance.GetCanScavengeFood())
+            {
+                if (player.IsSimulatingNight)
+                    player.hiddenFood += food; // Night, so apply only for local player
+                else
+                    player.food.Value += food; // Day, so apply for all players
+            }
             
             AnalyticsManager.Instance.RecordEvent(new CustomEvent("scavengeFoodActiveCardWasApplied"));
         }

@@ -14,11 +14,11 @@ namespace Wendogo
             
             if (value == 0)
             {
-                ServerManager.Instance.AskToUnlockRessoucesRpc(true, true);
+                ServerManager.Instance.AskToUnlockResourcesRpc(true, true);
             } 
             else if (value == 1)
             {
-                ServerManager.Instance.AskToUnlockRessoucesRpc(false, true);
+                ServerManager.Instance.AskToUnlockResourcesRpc(false, true);
             }
         }
         

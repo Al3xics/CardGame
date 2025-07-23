@@ -450,15 +450,10 @@ namespace Wendogo
             GameStateMachine.Instance.AskToUnlockResources(isFood, isBlock);
         }
         
+        [Rpc(SendTo.Server)]
         public void RevealCardsRpc(ulong playerOwnerClientId, List<GameObject> ints)
         {
             // Logique
-        }
-
-        [Rpc(SendTo.Server)]
-        public void AskToUnlockRessoucesRpc(bool isFood, bool isBlock)
-        {
-            GameStateMachine.Instance.AskToUnlockRessouces(isFood, isBlock);
         }
         #endregion
     }

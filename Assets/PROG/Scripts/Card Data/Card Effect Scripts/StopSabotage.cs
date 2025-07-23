@@ -10,9 +10,9 @@ namespace Wendogo
         public override void Apply(ulong owner, ulong target, int value = -1)
         {
             if (value == 0)
-                ServerManager.Instance.AskToUnlockRessoucesRpc(true, false);
+                ServerManager.Instance.AskToUnlockResourcesRpc(true, false);
             else if (value == 1)
-                ServerManager.Instance.AskToUnlockRessoucesRpc(false, false);
+                ServerManager.Instance.AskToUnlockResourcesRpc(false, false);
             
             AnalyticsManager.Instance.RecordEvent(new CustomEvent("stopSabotageActiveCardWasApplied"));
         }
