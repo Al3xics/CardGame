@@ -25,11 +25,11 @@ namespace Wendogo
                 
                 if (!targetPlayer.hasGuardian.Value)
                 {
-                    targetPlayer.ChangeHealth(-newValue);
+                    targetPlayer.ChangeHealth(newValue);
                 }
                 else
                 {
-                    targetPlayer.guardian.ChangeHealth(-newValue);
+                    targetPlayer.guardian.ChangeHealth(newValue);
                     targetPlayer.hasGuardian.Value = false;
                 }
             }

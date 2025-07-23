@@ -11,6 +11,8 @@ namespace Wendogo
         {
             AnalyticsManager.Instance.RecordEvent(new CustomEvent("destructionTrapActiveCardWasApplied"));
             ServerManager.Instance.AskToDestructTrapsRpc();
+            HandManager handManager = FindFirstObjectByType<HandManager>();
+            handManager.DestroyPassiveCard("Trap");
         }
     }
 }
