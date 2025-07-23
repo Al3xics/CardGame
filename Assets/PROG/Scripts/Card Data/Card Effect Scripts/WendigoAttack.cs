@@ -29,7 +29,7 @@ namespace Wendogo
                 }
                 else
                 {
-                    targetPlayer.gardian.ChangeHealth(-newValue);
+                    targetPlayer.guardian.ChangeHealth(-newValue);
                     targetPlayer.hasGuardian.Value = false;
                 }
             }

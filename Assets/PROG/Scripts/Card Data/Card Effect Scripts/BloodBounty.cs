@@ -28,7 +28,7 @@ namespace Wendogo
                     }
                     else
                     {
-                        targetPlayer.gardian.health.Value -= boostDamage;
+                        targetPlayer.guardian.health.Value -= boostDamage;
                     }
                 }
                 else if (targetPlayer.IsSimulatingNight)
@@ -39,7 +39,7 @@ namespace Wendogo
                     }
                     else
                     {
-                        targetPlayer.gardian.hiddenHealth -= boostDamage;
+                        targetPlayer.guardian.hiddenHealth -= boostDamage;
                     }
                 }
                 

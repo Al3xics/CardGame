@@ -31,7 +31,7 @@ namespace Wendogo
                     }
                     else
                     {
-                        ServerManager.Instance.ChangePlayerHealthRpc(-newValue, targetPlayer.gardian.OwnerClientId);
+                        ServerManager.Instance.ChangePlayerHealthRpc(-newValue, targetPlayer.guardian.OwnerClientId);
                         targetPlayer.hasGuardian.Value = false;
                     }
                 }

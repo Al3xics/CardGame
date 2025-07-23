@@ -116,7 +116,7 @@ namespace Wendogo
             NetworkVariableWritePermission.Owner
         );
         
-        public PlayerController gardian;
+        public PlayerController guardian;
         
         public NetworkVariable<bool> eatPorc = new(
             false,
