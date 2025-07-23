@@ -60,20 +60,6 @@ namespace Wendogo
         /// </summary>
         public int numberOfWoodToCompleteRitual = 6;
         
-        /* --------------- Read Only --------------- */
-        /// <summary>
-        /// Only to have a read-only value in the inspector.
-        /// </summary>
-        [Header("Read Only Values")]
-        [ShowInInspector, ReadOnly]
-        private int _foodInRitual;
-        
-        /// <summary>
-        /// Only to have a read-only value in the inspector.
-        /// </summary>
-        [ShowInInspector, ReadOnly]
-        private int _woodInRitual;
-
         /* --------------- Hide in Inspector --------------- */
         /// <summary>
         /// Tracks the current turn count within the game cycle.
@@ -162,6 +148,18 @@ namespace Wendogo
         /// </summary>
         private readonly List<bool> _hiddenRitualWoodCollected = new();
 
+        /// <summary>
+        /// Represent the state of the food. If it is false, then this resource
+        /// is blocked and inaccessible for players.
+        /// </summary>
+        private bool _canScavengeFood = true;
+
+        /// <summary>
+        /// Represent the state of the wood. If it is false, then this resource
+        /// is blocked and inaccessible for players.
+        /// </summary>
+        private bool _canScavengeWood = true;
+
         #endregion
 
         #region Basic Methods
@@ -229,24 +227,39 @@ namespace Wendogo
         /// <param name="value">The number of resources to add in the list.</param>
         public void AddRessourceToRitual(bool isHiddenList, ResourceType resource, bool isRealResource, int value)
         {
-            switch (isHiddenList)
+            List<bool> targetList = null;
+
+            if (isHiddenList)
             {
-                case true:
-                    if (resource == ResourceType.Food)
-                        _hiddenRitualFoodCollected.AddRange(Enumerable.Repeat(isRealResource, value));
-                    else if (resource == ResourceType.Wood)
-                        _hiddenRitualWoodCollected.AddRange(Enumerable.Repeat(isRealResource, value));
-                    break;
-                case false:
-                    if (resource == ResourceType.Food)
-                        _ritualFoodCollected.AddRange(Enumerable.Repeat(isRealResource, value));
-                    else if (resource == ResourceType.Wood)
-                        _ritualWoodCollected.AddRange(Enumerable.Repeat(isRealResource, value));
-                    break;
+                targetList = resource switch
+                {
+                    ResourceType.Food => _hiddenRitualFoodCollected,
+                    ResourceType.Wood => _hiddenRitualWoodCollected,
+                    _ => null
+                };
             }
-            
-            _foodInRitual = _ritualFoodCollected.Count(item => item);
-            _woodInRitual = _ritualWoodCollected.Count(item => item);
+            else
+            {
+                targetList = resource switch
+                {
+                    ResourceType.Food => _ritualFoodCollected,
+                    ResourceType.Wood => _ritualWoodCollected,
+                    _ => null
+                };
+            }
+
+            if (targetList == null) return;
+
+            // Add resources
+            targetList.AddRange(Enumerable.Repeat(isRealResource, value));
+
+            // Clamp to the maximum size
+            int max = resource == ResourceType.Food ? numberOfFoodToCompleteRitual : numberOfWoodToCompleteRitual;
+            if (targetList.Count > max)
+                targetList.RemoveRange(max, targetList.Count - max);
+
+            ServerManager.Instance._foodInRitual.Value = _ritualFoodCollected.Count(item => item);
+            ServerManager.Instance._woodInRitual.Value = _ritualWoodCollected.Count(item => item);
         }
 
         /// <summary>
@@ -396,6 +409,18 @@ namespace Wendogo
             Utils.DictionaryToArrays(playerCards, out ulong[] targets, out int[][] cardsID);
             ServerManager.Instance.SendCardsToPlayersRpc(targets, cardsID);
         }
+        
+        public void AskToUnlockResources(bool isFood, bool isBlock)
+        {
+            if (isFood)
+                _canScavengeFood = !isBlock;
+            else
+                _canScavengeWood = !isBlock;
+        }
+
+        public bool GetCanScavengeFood() => _canScavengeFood;
+        
+        public bool GetCanScavengeWood() => _canScavengeWood;
 
         #endregion
 
