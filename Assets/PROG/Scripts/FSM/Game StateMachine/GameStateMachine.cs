@@ -62,6 +62,11 @@ namespace Wendogo
         /// </summary>
         public int numberOfWoodToCompleteRitual = 6;
 
+        /// <summary>
+        /// The card effect that is executed when the vote is triggered every X turn.
+        /// </summary>
+        public GroupAttack groupVoteEffectEveryXTurn;
+
         /* --------------- Hide in Inspector --------------- */
         private int _cptTurn = 1;
 
@@ -203,6 +208,9 @@ namespace Wendogo
         {
             if (!Instance)
                 Instance = this;
+
+            if (groupVoteEffectEveryXTurn == null)
+                throw new Exception($"The variable 'Group Vote Effect Every X Turn' inside the 'GameStateMachine' script is null.");
 
             if (!AutoSessionBootstrapper.AutoConnect)
                 ServerManager.Instance.InitializePlayers();

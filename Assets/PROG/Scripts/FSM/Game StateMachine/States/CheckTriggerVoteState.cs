@@ -7,7 +7,7 @@ namespace Wendogo
     /// </summary>
     public class CheckTriggerVoteState : State<GameStateMachine>
     {
-        private bool _useAllUICalledPreviously;
+        private bool isVotingTurn;
         
         /// <summary>
         /// Represents a state within the game logic that checks whether certain conditions for triggering a vote have been met.
@@ -27,11 +27,10 @@ namespace Wendogo
         /// </summary>
         private void CheckTriggerVote()
         {
-            if (StateMachine.CheckVotingTurn())
-            {
-                _useAllUICalledPreviously = true;
-                ServerManager.Instance.UseAllUIForVotersRpc(true, true);
-            }
+            isVotingTurn = StateMachine.CheckVotingTurn();
+
+            if (isVotingTurn)
+                StateMachine.groupVoteEffectEveryXTurn.ShowUI();
             else
                 OnCheckTriggerVote();
         }
@@ -39,7 +38,13 @@ namespace Wendogo
         private void OnCheckTriggerVote()
         {
             ServerManager.Instance.OnCheckTriggerVote -= OnCheckTriggerVote;
-            if (_useAllUICalledPreviously) ServerManager.Instance.UseAllUIForVotersRpc(false, false);
+
+            if (isVotingTurn)
+            {
+                StateMachine.groupVoteEffectEveryXTurn.Apply(0, 0); // those values are not used inside this specific card effect, so no problem
+                StateMachine.groupVoteEffectEveryXTurn.HideUI();
+            }
+
             StateMachine.ChangeState<CheckLastTurnState>();
         }
 
@@ -47,7 +52,7 @@ namespace Wendogo
         {
             base.OnExit();
             StateMachine.IncreaseCptTurnForVote();
-            _useAllUICalledPreviously = false;
+            isVotingTurn = false;
         }
     }
 }

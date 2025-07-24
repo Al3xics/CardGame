@@ -21,11 +21,9 @@ namespace Wendogo
                 if (targetPlayer != null)
                 {
                     targetPlayer.health.Value += healValue;
+                    AnalyticsManager.Instance.RecordEvent(new CustomEvent("groupHealActiveCardWasApplied"));
                 }
             }
-            
-            AnalyticsManager.Instance.RecordEvent(new CustomEvent("groupHealActiveCardWasApplied"));
-            ServerManager.Instance.Votes.Clear();
         }
         
         ulong VoteResult(NetworkList<int> votes)

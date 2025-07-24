@@ -24,7 +24,7 @@ namespace Wendogo
                 if (targetPlayer != null)
                 {
                     AnalyticsManager.Instance.RecordEvent(new CustomEvent("groupAttackActiveCardWasApplied"));
-                    
+
                     if (!targetPlayer.hasGuardian.Value)
                     {
                         ServerManager.Instance.ChangePlayerHealthRpc(newValue, targetPlayer.OwnerClientId);
