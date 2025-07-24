@@ -110,14 +110,6 @@ namespace Wendogo
             }
         }
 
-        private void Start()
-        {
-            GameStateMachine.Instance.OnTurnChanged += newTurn => currentTurn.Value = newTurn;
-            GameStateMachine.Instance.OnCycleChanged += newCycle => currentCycle.Value = newCycle;
-
-            GameStateMachine.Instance.ForceInitialSync();
-        }
-
         // Initializes the dictionary of players present in the scene,
         // mapping their network ID to their corresponding PlayerController.
         // Also registers each player in the GameStateMachine.
@@ -130,6 +122,11 @@ namespace Wendogo
             {
                 GameStateMachine.Instance.RegisterPlayerID(player.OwnerClientId);
             }
+
+            GameStateMachine.Instance.OnTurnChanged += newTurn => currentTurn.Value = newTurn;
+            GameStateMachine.Instance.OnCycleChanged += newCycle => currentCycle.Value = newCycle;
+
+            GameStateMachine.Instance.ForceInitialSync();
         }
         
         // Starts loading the game scene from the server if it's not already active.
