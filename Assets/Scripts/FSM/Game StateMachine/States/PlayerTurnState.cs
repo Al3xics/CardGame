@@ -88,7 +88,7 @@ namespace Wendogo
                         return;
                     }
                     
-                    if (card.nightPriorityIndex != 0) // Add active card to NightActions if it has a priority index
+                    if (card.nightPriorityIndex > 0) // Add active card to NightActions if it has a priority index
                     {
                         StateMachine.NightActions.Add(new PlayerAction
                         {

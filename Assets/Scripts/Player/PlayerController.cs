@@ -912,6 +912,12 @@ namespace Wendogo
         {
             ChangeHealth(delta);
         }
+        
+        [Rpc(SendTo.SpecifiedInParams)]
+        public void MuteRpc(bool mute, RpcParams rpcParams)
+        {
+            SessionManager.Instance.MutePlayer(mute);
+        }
 
         #endregion
 

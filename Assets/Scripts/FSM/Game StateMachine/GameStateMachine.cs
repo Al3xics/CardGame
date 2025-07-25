@@ -188,6 +188,8 @@ namespace Wendogo
         /// is blocked and inaccessible for players.
         /// </summary>
         private bool _canScavengeWood = true;
+        
+        public List<ulong> MutedPlayers { get; private set; } = new();
 
         #endregion
 
