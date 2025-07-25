@@ -9,17 +9,11 @@ EditorBuildSettings:
     path: Assets/Scenes/Menu.unity
     guid: 99c9720ab356a0642a771bea13969a05
   - enabled: 1
-    path: Assets/Scenes/Game.unity
-    guid: f57fdb7330b650a44b3d1942661f887d
-  - enabled: 1
     path: Assets/Scenes/Game Alexis.unity
-    guid: f24038a6b5017bb4a9fc66f3891d0b50
-  - enabled: 0
-    path: Assets/Scenes/Game ValentinOLD.unity
-    guid: 962122184fe7fbb4f8bc2336ea0899a6
+    guid: eaa281caaa99f3f44b1e310463837c32
   - enabled: 1
     path: Assets/Scenes/Game Martin.unity
-    guid: 91736a757581b2140b0d2cb3bb49a54b
+    guid: a5fdcf9525abe384f8313432fc454c60
   - enabled: 1
     path: Assets/Scenes/Game Integration.unity
     guid: 692e4a711e5256a4092dda1b54fd20d5
