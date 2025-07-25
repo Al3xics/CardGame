@@ -7,7 +7,7 @@ namespace Wendogo
     [CreateAssetMenu(fileName = "BloodBounty", menuName = "Card Effects/Blood Bounty")]
     public class BloodBounty : CardEffect
     {
-        public GameObject SelectResourcePrefab;
+        // public GameObject SelectResourcePrefab;
         
         public int boostDamage = 1;
         public override bool ApplyPassive(int playedCardId, ulong origin, ulong target, out int value)
@@ -20,26 +20,33 @@ namespace Wendogo
             
             if (card.CardEffect is WendigoAttack || (card.CardEffect is FightOrFlight && originPlayer.Role.Value == RoleType.Wendogo) || card.CardEffect is GroupAttack)
             {
-                if (!targetPlayer.IsSimulatingNight)
+                if (!targetPlayer.hasGuardian.Value && !targetPlayer.isFlighting)
                 {
-                    if (!targetPlayer.hasGuardian.Value)
-                    {
-                        targetPlayer.health.Value -= boostDamage;
-                    }
-                    else
-                    {
-                        targetPlayer.guardian.health.Value -= boostDamage;
-                    }
+                    targetPlayer.ChangeHealth(boostDamage);
                 }
-                else if (targetPlayer.IsSimulatingNight)
+                else
                 {
-                    if (!targetPlayer.hasGuardian.Value)
+                    targetPlayer.guardian.ChangeHealth(boostDamage);
+                    targetPlayer.hasGuardian.Value = false;
+                }
+                
+                for (int i = 0; i < 2; i++)
+                {
+                    bool getWood = Random.value < 0.5f;
+
+                    if (targetPlayer.IsSimulatingNight)
                     {
-                        targetPlayer.hiddenHealth -= boostDamage;
+                        if (getWood)
+                            targetPlayer.hiddenWood++;
+                        else
+                            targetPlayer.hiddenFood++;
                     }
                     else
                     {
-                        targetPlayer.guardian.hiddenHealth -= boostDamage;
+                        if (getWood)
+                            targetPlayer.wood.Value++;
+                        else
+                            targetPlayer.food.Value++;
                     }
                 }
                 
@@ -51,14 +58,14 @@ namespace Wendogo
             return false;
         }
         
-        public override void ShowUI()
-        {
-            SelectResourcePrefab.SetActive(true);
-        }
-        
-        public override void HideUI()
-        {
-            SelectResourcePrefab.SetActive(false);
-        }
+        // public override void ShowUI()
+        // {
+        //     SelectResourcePrefab.SetActive(true);
+        // }
+        //
+        // public override void HideUI()
+        // {
+        //     SelectResourcePrefab.SetActive(false);
+        // }
     }
 }

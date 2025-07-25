@@ -9,7 +9,7 @@ namespace Wendogo
         public GameObject prefabUI;
         public override void Apply(ulong owner, ulong target, int value = -1)
         {
-            // Silence target
+            
             
             AnalyticsManager.Instance.RecordEvent(new CustomEvent("silenceActiveCardWasApplied"));
         }

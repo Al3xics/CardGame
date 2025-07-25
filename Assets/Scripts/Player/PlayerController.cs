@@ -60,6 +60,8 @@ namespace Wendogo
         private GameObject _prefabUI;
         Action<int,int> playerAction;
 
+        public bool isFlighting = false;
+
         #endregion
 
         #region Network Variables
