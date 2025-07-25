@@ -27,6 +27,8 @@ namespace Wendogo
 
         public GameObject _attackButton;
         public CardDataSO _attackCard;
+        public GameObject _leurreButton;
+        public CardDataSO _leurreCard;
 
         //temp
         [SerializeField] CardsHandler _cardsHandler;  //Handles assigning data and visuals to cards
@@ -217,5 +219,17 @@ namespace Wendogo
 
             CardDropZone.CallZoneDropEvents(cardObjectData, cardDataSO);
         }
+
+        public void PlayLeurreCard()
+        {
+            GameObject card = Instantiate(_cardPrefab);
+            card.transform.localScale = Vector3.one;
+            CardObjectData cardObjectData = card.GetComponent<CardObjectData>();
+            CardDataSO cardDataSO = _leurreCard;
+            _cardsHandler.ApplyCardData(card, cardDataSO);
+
+            CardDropZone.CallZoneDropEvents(cardObjectData, cardDataSO);
+        }
+
     }
 }

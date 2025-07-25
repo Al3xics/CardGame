@@ -122,29 +122,29 @@ namespace Wendogo
                 {
                     GameObject slot = go;
 
-                    player.wood.OnValueChanged += (oldVal, newVal) =>
-                    {
-                        var txt = otherUI.woodUI;
-                        txt.text = newVal.ToString();
-                    };
-                    player.food.OnValueChanged += (oldVal, newVal) =>
-                    {
-                        var txt = otherUI.foodUI;
-                        txt.text = newVal.ToString();
-                    };
-                    player.health.OnValueChanged += (oldVal, newVal) =>
-                    {
-                        if (newVal < oldVal)
-                            for (int i = newVal; i < oldVal; i++)
-                            {
-                                otherUI.hearts[i].gameObject.SetActive(false);
-                            }
-                        else if (newVal > oldVal)
-                            for (int i = oldVal; i < newVal; i++)
-                            {
-                                otherUI.hearts[i].gameObject.SetActive(true);
-                            }
-                    };
+                    //player.wood.OnValueChanged += (oldVal, newVal) =>
+                    //{
+                    //    var txt = otherUI.woodUI;
+                    //    txt.text = newVal.ToString();
+                    //};
+                    //player.food.OnValueChanged += (oldVal, newVal) =>
+                    //{
+                    //    var txt = otherUI.foodUI;
+                    //    txt.text = newVal.ToString();
+                    //};
+                    //player.health.OnValueChanged += (oldVal, newVal) =>
+                    //{
+                    //    if (newVal < oldVal)
+                    //        for (int i = newVal; i < oldVal; i++)
+                    //        {
+                    //            otherUI.hearts[i].gameObject.SetActive(false);
+                    //        }
+                    //    else if (newVal > oldVal)
+                    //        for (int i = oldVal; i < newVal; i++)
+                    //        {
+                    //            otherUI.hearts[i].gameObject.SetActive(true);
+                    //        }
+                    //};
 
                     _subscribedPlayers.Add(id);
                 }
@@ -168,7 +168,6 @@ namespace Wendogo
             {
                 ritualWood.text = newVal.ToString() + "/6";
             };
-
 
             TextMeshProUGUI ritualFood = _ritualObject.transform
                                       .Find("Ritual_Food_Text")
