@@ -5256,7 +5256,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
-  gameSceneName: Game Alexis
+  menuSceneName: Menu
+  gameSceneName: Game Valentin
   playerHealthAsked: 0
   playerFoodAsked: 0
   playerWoodAsked: 0
@@ -5267,6 +5268,12 @@ MonoBehaviour:
   currentCycle:
     m_InternalValue: 0
   currentTurn:
+    m_InternalValue: 0
+  _foodInRitual:
+    m_InternalValue: 0
+  _woodInRitual:
+    m_InternalValue: 0
+  endGameAnimationFinishedCpt:
     m_InternalValue: 0
 --- !u!1001 &3218768946901839885
 PrefabInstance:
