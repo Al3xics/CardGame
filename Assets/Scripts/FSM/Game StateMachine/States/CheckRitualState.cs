@@ -27,6 +27,7 @@ namespace Wendogo
             if (StateMachine.IsRitualOver)
             {
                 Log("The Ritual is over.");
+                ServerManager.Instance.MuteAllPlayersRpc(false);
                 StateMachine.ChangeState<EndGameState>();
                 return;
             }
@@ -56,6 +57,7 @@ namespace Wendogo
                 
                 if (StateMachine.PreviousState is not NightConsequencesState)
                 {
+                    ServerManager.Instance.MuteAllPlayersRpc(true);
                     StateMachine.NightActions.Clear();
                     StateMachine.SwitchCycle();
                 }
