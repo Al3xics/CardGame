@@ -43,8 +43,8 @@ namespace Wendogo
         public bool TargetSelected;
         private ulong _selectedTarget = 0;
         private int _intTarget = -1;
-        private int _intFood= -1;
-        private int _intWood= -1;
+        private int _intFood = -1;
+        private int _intWood = -1;
         public CardDatabaseSO CardDatabaseSO;
 
         GameObject _pcSMObject;
@@ -58,16 +58,16 @@ namespace Wendogo
 
         public int temporaryTask = -1;
         private GameObject _prefabUI;
-        Action<int,int> playerAction;
+        Action<int, int> playerAction;
 
         #endregion
 
         #region Network Variables
 
         public int hiddenHealth;
-        public int maxHealth = 8;
+        public int maxHealth = 6;
         public NetworkVariable<int> health = new(
-            8,
+            6,
             NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Owner
         );
@@ -109,15 +109,15 @@ namespace Wendogo
             NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Owner
         );
-        
+
         public NetworkVariable<bool> hasGuardian = new(
             false,
             NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Owner
         );
-        
+
         public PlayerController guardian;
-        
+
         public NetworkVariable<bool> eatPorc = new(
             false,
             NetworkVariableReadPermission.Everyone,
@@ -129,9 +129,9 @@ namespace Wendogo
         #endregion
 
         #region Action
-        
+
         public static event Action OnCardUsed;
-        
+
         public virtual event Action OnTargetDetection;
 
         public event Action OnFinishedCardPlayed;
@@ -143,7 +143,7 @@ namespace Wendogo
         private GameObject _popup;
         private TMP_Text _popupText;
         private GameObject _winLoseUI;
-        
+
         private const string WinSurvivor = "Win Survivor";
         private const string LoseSurvivor = "Lose Survivor";
         private const string WinWendogo = "Win Wendogo";
@@ -152,7 +152,7 @@ namespace Wendogo
         #endregion
 
         #region Basic Method
-        
+
         private async void Start()
         {
             name = IsLocalPlayer ? "LocalPlayer" : $"Player{OwnerClientId}";
@@ -161,13 +161,13 @@ namespace Wendogo
             {
                 // Reference to Pop-up
                 _popup = GameObject.FindWithTag("Pop-up");
-                if (_popup ==null) throw new Exception("Pop-up not found");
+                if (_popup == null) throw new Exception("Pop-up not found");
                 _popupText = _popup.GetComponentInChildren<TMP_Text>();
-                
+
                 // Reference to Win - Lose Panel
-                _winLoseUI= GameObject.FindWithTag("WinLoseUI");
-                if (_winLoseUI ==null) throw new Exception("Win - Lose Panel not found");
-              
+                _winLoseUI = GameObject.FindWithTag("WinLoseUI");
+                if (_winLoseUI == null) throw new Exception("Win - Lose Panel not found");
+
                 //Todo call at the same time the the game state machine starts instead
                 await UniTask.WaitForSeconds(15);
                 //Init UI for the other players
@@ -209,7 +209,7 @@ namespace Wendogo
             food.OnValueChanged -= UpdateFoodText;
             wood.OnValueChanged -= UpdateWoodText;
         }
-        
+
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
 
@@ -222,7 +222,7 @@ namespace Wendogo
                     name = SessionManager.Instance.ActiveSession.CurrentPlayer.Properties[SessionConstants.PlayerNamePropertyKey].Value;
                     ServerManager.Instance.RegisterPlayerNameRpc(OwnerClientId, name);
                 }
-                
+
                 _inputEvent = GameObject.Find("EventSystem")?.GetComponent<EventSystem>();
                 if (_inputEvent != null && _inputEvent.enabled) _inputEvent.enabled = false;
                 if (_handManager == null) _handManager = GameObject.FindWithTag("hand")?.GetComponent<HandManager>();
@@ -231,12 +231,12 @@ namespace Wendogo
 
                 // Reference to Pop-up
                 _popup = GameObject.FindWithTag("Pop-up");
-                if (_popup ==null) throw new Exception("Pop-up not found");
+                if (_popup == null) throw new Exception("Pop-up not found");
                 _popupText = _popup.GetComponentInChildren<TMP_Text>();
-                
+
                 // Reference to Win - Lose Panel
-                _winLoseUI= GameObject.FindWithTag("WinLoseUI");
-                if (_winLoseUI ==null) throw new Exception("Win - Lose Panel not found");
+                _winLoseUI = GameObject.FindWithTag("WinLoseUI");
+                if (_winLoseUI == null) throw new Exception("Win - Lose Panel not found");
 
                 Debug.Log($"This is my player id: {LocalPlayerId}");
 
@@ -263,7 +263,7 @@ namespace Wendogo
             //Implement enable input
             Debug.Log("Input disabled");
         }
-        
+
         public async UniTask<int> SelectDeckAsync(int missingCards)
         {
             if (!IsOwner)
@@ -310,7 +310,7 @@ namespace Wendogo
             await UniTask.WaitUntil(() => _intTarget >= 0);
 
             //todo change logic for the wendigo offering
-            if(_intTarget == 0)
+            if (_intTarget == 0)
             {
                 if (wood.Value == 0)
                     return;
@@ -377,7 +377,7 @@ namespace Wendogo
         {
             _intTarget = targetID;
         }
-        
+
         public void SelectCard(CardObjectData card)
         {
             //Implement select card
@@ -404,7 +404,7 @@ namespace Wendogo
 
         //public async void SelectTarget()
         //{
-            //todo move the method in the select state here
+        //todo move the method in the select state here
         //}
 
         public void BurnCard()
@@ -499,11 +499,11 @@ namespace Wendogo
             {
                 // var card = DataCollection.Instance.cardDatabase.GetCardByID(cardId);
                 var card = _handManager.GetCardDataInPassiveZone(cardId);
-                
+
                 if (card == null || !card.isPassive) continue;
-                
+
                 Debug.Log($"$$$$$ [PlayerController] Current turns remaining for passive card {card.Name} : {card.turnsRemaining}");
-                
+
                 if (card.turnsRemaining == -1) continue;
                 if (card.turnsRemaining > 0) card.turnsRemaining--;
                 Debug.Log($"$$$$$ [PlayerController] Turns remaining for passive card {card.Name} : {card.turnsRemaining}");
@@ -517,30 +517,30 @@ namespace Wendogo
             }
 
             if (itemsToRemove.Count == 0) return;
-            
+
             foreach (var (cardId, cardObject) in itemsToRemove)
             {
                 passiveCardsList.Remove(cardId);
                 if (cardObject != null) _handManager.RemoveCardFromPassiveZone(cardObject);
                 Debug.Log($"Card with ID: {cardId} removed from {(IsSimulatingNight ? "HiddenPassiveCards" : "PassiveCards")}");
             }
-            
+
             Debug.Log($"$$$$$ [PlayerController] passiveCardsList Count : {passiveCardsList.Count}");
-            
+
             if (IsSimulatingNight)
                 Debug.Log($"$$$$$ [PlayerController] HiddenPassiveCardsList Count : {HiddenPassiveCards.Count}");
             else
                 Debug.Log($"$$$$$ [PlayerController] PassiveCards Count : {PassiveCards.Count}");
-                
+
         }
 
         public void ShowCard(int card)
         {
-            
+
         }
 
         #endregion
-        
+
         #region UI Methods
 
         public void UpdateFoodText(int oldFoodValue, int newFoodValue)
@@ -552,12 +552,15 @@ namespace Wendogo
         {
             PlayerUI.Instance.DefineWoodText(newWoodValue);
         }
-        
+
         public void ChangeHealth(int delta)
         {
-            health.Value = Mathf.Clamp(health.Value - delta, 0, maxHealth);
+            if (ServerManager.Instance.currentCycle.Value == Cycle.Day)
+                health.Value = Mathf.Clamp(health.Value - delta, 0, maxHealth);
+            else
+                hiddenHealth = Mathf.Clamp(hiddenHealth - delta, 0, maxHealth);
         }
-        
+
         public void UpdateHearts(int oldHealthValue, int newHealthValue)
         {
             Debug.Log($"New health is: {newHealthValue} and old health is {oldHealthValue} ");
@@ -587,7 +590,7 @@ namespace Wendogo
         }
 
         #endregion
-        
+
         #region Animation Logic
 
         private Animator GetAnimatorByName(AnimatorName animatorName)
@@ -600,7 +603,7 @@ namespace Wendogo
                 _ => null,
             };
         }
-        
+
         private void TriggerAnimator(AnimationContext context)
         {
             HandlePreAnimation(ref context, out var onComplete);
@@ -644,7 +647,7 @@ namespace Wendogo
         {
             context.Animator.enabled = true;
             onComplete = null;
-            
+
             switch (context.AnimatorName)
             {
                 case AnimatorName.Popup:
@@ -682,7 +685,7 @@ namespace Wendogo
 
                     onComplete += ServerManager.Instance.IncrementEndGameAnimationFinishedCptRpc;
                     break;
-                
+
                 default:
                     throw new ArgumentOutOfRangeException(nameof(context.AnimatorName), context.AnimatorName, null);
             }
@@ -691,7 +694,7 @@ namespace Wendogo
         private void HandlePostAnimation(ref AnimationContext context, ref Action onComplete)
         {
             context.Animator.enabled = false;
-            
+
             switch (context.AnimatorName)
             {
                 case AnimatorName.Popup:
@@ -701,11 +704,11 @@ namespace Wendogo
 
                 case AnimatorName.WinLoseUI:
                     break;
-                
+
                 default:
                     throw new ArgumentOutOfRangeException(nameof(context.AnimatorName), context.AnimatorName, null);
             }
-            
+
             onComplete?.Invoke();
         }
 
@@ -740,7 +743,7 @@ namespace Wendogo
             if (IsOwner)
                 pcSMObject.GetComponent<PlayerControllerSM>().StartStateMachine();
         }
-        
+
         [Rpc(SendTo.SpecifiedInParams)]
         public void TryApplyPassiveRpc(int playedCardId, ulong origin, RpcParams rpcParams)
         {
@@ -750,7 +753,7 @@ namespace Wendogo
 
             // Get the CardDataSO of the played card
             var cardIds = GetPassiveCardCopy();
-            
+
             foreach (var cardId in cardIds)
             {
                 var hiddenCard = DataCollection.Instance.cardDatabase.GetCardByID(cardId);
@@ -761,7 +764,7 @@ namespace Wendogo
                     break;
                 }
             }
-            
+
             var effect = DataCollection.Instance.cardDatabase.GetCardByID(playedCardId).CardEffect;
             effect.Apply(origin, OwnerClientId, isApplyPassive ? value : -1);
             AnalyticsManager.Instance.RecordEvent(new CustomEvent("activeCardPlayed"));
@@ -774,20 +777,20 @@ namespace Wendogo
             var card = DataCollection.Instance.cardDatabase.GetCardByID(playedCardID);
             var buildRitual = card.CardEffect as BuildRitual;
             if (buildRitual == null) throw new Exception("Card effect is not a BuildRitual, but it should be !");
-            
+
             // Replace -1 by 0
             if (nbFood <= -1) nbFood = 0;
             if (nbWood <= -1) nbWood = 0;
-            
+
             // Check if both resources combined are inferior or equal to the maximum use of this card BuildRitual
             var value = nbFood + nbWood;
             if (value > buildRitual.RitualCost)
                 // todo --> normalement ça arrive jamais car Valentin vérifie que le total est correcte avant que le joueur valide
                 throw new Exception("The sum of the food and wood resources used by the card is superior to the maximum use of this card BuildRitual !");
-            
+
             if (nbFood > 0) buildRitual.ApplyRitualEffect(origin, ResourceType.Food, nbFood);
             if (nbWood > 0) buildRitual.ApplyRitualEffect(origin, ResourceType.Wood, nbWood);
-            
+
             FinishedCardPlayedRpc(RpcTarget.Me);
         }
 
@@ -811,7 +814,7 @@ namespace Wendogo
             HiddenPassiveCards.Clear();
             foreach (var cardId in PassiveCards)
                 HiddenPassiveCards.Add(cardId);
-            
+
             Debug.Log($"[CopyPublicToHiddenRpc] RealHealth : {health.Value} RealFood : {food.Value} RealWood : {wood.Value}");
             Debug.Log($"[CopyPublicToHiddenRpc] PassiveCards : {PassiveCards.Count}");
         }
@@ -830,11 +833,11 @@ namespace Wendogo
             PassiveCards.Clear();
             foreach (var cardId in HiddenPassiveCards)
                 PassiveCards.Add(cardId);
-            
+
             Debug.Log($"[CopyHiddenToPublicRpc] RealHealth : {health.Value} RealFood : {food.Value} RealWood : {wood.Value}");
             Debug.Log($"[CopyPublicToHiddenRpc] PassiveCards : {PassiveCards.Count}");
         }
-        
+
         [Rpc(SendTo.SpecifiedInParams)]
         public void DestructAllTrapsRpc(RpcParams rpcParams)
         {
@@ -855,7 +858,7 @@ namespace Wendogo
                 }
             }
         }
-        
+
         [Rpc(SendTo.SpecifiedInParams)]
         public void AddPassiveCardRpc(int cardId, RpcParams rpcParams) => PassiveCards.Add(cardId);
 
@@ -874,7 +877,7 @@ namespace Wendogo
                 ServerManager.Instance.ChangePlayerHealthRpc(-1, LocalPlayerId);
             }
         }
-        
+
         [Rpc(SendTo.SpecifiedInParams)]
         public void UseVoteUIRpc(bool setUIActive, bool activePlayerInput, RpcParams rpcParams)
         {
@@ -885,7 +888,7 @@ namespace Wendogo
             else
                 ServerManager.Instance.ClearVoteRpc();
         }
-        
+
         [Rpc(SendTo.SpecifiedInParams)]
         public void StartPlayAnimationRpc(AnimationParams animParams, RpcParams rpcParams)
         {
@@ -900,7 +903,7 @@ namespace Wendogo
                 PlayerId = animParams.playerId,
                 IsSurvivorWin = animParams.isSurvivorWin
             };
-            
+
             if (context.WaitForAnimation)
                 PlayAndWaitAnimator(context);
             else
@@ -940,7 +943,7 @@ namespace Wendogo
 
             int nbFood = -1;
             int nbWood = -1;
-            
+
             // Needs this player to select a target to play the card against
             if (cardDataSO.HasTarget && !cardDataSO.isGroup)
             {
@@ -966,7 +969,7 @@ namespace Wendogo
             ServerManager.Instance.TransmitPlayedCardRpc(cardDataSO.ID, _selectedTarget, nbFood, nbWood);
             Debug.Log($"card {cardDataSO.Name} was sent to server ");
         }
-        
+
         #endregion
     }
 }

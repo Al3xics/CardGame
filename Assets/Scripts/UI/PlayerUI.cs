@@ -91,7 +91,7 @@ namespace Wendogo
         }
 
         [Rpc(SendTo.SpecifiedInParams)]
-        public void SetUIInfos(ulong localPLayerID,RpcParams rpcParams)
+        public void SetUIInfos(ulong localPLayerID, RpcParams rpcParams)
         {
             SetRitualUI();
 
@@ -114,6 +114,8 @@ namespace Wendogo
                     trueID = 0;
                 }
 
+                OtherPlayerUIContent otherUI = go.GetComponent<OtherPlayerUIContent>();
+
                 var player = PlayerController.GetPlayer(trueID);
 
                 if (!_subscribedPlayers.Contains(trueID))
@@ -122,30 +124,30 @@ namespace Wendogo
 
                     player.wood.OnValueChanged += (oldVal, newVal) =>
                     {
-                        var txt = slot.transform
-                                      .Find("Ritual_Wood_Text")
-                                      .GetComponent<TextMeshProUGUI>();
+                        var txt = otherUI.woodUI;
                         txt.text = newVal.ToString();
                     };
                     player.food.OnValueChanged += (oldVal, newVal) =>
                     {
-                        var txt = slot.transform
-                                      .Find("Ritual_Food_Text")
-                                      .GetComponent<TextMeshProUGUI>();
+                        var txt = otherUI.foodUI;
                         txt.text = newVal.ToString();
                     };
+                    player.health.OnValueChanged += (oldVal, newVal) =>
+                    {
+                        if (newVal < oldVal)
+                            for (int i = newVal; i < oldVal; i++)
+                            {
+                                otherUI.hearts[i].gameObject.SetActive(false);
+                            }
+                        else if (newVal > oldVal)
+                            for (int i = oldVal; i < newVal; i++)
+                            {
+                                otherUI.hearts[i].gameObject.SetActive(true);
+                            }
+                    };
+
                     _subscribedPlayers.Add(id);
                 }
-
-                var woodText = go.transform
-                                 .Find("Ritual_Wood_Text")
-                                 .GetComponent<TextMeshProUGUI>();
-                woodText.text = player.wood.Value.ToString();
-
-                var foodText = go.transform
-                                 .Find("Ritual_Food_Text")
-                                 .GetComponent<TextMeshProUGUI>();
-                foodText.text = player.food.Value.ToString();
 
                 var title = go.GetComponentInChildren<TextMeshProUGUI>();
                 if (AutoSessionBootstrapper.AutoConnect)

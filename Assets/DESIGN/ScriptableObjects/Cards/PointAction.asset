@@ -18,8 +18,8 @@ MonoBehaviour:
   isPassive: 0
   isGroup: 0
   HasTarget: 0
-  nightPriorityIndex: 0
-  turnsRemaining: -1
+  nightPriorityIndex: 3
+  turnsRemaining: 2
   ID: 1004
   Toggle: 1
   effectDescription: Ajoute +1 PA au joueur qui joue cette carte. (cette carte n'utilise

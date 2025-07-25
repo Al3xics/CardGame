@@ -16,16 +16,12 @@ namespace Wendogo
         
         public override void ShowUI()
         {
-            if (prefabUI == null)
-                prefabUI = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject;
-            prefabUI.SetActive(true);
+
         }
 
         public override void HideUI()
         {
-            if (prefabUI == null)
-                prefabUI = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject;
-            prefabUI.SetActive(false);
+
         }
     }
 }

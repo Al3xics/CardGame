@@ -74,6 +74,23 @@ MonoBehaviour:
   ActiveCard: {fileID: 0}
   _inputEvent: {fileID: 0}
   _handManager: {fileID: 0}
+  playerUIInstance: {fileID: 0}
+  _playerPA: 0
+  deckID: 0
+  TargetSelected: 0
+  CardDatabaseSO: {fileID: 11400000, guid: 5318d161afaa23f45936fbd5e4b9da0c, type: 2}
+  LocalPlayerId: 0
+  temporaryTask: -1
+  hiddenHealth: 0
+  maxHealth: 6
+  health:
+    m_InternalValue: 6
+  hiddenWood: 0
+  wood:
+    m_InternalValue: 0
+  hiddenFood: 0
+  food:
+    m_InternalValue: 0
   Role:
     m_InternalValue: 0
   SessionPlayerId:
@@ -213,23 +230,8 @@ MonoBehaviour:
         byte0123: 0
         byte0124: 0
         byte0125: 0
-  target: 0
-  _playerPA: 0
-  deckID: 0
-  TargetSelected: 0
-  CardDatabaseSO: {fileID: 11400000, guid: 5318d161afaa23f45936fbd5e4b9da0c, type: 2}
-  temporaryTask: -1
-  hiddenHealth: 0
-  maxHealth: 8
-  health:
-    m_InternalValue: 8
-  hiddenWood: 0
-  wood:
+  hasGuardian:
     m_InternalValue: 0
-  hiddenFood: 0
-  food:
-    m_InternalValue: 0
-  asGardian:
-    m_InternalValue: 0
+  guardian: {fileID: 0}
   eatPorc:
     m_InternalValue: 0
