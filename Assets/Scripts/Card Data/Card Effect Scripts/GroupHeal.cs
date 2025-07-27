@@ -8,7 +8,7 @@ namespace Wendogo
     [CreateAssetMenu(fileName = "GroupHeal", menuName = "Card Effects/Group Heal")]
     public class GroupHeal : CardEffect
     {
-        public int healValue = 2;
+        public int healValue = -2;
         public override void Apply(ulong owner, ulong target, int value = -1)
         {
             var votes = ServerManager.Instance.Votes;
@@ -20,7 +20,7 @@ namespace Wendogo
                 
                 if (targetPlayer != null)
                 {
-                    targetPlayer.health.Value += healValue;
+                    ServerManager.Instance.ChangePlayerHealthRpc(healValue, targetPlayer.OwnerClientId);
                     AnalyticsManager.Instance.RecordEvent(new CustomEvent("groupHealActiveCardWasApplied"));
                 }
             }

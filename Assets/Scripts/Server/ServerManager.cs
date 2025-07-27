@@ -449,6 +449,21 @@ namespace Wendogo
         {
             // Logique
         }
+
+        [Rpc(SendTo.Server)]
+        public void MuteAllPlayersRpc(bool mute)
+        {
+            foreach (var player in PlayersById.Values)
+                player.MuteRpc(mute, RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
+        }
+
+        [Rpc(SendTo.Server)]
+        public void MutePlayerRpc(bool mute, ulong playerId)
+        {
+            if (PlayersById.TryGetValue(playerId, out var player))
+                player.MuteRpc(mute, RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
+        }
+        
         #endregion
     }
 }

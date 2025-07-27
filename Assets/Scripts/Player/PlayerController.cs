@@ -60,6 +60,8 @@ namespace Wendogo
         private GameObject _prefabUI;
         Action<int, int> playerAction;
 
+        public bool isFlighting = false;
+
         #endregion
 
         #region Network Variables
@@ -914,6 +916,12 @@ namespace Wendogo
         public void RequestHealthChangeRpc(int delta, RpcParams rpcParams)
         {
             ChangeHealth(delta);
+        }
+        
+        [Rpc(SendTo.SpecifiedInParams)]
+        public void MuteRpc(bool mute, RpcParams rpcParams)
+        {
+            SessionManager.Instance.MutePlayer(mute);
         }
 
         #endregion
