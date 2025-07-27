@@ -7,7 +7,8 @@ namespace Wendogo
     public class StealResource : CardEffect
     {
         public int ResourceAmount = 1;
-        public GameObject prefabUI;
+        public GameObject prefabUITarget;
+        public GameObject prefabRessource;
         
         public override void Apply(ulong owner, ulong target, int value = -1)
         {
@@ -49,18 +50,32 @@ namespace Wendogo
         }
         
         
-        public override void ShowUI()
+        public void ShowUITarget()
         {
-            if (prefabUI == null)
-                prefabUI = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject;
-            prefabUI.SetActive(true);
+            if (prefabUITarget == null)
+                prefabUITarget = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject;
+            prefabUITarget.SetActive(true);
         }
 
-        public override void HideUI()
+        public void HideUITarget()
         {
-            if (prefabUI == null)
-                prefabUI = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject;
-            prefabUI.SetActive(false);
+            if (prefabUITarget == null)
+                prefabUITarget = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject;
+            prefabUITarget.SetActive(false);
+        }
+        
+        public void ShowUIRessource()
+        {
+            if (prefabRessource == null)
+                prefabRessource = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject;
+            prefabRessource.SetActive(true);
+        }
+        
+        public void HideUIRessource()
+        {
+            if (prefabRessource == null)
+                prefabRessource = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject;
+            prefabRessource.SetActive(false);
         }
     }
 }
