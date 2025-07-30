@@ -21,6 +21,8 @@ namespace Wendogo
             base.OnEnter();
             StateMachine.NightActions.Clear();
             
+            ServerManager.Instance.MuteAllPlayersRpc(false);
+            
             id = 0;
             // Sort `NightActions` by priority index and process them
             sortedActions = StateMachine.NightActions.Where(card => card.CardPriorityIndex > 0).OrderBy(card => card.CardPriorityIndex).ToList();
@@ -40,7 +42,8 @@ namespace Wendogo
         private void ResolveCardNightConsequences()
         {
             ServerManager.Instance.OnResolveCardNightConsequences += OnResolveCardNightConsequences;
-            ServerManager.Instance.UseAllUIForVotersRpc(true, true);
+            // ServerManager.Instance.UseAllUIForVotersRpc(true, true);
+            // todo -> utiliser le Show UI du card effect
         }
 
         /// <summary>
@@ -50,7 +53,7 @@ namespace Wendogo
         private void OnResolveCardNightConsequences()
         {
             ServerManager.Instance.OnResolveCardNightConsequences -= OnResolveCardNightConsequences;
-            ServerManager.Instance.UseAllUIForVotersRpc(false, false);
+            // ServerManager.Instance.UseAllUIForVotersRpc(false, false);
             
             id++;
             bool isLast = id >= sortedActions.Count;
