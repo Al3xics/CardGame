@@ -962,7 +962,7 @@ namespace Wendogo
                 }
 
             }
-            else if (cardDataSO.isGroup)
+            else if (cardDataSO.isGroup && ServerManager.Instance.currentCycle.Value != Cycle.Night)
             {
                 await UniTask.WaitUntil(() => ServerManager.Instance.PlayerReadyCount.Value == 2);
             }

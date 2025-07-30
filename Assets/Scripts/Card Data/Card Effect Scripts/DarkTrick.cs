@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Wendogo
 {
-    [CreateAssetMenu(fileName = "Sabotage", menuName = "Card Effects/Sabotage")]
+    [CreateAssetMenu(fileName = "DarkTrick", menuName = "Card Effects/DarkTrick")]
     public class DarkTrick : CardEffect
     {
         public GameObject prefabUI;
