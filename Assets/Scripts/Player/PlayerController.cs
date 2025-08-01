@@ -60,6 +60,8 @@ namespace Wendogo
         private GameObject _prefabUI;
         Action<int,int> playerAction;
 
+        private FXEventManager _fxManager;
+
         #endregion
 
         #region Network Variables
@@ -138,19 +140,6 @@ namespace Wendogo
 
         #endregion
 
-        #region Animation
-
-        private GameObject _popup;
-        private TMP_Text _popupText;
-        private GameObject _winLoseUI;
-        
-        private const string WinSurvivor = "Win Survivor";
-        private const string LoseSurvivor = "Lose Survivor";
-        private const string WinWendogo = "Win Wendogo";
-        private const string LoseWendogo = "Lose Wendogo";
-
-        #endregion
-
         #region Basic Method
         
         private async void Start()
@@ -159,15 +148,8 @@ namespace Wendogo
 
             if (AutoSessionBootstrapper.AutoConnect)
             {
-                // Reference to Pop-up
-                _popup = GameObject.FindWithTag("Pop-up");
-                if (_popup ==null) throw new Exception("Pop-up not found");
-                _popupText = _popup.GetComponentInChildren<TMP_Text>();
+                _fxManager = GameObject.Find("FXEventManager")?.GetComponent<FXEventManager>();
                 
-                // Reference to Win - Lose Panel
-                _winLoseUI= GameObject.FindWithTag("WinLoseUI");
-                if (_winLoseUI ==null) throw new Exception("Win - Lose Panel not found");
-              
                 //Todo call at the same time the the game state machine starts instead
                 await UniTask.WaitForSeconds(15);
                 //Init UI for the other players
@@ -228,15 +210,8 @@ namespace Wendogo
                 if (_handManager == null) _handManager = GameObject.FindWithTag("hand")?.GetComponent<HandManager>();
                 pcSMObject = new GameObject($"{nameof(PlayerControllerSM)}");
                 pcSMObject.AddComponent<PlayerControllerSM>();
-
-                // Reference to Pop-up
-                _popup = GameObject.FindWithTag("Pop-up");
-                if (_popup ==null) throw new Exception("Pop-up not found");
-                _popupText = _popup.GetComponentInChildren<TMP_Text>();
                 
-                // Reference to Win - Lose Panel
-                _winLoseUI= GameObject.FindWithTag("WinLoseUI");
-                if (_winLoseUI ==null) throw new Exception("Win - Lose Panel not found");
+                _fxManager = GameObject.Find("FXEventManager")?.GetComponent<FXEventManager>();
 
                 Debug.Log($"This is my player id: {LocalPlayerId}");
 
@@ -588,128 +563,130 @@ namespace Wendogo
 
         #endregion
         
-        #region Animation Logic
-
-        private Animator GetAnimatorByName(AnimatorName animatorName)
-        {
-            return animatorName switch
-            {
-                AnimatorName.None => throw new Exception($"The AnimatorName {animatorName} is not valid"),
-                AnimatorName.Popup => _popup.GetComponent<Animator>(),
-                AnimatorName.WinLoseUI => _winLoseUI.GetComponent<Animator>(),
-                _ => null,
-            };
-        }
-        
-        private void TriggerAnimator(AnimationContext context)
-        {
-            HandlePreAnimation(ref context, out var onComplete);
-            context.Animator.ResetTrigger(context.Trigger);
-            context.Animator.SetTrigger(context.Trigger);
-            HandlePostAnimation(ref context, ref onComplete);
-        }
-
-        private async void PlayAndWaitAnimator(AnimationContext context)
-        {
-            try
-            {
-                HandlePreAnimation(ref context, out var onComplete);
-                Debug.Log($"Triggering {context.Trigger}");
-                context.Animator.ResetTrigger(context.Trigger);
-                context.Animator.SetTrigger(context.Trigger);
-
-                // Wait for the animation to start (important if transition)
-                await UniTask.WaitUntil(() =>
-                {
-                    var state = context.Animator.GetCurrentAnimatorStateInfo(0);
-                    return state is { length: > 0, normalizedTime: < 1f };
-                });
-
-                // Wait for the animation to finish (normalisedTime >= 1)
-                await UniTask.WaitWhile(() =>
-                {
-                    var state = context.Animator.GetCurrentAnimatorStateInfo(0);
-                    return state.normalizedTime < 1f;
-                });
-
-                HandlePostAnimation(ref context, ref onComplete);
-            }
-            catch (Exception e)
-            {
-                Debug.LogError(e);
-            }
-        }
-
-        private void HandlePreAnimation(ref AnimationContext context, out Action onComplete)
-        {
-            context.Animator.enabled = true;
-            onComplete = null;
-            
-            switch (context.AnimatorName)
-            {
-                case AnimatorName.Popup:
-                    if (context.PlayerId == LocalPlayerId)
-                    {
-                        DisableInput();
-                        _popupText.text = PopupSentences.Instance.thisPlayerTurnText;
-                    }
-                    else
-                    {
-                        string playerName;
-                        if (AutoSessionBootstrapper.AutoConnect)
-                            playerName = GetPlayer(context.PlayerId).name;
-                        else
-                            playerName = ServerManager.Instance.GetPlayerName(context.PlayerId);
-                        _popupText.text = PopupSentences.Instance.ReplaceX(PopupSentences.Instance.otherPlayerTurnText, $"{playerName}");
-                    }
-                    break;
-
-                case AnimatorName.WinLoseUI:
-                    if (context.IsSurvivorWin)
-                        context.Trigger = Role.Value switch
-                        {
-                            RoleType.Survivor => WinSurvivor,
-                            RoleType.Wendogo => LoseWendogo,
-                            _ => context.Trigger
-                        };
-                    else
-                        context.Trigger = Role.Value switch
-                        {
-                            RoleType.Survivor => LoseSurvivor,
-                            RoleType.Wendogo => WinWendogo,
-                            _ => context.Trigger
-                        };
-
-                    onComplete += ServerManager.Instance.IncrementEndGameAnimationFinishedCptRpc;
-                    break;
-                
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(context.AnimatorName), context.AnimatorName, null);
-            }
-        }
-
-        private void HandlePostAnimation(ref AnimationContext context, ref Action onComplete)
-        {
-            context.Animator.enabled = false;
-            
-            switch (context.AnimatorName)
-            {
-                case AnimatorName.Popup:
-                    if (context.PlayerId == LocalPlayerId) EnableInput();
-                    _popupText.text = "";
-                    break;
-
-                case AnimatorName.WinLoseUI:
-                    break;
-                
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(context.AnimatorName), context.AnimatorName, null);
-            }
-            
-            onComplete?.Invoke();
-        }
-
-        #endregion
+        // #region Animation Logic
+        //
+        // todo
+        //
+        // private Animator GetAnimatorByName(AnimatorName animatorName)
+        // {
+        //     return animatorName switch
+        //     {
+        //         AnimatorName.None => throw new Exception($"The AnimatorName {animatorName} is not valid"),
+        //         AnimatorName.Popup => _popup.GetComponent<Animator>(),
+        //         AnimatorName.WinLoseUI => _winLoseUI.GetComponent<Animator>(),
+        //         _ => null,
+        //     };
+        // }
+        //
+        // private void TriggerAnimator(AnimationContext context)
+        // {
+        //     HandlePreAnimation(ref context, out var onComplete);
+        //     context.Animator.ResetTrigger(context.Trigger);
+        //     context.Animator.SetTrigger(context.Trigger);
+        //     HandlePostAnimation(ref context, ref onComplete);
+        // }
+        //
+        // private async void PlayAndWaitAnimator(AnimationContext context)
+        // {
+        //     try
+        //     {
+        //         HandlePreAnimation(ref context, out var onComplete);
+        //         Debug.Log($"Triggering {context.Trigger}");
+        //         context.Animator.ResetTrigger(context.Trigger);
+        //         context.Animator.SetTrigger(context.Trigger);
+        //
+        //         // Wait for the animation to start (important if transition)
+        //         await UniTask.WaitUntil(() =>
+        //         {
+        //             var state = context.Animator.GetCurrentAnimatorStateInfo(0);
+        //             return state is { length: > 0, normalizedTime: < 1f };
+        //         });
+        //
+        //         // Wait for the animation to finish (normalisedTime >= 1)
+        //         await UniTask.WaitWhile(() =>
+        //         {
+        //             var state = context.Animator.GetCurrentAnimatorStateInfo(0);
+        //             return state.normalizedTime < 1f;
+        //         });
+        //
+        //         HandlePostAnimation(ref context, ref onComplete);
+        //     }
+        //     catch (Exception e)
+        //     {
+        //         Debug.LogError(e);
+        //     }
+        // }
+        //
+        // private void HandlePreAnimation(ref AnimationContext context, out Action onComplete)
+        // {
+        //     context.Animator.enabled = true;
+        //     onComplete = null;
+        //     
+        //     switch (context.AnimatorName)
+        //     {
+        //         case AnimatorName.Popup:
+        //             if (context.PlayerId == LocalPlayerId)
+        //             {
+        //                 DisableInput();
+        //                 _popupText.text = PopupSentences.Instance.thisPlayerTurnText;
+        //             }
+        //             else
+        //             {
+        //                 string playerName;
+        //                 if (AutoSessionBootstrapper.AutoConnect)
+        //                     playerName = GetPlayer(context.PlayerId).name;
+        //                 else
+        //                     playerName = ServerManager.Instance.GetPlayerName(context.PlayerId);
+        //                 _popupText.text = PopupSentences.Instance.ReplaceX(PopupSentences.Instance.otherPlayerTurnText, $"{playerName}");
+        //             }
+        //             break;
+        //
+        //         case AnimatorName.WinLoseUI:
+        //             if (context.IsSurvivorWin)
+        //                 context.Trigger = Role.Value switch
+        //                 {
+        //                     RoleType.Survivor => WinSurvivor,
+        //                     RoleType.Wendogo => LoseWendogo,
+        //                     _ => context.Trigger
+        //                 };
+        //             else
+        //                 context.Trigger = Role.Value switch
+        //                 {
+        //                     RoleType.Survivor => LoseSurvivor,
+        //                     RoleType.Wendogo => WinWendogo,
+        //                     _ => context.Trigger
+        //                 };
+        //
+        //             onComplete += ServerManager.Instance.IncrementEndGameAnimationFinishedCptRpc;
+        //             break;
+        //         
+        //         default:
+        //             throw new ArgumentOutOfRangeException(nameof(context.AnimatorName), context.AnimatorName, null);
+        //     }
+        // }
+        //
+        // private void HandlePostAnimation(ref AnimationContext context, ref Action onComplete)
+        // {
+        //     context.Animator.enabled = false;
+        //     
+        //     switch (context.AnimatorName)
+        //     {
+        //         case AnimatorName.Popup:
+        //             if (context.PlayerId == LocalPlayerId) EnableInput();
+        //             _popupText.text = "";
+        //             break;
+        //
+        //         case AnimatorName.WinLoseUI:
+        //             break;
+        //         
+        //         default:
+        //             throw new ArgumentOutOfRangeException(nameof(context.AnimatorName), context.AnimatorName, null);
+        //     }
+        //     
+        //     onComplete?.Invoke();
+        // }
+        //
+        // #endregion
 
         #region RPC
 
@@ -884,27 +861,6 @@ namespace Wendogo
                 _ = HandleVoteUIAsync(); // Fire-and-forget
             else
                 ServerManager.Instance.ClearVoteRpc();
-        }
-        
-        [Rpc(SendTo.SpecifiedInParams)]
-        public void StartPlayAnimationRpc(AnimationParams animParams, RpcParams rpcParams)
-        {
-            var animator = GetAnimatorByName(animParams.animatorName);
-
-            var context = new AnimationContext
-            {
-                Animator = animator,
-                AnimatorName = animParams.animatorName,
-                WaitForAnimation = animParams.waitForAnimation,
-                Trigger = animParams.trigger,
-                PlayerId = animParams.playerId,
-                IsSurvivorWin = animParams.isSurvivorWin
-            };
-            
-            if (context.WaitForAnimation)
-                PlayAndWaitAnimator(context);
-            else
-                TriggerAnimator(context);
         }
 
         [Rpc(SendTo.SpecifiedInParams)]

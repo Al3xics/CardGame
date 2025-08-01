@@ -407,15 +407,6 @@ namespace Wendogo
         }
 
         [Rpc(SendTo.Server)]
-        public void StartPlayAnimationRpc(AnimationParams animParams)
-        {
-            foreach (var player in PlayersById.Values)
-            {
-                player.StartPlayAnimationRpc(animParams, RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
-            }
-        }
-
-        [Rpc(SendTo.Server)]
         public void SendVoteRpc(int chosenTarget)
         {
             PlayerReadyCount.Value++;
@@ -462,6 +453,16 @@ namespace Wendogo
         {
             if (PlayersById.TryGetValue(playerId, out var player))
                 player.MuteRpc(mute, RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
+        }
+        
+        #endregion
+
+        #region RPC Animation
+        
+        [Rpc(SendTo.Everyone)]
+        public void BroadcastSharedFXEventRpc(FXEventContext fxEventContext)
+        {
+            GameEvents.RaiseLocalFX(fxEventContext);
         }
         
         #endregion

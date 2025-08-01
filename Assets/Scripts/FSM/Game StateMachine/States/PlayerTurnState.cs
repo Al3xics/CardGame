@@ -38,12 +38,10 @@ namespace Wendogo
             Log($"Player {StateMachine.CurrentPlayerId} Begin Turn");
             ServerManager.Instance.OnPlayerTurnEnded += OnPlayerTurnEnded;
             ServerManager.Instance.PlayerTurnRpc(StateMachine.PlayersID[id]);
-            ServerManager.Instance.StartPlayAnimationRpc(new AnimationParams
+            ServerManager.Instance.BroadcastSharedFXEventRpc(new FXEventContext
             {
-                animatorName = AnimatorName.Popup,
-                waitForAnimation = true,
-                trigger = "Pop-up",
-                playerId = StateMachine.PlayersID[id]
+                fxType = FXEventType.OnPlayerTurn,
+                playerID = StateMachine.PlayersID[id]
             });
         }
 
