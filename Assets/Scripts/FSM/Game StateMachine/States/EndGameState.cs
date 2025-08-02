@@ -21,13 +21,13 @@
 
         private void CheckWhoWon()
         {
-            // if true, survivors WIN, else wendogo WIN
-            ServerManager.Instance.StartPlayAnimationRpc(new AnimationParams
-            {
-                animatorName = AnimatorName.WinLoseUI,
-                waitForAnimation = true,
-                isSurvivorWin = StateMachine.IsRitualOver,
-            });
+            //// if true, survivors WIN, else wendogo WIN
+            //ServerManager.Instance.StartPlayAnimationRpc(new AnimationParams
+            //{
+            //    animatorName = AnimatorName.WinLoseUI,
+            //    waitForAnimation = true,
+            //    isSurvivorWin = StateMachine.IsRitualOver,
+            //});
         }
 
         private void OnAnimationsFinished()
