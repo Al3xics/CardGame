@@ -72,25 +72,15 @@ namespace Wendogo
     }
 
     /// <summary>
-    /// Enum representing the names of animators used within the application.
+    /// Enum representing the types of events related to visual effects in the game.
     /// </summary>
-    public enum AnimatorName
+    public enum FXEventType
     {
         None,
-        Popup,
-        WinLoseUI
-    }
-
-    /// <summary>
-    /// Enum containing all the data that was serialized in <see cref="AnimationParams"/> + the reference to the actual animator.
-    /// </summary>
-    public struct AnimationContext
-    {
-        public Animator Animator;
-        public AnimatorName AnimatorName;
-        public bool WaitForAnimation;
-        public string Trigger;
-        public ulong PlayerId;
-        public bool IsSurvivorWin;
+        OnPlayerTurn,
+        OnPlayerWin,
+        OnPlayerLose,
+        OnWendogoWin,
+        OnWendogoLose
     }
 }
