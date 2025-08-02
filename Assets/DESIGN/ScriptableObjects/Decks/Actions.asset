@@ -31,4 +31,6 @@ MonoBehaviour:
   - CardData: {fileID: 11400000, guid: 8d30ef1d3be60bf4280bd755dcddc2c2, type: 2}
     quantity: 30
   - CardData: {fileID: 11400000, guid: 77083ed818d8ead4b9b7612fe5e7ae28, type: 2}
+    quantity: 30
+  - CardData: {fileID: 11400000, guid: b129981254c9e1d43b0310dcae8b0c13, type: 2}
     quantity: 300
