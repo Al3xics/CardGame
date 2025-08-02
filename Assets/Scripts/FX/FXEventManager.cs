@@ -13,6 +13,8 @@ namespace Wendogo
     public class FXEventManager : MonoBehaviour
     {
         #region Variables
+        
+        public static FXEventManager Instance { get; private set; }
 
         [Header("FX Events Data")]
         public List<FXEventAsset> fxEvents;
@@ -20,6 +22,8 @@ namespace Wendogo
         [Header("References")]
         public Animator animator;
         public AudioSource audioSource;
+        
+        [Header("References Used By FX Event Logic")]
         public TMP_Text popupText;
 
         #endregion
@@ -38,17 +42,27 @@ namespace Wendogo
 
         private void Awake()
         {
+            if (Instance == null)
+            {
+                Instance = this;
+                DontDestroyOnLoad(gameObject);
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
+            
             if (fxEvents.Count == 0) throw new Exception("fxEvents is empty !");
             if (popupText == null) throw new Exception("Pop-up Text not found");
         }
 
         private void OnEnable()
         {
-            _onPlayerWin = fxEventContext => TriggerOnPlayerWinAsync(fxEventContext).Forget();
-            _onPlayerLose = fxEventContext => TriggerOnPlayerLoseAsync(fxEventContext).Forget();
-            _onWendogoWin = fxEventContext => TriggerOnWendogoWinAsync(fxEventContext).Forget();
-            _onWendogoLose = fxEventContext => TriggerOnWendogoLoseAsync(fxEventContext).Forget();
-            _onPlayerTurn = fxEventContext => TriggerOnPlayerTurnAsync(fxEventContext).Forget();
+            _onPlayerTurn = fxEventContext => HandleFXEvents(fxEventContext).Forget();
+            _onPlayerWin = fxEventContext => HandleFXEvents(fxEventContext).Forget();
+            _onPlayerLose = fxEventContext => HandleFXEvents(fxEventContext).Forget();
+            _onWendogoWin = fxEventContext => HandleFXEvents(fxEventContext).Forget();
+            _onWendogoLose = fxEventContext => HandleFXEvents(fxEventContext).Forget();
 
             GameEvents.OnPlayerTurn += _onPlayerTurn;
             GameEvents.OnPlayerWin += _onPlayerWin;
@@ -68,109 +82,6 @@ namespace Wendogo
 
         #endregion
 
-        #region Trigger Specific
-
-        private async UniTaskVoid TriggerOnPlayerTurnAsync(FXEventContext fxEventContext)
-        {
-            #region Pre FX
-
-            bool isLocal = fxEventContext.Player == PlayerController.LocalPlayer;
-
-            if (isLocal)
-            {
-                fxEventContext.Player.DisableInput();
-                popupText.text = PopupSentences.Instance.thisPlayerTurnText;
-            }
-            else
-            {
-                string playerName = AutoSessionBootstrapper.AutoConnect
-                    ? fxEventContext.Player.name
-                    : ServerManager.Instance.GetPlayerName(fxEventContext.Player.OwnerClientId);
-                popupText.text = PopupSentences.Instance.ReplaceX(PopupSentences.Instance.otherPlayerTurnText, playerName);
-            }
-
-            #endregion
-
-            await HandleFXEvents(fxEventContext);
-
-            #region Post FX
-
-            if (isLocal) fxEventContext.Player.EnableInput();
-            popupText.text = "";
-
-            #endregion
-        }
-        
-        private async UniTaskVoid TriggerOnPlayerWinAsync(FXEventContext fxEventContext)
-        {
-            #region Pre FX
-
-            // todo
-
-            #endregion
-
-            await HandleFXEvents(fxEventContext);
-
-            #region Post FX
-
-            // todo
-
-            #endregion
-        }
-        
-        private async UniTaskVoid TriggerOnPlayerLoseAsync(FXEventContext fxEventContext)
-        {
-            #region Pre FX
-
-            // todo
-
-            #endregion
-
-            await HandleFXEvents(fxEventContext);
-
-            #region Post FX
-
-            // todo
-
-            #endregion
-        }
-        
-        private async UniTaskVoid TriggerOnWendogoWinAsync(FXEventContext fxEventContext)
-        {
-            #region Pre FX
-
-            // todo
-
-            #endregion
-
-            await HandleFXEvents(fxEventContext);
-
-            #region Post FX
-
-            // todo
-
-            #endregion
-        }
-        
-        private async UniTaskVoid TriggerOnWendogoLoseAsync(FXEventContext fxEventContext)
-        {
-            #region Pre FX
-
-            // todo
-
-            #endregion
-
-            await HandleFXEvents(fxEventContext);
-
-            #region Post FX
-
-            // todo
-
-            #endregion
-        }
-
-        #endregion
-
         #region Trigger Global
 
         private async UniTask HandleFXEvents(FXEventContext fxEventContext)
@@ -178,35 +89,50 @@ namespace Wendogo
             var fxList = fxEvents.Where(fx => fx.eventType == fxEventContext.fxType).ToList();
             var sharedFXList = fxList.Where(fx => fx.isAnimPlayedForAll || fx.isSoundPlayedForAll).ToList();
             var localPlayerFX = fxList.Where(fx => !fx.isAnimPlayedForAll && !fx.isSoundPlayedForAll && fxEventContext.Player == PlayerController.LocalPlayer).ToList();
+            
+            // Do we need to block input for the local player?
+            bool shouldBlockInput = (sharedFXList.Concat(localPlayerFX)).Any(fx => (fx.waitForAnimationEnd && fx.playAnimation) || (fx.waitForSoundEnd && fx.playSound));
+            if (shouldBlockInput && fxEventContext.Player == PlayerController.LocalPlayer)
+                fxEventContext.Player.DisableInput();
 
-            var sharedTask = sharedFXList.Count > 0 ? PlayFXSequence(sharedFXList) : UniTask.CompletedTask;
-            var localTask = localPlayerFX.Count > 0 ? PlayFXSequence(localPlayerFX) : UniTask.CompletedTask;
+            var sharedTask = sharedFXList.Count > 0 ? PlayFXSequence(sharedFXList, fxEventContext) : UniTask.CompletedTask;
+            var localTask = localPlayerFX.Count > 0 ? PlayFXSequence(localPlayerFX, fxEventContext) : UniTask.CompletedTask;
 
             await UniTask.WhenAll(sharedTask, localTask);
+            
+            if (shouldBlockInput && fxEventContext.Player == PlayerController.LocalPlayer)
+                fxEventContext.Player.EnableInput();
         }
 
-        private async UniTask PlayFXSequence(List<FXEventAsset> fxList)
+        private async UniTask PlayFXSequence(List<FXEventAsset> fxList, FXEventContext context)
         {
+            var fxTasks = new List<UniTask>();
+
             foreach (var fx in fxList)
             {
+                fx.logic?.PreFX(context);
+
                 UniTask animTask = fx.playAnimation ? PlayAnimation(fx) : UniTask.CompletedTask;
                 UniTask soundTask = fx.playSound ? PlaySound(fx) : UniTask.CompletedTask;
+                UniTask fxTask;
 
-                // Wait selectively based on the config
                 if (fx.waitForAnimationEnd && fx.waitForSoundEnd)
-                {
-                    await UniTask.WhenAll(animTask, soundTask);
-                }
+                    fxTask = UniTask.WhenAll(animTask, soundTask);
                 else if (fx.waitForAnimationEnd)
-                {
-                    await animTask;
-                }
+                    fxTask = animTask;
                 else if (fx.waitForSoundEnd)
+                    fxTask = soundTask;
+                else
                 {
-                    await soundTask;
+                    _ = animTask;
+                    _ = soundTask;
+                    fxTask = UniTask.CompletedTask;
                 }
-                // else: fire and forget both
+
+                fxTasks.Add(fxTask.ContinueWith(() => fx.logic?.PostFX(context)));
             }
+
+            await UniTask.WhenAll(fxTasks);
         }
 
         #endregion
@@ -230,9 +156,16 @@ namespace Wendogo
             {
                 float duration = fx.animation.length;
                 await UniTask.WaitUntil(() => clipPlayable.IsValid() && clipPlayable.GetTime() >= duration);
+                graph.Destroy();
             }
-
-            graph.Destroy();
+            else
+            {
+                // Do not wait, but do not destroy immediately either
+                _ = UniTask.Delay(TimeSpan.FromSeconds(fx.animation.length)).ContinueWith(() =>
+                {
+                    if (graph.IsValid()) graph.Destroy();
+                });
+            }
         }
 
         private async UniTask PlaySound(FXEventAsset fx)
@@ -252,9 +185,16 @@ namespace Wendogo
             {
                 float duration = fx.clip.length;
                 await UniTask.WaitUntil(() => clipPlayable.IsValid() && clipPlayable.GetTime() >= duration);
+                graph.Destroy();
             }
-
-            graph.Destroy();
+            else
+            {
+                // Do not wait, but do not destroy immediately either
+                _ = UniTask.Delay(TimeSpan.FromSeconds(fx.clip.length)).ContinueWith(() =>
+                {
+                    if (graph.IsValid()) graph.Destroy();
+                });
+            }
         }
 
         #endregion
