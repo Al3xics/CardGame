@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: FX_WendogoWin
   m_EditorClassIdentifier: 
   eventType: 4
+  logic: {fileID: 11400000, guid: 42ba4f6819afa754e880887b29d5440f, type: 2}
   playAnimation: 1
   animation: {fileID: 7400000, guid: a5e098faab979734582292c0c9aa1130, type: 2}
   waitForAnimationEnd: 1

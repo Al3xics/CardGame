@@ -21,13 +21,38 @@
 
         private void CheckWhoWon()
         {
-            // if true, survivors WIN, else wendogo WIN
-            ServerManager.Instance.StartPlayAnimationRpc(new AnimationParams
+            foreach (var (playerId, player) in ServerManager.Instance.PlayersById)
             {
-                animatorName = AnimatorName.WinLoseUI,
-                waitForAnimation = true,
-                isSurvivorWin = StateMachine.IsRitualOver,
-            });
+                FXEventType fxType;
+
+                if (StateMachine.IsRitualOver)
+                {
+                    fxType = player.Role.Value switch
+                    {
+                        RoleType.Survivor => FXEventType.OnPlayerWin,
+                        RoleType.Wendogo => FXEventType.OnWendogoLose,
+                        _ => FXEventType.None
+                    };
+                }
+                else
+                {
+                    fxType = player.Role.Value switch
+                    {
+                        RoleType.Survivor => FXEventType.OnPlayerLose,
+                        RoleType.Wendogo => FXEventType.OnWendogoWin,
+                        _ => FXEventType.None
+                    };
+                }
+
+                if (fxType != FXEventType.None)
+                {
+                    ServerManager.Instance.BroadcastLocalFXEventToPlayerRpc(new FXEventContext
+                    {
+                        fxType = fxType,
+                        playerID = player.OwnerClientId
+                    });
+                }
+            }
         }
 
         private void OnAnimationsFinished()

@@ -88,7 +88,7 @@ namespace Wendogo
         {
             var fxList = fxEvents.Where(fx => fx.eventType == fxEventContext.fxType).ToList();
             var sharedFXList = fxList.Where(fx => fx.isAnimPlayedForAll || fx.isSoundPlayedForAll).ToList();
-            var localPlayerFX = fxList.Where(fx => !fx.isAnimPlayedForAll && !fx.isSoundPlayedForAll && fxEventContext.Player == PlayerController.LocalPlayer).ToList();
+            var localPlayerFX = fxList.Where(fx => (!fx.isAnimPlayedForAll || !fx.isSoundPlayedForAll) && fxEventContext.Player == PlayerController.LocalPlayer).ToList();
             
             // Do we need to block input for the local player?
             bool shouldBlockInput = (sharedFXList.Concat(localPlayerFX)).Any(fx => (fx.waitForAnimationEnd && fx.playAnimation) || (fx.waitForSoundEnd && fx.playSound));

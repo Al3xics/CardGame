@@ -562,131 +562,6 @@ namespace Wendogo
         }
 
         #endregion
-        
-        // #region Animation Logic
-        //
-        // todo
-        //
-        // private Animator GetAnimatorByName(AnimatorName animatorName)
-        // {
-        //     return animatorName switch
-        //     {
-        //         AnimatorName.None => throw new Exception($"The AnimatorName {animatorName} is not valid"),
-        //         AnimatorName.Popup => _popup.GetComponent<Animator>(),
-        //         AnimatorName.WinLoseUI => _winLoseUI.GetComponent<Animator>(),
-        //         _ => null,
-        //     };
-        // }
-        //
-        // private void TriggerAnimator(AnimationContext context)
-        // {
-        //     HandlePreAnimation(ref context, out var onComplete);
-        //     context.Animator.ResetTrigger(context.Trigger);
-        //     context.Animator.SetTrigger(context.Trigger);
-        //     HandlePostAnimation(ref context, ref onComplete);
-        // }
-        //
-        // private async void PlayAndWaitAnimator(AnimationContext context)
-        // {
-        //     try
-        //     {
-        //         HandlePreAnimation(ref context, out var onComplete);
-        //         Debug.Log($"Triggering {context.Trigger}");
-        //         context.Animator.ResetTrigger(context.Trigger);
-        //         context.Animator.SetTrigger(context.Trigger);
-        //
-        //         // Wait for the animation to start (important if transition)
-        //         await UniTask.WaitUntil(() =>
-        //         {
-        //             var state = context.Animator.GetCurrentAnimatorStateInfo(0);
-        //             return state is { length: > 0, normalizedTime: < 1f };
-        //         });
-        //
-        //         // Wait for the animation to finish (normalisedTime >= 1)
-        //         await UniTask.WaitWhile(() =>
-        //         {
-        //             var state = context.Animator.GetCurrentAnimatorStateInfo(0);
-        //             return state.normalizedTime < 1f;
-        //         });
-        //
-        //         HandlePostAnimation(ref context, ref onComplete);
-        //     }
-        //     catch (Exception e)
-        //     {
-        //         Debug.LogError(e);
-        //     }
-        // }
-        //
-        // private void HandlePreAnimation(ref AnimationContext context, out Action onComplete)
-        // {
-        //     context.Animator.enabled = true;
-        //     onComplete = null;
-        //     
-        //     switch (context.AnimatorName)
-        //     {
-        //         case AnimatorName.Popup:
-        //             if (context.PlayerId == LocalPlayerId)
-        //             {
-        //                 DisableInput();
-        //                 _popupText.text = PopupSentences.Instance.thisPlayerTurnText;
-        //             }
-        //             else
-        //             {
-        //                 string playerName;
-        //                 if (AutoSessionBootstrapper.AutoConnect)
-        //                     playerName = GetPlayer(context.PlayerId).name;
-        //                 else
-        //                     playerName = ServerManager.Instance.GetPlayerName(context.PlayerId);
-        //                 _popupText.text = PopupSentences.Instance.ReplaceX(PopupSentences.Instance.otherPlayerTurnText, $"{playerName}");
-        //             }
-        //             break;
-        //
-        //         case AnimatorName.WinLoseUI:
-        //             if (context.IsSurvivorWin)
-        //                 context.Trigger = Role.Value switch
-        //                 {
-        //                     RoleType.Survivor => WinSurvivor,
-        //                     RoleType.Wendogo => LoseWendogo,
-        //                     _ => context.Trigger
-        //                 };
-        //             else
-        //                 context.Trigger = Role.Value switch
-        //                 {
-        //                     RoleType.Survivor => LoseSurvivor,
-        //                     RoleType.Wendogo => WinWendogo,
-        //                     _ => context.Trigger
-        //                 };
-        //
-        //             onComplete += ServerManager.Instance.IncrementEndGameAnimationFinishedCptRpc;
-        //             break;
-        //         
-        //         default:
-        //             throw new ArgumentOutOfRangeException(nameof(context.AnimatorName), context.AnimatorName, null);
-        //     }
-        // }
-        //
-        // private void HandlePostAnimation(ref AnimationContext context, ref Action onComplete)
-        // {
-        //     context.Animator.enabled = false;
-        //     
-        //     switch (context.AnimatorName)
-        //     {
-        //         case AnimatorName.Popup:
-        //             if (context.PlayerId == LocalPlayerId) EnableInput();
-        //             _popupText.text = "";
-        //             break;
-        //
-        //         case AnimatorName.WinLoseUI:
-        //             break;
-        //         
-        //         default:
-        //             throw new ArgumentOutOfRangeException(nameof(context.AnimatorName), context.AnimatorName, null);
-        //     }
-        //     
-        //     onComplete?.Invoke();
-        // }
-        //
-        // #endregion
 
         #region RPC
 
@@ -873,6 +748,16 @@ namespace Wendogo
         public void MuteRpc(bool mute, RpcParams rpcParams)
         {
             SessionManager.Instance.MutePlayer(mute);
+        }
+
+        #endregion
+
+        #region RPC Animations
+
+        [Rpc(SendTo.SpecifiedInParams)]
+        public void BroadcastLocalFXEventToPlayerRpc(FXEventContext fxEventContext, RpcParams rpcParams)
+        {
+            GameEvents.RaiseLocalFX(fxEventContext);
         }
 
         #endregion
