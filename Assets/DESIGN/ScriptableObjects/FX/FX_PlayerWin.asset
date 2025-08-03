@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: FX_PlayerWin
   m_EditorClassIdentifier: 
   eventType: 2
+  logic: {fileID: 11400000, guid: 42ba4f6819afa754e880887b29d5440f, type: 2}
   playAnimation: 1
   animation: {fileID: 7400000, guid: 02838701a018c054ebd2edbad32954b3, type: 2}
   waitForAnimationEnd: 1

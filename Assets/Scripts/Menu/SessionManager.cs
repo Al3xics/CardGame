@@ -352,6 +352,8 @@ namespace Wendogo
         
         public void MutePlayer(bool mute)
         {
+            if (VivoxService is { IsLoggedIn: false }) return;
+            
             if (mute)
             {
                 if (!VivoxService.IsInputDeviceMuted)

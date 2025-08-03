@@ -19,8 +19,8 @@ namespace Wendogo
         public string menuSceneName = "Menu";
         public string gameSceneName = "Game";
 
-        private Dictionary<ulong, PlayerController> PlayersById { get; set;}
-        public static Dictionary<ulong, string> GlobalPlayersByName { get; set; } = new();
+        public Dictionary<ulong, PlayerController> PlayersById { get; private set;}
+        public static Dictionary<ulong, string> GlobalPlayersByName { get; private set; } = new();
 
         public int playerHealthAsked;
 
@@ -463,6 +463,13 @@ namespace Wendogo
         public void BroadcastSharedFXEventRpc(FXEventContext fxEventContext)
         {
             GameEvents.RaiseLocalFX(fxEventContext);
+        }
+        
+        [Rpc(SendTo.Server)]
+        public void BroadcastLocalFXEventToPlayerRpc(FXEventContext fxEventContext)
+        {
+            if (PlayersById.TryGetValue(fxEventContext.playerID, out var player))
+                player.BroadcastLocalFXEventToPlayerRpc(fxEventContext, RpcTarget.Single(fxEventContext.playerID, RpcTargetUse.Temp));;
         }
         
         #endregion
