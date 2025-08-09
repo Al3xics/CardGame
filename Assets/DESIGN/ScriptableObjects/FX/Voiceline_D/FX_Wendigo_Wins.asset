@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b90643f3d9644824b52e4c33c864c9c3, type: 3}
-  m_Name: FX_Play_Audio_D
+  m_Name: FX_Wendigo_Wins
   m_EditorClassIdentifier: 
   eventType: 0
   logic: {fileID: 0}
-  playAnimation: 0
-  animation: {fileID: 0}
+  playAnimation: 1
+  animation: {fileID: 7400000, guid: a5e098faab979734582292c0c9aa1130, type: 2}
   waitForAnimationEnd: 0
   isAnimPlayedForAll: 0
-  playSound: 0
+  playSound: 1
   clip: {fileID: 0}
   waitForSoundEnd: 0
-  isSoundPlayedForAll: 0
+  isSoundPlayedForAll: 1
