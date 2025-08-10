@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using Unity.Netcode;
 using Unity.Services.Analytics;
-using UnityEngine;
 
 namespace Wendogo
 {
@@ -86,17 +83,15 @@ namespace Wendogo
                         return;
                     }
                     
-                    if (card.nightPriorityIndex > 0) // Add active card to NightActions if it has a priority index
+                    StateMachine.NightActions.Add(new PlayerAction
                     {
-                        StateMachine.NightActions.Add(new PlayerAction
-                        {
-                            CardId = playedCardID,
-                            CardPriorityIndex = card.nightPriorityIndex,
-                            OriginId = origin,
-                            TargetId = target
-                        });
-                    }
-                    else // Handle cards without priority normally
+                        CardId = playedCardID,
+                        CardPriorityIndex = card.nightPriorityIndex,
+                        OriginId = origin,
+                        TargetId = target
+                    });
+                    
+                    if (card.nightPriorityIndex <= 0) // Handle cards without priority
                         ServerManager.Instance.TryApplyPassiveRpc(playedCardID, origin, target);
                     break;
                 

@@ -454,6 +454,20 @@ namespace Wendogo
             if (PlayersById.TryGetValue(playerId, out var player))
                 player.MuteRpc(mute, RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
         }
+
+        [Rpc(SendTo.Server)]
+        public void GroupSelectTargetAsyncForAllPlayersRpc()
+        {
+            foreach (var player in PlayersById.Values)
+                player.GroupSelectTargetAsyncRpc(RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
+        }
+
+        [Rpc(SendTo.Server)]
+        public void EnableInputAndDisableMovingCardsRpc()
+        {
+            foreach (var player in PlayersById.Values)
+                player.EnableInputAndDisableMovingCardsRpc(RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
+        }
         
         #endregion
 

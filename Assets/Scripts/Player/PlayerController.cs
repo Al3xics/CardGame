@@ -314,12 +314,11 @@ namespace Wendogo
         {
             await UniTask.WaitUntil(() => ServerManager.Instance.PlayerReadyCount.Value == 2);
             await UniTask.WaitForSeconds(0.1f);
-            EnableInput();
-            ServerManager.Instance.ClearVoteRpc();
         }
 
         public async UniTask GroupSelectTargetVoteAsync()
         {
+            _handManager.ToggleOffMovingCards(_handManager.handCards);
             _inputEvent.enabled = true;
             _intTarget = -1;
 
@@ -728,7 +727,7 @@ namespace Wendogo
             }
             else
             {
-                ServerManager.Instance.ChangePlayerHealthRpc(-1, LocalPlayerId);
+                ServerManager.Instance.ChangePlayerHealthRpc(1, LocalPlayerId);
             }
         }
 
@@ -739,8 +738,6 @@ namespace Wendogo
 
             if (activePlayerInput)
                 _ = HandleVoteUIAsync(); // Fire-and-forget
-            else
-                ServerManager.Instance.ClearVoteRpc();
         }
 
         [Rpc(SendTo.SpecifiedInParams)]
@@ -753,6 +750,19 @@ namespace Wendogo
         public void MuteRpc(bool mute, RpcParams rpcParams)
         {
             SessionManager.Instance.MutePlayer(mute);
+        }
+        
+        [Rpc(SendTo.SpecifiedInParams)]
+        public void GroupSelectTargetAsyncRpc(RpcParams rpcParams)
+        {
+            _ = GroupSelectTargetAsync();
+        }
+        
+        [Rpc(SendTo.SpecifiedInParams)]
+        public void EnableInputAndDisableMovingCardsRpc(RpcParams rpcParams)
+        {
+            EnableInput();
+            _handManager.ToggleOffMovingCards(_handManager.handCards);
         }
 
         #endregion
@@ -810,6 +820,11 @@ namespace Wendogo
                     _selectedTarget = (ulong)_intTarget;
                 }
 
+            }
+            else if (cardDataSO.nightPriorityIndex > 0 && ServerManager.Instance.currentCycle.Value == Cycle.Night)
+            {
+                // Don't do anything here. It is only a check to transmit the card and NOT go into the else if (cardDataSO.isGroup)
+                Debug.Log("dans le vide");
             }
             else if (cardDataSO.isGroup && ServerManager.Instance.currentCycle.Value != Cycle.Night)
             {
