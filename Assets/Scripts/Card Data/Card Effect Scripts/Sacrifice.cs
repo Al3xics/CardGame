@@ -23,7 +23,7 @@ namespace Wendogo
         public override bool ApplyPassive(int playedCardId, ulong origin, ulong target, out int value)
         {
             value = -1;
-            return false;
+            return true;
         }
 
         public override void ShowUI()

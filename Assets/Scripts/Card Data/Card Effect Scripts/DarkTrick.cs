@@ -6,25 +6,38 @@ namespace Wendogo
     [CreateAssetMenu(fileName = "DarkTrick", menuName = "Card Effects/DarkTrick")]
     public class DarkTrick : CardEffect
     {
-        public GameObject prefabUI;
+        public GameObject WendogoTrickprefabUI;
+        public GameObject SelectTargetPrefabUI;
+        private GameObject _dtCanvaInstance;
+        [SerializeField] private CardDataSO _dtRevealCard;
+
         public override void Apply(ulong owner, ulong target, int value = -1)
         {
-            
             AnalyticsManager.Instance.RecordEvent(new CustomEvent("darkTrickActiveCardWasApplied"));
         }
-        
+
         public override void ShowUI()
         {
-            if (prefabUI == null)
-                prefabUI = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject;
-            prefabUI.SetActive(true);
+            if (PlayerController.LocalPlayer.Role.Value == RoleType.Wendogo)
+            {
+                if (_dtCanvaInstance == null)
+                    _dtCanvaInstance = Instantiate(WendogoTrickprefabUI);
+                _dtCanvaInstance.SetActive(true);
+            }
+            else
+            {
+                if (_dtCanvaInstance == null)
+                    _dtCanvaInstance = Instantiate(SelectTargetPrefabUI);
+                _dtCanvaInstance.SetActive(true);
+            }
         }
 
         public override void HideUI()
         {
-            if (prefabUI == null)
-                prefabUI = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject;
-            prefabUI.SetActive(false);
+            _dtCanvaInstance.SetActive(false);
+            Destroy(_dtCanvaInstance.gameObject);
         }
+
     }
+
 }

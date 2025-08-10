@@ -1,5 +1,8 @@
-﻿using Unity.Services.Analytics;
+﻿using Cysharp.Threading.Tasks;
+using System.Collections.Generic;
+using Unity.Services.Analytics;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Wendogo
 {
@@ -8,10 +11,9 @@ namespace Wendogo
     {
         [HideInInspector]
         public GameObject prefabUI;
-        
-        [HideInInspector]
-        public GameObject prefabShowCard;
-        public override void Apply(ulong owner, ulong target, int value = -1)
+        public GameObject showingPrefabUI;   
+        private GameObject _showingCardsUI;
+        public async override void Apply(ulong owner, ulong target, int value = -1)
         {
             var targetPlayer = PlayerController.GetPlayer(target);
 
@@ -19,16 +21,31 @@ namespace Wendogo
             {
                 int index = Random.Range(0, targetPlayer.PassiveCards.Count);
                 int selectedCard = targetPlayer.PassiveCards[index];
-                
+
                 value = selectedCard;
-                
+                await ShowPlayerActions(value);
                 AnalyticsManager.Instance.RecordEvent(new CustomEvent("spyActiveCardWasApplied"));
             }
-            
+
         }
+
+        private async UniTask ShowPlayerActions(int CardId)
+        {
+            _showingCardsUI = Instantiate(showingPrefabUI);
+            _showingCardsUI.SetActive(true);
+            RawImage imageToChange = _showingCardsUI.GetComponentInChildren<RawImage>();
+
+                CardDataSO cardDataSO = DataCollection.Instance.cardDatabase.GetCardByID(CardId);
+                Texture2D texture = cardDataSO.CardVisual;
+                imageToChange.texture = texture;
+                await UniTask.WaitForSeconds(3);
+            
+            _showingCardsUI.SetActive(false);
+            Destroy(_showingCardsUI);
+        }
+
         public override void ShowUI()
         {
-            if (prefabUI == null)
                 prefabUI = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject;
             prefabUI.SetActive(true);
         }

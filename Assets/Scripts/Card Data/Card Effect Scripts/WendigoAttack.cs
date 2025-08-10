@@ -36,6 +36,7 @@ namespace Wendogo
             
             HandManager handManager = FindFirstObjectByType<HandManager>();
             handManager.DestroyPassiveCard("Trap");
+            handManager.DestroyPassiveCard("BloodBounty");
         }
 
         public override void ShowUI()

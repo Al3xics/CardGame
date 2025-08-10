@@ -138,6 +138,7 @@ namespace Wendogo
             
             if (StateMachine.Cycle == Cycle.Night)
                 StateMachine.SwitchCycle();
+
         }
     }
 }

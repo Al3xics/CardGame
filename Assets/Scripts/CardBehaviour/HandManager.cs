@@ -30,6 +30,7 @@ namespace Wendogo
         public GameObject _leurreButton;
         public CardDataSO _leurreCard;
 
+
         //temp
         [SerializeField] CardsHandler _cardsHandler;  //Handles assigning data and visuals to cards
 
@@ -229,7 +230,6 @@ namespace Wendogo
             _cardsHandler.ApplyCardData(card, cardDataSO);
 
             CardDropZone.CallZoneDropEvents(cardObjectData, cardDataSO);
-        }
-
+        }        
     }
 }

@@ -9,8 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5ae5b10497285a14d80558561f07ed0d, type: 3}
-  m_Name: Spy
+  m_Script: {fileID: 11500000, guid: 37a583e68b6e463a91049e6c30130be9, type: 3}
+  m_Name: RevealNightActions
   m_EditorClassIdentifier: 
   prefabUI: {fileID: 4366196669929515438, guid: 67d464e1ff5762c4889fefceb47205b5, type: 3}
-  showingPrefabUI: {fileID: 4366196669929515438, guid: 67d464e1ff5762c4889fefceb47205b5, type: 3}

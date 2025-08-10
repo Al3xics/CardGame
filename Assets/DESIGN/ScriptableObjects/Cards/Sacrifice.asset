@@ -17,7 +17,7 @@ MonoBehaviour:
   CardEffect: {fileID: 11400000, guid: 605921f34f13be2418e9958e7e736f51, type: 2}
   isPassive: 1
   isGroup: 0
-  HasTarget: 0
+  HasTarget: 1
   nightPriorityIndex: 0
   turnsRemaining: -1
   ID: 2005

@@ -116,7 +116,7 @@ namespace Wendogo
         public List<ulong> PlayersID { get; private set; } = new();
 
         private Cycle _cycle = Cycle.Day;
-        
+
         /// <summary>
         /// Represents the current <see cref="Cycle"/> of the game, which can be either Day or Night.
         /// The state of the cycle determines the flow of the game's behavior and logic.
@@ -188,7 +188,7 @@ namespace Wendogo
         /// is blocked and inaccessible for players.
         /// </summary>
         private bool _canScavengeWood = true;
-        
+
         public List<ulong> MutedPlayers { get; private set; } = new();
 
         #endregion
@@ -358,6 +358,7 @@ namespace Wendogo
 
             if (ShowDebugLogs) Debug.LogWarning($"******************** Change cycle from {Cycle} to {newCycle} ! ********************");
             Cycle = newCycle;
+
         }
 
         /// <summary>
@@ -397,7 +398,7 @@ namespace Wendogo
         #endregion
 
         #region Called By ServerManager
-        
+
         /// <summary>
         /// Synchronize the value from the server and the state machine.
         /// </summary>
@@ -457,7 +458,7 @@ namespace Wendogo
             Utils.DictionaryToArrays(playerCards, out ulong[] targets, out int[][] cardsID);
             ServerManager.Instance.SendCardsToPlayersRpc(targets, cardsID);
         }
-        
+
         public void AskToUnlockResources(bool isFood, bool isBlock)
         {
             if (isFood)
@@ -467,7 +468,7 @@ namespace Wendogo
         }
 
         public bool GetCanScavengeFood() => _canScavengeFood;
-        
+
         public bool GetCanScavengeWood() => _canScavengeWood;
 
         #endregion

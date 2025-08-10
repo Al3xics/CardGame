@@ -728,7 +728,7 @@ namespace Wendogo
             }
             else
             {
-                ServerManager.Instance.ChangePlayerHealthRpc(-1, LocalPlayerId);
+                ServerManager.Instance.ChangePlayerHealthRpc(1, LocalPlayerId);
             }
         }
 

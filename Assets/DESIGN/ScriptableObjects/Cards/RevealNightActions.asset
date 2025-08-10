@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b4c4af47719ad294e9daacd12912804b, type: 3}
-  m_Name: Spy
+  m_Name: RevealNightActions
   m_EditorClassIdentifier: 
-  CardVisual: {fileID: 2800000, guid: abafbd941d0a69d4eb3f3118e1b62b6c, type: 3}
-  Name: Spy
-  CardEffect: {fileID: 11400000, guid: 3ef037ab34e27324291fb0b303e03ad8, type: 2}
+  CardVisual: {fileID: 2800000, guid: cfe17a01a8ef0554f96364d3b5b6f745, type: 3}
+  Name: Reveal
+  CardEffect: {fileID: 11400000, guid: 44cf3c184fbc3e34c8f8dad9854e4b44, type: 2}
   isPassive: 0
   isGroup: 0
   HasTarget: 1
   nightPriorityIndex: 0
   turnsRemaining: -1
-  ID: 1013
-  Toggle: 0
+  ID: 1010
+  Toggle: 1
   effectDescription: 
