@@ -24,7 +24,10 @@ namespace Wendogo
         }
 
         public virtual void ShowUI() {}
-        
-        public virtual void HideUI() {}
+
+        public virtual void HideUI(bool clearVotes)
+        {
+            if (clearVotes) ServerManager.Instance.ClearVoteRpc();
+        }
     }
 }

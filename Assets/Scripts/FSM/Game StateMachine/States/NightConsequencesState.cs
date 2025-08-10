@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace Wendogo
 {
@@ -10,6 +11,7 @@ namespace Wendogo
     {
         private int id;
         private List<PlayerAction> sortedActions = new();
+        private PlayerAction currentPlayerAction;
         
         /// <summary>
         /// Represents the state in which the consequences of actions taken during the night phase are processed.
@@ -19,13 +21,12 @@ namespace Wendogo
         public override void OnEnter()
         {
             base.OnEnter();
-            StateMachine.NightActions.Clear();
             
             ServerManager.Instance.MuteAllPlayersRpc(false);
             
             id = 0;
             // Sort `NightActions` by priority index and process them
-            sortedActions = StateMachine.NightActions.Where(card => card.CardPriorityIndex > 0).OrderBy(card => card.CardPriorityIndex).ToList();
+            sortedActions = StateMachine.GetNightActionsWithPriority().OrderBy(card => card.CardPriorityIndex).ToList();
             
             ServerManager.Instance.SynchronizePlayerValuesRpc(false);
             StateMachine.CopyHiddenToPublic();
@@ -42,8 +43,11 @@ namespace Wendogo
         private void ResolveCardNightConsequences()
         {
             ServerManager.Instance.OnResolveCardNightConsequences += OnResolveCardNightConsequences;
-            // ServerManager.Instance.UseAllUIForVotersRpc(true, true);
-            // todo -> utiliser le Show UI du card effect
+            
+            currentPlayerAction = sortedActions[id];
+            currentPlayerAction.GetCardDataSO().CardEffect.ShowUI();
+            ServerManager.Instance.EnableInputAndDisableMovingCardsRpc();
+            ServerManager.Instance.GroupSelectTargetAsyncForAllPlayersRpc();
         }
 
         /// <summary>
@@ -53,7 +57,12 @@ namespace Wendogo
         private void OnResolveCardNightConsequences()
         {
             ServerManager.Instance.OnResolveCardNightConsequences -= OnResolveCardNightConsequences;
-            // ServerManager.Instance.UseAllUIForVotersRpc(false, false);
+
+            currentPlayerAction.GetCardDataSO().CardEffect.HideUI(false);
+            Debug.Log("[NightConsequence] DisableInputAndMovingCardsRpc");
+            
+            currentPlayerAction.GetCardDataSO().CardEffect.Apply(0, 0);
+            ServerManager.Instance.ClearVoteRpc();
             
             id++;
             bool isLast = id >= sortedActions.Count;

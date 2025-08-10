@@ -13,6 +13,7 @@ namespace Wendogo
 
         public override void Apply(ulong owner, ulong target, int value = -1)
         {
+            
             AnalyticsManager.Instance.RecordEvent(new CustomEvent("darkTrickActiveCardWasApplied"));
         }
 
@@ -32,12 +33,11 @@ namespace Wendogo
             }
         }
 
-        public override void HideUI()
+        public override void HideUI(bool clearVotes)
         {
             _dtCanvaInstance.SetActive(false);
             Destroy(_dtCanvaInstance.gameObject);
+            base.HideUI(clearVotes);
         }
-
     }
-
 }

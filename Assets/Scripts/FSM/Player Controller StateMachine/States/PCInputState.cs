@@ -21,10 +21,11 @@ namespace Wendogo
             {
                 _player._handManager._leurreButton.SetActive(true);
                 if(ServerManager.Instance.currentCycle.Value == Cycle.Night)
-                _player._handManager._attackButton.SetActive(true);
+                    _player._handManager._attackButton.SetActive(true);
             }
             CardDropZone.OnCardDropped += ReceiveSelectedEvent;
             _player.EnableInput();
+            _player._handManager.ToggleOnMovingCards(_player._handManager.handCards);
         }
 
         public override void OnTick()

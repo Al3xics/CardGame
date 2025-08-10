@@ -14,7 +14,7 @@ namespace Wendogo
         private GameObject _showingCardsUI; 
         public override async void Apply(ulong owner, ulong target, int value = -1)
         {
-            var nightActions = GameStateMachine.Instance.NightActions;
+            var nightActions = GameStateMachine.Instance.GetNightActionsWithPriority();
             List<PlayerAction> playerActions = new List<PlayerAction>();
             for (int i = 0; i < nightActions.Count; i++)
             {
@@ -51,11 +51,12 @@ namespace Wendogo
             prefabUI.SetActive(true);
         }
 
-        public override void HideUI()
+        public override void HideUI(bool clearVotes)
         {
             if (prefabUI == null)
                 prefabUI = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject;
             prefabUI.SetActive(false);
+            base.HideUI(clearVotes);
         }
     }
 }

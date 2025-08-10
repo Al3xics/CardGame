@@ -1,7 +1,4 @@
 using UnityEngine;
-using Wendogo;
-using static UnityEngine.Rendering.DebugUI;
-using static UnityEngine.UI.Image;
 
 namespace Wendogo
 {
@@ -9,34 +6,39 @@ namespace Wendogo
     public class PCTargetSelectionState : State<PlayerControllerSM>
     {
         PlayerController _player;
+        private bool _hasShownUI = false;
         public PCTargetSelectionState(PlayerControllerSM stateMachine, PlayerController player) : base(stateMachine) { _player = player; }
 
         public override async void OnEnter()
         {
             base.OnEnter();
 
-            Debug.Log($"active card is : {_player.ActiveCard.Card.name}");
-            _player._handManager.ToggleOffMovingCards(_player._handManager.handCards);
+            CardDataSO cardToUse = _player.ActiveCard.Card;
 
-            if (_player.ActiveCard.Card.isGroup)
+            if (cardToUse.nightPriorityIndex > 0 && ServerManager.Instance.currentCycle.Value == Cycle.Night)
             {
-                CardDataSO cardToUse = _player.ActiveCard.Card;
+                Debug.LogWarning("Carte de nuit ne peut pas être jouée pendant la nuit. Ignorée.");
+                StateMachine.ChangeState<PCPlayCardState>();
+                return;
+            }
 
-                _player.ActiveCard.Card.CardEffect.ShowUI();
+            Debug.Log($"active card is : {cardToUse.name}");
+            _hasShownUI = true;
+            // _player._handManager.ToggleOffMovingCards(_player._handManager.handCards);
+            cardToUse.CardEffect.ShowUI();
+
+            if (cardToUse.isGroup)
+            {
                 await _player.GroupSelectTargetAsync();
-                Debug.Log("reached the end");
+                _player._handManager.ToggleOnMovingCards(_player._handManager.handCards);
+                _player.EnableInput();
+                ServerManager.Instance.ClearVoteRpc();
             }
-            else if(_player.ActiveCard.Card.CardEffect is BuildRitual)
-            {
-                _player.ActiveCard.Card.CardEffect.ShowUI();
+            else if(cardToUse.CardEffect is BuildRitual)
                 await _player.SelectRessourceAsync();
-            }
             else
-            {
-                _player.ActiveCard.Card.CardEffect.ShowUI();
                 await _player.SelectTargetAsync();
 
-            }
             StateMachine.ChangeState<PCPlayCardState>();
         }
 
@@ -47,8 +49,12 @@ namespace Wendogo
 
         public override void OnExit()
         {
-            _player._handManager.ToggleOffMovingCards(_player._handManager.handCards);
-            _player.ActiveCard.Card.CardEffect.HideUI();
+            if (_hasShownUI)
+            {
+                _hasShownUI = false;
+                _player._handManager.ToggleOffMovingCards(_player._handManager.handCards);
+                _player.ActiveCard.Card.CardEffect.HideUI(true);
+            }
             base.OnExit();
         }
     }

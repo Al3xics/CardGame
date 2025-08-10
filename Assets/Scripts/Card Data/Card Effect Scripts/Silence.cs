@@ -19,9 +19,10 @@ namespace Wendogo
 
         }
 
-        public override void HideUI()
+        public override void HideUI(bool clearVotes)
         {
 
+            base.HideUI(clearVotes);
         }
     }
 }

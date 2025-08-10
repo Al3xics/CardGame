@@ -327,6 +327,19 @@ namespace Wendogo
             _ritualWoodCollected.AddRange(_hiddenRitualWoodCollected);
         }
 
+        /// <summary>
+        /// Retrieves a list of night actions that have a priority greater than zero.
+        /// </summary>
+        /// <returns>
+        /// A list of <see cref="PlayerAction"/> objects from the NightActionsForMorning collection
+        /// where the actions have a positive CardPriorityIndex value.
+        /// </returns>
+        public List<PlayerAction> GetNightActionsWithPriority()
+        {
+            return NightActions.Where(c => c.CardPriorityIndex > 0).ToList();
+        }
+
+
         #endregion
 
         #region Called By States

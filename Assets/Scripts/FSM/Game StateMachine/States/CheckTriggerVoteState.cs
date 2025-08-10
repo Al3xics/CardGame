@@ -41,8 +41,9 @@ namespace Wendogo
 
             if (isVotingTurn)
             {
+                StateMachine.groupVoteEffectEveryXTurn.HideUI(false);
                 StateMachine.groupVoteEffectEveryXTurn.Apply(0, 0); // those values are not used inside this specific card effect, so no problem
-                StateMachine.groupVoteEffectEveryXTurn.HideUI();
+                ServerManager.Instance.ClearVoteRpc();
             }
 
             StateMachine.ChangeState<CheckLastTurnState>();
