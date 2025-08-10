@@ -24,7 +24,7 @@ namespace Wendogo
 
             Debug.Log($"active card is : {cardToUse.name}");
             _hasShownUI = true;
-            // _player._handManager.ToggleOffMovingCards(_player._handManager.handCards);
+            _player._handManager.ToggleOffMovingCards(_player._handManager.handCards);
             cardToUse.CardEffect.ShowUI();
 
             if (cardToUse.isGroup)
@@ -39,6 +39,7 @@ namespace Wendogo
             else
                 await _player.SelectTargetAsync();
 
+            _player._handManager.ToggleOnMovingCards(_player._handManager.handCards);
             StateMachine.ChangeState<PCPlayCardState>();
         }
 
