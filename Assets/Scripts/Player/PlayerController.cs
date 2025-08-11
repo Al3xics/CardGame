@@ -11,6 +11,7 @@ using TMPro;
 using Unity.Collections;
 using Unity.Services.Analytics;
 using UnityEngine.SocialPlatforms;
+using UnityEngine.UI;
 
 
 namespace Wendogo
@@ -63,7 +64,7 @@ namespace Wendogo
         public bool isFlighting = false;
 
         private FXEventManager _fxManager;
-
+        public GameObject UIPrefab;
         #endregion
 
         #region Network Variables
@@ -763,6 +764,29 @@ namespace Wendogo
         {
             EnableInput();
             _handManager.ToggleOffMovingCards(_handManager.handCards);
+        }
+
+        [Rpc(SendTo.SpecifiedInParams)]
+        public void ShowCardsCanvaRpc(int CardId, RpcParams rpcParams)
+        {
+            ShowOtherPlayerCards(CardId);
+        }
+
+        private async void ShowOtherPlayerCards(int CardId)
+        {
+            GameObject _showingCardsUI = Instantiate(UIPrefab);
+            _showingCardsUI.SetActive(true);
+            RawImage imageToChange = _showingCardsUI.GetComponentInChildren<RawImage>();
+
+            CardDataSO cardDataSO = DataCollection.Instance.cardDatabase.GetCardByID(CardId);
+            Texture2D texture = cardDataSO.CardVisual;
+            imageToChange.texture = texture;
+
+            await UniTask.WaitForSeconds(3);
+
+            _showingCardsUI.SetActive(false);
+            Destroy(_showingCardsUI);
+
         }
 
         #endregion

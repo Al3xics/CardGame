@@ -469,6 +469,13 @@ namespace Wendogo
                 player.EnableInputAndDisableMovingCardsRpc(RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
         }
 
+        [Rpc(SendTo.Server)]
+        public void ShowCardsCanvaRpc(int CardId, ulong clientID)
+        {
+            var player = PlayerController.GetPlayer(clientID);
+            player.ShowCardsCanvaRpc(CardId, RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
+        }
+
         #endregion
 
         #region RPC Animation

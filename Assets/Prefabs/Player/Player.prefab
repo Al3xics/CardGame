@@ -81,6 +81,8 @@ MonoBehaviour:
   CardDatabaseSO: {fileID: 11400000, guid: 5318d161afaa23f45936fbd5e4b9da0c, type: 2}
   LocalPlayerId: 0
   temporaryTask: -1
+  isFlighting: 0
+  UIPrefab: {fileID: 4366196669929515438, guid: 67d464e1ff5762c4889fefceb47205b5, type: 3}
   hiddenHealth: 0
   maxHealth: 6
   health:
