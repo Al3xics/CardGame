@@ -19,7 +19,7 @@ namespace Wendogo
         public string menuSceneName = "Menu";
         public string gameSceneName = "Game";
 
-        public Dictionary<ulong, PlayerController> PlayersById { get; private set;}
+        public Dictionary<ulong, PlayerController> PlayersById { get; private set; }
         public static Dictionary<ulong, string> GlobalPlayersByName { get; private set; } = new();
 
         public int playerHealthAsked;
@@ -27,11 +27,11 @@ namespace Wendogo
         public int playerFoodAsked;
 
         public int playerWoodAsked;
-        
+
         #endregion
 
         #region Action
-        
+
         public event Action OnAssignedRoles;
         public event Action OnDrawCard;
         public event Action OnPlayerTurnEnded;
@@ -54,19 +54,19 @@ namespace Wendogo
             NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Server
         );
-        
+
         public NetworkList<int> Votes = new(
             new List<int>(),
             NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Server
         );
-        
+
         public NetworkVariable<Cycle> currentCycle = new(
             Cycle.Day,
             NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Server
         );
-        
+
         public NetworkVariable<int> currentTurn = new(
             0,
             NetworkVariableReadPermission.Everyone,
@@ -78,7 +78,7 @@ namespace Wendogo
             NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Server
         );
-        
+
         public NetworkVariable<int> _woodInRitual = new(
             0,
             NetworkVariableReadPermission.Everyone,
@@ -128,25 +128,25 @@ namespace Wendogo
 
             GameStateMachine.Instance.ForceInitialSync();
         }
-        
+
         // Starts loading the game scene from the server if it's not already active.
         public void LaunchGame()
         {
             if (IsServer && SceneManager.GetActiveScene().name != gameSceneName)
                 NetworkManager.SceneManager.LoadScene(gameSceneName, LoadSceneMode.Single);
         }
-        
+
         // When the game is over, go back to the menu scene
         public void ReturnToMenu()
         {
             if (IsServer) NetworkManager.SceneManager.LoadScene(menuSceneName, LoadSceneMode.Single);
         }
-        
+
         public string GetPlayerName(ulong clientId)
         {
             return GlobalPlayersByName.GetValueOrDefault(clientId, "Unknown Player");
         }
-        
+
         public List<PlayerController> GetAllPlayers()
         {
             // Récupère tous les PlayerController sans tri (plus rapide)
@@ -244,7 +244,7 @@ namespace Wendogo
         public void ApplyBuildRitualRpc(int playedCardID, ulong origin, int nbFood, int nbWood)
         {
             if (PlayersById.TryGetValue(origin, out var player))
-                player.ApplyBuildRitualRpc(playedCardID, origin,  nbFood, nbWood, RpcTarget.Single(origin, RpcTargetUse.Temp));
+                player.ApplyBuildRitualRpc(playedCardID, origin, nbFood, nbWood, RpcTarget.Single(origin, RpcTargetUse.Temp));
         }
 
         [Rpc(SendTo.Server)]
@@ -285,7 +285,7 @@ namespace Wendogo
                 }
             }
         }
-        
+
         [Rpc(SendTo.Server)]
         public void IncrementPlayerFinishedLoadCountRpc()
         {
@@ -320,7 +320,7 @@ namespace Wendogo
                 player.UseVoteUIRpc(setUIActive, activePlayerInput, RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
             }
         }
-        
+
         [Rpc(SendTo.Server)]
         public void RegisterPlayerNameRpc(ulong clientId, string playerName)
         {
@@ -330,7 +330,7 @@ namespace Wendogo
             // Inform all customers of the network-side change (RPC)
             UpdateGlobalNameListClientRpc(clientId, playerName);
         }
-        
+
         [Rpc(SendTo.Server)]
         public void UnregisterPlayerNameRpc(ulong clientId)
         {
@@ -365,14 +365,14 @@ namespace Wendogo
             var player = PlayerController.GetPlayer(clientID);
             playerFoodAsked = player.food.Value;
         }
-        
+
         [Rpc(SendTo.Server)]
         public void GetPlayerWoodRpc(ulong clientID)
         {
             var player = PlayerController.GetPlayer(clientID);
             playerWoodAsked = player.wood.Value;
         }
-        
+
         [Rpc(SendTo.Server)]
         public void GetPlayerHealthRpc(ulong clientID)
         {
@@ -428,13 +428,13 @@ namespace Wendogo
             var player = PlayerController.GetPlayer(playerId);
             player.RequestHealthChangeRpc(damage, RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
         }
-        
-        [Rpc(SendTo.Server)]
+
+        [Rpc(SendTo.Everyone)]
         public void AskToUnlockResourcesRpc(bool isFood, bool isBlock)
         {
             GameStateMachine.Instance.AskToUnlockResources(isFood, isBlock);
         }
-        
+
         [Rpc(SendTo.Server)]
         public void RevealCardsRpc(ulong[] playerID, int[][] arrayCardsID)
         {
@@ -468,24 +468,24 @@ namespace Wendogo
             foreach (var player in PlayersById.Values)
                 player.EnableInputAndDisableMovingCardsRpc(RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
         }
-        
+
         #endregion
 
         #region RPC Animation
-        
+
         [Rpc(SendTo.Everyone)]
         public void BroadcastSharedFXEventRpc(FXEventContext fxEventContext)
         {
             GameEvents.RaiseLocalFX(fxEventContext);
         }
-        
+
         [Rpc(SendTo.Server)]
         public void BroadcastLocalFXEventToPlayerRpc(FXEventContext fxEventContext)
         {
             if (PlayersById.TryGetValue(fxEventContext.playerID, out var player))
-                player.BroadcastLocalFXEventToPlayerRpc(fxEventContext, RpcTarget.Single(fxEventContext.playerID, RpcTargetUse.Temp));;
+                player.BroadcastLocalFXEventToPlayerRpc(fxEventContext, RpcTarget.Single(fxEventContext.playerID, RpcTargetUse.Temp)); ;
         }
-        
+
         #endregion
     }
 }

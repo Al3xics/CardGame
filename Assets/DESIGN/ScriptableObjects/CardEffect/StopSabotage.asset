@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71cf01ebf8a69df429d6e0fc5f339e1c, type: 3}
   m_Name: StopSabotage
   m_EditorClassIdentifier: 
-  prefabUI: {fileID: 0}
+  prefabUI: {fileID: 4381171416163836051, guid: 3754eafd9fe02ef48ab8b11bd0d5749a, type: 3}

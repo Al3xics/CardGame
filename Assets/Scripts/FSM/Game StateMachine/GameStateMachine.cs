@@ -181,13 +181,13 @@ namespace Wendogo
         /// Represent the state of the food. If it is false, then this resource
         /// is blocked and inaccessible for players.
         /// </summary>
-        private bool _canScavengeFood = true;
+        [SerializeField] private bool _canScavengeFood = true;
 
         /// <summary>
         /// Represent the state of the wood. If it is false, then this resource
         /// is blocked and inaccessible for players.
         /// </summary>
-        private bool _canScavengeWood = true;
+        [SerializeField] private bool _canScavengeWood = true;
 
         public List<ulong> MutedPlayers { get; private set; } = new();
 
@@ -370,6 +370,8 @@ namespace Wendogo
             }
 
             if (ShowDebugLogs) Debug.LogWarning($"******************** Change cycle from {Cycle} to {newCycle} ! ********************");
+            ServerManager.Instance.AskToUnlockResourcesRpc(false, false);
+            ServerManager.Instance.AskToUnlockResourcesRpc(true, false);
             Cycle = newCycle;
 
         }
