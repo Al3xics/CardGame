@@ -181,13 +181,13 @@ namespace Wendogo
         /// Represent the state of the food. If it is false, then this resource
         /// is blocked and inaccessible for players.
         /// </summary>
-        [SerializeField] private bool _canScavengeFood = true;
+        private bool _canScavengeFood = true;
 
         /// <summary>
         /// Represent the state of the wood. If it is false, then this resource
         /// is blocked and inaccessible for players.
         /// </summary>
-        [SerializeField] private bool _canScavengeWood = true;
+        private bool _canScavengeWood = true;
 
         public List<ulong> MutedPlayers { get; private set; } = new();
 
