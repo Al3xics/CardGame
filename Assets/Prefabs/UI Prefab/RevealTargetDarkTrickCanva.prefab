@@ -492,7 +492,7 @@ MonoBehaviour:
         m_CallState: 1
       - m_Target: {fileID: 8419270847791728884}
         m_TargetAssemblyTypeName: Wendogo.TargetSelectionUI, Assembly-CSharp
-        m_MethodName: Sabotage
+        m_MethodName: Revalation
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -863,7 +863,7 @@ MonoBehaviour:
         m_CallState: 1
       - m_Target: {fileID: 956724843613331833}
         m_TargetAssemblyTypeName: Wendogo.TargetSelectionUI, Assembly-CSharp
-        m_MethodName: Sabotage
+        m_MethodName: Revalation
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1159,7 +1159,7 @@ MonoBehaviour:
         m_CallState: 1
       - m_Target: {fileID: 6612583707847141469}
         m_TargetAssemblyTypeName: Wendogo.TargetSelectionUI, Assembly-CSharp
-        m_MethodName: Sabotage
+        m_MethodName: Revalation
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

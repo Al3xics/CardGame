@@ -14,7 +14,7 @@ namespace Wendogo
         private GameObject _showingCardsUI; 
         public override async void Apply(ulong owner, ulong target, int value = -1)
         {
-            var nightActions = GameStateMachine.Instance.GetNightActionsWithPriority();
+            var nightActions = GameStateMachine.Instance.NightActions;
             List<PlayerAction> playerActions = new List<PlayerAction>();
             for (int i = 0; i < nightActions.Count; i++)
             {
@@ -24,26 +24,14 @@ namespace Wendogo
                 }
             }
             // Afficher playerActions
-            await ShowPlayerActions(playerActions);
+            foreach (var action in playerActions)
+            {
+                ServerManager.Instance.ShowCardsCanvaRpc(action.CardId, owner);
+                await UniTask.WaitForSeconds(1.5f);
+            }
+
             AnalyticsManager.Instance.RecordEvent(new CustomEvent("revealNightActionsActiveCardWasApplied"));
         }
-
-        private async UniTask ShowPlayerActions(List<PlayerAction> playerActions)
-        {
-            _showingCardsUI = Instantiate(prefabUI);
-            _showingCardsUI.SetActive(true);
-            RawImage imageToChange = _showingCardsUI.GetComponentInChildren<RawImage>();
-            foreach (PlayerAction action in playerActions)
-            {
-                CardDataSO cardDataSO = DataCollection.Instance.cardDatabase.GetCardByID(action.CardId);
-                Texture2D texture = cardDataSO.CardVisual;
-                imageToChange.texture = texture;
-                await UniTask.WaitForSeconds(3);
-            }
-            _showingCardsUI.SetActive(false);
-            Destroy(_showingCardsUI);
-        }
-
         public override void ShowUI()
         {
             if (prefabUI == null)
