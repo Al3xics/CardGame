@@ -372,6 +372,7 @@ namespace Wendogo
             if (ShowDebugLogs) Debug.LogWarning($"******************** Change cycle from {Cycle} to {newCycle} ! ********************");
             ServerManager.Instance.AskToUnlockResourcesRpc(false, false);
             ServerManager.Instance.AskToUnlockResourcesRpc(true, false);
+            ServerManager.Instance.nightActions.Clear();
             Cycle = newCycle;
 
         }

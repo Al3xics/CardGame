@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
+using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -66,6 +67,12 @@ namespace Wendogo
             NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Server
         );
+
+        public NetworkList<PlayerAction> nightActions = new(
+    new List<PlayerAction>(),
+    NetworkVariableReadPermission.Everyone,
+    NetworkVariableWritePermission.Server
+);
 
         public NetworkVariable<int> currentTurn = new(
             0,
@@ -475,6 +482,18 @@ namespace Wendogo
             var player = PlayerController.GetPlayer(clientID);
             player.ShowCardsCanvaRpc(CardId, RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
         }
+
+        //[Rpc(SendTo.Server)]
+        //public void SubmitNightActionRpc(PlayerAction[] actions, RpcParams ctx = default)
+        //{
+        //    var nightActions = GameStateMachine.Instance.NightActions.ToArray();
+        //    nightActions.Clear();
+        //    foreach (var action in actions)
+        //    {
+        //        nightActions.Add(action);
+        //    }
+        //}
+
 
         #endregion
 

@@ -82,15 +82,19 @@ namespace Wendogo
                         ServerManager.Instance.FinishedPassiveCardPlayedRpc(playedCardID, origin, true);
                         return;
                     }
-                    
-                    StateMachine.NightActions.Add(new PlayerAction
+
+
+                    PlayerAction action;
+                    StateMachine.NightActions.Add(action = new PlayerAction()
                     {
                         CardId = playedCardID,
                         CardPriorityIndex = card.nightPriorityIndex,
                         OriginId = origin,
                         TargetId = target
                     });
-                    
+
+                    ServerManager.Instance.nightActions.Add(action);
+
                     if (card.nightPriorityIndex <= 0) // Handle cards without priority
                         ServerManager.Instance.TryApplyPassiveRpc(playedCardID, origin, target);
                     break;

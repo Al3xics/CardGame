@@ -65,6 +65,9 @@ namespace Wendogo
 
         private FXEventManager _fxManager;
         public GameObject UIPrefab;
+
+        public PlayerAction[] NightActions;
+
         #endregion
 
         #region Network Variables
@@ -770,6 +773,12 @@ namespace Wendogo
         public void ShowCardsCanvaRpc(int CardId, RpcParams rpcParams)
         {
             ShowOtherPlayerCards(CardId);
+        }
+
+        [Rpc(SendTo.SpecifiedInParams)]
+        public void GetLocalNightActionsRpc(PlayerAction[] actions, RpcParams rpcParams)
+        {
+            NightActions = actions;
         }
 
         private async void ShowOtherPlayerCards(int CardId)

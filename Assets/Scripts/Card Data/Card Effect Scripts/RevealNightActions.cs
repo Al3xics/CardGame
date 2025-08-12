@@ -1,9 +1,11 @@
 ﻿using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Unity.Netcode;
 using Unity.Services.Analytics;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 namespace Wendogo
 {
@@ -14,15 +16,18 @@ namespace Wendogo
         private GameObject _showingCardsUI; 
         public override async void Apply(ulong owner, ulong target, int value = -1)
         {
-            var nightActions = GameStateMachine.Instance.NightActions;
+            var targetPlayer = PlayerController.GetPlayer(target);
             List<PlayerAction> playerActions = new List<PlayerAction>();
-            for (int i = 0; i < nightActions.Count; i++)
+            var serverActions = ServerManager.Instance.nightActions;
+
+            foreach (var action in serverActions)
             {
-                if (nightActions[i].OriginId == target)
+                if (action.OriginId == target)
                 {
-                    playerActions.Add(nightActions[i]);
+                    playerActions.Add(action);
                 }
             }
+            
             // Afficher playerActions
             foreach (var action in playerActions)
             {
