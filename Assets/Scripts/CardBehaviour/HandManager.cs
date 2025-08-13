@@ -166,6 +166,8 @@ namespace Wendogo
 
         public void DestroyPassiveCard(string cardName)
         {
+            List<GameObject> cards = new List<GameObject>();
+
             foreach (GameObject passiveCard in passiveZoneCards)
             {
                 CardObjectData cardObjectData;
@@ -173,10 +175,13 @@ namespace Wendogo
 
                 if (cardObjectData.Card.Name == cardName)
                 {
-                    RemoveCardFromPassiveZone(passiveCard);
+                    cards.Add(passiveCard);
                 }
-                break;
+            }
 
+            foreach (var card in cards)
+            {
+                RemoveCardFromPassiveZone(card);
             }
         }
 

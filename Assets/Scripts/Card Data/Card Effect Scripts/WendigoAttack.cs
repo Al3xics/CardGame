@@ -15,7 +15,7 @@ namespace Wendogo
 
         public override void Apply(ulong owner, ulong target, int value = -1)
         {
-            if (value <= -1) value = 0;
+            
             var newValue = damageDone + value;
             
             var targetPlayer = PlayerController.GetPlayer(target);

@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6baf51974f62f6a4ebd09f671d4d65a2, type: 3}
   m_Name: Trap
   m_EditorClassIdentifier: 
-  defenseValue: 5
+  defenseValue: -2
