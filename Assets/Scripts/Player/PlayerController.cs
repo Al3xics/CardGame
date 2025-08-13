@@ -157,7 +157,7 @@ namespace Wendogo
             if (AutoSessionBootstrapper.AutoConnect)
             {
                 _fxManager = GameObject.Find("FXEventManager")?.GetComponent<FXEventManager>();
-                
+
                 //Todo call at the same time the the game state machine starts instead
                 await UniTask.WaitForSeconds(15);
                 //Init UI for the other players
@@ -218,7 +218,7 @@ namespace Wendogo
                 if (_handManager == null) _handManager = GameObject.FindWithTag("hand")?.GetComponent<HandManager>();
                 pcSMObject = new GameObject($"{nameof(PlayerControllerSM)}");
                 pcSMObject.AddComponent<PlayerControllerSM>();
-                
+
                 _fxManager = GameObject.Find("FXEventManager")?.GetComponent<FXEventManager>();
 
                 Debug.Log($"This is my player id: {LocalPlayerId}");
@@ -543,6 +543,26 @@ namespace Wendogo
                 hiddenHealth = Mathf.Clamp(hiddenHealth - delta, 0, maxHealth);
         }
 
+        public async void ChangeResource(int resourceType, int delta)
+        {
+
+            if (ServerManager.Instance.currentCycle.Value == Cycle.Day)
+            {
+                if (resourceType == 0)
+                    wood.Value = Mathf.Clamp(wood.Value + delta, 0, 100);
+                else
+                    food.Value = Mathf.Clamp(food.Value + delta, 0, 100);
+            }
+            else
+            {
+                if (resourceType == 0)
+                    hiddenWood += delta;
+                else
+                    hiddenFood += delta;
+                await UniTask.WaitForEndOfFrame();
+            }
+        }
+
         public void UpdateHearts(int oldHealthValue, int newHealthValue)
         {
             Debug.Log($"New health is: {newHealthValue} and old health is {oldHealthValue} ");
@@ -751,19 +771,26 @@ namespace Wendogo
         {
             ChangeHealth(delta);
         }
-        
+
+        [Rpc(SendTo.SpecifiedInParams)]
+        public void RequestResourceChangeRpc(int resourceType, int delta, RpcParams rpcParams)
+        {
+            ChangeResource(resourceType, delta);
+        }
+
+
         [Rpc(SendTo.SpecifiedInParams)]
         public void MuteRpc(bool mute, RpcParams rpcParams)
         {
             SessionManager.Instance.MutePlayer(mute);
         }
-        
+
         [Rpc(SendTo.SpecifiedInParams)]
         public void GroupSelectTargetAsyncRpc(RpcParams rpcParams)
         {
             _ = GroupSelectTargetAsync();
         }
-        
+
         [Rpc(SendTo.SpecifiedInParams)]
         public void EnableInputAndDisableMovingCardsRpc(RpcParams rpcParams)
         {

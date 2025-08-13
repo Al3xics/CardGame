@@ -437,6 +437,13 @@ namespace Wendogo
             player.RequestHealthChangeRpc(damage, RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
         }
 
+        [Rpc(SendTo.Server)]
+        public void ChangePlayerResourceRpc(int resourceType, int amount, ulong playerId)
+        {
+            var player = PlayerController.GetPlayer(playerId);
+            player.RequestResourceChangeRpc(resourceType, amount, RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
+        }
+
         [Rpc(SendTo.Everyone)]
         public void AskToUnlockResourcesRpc(bool isFood, bool isBlock)
         {
