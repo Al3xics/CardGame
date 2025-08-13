@@ -15,6 +15,9 @@ namespace Wendogo
             {
                 value = 1000;
                 Debug.Log($"Et non ! C'était du porc !");
+                var player = PlayerController.GetPlayer(origin);
+                HandManager handManager = player._handManager;
+                handManager.DestroyPassiveCard("StealProtect");
                 AnalyticsManager.Instance.RecordEvent(new CustomEvent("stealProtectPassiveCardWasApplied"));
                 return true;
             }
