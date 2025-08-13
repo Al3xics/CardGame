@@ -9,7 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6baf51974f62f6a4ebd09f671d4d65a2, type: 3}
-  m_Name: Trap
+  m_Script: {fileID: 11500000, guid: 3ff199a55f2400441a9f401fa4cc89ab, type: 3}
+  m_Name: WendigoAttack 1
   m_EditorClassIdentifier: 
-  defenseValue: 5
+  damageDone: 2
+  prefabUI: {fileID: 0}

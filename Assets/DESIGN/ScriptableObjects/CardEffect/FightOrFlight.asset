@@ -9,7 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6baf51974f62f6a4ebd09f671d4d65a2, type: 3}
-  m_Name: Trap
+  m_Script: {fileID: 11500000, guid: 7b2b4fca13774a94caba0d3e10402d99, type: 3}
+  m_Name: FightOrFlight
   m_EditorClassIdentifier: 
-  defenseValue: 5
+  prefabUI: {fileID: 0}
+  damageDone: 1

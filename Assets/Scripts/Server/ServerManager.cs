@@ -503,16 +503,12 @@ namespace Wendogo
             player.ShowCardsCanvaRpc(CardId, RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
         }
 
-        //[Rpc(SendTo.Server)]
-        //public void SubmitNightActionRpc(PlayerAction[] actions, RpcParams ctx = default)
-        //{
-        //    var nightActions = GameStateMachine.Instance.NightActions.ToArray();
-        //    nightActions.Clear();
-        //    foreach (var action in actions)
-        //    {
-        //        nightActions.Add(action);
-        //    }
-        //}
+        [Rpc(SendTo.Server)]
+        public void DeleteCardsAllPlayersRpc(string cardName)
+        {
+            foreach (var player in PlayersById.Values)
+                player.DeleteCardFromZoneRpc(cardName,RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
+        }
 
 
         #endregion

@@ -799,11 +799,16 @@ namespace Wendogo
         }
 
         [Rpc(SendTo.SpecifiedInParams)]
+        public void DeleteCardFromZoneRpc(string cardName, RpcParams rpcParams)
+        {
+            _handManager.DestroyPassiveCard(cardName);
+        }
+
+        [Rpc(SendTo.SpecifiedInParams)]
         public void ShowCardsCanvaRpc(int CardId, RpcParams rpcParams)
         {
             ShowOtherPlayerCards(CardId);
         }
-
 
         private async void ShowOtherPlayerCards(int CardId)
         {

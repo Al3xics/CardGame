@@ -34,8 +34,7 @@ namespace Wendogo
                 }
             }
             
-            HandManager handManager = FindFirstObjectByType<HandManager>();
-            handManager.DestroyPassiveCard("Trap");
+            HandManager handManager = FindFirstObjectByType<HandManager>();;
             handManager.DestroyPassiveCard("BloodBounty");
         }
 
