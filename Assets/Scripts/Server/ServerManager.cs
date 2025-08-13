@@ -5,6 +5,7 @@ using Unity.Netcode;
 using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.SocialPlatforms;
 
 
 namespace Wendogo
@@ -443,9 +444,21 @@ namespace Wendogo
         }
 
         [Rpc(SendTo.Server)]
-        public void RevealCardsRpc(ulong[] playerID, int[][] arrayCardsID)
+        public void RevealCardsRpc(ulong[] playerIDs, int[][] arrayCardsID)
         {
-            // Logique
+            for (int i = 0; i < playerIDs.Length; i++)
+            {
+                var player = PlayerController.GetPlayer(playerIDs[i]);
+                if (player == null) continue;
+
+                if (playerIDs[i] == player.LocalPlayerId)
+                    continue;
+
+                var cards = arrayCardsID[i];
+                if (cards == null) continue;
+            
+                player.ShowCardsDivinationRpc(cards, RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
+            }
         }
 
         [Rpc(SendTo.Server)]

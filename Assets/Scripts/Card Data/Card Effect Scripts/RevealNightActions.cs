@@ -16,6 +16,7 @@ namespace Wendogo
         private GameObject _showingCardsUI; 
         public override async void Apply(ulong owner, ulong target, int value = -1)
         {
+
             var targetPlayer = PlayerController.GetPlayer(target);
             List<PlayerAction> playerActions = new List<PlayerAction>();
             var serverActions = ServerManager.Instance.nightActions;

@@ -12,6 +12,7 @@ using Unity.Collections;
 using Unity.Services.Analytics;
 using UnityEngine.SocialPlatforms;
 using UnityEngine.UI;
+using System.Collections;
 
 
 namespace Wendogo
@@ -65,6 +66,7 @@ namespace Wendogo
 
         private FXEventManager _fxManager;
         public GameObject UIPrefab;
+        private GameObject _showcardUI;
 
         public PlayerAction[] NightActions;
 
@@ -775,11 +777,6 @@ namespace Wendogo
             ShowOtherPlayerCards(CardId);
         }
 
-        [Rpc(SendTo.SpecifiedInParams)]
-        public void GetLocalNightActionsRpc(PlayerAction[] actions, RpcParams rpcParams)
-        {
-            NightActions = actions;
-        }
 
         private async void ShowOtherPlayerCards(int CardId)
         {
@@ -796,6 +793,32 @@ namespace Wendogo
             _showingCardsUI.SetActive(false);
             Destroy(_showingCardsUI);
 
+        }
+
+        [Rpc(SendTo.SpecifiedInParams)]
+        public void ShowCardsDivinationRpc(int[] CardId, RpcParams rpcParams)
+        {
+            StartCoroutine(ShowCardsCoroutine(CardId));
+        }
+
+        private IEnumerator ShowCardsCoroutine(int[] cardIds)
+        {
+            if (_showcardUI == null)
+                _showcardUI = Instantiate(UIPrefab);
+
+            var imageToChange = _showcardUI.GetComponentInChildren<RawImage>(true);
+
+            foreach (var cardId in cardIds)
+            {
+                _showcardUI.SetActive(true);
+
+                var cardDataSO = DataCollection.Instance.cardDatabase.GetCardByID(cardId);
+                imageToChange.texture = cardDataSO.CardVisual;
+
+                yield return new WaitForSeconds(1.5f);
+
+                _showcardUI.SetActive(false);
+            }
         }
 
         #endregion
