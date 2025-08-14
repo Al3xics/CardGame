@@ -43,6 +43,9 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Prio
+    uniqueID: 1096352309
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0

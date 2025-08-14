@@ -267,7 +267,7 @@ GameObject:
   - component: {fileID: 10757232}
   - component: {fileID: 10757231}
   m_Layer: 0
-  m_Name: Canvas
+  m_Name: ShpwCardsCanvaCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6643,7 +6643,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1602730470754012112, guid: 539af8b2bb893fc4294be7df4b30a41e, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5366568229710827996, guid: 539af8b2bb893fc4294be7df4b30a41e, type: 3}
       propertyPath: m_Pivot.x

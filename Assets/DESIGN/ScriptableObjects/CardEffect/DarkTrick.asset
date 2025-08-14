@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d085f2e3fcc44d339a13ffb6b4ad7184, type: 3}
+  m_Name: DarkTrick
+  m_EditorClassIdentifier: 
+  WendogoTrickprefabUI: {fileID: 2370279934951216, guid: 3c09cb519e596a54da866d2d5d6352af, type: 3}
+  SelectTargetPrefabUI: {fileID: 2499924809553594333, guid: 887fa708ccfc7f04b95c34b7825ce309, type: 3}
+  _dtRevealCard: {fileID: 11400000, guid: 07492bde226fe8849bb25e4881cb0cb5, type: 2}
