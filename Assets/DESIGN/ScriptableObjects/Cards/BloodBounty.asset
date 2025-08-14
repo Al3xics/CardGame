@@ -22,6 +22,4 @@ MonoBehaviour:
   turnsRemaining: -1
   ID: 2004
   Toggle: 1
-  effectDescription: "Lorsque le joueur est attaqu\xE9, il subit +1 d\xE9g\xE2t,
-    mais obtient imm\xE9diatement 2 ressources de son choix depuis la pile commune.
-    La carte est ensuite d\xE9truite.\u200B"
+  effectDescription: 

@@ -9,10 +9,10 @@ namespace Wendogo
         public GameObject prefabUI;
         public override void Apply(ulong owner, ulong target, int value = -1)
         {
-            if (value == 0)
-                ServerManager.Instance.AskToUnlockResourcesRpc(true, false);
-            else if (value == 1)
+            if (target == 0)
                 ServerManager.Instance.AskToUnlockResourcesRpc(false, false);
+            else if (value == 1)
+                ServerManager.Instance.AskToUnlockResourcesRpc(true, false);
             
             AnalyticsManager.Instance.RecordEvent(new CustomEvent("stopSabotageActiveCardWasApplied"));
         }
@@ -25,11 +25,12 @@ namespace Wendogo
             prefabUI.SetActive(true);
         }
         
-        public override void HideUI()
+        public override void HideUI(bool clearVotes)
         {
             if (prefabUI == null)
                 prefabUI = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject;
             prefabUI.SetActive(false);
+            base.HideUI(clearVotes);
         }
     }
 }

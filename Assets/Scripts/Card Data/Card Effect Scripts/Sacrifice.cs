@@ -23,7 +23,7 @@ namespace Wendogo
         public override bool ApplyPassive(int playedCardId, ulong origin, ulong target, out int value)
         {
             value = -1;
-            return false;
+            return true;
         }
 
         public override void ShowUI()
@@ -33,11 +33,12 @@ namespace Wendogo
             prefabUI.SetActive(true);
         }
 
-        public override void HideUI()
+        public override void HideUI(bool clearVotes)
         {
             if (prefabUI == null)
                 prefabUI = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject;
             prefabUI.SetActive(false);
+            base.HideUI(clearVotes);
         }
     }
 }

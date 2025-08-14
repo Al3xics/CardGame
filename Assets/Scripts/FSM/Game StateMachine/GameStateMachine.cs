@@ -116,7 +116,7 @@ namespace Wendogo
         public List<ulong> PlayersID { get; private set; } = new();
 
         private Cycle _cycle = Cycle.Day;
-        
+
         /// <summary>
         /// Represents the current <see cref="Cycle"/> of the game, which can be either Day or Night.
         /// The state of the cycle determines the flow of the game's behavior and logic.
@@ -188,7 +188,7 @@ namespace Wendogo
         /// is blocked and inaccessible for players.
         /// </summary>
         private bool _canScavengeWood = true;
-        
+
         public List<ulong> MutedPlayers { get; private set; } = new();
 
         #endregion
@@ -327,6 +327,19 @@ namespace Wendogo
             _ritualWoodCollected.AddRange(_hiddenRitualWoodCollected);
         }
 
+        /// <summary>
+        /// Retrieves a list of night actions that have a priority greater than zero.
+        /// </summary>
+        /// <returns>
+        /// A list of <see cref="PlayerAction"/> objects from the NightActionsForMorning collection
+        /// where the actions have a positive CardPriorityIndex value.
+        /// </returns>
+        public List<PlayerAction> GetNightActionsWithPriority()
+        {
+            return NightActions.Where(c => c.CardPriorityIndex > 0).ToList();
+        }
+
+
         #endregion
 
         #region Called By States
@@ -358,6 +371,7 @@ namespace Wendogo
 
             if (ShowDebugLogs) Debug.LogWarning($"******************** Change cycle from {Cycle} to {newCycle} ! ********************");
             Cycle = newCycle;
+
         }
 
         /// <summary>
@@ -397,7 +411,7 @@ namespace Wendogo
         #endregion
 
         #region Called By ServerManager
-        
+
         /// <summary>
         /// Synchronize the value from the server and the state machine.
         /// </summary>
@@ -414,6 +428,15 @@ namespace Wendogo
         public void RegisterPlayerID(ulong playerID)
         {
             PlayersID.Add(playerID);
+        }
+
+        /// <summary>
+        /// Unregister a player ID to maintain a reference to all players in the State Machine.
+        /// </summary>
+        /// <param name="playerID">The unique ID of the player you want to remove.</param>
+        public void UnregisterPlayerID(ulong playerID)
+        {
+            PlayersID.Remove(playerID);
         }
 
         /// <summary>
@@ -457,7 +480,7 @@ namespace Wendogo
             Utils.DictionaryToArrays(playerCards, out ulong[] targets, out int[][] cardsID);
             ServerManager.Instance.SendCardsToPlayersRpc(targets, cardsID);
         }
-        
+
         public void AskToUnlockResources(bool isFood, bool isBlock)
         {
             if (isFood)
@@ -467,7 +490,7 @@ namespace Wendogo
         }
 
         public bool GetCanScavengeFood() => _canScavengeFood;
-        
+
         public bool GetCanScavengeWood() => _canScavengeWood;
 
         #endregion

@@ -314,12 +314,11 @@ namespace Wendogo
         {
             await UniTask.WaitUntil(() => ServerManager.Instance.PlayerReadyCount.Value == 2);
             await UniTask.WaitForSeconds(0.1f);
-            EnableInput();
-            ServerManager.Instance.ClearVoteRpc();
         }
 
         public async UniTask GroupSelectTargetVoteAsync()
         {
+            _handManager.ToggleOffMovingCards(_handManager.handCards);
             _inputEvent.enabled = true;
             _intTarget = -1;
 
@@ -444,10 +443,12 @@ namespace Wendogo
 
         public static PlayerController GetPlayer(ulong clientId)
         {
+            // The player is either dead, or he was not in this list to begin with.
+            if (!ServerManager.Instance.PlayersById.ContainsKey(clientId))
+                return null;
+            
             if (NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out var networkClient))
-            {
                 return networkClient.PlayerObject.GetComponent<PlayerController>();
-            }
 
             Debug.LogWarning($"PlayerController not found for clientId: {clientId}");
             return null;
@@ -533,9 +534,17 @@ namespace Wendogo
         public void ChangeHealth(int delta)
         {
             if (ServerManager.Instance.currentCycle.Value == Cycle.Day)
+            {
                 health.Value = Mathf.Clamp(health.Value - delta, 0, maxHealth);
+                if (health.Value <= 0)
+                    pcSMObject.GetComponent<PlayerControllerSM>().ChangeToDeathState();
+            }
             else
+            {
                 hiddenHealth = Mathf.Clamp(hiddenHealth - delta, 0, maxHealth);
+                if (hiddenHealth <= 0)
+                    pcSMObject.GetComponent<PlayerControllerSM>().ChangeToDeathState();
+            }
         }
 
         public void UpdateHearts(int oldHealthValue, int newHealthValue)
@@ -728,7 +737,7 @@ namespace Wendogo
             }
             else
             {
-                ServerManager.Instance.ChangePlayerHealthRpc(-1, LocalPlayerId);
+                ServerManager.Instance.ChangePlayerHealthRpc(1, LocalPlayerId);
             }
         }
 
@@ -739,8 +748,6 @@ namespace Wendogo
 
             if (activePlayerInput)
                 _ = HandleVoteUIAsync(); // Fire-and-forget
-            else
-                ServerManager.Instance.ClearVoteRpc();
         }
 
         [Rpc(SendTo.SpecifiedInParams)]
@@ -753,6 +760,19 @@ namespace Wendogo
         public void MuteRpc(bool mute, RpcParams rpcParams)
         {
             SessionManager.Instance.MutePlayer(mute);
+        }
+        
+        [Rpc(SendTo.SpecifiedInParams)]
+        public void GroupSelectTargetAsyncRpc(RpcParams rpcParams)
+        {
+            _ = GroupSelectTargetAsync();
+        }
+        
+        [Rpc(SendTo.SpecifiedInParams)]
+        public void EnableInputAndDisableMovingCardsRpc(RpcParams rpcParams)
+        {
+            EnableInput();
+            _handManager.ToggleOffMovingCards(_handManager.handCards);
         }
 
         #endregion
@@ -810,6 +830,11 @@ namespace Wendogo
                     _selectedTarget = (ulong)_intTarget;
                 }
 
+            }
+            else if (cardDataSO.nightPriorityIndex > 0 && ServerManager.Instance.currentCycle.Value == Cycle.Night)
+            {
+                // Don't do anything here. It is only a check to transmit the card and NOT go into the else if (cardDataSO.isGroup)
+                Debug.Log("dans le vide");
             }
             else if (cardDataSO.isGroup && ServerManager.Instance.currentCycle.Value != Cycle.Night)
             {

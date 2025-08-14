@@ -36,6 +36,7 @@ namespace Wendogo
             
             HandManager handManager = FindFirstObjectByType<HandManager>();
             handManager.DestroyPassiveCard("Trap");
+            handManager.DestroyPassiveCard("BloodBounty");
         }
 
         public override void ShowUI()
@@ -45,11 +46,12 @@ namespace Wendogo
             prefabUI.SetActive(true);
         }
 
-        public override void HideUI()
+        public override void HideUI(bool clearVotes)
         {
             if (prefabUI == null)
                 prefabUI = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject;
             prefabUI.SetActive(false);
+            base.HideUI(clearVotes);
         }
     }
 }

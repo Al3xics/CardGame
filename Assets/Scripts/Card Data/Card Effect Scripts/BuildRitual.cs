@@ -53,9 +53,10 @@ namespace Wendogo
             _ressouceCanvaInstance.SetActive(true);
         }
 
-        public override void HideUI()
+        public override void HideUI(bool clearVotes)
         {
             _ressouceCanvaInstance.SetActive(false);
+            base.HideUI(clearVotes);
         }
     }
 }

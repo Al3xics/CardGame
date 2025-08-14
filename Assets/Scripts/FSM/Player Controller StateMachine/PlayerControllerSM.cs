@@ -1,7 +1,3 @@
-using Unity.Services.Matchmaker.Models;
-using UnityEngine;
-using Wendogo;
-
 namespace Wendogo
 {
     //The state machine for the player controller based on the template
@@ -18,6 +14,7 @@ namespace Wendogo
             PCTargetSelectionState pCTargetSelectionState = new PCTargetSelectionState(this, PlayerController.LocalPlayer);
             PCTurnOverState pCTurnOverState = new PCTurnOverState(this, PlayerController.LocalPlayer);
             PCBurnCardState pCBurnCardState = new PCBurnCardState(this, PlayerController.LocalPlayer);
+            PCDeathState pCDeathState = new PCDeathState(this, PlayerController.LocalPlayer);
 
             AddState(inputstate);
             AddState(pCCardPlayState);
@@ -27,9 +24,15 @@ namespace Wendogo
             AddState(pCTargetSelectionState);
             AddState(pCTurnOverState);
             AddState(pCBurnCardState);
+            AddState(pCDeathState);
 
             return inputstate;
 
+        }
+
+        public void ChangeToDeathState()
+        {
+            ChangeState<PCDeathState>();
         }
     }
 }

@@ -20,7 +20,7 @@ MonoBehaviour:
   HasTarget: 0
   nightPriorityIndex: 0
   turnsRemaining: -1
-  ID: 0
+  ID: 1009
   Toggle: 1
   effectDescription: "Chaque joueur r\xE9v\xE8le deux cartes de sa main \xE0 l\u2019ensemble
     des participants de mani\xE8re al\xE9atoire. Si la carte est jou\xE9e durant
