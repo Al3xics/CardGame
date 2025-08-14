@@ -463,7 +463,7 @@ namespace Wendogo
 
                 var cards = arrayCardsID[i];
                 if (cards == null) continue;
-            
+
                 player.ShowCardsDivinationRpc(cards, RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
             }
         }
@@ -507,7 +507,13 @@ namespace Wendogo
         public void DeleteCardsAllPlayersRpc(string cardName)
         {
             foreach (var player in PlayersById.Values)
-                player.DeleteCardFromZoneRpc(cardName,RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
+                player.DeleteCardFromZoneRpc(cardName, RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
+        }
+        [Rpc(SendTo.Server)]
+        public void AskChangeGuardianStatusRpc(bool isGuardian, ulong clientID, int designatedGuardianID = -1)
+        {
+            var player = PlayerController.GetPlayer(clientID);
+            player.ChangeGuardianStatusRpc(isGuardian, designatedGuardianID, RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
         }
 
 

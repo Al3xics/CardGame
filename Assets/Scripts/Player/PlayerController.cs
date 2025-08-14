@@ -126,7 +126,7 @@ namespace Wendogo
             NetworkVariableWritePermission.Owner
         );
 
-        public PlayerController guardian;
+        public ulong guardianID;
 
         public NetworkVariable<bool> eatPorc = new(
             false,
@@ -810,6 +810,16 @@ namespace Wendogo
             ShowOtherPlayerCards(CardId);
         }
 
+        [Rpc(SendTo.SpecifiedInParams)]
+        public void ChangeGuardianStatusRpc(bool hasAGuardian, int designatedGuardianID, RpcParams rpcParams)
+        {
+            hasGuardian.Value = hasAGuardian;
+            if (designatedGuardianID >= 0)
+                guardianID = (ulong)designatedGuardianID;
+            else
+                guardianID = 1000;
+        }
+
         private async void ShowOtherPlayerCards(int CardId)
         {
             GameObject _showingCardsUI = Instantiate(UIPrefab);
@@ -886,6 +896,7 @@ namespace Wendogo
             if (cardDataSO.isPassive || !cardDataSO.HasTarget)
             {
                 _selectedTarget = LocalPlayerId;
+
             }
 
             int nbFood = -1;
@@ -906,6 +917,10 @@ namespace Wendogo
                 {
                     await UniTask.WaitUntil(() => _intTarget >= 0);
                     _selectedTarget = (ulong)_intTarget;
+                    if (cardDataSO.CardEffect is Sacrifice)
+                    {
+                        cardDataSO.CardEffect.Apply(LocalPlayerId, _selectedTarget);
+                    }
                 }
 
             }

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Mono.Cecil;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using static UnityEngine.Rendering.DebugUI;
 using Random = UnityEngine.Random;
 
 namespace Wendogo
@@ -287,6 +289,12 @@ namespace Wendogo
                     ResourceType.Wood => _ritualWoodCollected,
                     _ => null
                 };
+
+                var ritualValue = resource == ResourceType.Food
+                    ? ServerManager.Instance._foodInRitual
+                    : ServerManager.Instance._woodInRitual;
+
+                ritualValue.Value += value;
             }
 
             if (targetList == null) return;
@@ -298,15 +306,6 @@ namespace Wendogo
             int max = resource == ResourceType.Food ? numberOfFoodToCompleteRitual : numberOfWoodToCompleteRitual;
             if (targetList.Count > max)
                 targetList.RemoveRange(max, targetList.Count - max);
-
-            if(resource == ResourceType.Food)
-            {
-                ServerManager.Instance._foodInRitual.Value += targetList.Count;
-            }
-            else
-            {
-            ServerManager.Instance._woodInRitual.Value += targetList.Count;
-            }
         }
 
         /// <summary>
@@ -331,6 +330,9 @@ namespace Wendogo
             _ritualFoodCollected.AddRange(_hiddenRitualFoodCollected);
             _ritualWoodCollected.Clear();
             _ritualWoodCollected.AddRange(_hiddenRitualWoodCollected);
+
+            ServerManager.Instance._foodInRitual.Value = _ritualFoodCollected.Count();
+            ServerManager.Instance._woodInRitual.Value = _ritualWoodCollected.Count();
         }
 
         /// <summary>

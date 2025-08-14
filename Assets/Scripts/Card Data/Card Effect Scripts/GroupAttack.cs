@@ -31,8 +31,9 @@ namespace Wendogo
                     }
                     else
                     {
-                        ServerManager.Instance.ChangePlayerHealthRpc(newValue, targetPlayer.guardian.OwnerClientId);
-                        targetPlayer.hasGuardian.Value = false;
+                        ulong guardianID = targetPlayer.guardianID;
+                        ServerManager.Instance.ChangePlayerHealthRpc(newValue, guardianID);
+                        ServerManager.Instance.AskChangeGuardianStatusRpc(false, target);
                     }
                 }
             }

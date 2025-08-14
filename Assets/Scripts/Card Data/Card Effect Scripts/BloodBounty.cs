@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Unity.Collections.LowLevel.Unsafe;
 using Unity.Services.Analytics;
 using UnityEngine;
 
@@ -26,8 +27,9 @@ namespace Wendogo
                 }
                 else
                 {
-                    targetPlayer.guardian.ChangeHealth(boostDamage);
-                    targetPlayer.hasGuardian.Value = false;
+                    ulong guardianID = targetPlayer.guardianID;
+                    ServerManager.Instance.ChangePlayerHealthRpc(boostDamage, guardianID);
+                    ServerManager.Instance.AskChangeGuardianStatusRpc(false, target);
                 }
                 
                 for (int i = 0; i < 2; i++)
@@ -49,7 +51,9 @@ namespace Wendogo
                             targetPlayer.food.Value++;
                     }
                 }
-                
+
+                HandManager handManager = originPlayer._handManager;
+                handManager.DestroyPassiveCard("BloodBounty");
                 AnalyticsManager.Instance.RecordEvent(new CustomEvent("bloodBountyPassiveCardWasApplied"));
                 return true;
             }
