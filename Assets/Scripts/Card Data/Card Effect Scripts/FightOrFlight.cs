@@ -14,7 +14,7 @@ namespace Wendogo
             PlayerController playerOwner = PlayerController.GetPlayer(owner);
             PlayerController playerTarget = PlayerController.GetPlayer(target);
             
-            
+            if (value <= -1) value = 0;
             var newValue = damageDone + value;
 
             if (playerOwner.Role.Value == RoleType.Wendogo)

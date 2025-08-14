@@ -299,8 +299,14 @@ namespace Wendogo
             if (targetList.Count > max)
                 targetList.RemoveRange(max, targetList.Count - max);
 
-            ServerManager.Instance._foodInRitual.Value = _ritualFoodCollected.Count(item => item);
-            ServerManager.Instance._woodInRitual.Value = _ritualWoodCollected.Count(item => item);
+            if(resource == ResourceType.Food)
+            {
+                ServerManager.Instance._foodInRitual.Value += targetList.Count;
+            }
+            else
+            {
+            ServerManager.Instance._woodInRitual.Value += targetList.Count;
+            }
         }
 
         /// <summary>
