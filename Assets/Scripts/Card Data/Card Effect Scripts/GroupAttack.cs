@@ -12,7 +12,7 @@ namespace Wendogo
 
         public override void Apply(ulong owner, ulong target, int value = -1)
         {
-            if (value <= -1) value = 0;
+            if (value == -1) value = 0;
             var newValue = attackValue + value;
             var votes = ServerManager.Instance.Votes;
             ulong votedPlayer = VoteResult(votes);
