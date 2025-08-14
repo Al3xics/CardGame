@@ -81,6 +81,7 @@ namespace Wendogo
         OnPlayerWin,
         OnPlayerLose,
         OnWendogoWin,
-        OnWendogoLose
+        OnWendogoLose,
+        OnPlayerDeath,
     }
 }

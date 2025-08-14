@@ -443,10 +443,12 @@ namespace Wendogo
 
         public static PlayerController GetPlayer(ulong clientId)
         {
+            // The player is either dead, or he was not in this list to begin with.
+            if (!ServerManager.Instance.PlayersById.ContainsKey(clientId))
+                return null;
+            
             if (NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out var networkClient))
-            {
                 return networkClient.PlayerObject.GetComponent<PlayerController>();
-            }
 
             Debug.LogWarning($"PlayerController not found for clientId: {clientId}");
             return null;
@@ -532,9 +534,17 @@ namespace Wendogo
         public void ChangeHealth(int delta)
         {
             if (ServerManager.Instance.currentCycle.Value == Cycle.Day)
+            {
                 health.Value = Mathf.Clamp(health.Value - delta, 0, maxHealth);
+                if (health.Value <= 0)
+                    pcSMObject.GetComponent<PlayerControllerSM>().ChangeToDeathState();
+            }
             else
+            {
                 hiddenHealth = Mathf.Clamp(hiddenHealth - delta, 0, maxHealth);
+                if (hiddenHealth <= 0)
+                    pcSMObject.GetComponent<PlayerControllerSM>().ChangeToDeathState();
+            }
         }
 
         public void UpdateHearts(int oldHealthValue, int newHealthValue)
