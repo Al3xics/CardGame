@@ -442,6 +442,15 @@ namespace Wendogo
         }
 
         /// <summary>
+        /// Unregister a player ID to maintain a reference to all players in the State Machine.
+        /// </summary>
+        /// <param name="playerID">The unique ID of the player you want to remove.</param>
+        public void UnregisterPlayerID(ulong playerID)
+        {
+            PlayersID.Remove(playerID);
+        }
+
+        /// <summary>
         /// Evaluates the card played during a player's turn and performs the necessary actions
         /// based on the current game cycle (Day or Night).
         /// </summary>

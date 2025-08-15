@@ -171,6 +171,13 @@ namespace Wendogo
 
         #region RPC
 
+        [Rpc(SendTo.Server)]
+        public void RemovePlayerFromListsRpc(ulong playerId)
+        {
+            PlayersById.Remove(playerId);
+            GameStateMachine.Instance.UnregisterPlayerID(playerId);
+        }
+
         // Assigns roles to players based on their network IDs. Called from the server.
         // Each player receives their role via a ClientRpc.
         [Rpc(SendTo.Server)]
