@@ -2,10 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.Netcode;
-using UnityEditor.PackageManager;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.SocialPlatforms;
 
 
 namespace Wendogo
@@ -70,10 +68,10 @@ namespace Wendogo
         );
 
         public NetworkList<PlayerAction> nightActions = new(
-    new List<PlayerAction>(),
-    NetworkVariableReadPermission.Everyone,
-    NetworkVariableWritePermission.Server
-);
+            new List<PlayerAction>(),
+            NetworkVariableReadPermission.Everyone,
+            NetworkVariableWritePermission.Server
+        );
 
         public NetworkVariable<int> currentTurn = new(
             0,
@@ -95,6 +93,12 @@ namespace Wendogo
 
         public NetworkVariable<int> endGameAnimationFinishedCpt = new(
             0,
+            NetworkVariableReadPermission.Everyone,
+            NetworkVariableWritePermission.Server
+        );
+
+        public NetworkList<ulong> DeadPlayersId = new(
+            new List<ulong>(),
             NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Server
         );
@@ -175,6 +179,7 @@ namespace Wendogo
         public void RemovePlayerFromListsRpc(ulong playerId)
         {
             PlayersById.Remove(playerId);
+            DeadPlayersId.Add(playerId);
             GameStateMachine.Instance.UnregisterPlayerID(playerId);
         }
 

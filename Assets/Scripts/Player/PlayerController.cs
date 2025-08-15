@@ -450,7 +450,7 @@ namespace Wendogo
         public static PlayerController GetPlayer(ulong clientId)
         {
             // The player is either dead, or he was not in this list to begin with.
-            if (!ServerManager.Instance.PlayersById.ContainsKey(clientId))
+            if (ServerManager.Instance.DeadPlayersId.Contains(clientId))
                 return null;
             
             if (NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out var networkClient))
