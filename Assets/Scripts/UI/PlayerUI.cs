@@ -23,14 +23,12 @@ namespace Wendogo
 
         private readonly HashSet<ulong> _subscribedPlayers = new HashSet<ulong>();
 
-        [SerializeField] private TextMeshProUGUI foodCountP2;
-
         [SerializeField] public List<GameObject> hearts = new List<GameObject>();
 
         public Dictionary<GameObject, ulong> UIPlayerID = new Dictionary<GameObject, ulong>();
         public Dictionary<Transform, GameObject> CardSpaces = new Dictionary<Transform, GameObject>();
 
-        [SerializeField] private RectTransform _ritualObject;
+        [SerializeField] private RitualUI _ritualObject;
 
         public static PlayerUI Instance { get; private set; }
 
@@ -160,18 +158,14 @@ namespace Wendogo
 
         private void SetRitualUI()
         {
-            TextMeshProUGUI ritualWood = _ritualObject.transform
-                                      .Find("Ritual_Wood_Text")
-                                      .GetComponent<TextMeshProUGUI>();
+            TextMeshProUGUI ritualWood = _ritualObject.woodUI;
             ritualWood.text = ServerManager.Instance._woodInRitual.Value.ToString() + "/6";
             ServerManager.Instance._woodInRitual.OnValueChanged += (oldVal, newVal) =>
             {
                 ritualWood.text = newVal.ToString() + "/6";
             };
 
-            TextMeshProUGUI ritualFood = _ritualObject.transform
-                                      .Find("Ritual_Food_Text")
-                                      .GetComponent<TextMeshProUGUI>();
+            TextMeshProUGUI ritualFood = _ritualObject.foodUI;
             ritualFood.text = ServerManager.Instance._foodInRitual.Value.ToString() + "/6";
             ServerManager.Instance._foodInRitual.OnValueChanged += (oldVal, newVal) =>
             {
