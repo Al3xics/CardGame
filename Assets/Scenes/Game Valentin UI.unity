@@ -233,7 +233,7 @@ PrefabInstance:
       objectReference: {fileID: 1795094881}
     - target: {fileID: 3756716366810224825, guid: 0cd6f9fcd5866874faedcea19916735b, type: 3}
       propertyPath: passiveZoneCards.Array.size
-      value: 4
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3756716366810224825, guid: 0cd6f9fcd5866874faedcea19916735b, type: 3}
       propertyPath: 'passiveZoneCards.Array.data[0]'
