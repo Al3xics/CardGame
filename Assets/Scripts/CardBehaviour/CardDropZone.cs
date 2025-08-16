@@ -72,7 +72,7 @@ namespace Wendogo
                    .WithEase(Ease.OutQuad)
                    .BindToLocalScale(card);
 
-            LMotion.Create(card.rotation, zone.rotation, 0.2f)
+            LMotion.Create(card.rotation, Quaternion.Euler(0, 0, -90), 0.2f)
                    .WithEase(Ease.OutQuad)
                    .BindToRotation(card);
         }

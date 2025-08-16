@@ -76,7 +76,7 @@ namespace Wendogo
             //Update layout of cards along spline
             UpdateCardPositions();
 
-            g.transform.localScale = Vector3.one;
+            //g.transform.localScale = Vector3.one;
             //Delay between each card draw
             await UniTask.WaitForSeconds(0.25f);
         }
