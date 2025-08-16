@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using Wendogo;
 
@@ -7,6 +8,7 @@ namespace Wendogo
     {
         private PlayerController _player;
         bool isTurnBeginning = false;
+
         public PCInputState(PlayerControllerSM stateMachine, PlayerController player) : base(stateMachine) { _player = player; }
 
         public override void OnEnter()
@@ -14,7 +16,10 @@ namespace Wendogo
             base.OnEnter();
             if (!isTurnBeginning)
             {
+                StateMachine.playerPAUpdated += _player.UpdatePA;
+
                 _player._playerPA = 2;
+                StateMachine.RaisePlayerPAUpdated(_player._playerPA); 
                 isTurnBeginning = true;
             }
             if (_player.Role.Value == RoleType.Wendogo)

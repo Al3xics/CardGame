@@ -70,6 +70,8 @@ namespace Wendogo
 
         public PlayerAction[] NightActions;
 
+
+
         #endregion
 
         #region Network Variables
@@ -586,6 +588,11 @@ namespace Wendogo
                 {
                     PlayerUI.Instance.hearts[i].gameObject.SetActive(true);
                 }
+        }
+
+        public void UpdatePA(int amount)
+        {
+           PlayerUI.Instance.DefinePAs(amount);
         }
 
         private async UniTaskVoid HandleVoteUIAsync()

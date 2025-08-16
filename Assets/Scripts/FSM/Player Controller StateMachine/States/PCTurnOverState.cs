@@ -9,6 +9,7 @@ namespace Wendogo
 
         public override void OnEnter()
         {
+            StateMachine.playerPAUpdated -= _player.UpdatePA;
             Debug.Log("Enter end");
             base.OnEnter();
             if (_player._handManager._attackButton.activeSelf)

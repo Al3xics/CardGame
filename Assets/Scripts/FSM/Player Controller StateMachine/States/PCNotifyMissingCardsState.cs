@@ -7,6 +7,7 @@ namespace Wendogo
     public class PCNotifyMissingCardsState : State<PlayerControllerSM>
     {
         private PlayerController _player;
+        private GameObject _drawCardsCanva;
         public PCNotifyMissingCardsState(PlayerControllerSM stateMachine, PlayerController player) : base(stateMachine) { _player = player; }
 
         public async override void OnEnter()
@@ -21,10 +22,12 @@ namespace Wendogo
             ToggleDeck();
             handManager.ToggleOffMovingCards(handManager.handCards);
             int missingCards = _player.GetMissingCards();
-            
+            _drawCardsCanva = _player._handManager._drawCardsUI;
+            _drawCardsCanva.SetActive(true);
+
             await _player.SelectDeckAsync(missingCards);
             
-            ToggleDeck();
+            //ToggleDeck();
             _player._handManager.ToggleOnMovingCards(_player._handManager.handCards);
             StateMachine.ChangeState<PCCheckPAState>();
         }
@@ -36,6 +39,8 @@ namespace Wendogo
 
         public override void OnExit()
         {
+            _drawCardsCanva.SetActive(false);
+
             base.OnExit();
         }
 

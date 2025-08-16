@@ -33,6 +33,7 @@ namespace Wendogo
 
         //temp
         [SerializeField] CardsHandler _cardsHandler;  //Handles assigning data and visuals to cards
+        public GameObject _drawCardsUI;
 
         public List<GameObject> handCards = new(); //List of all cards currently in hand
         public List<GameObject> passiveZoneCards = new();

@@ -20,6 +20,7 @@ namespace Wendogo
 
         [SerializeField] private TextMeshProUGUI foodCount;
         [SerializeField] private TextMeshProUGUI woodCount;
+        [SerializeField] private TextMeshProUGUI paCount;
 
         private readonly HashSet<ulong> _subscribedPlayers = new HashSet<ulong>();
 
@@ -66,6 +67,11 @@ namespace Wendogo
         {
             if (target == 0)
                 woodCount.text = $"{woodAmount.ToString()}";
+        }
+
+        public void DefinePAs(int paAmount)
+        {
+            paCount.text = $"{paAmount.ToString()}/2";
         }
 
         public void SendDebug(string message)

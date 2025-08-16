@@ -14,8 +14,9 @@ namespace Wendogo
 			_player.OnFinishedCardPlayed += CardResolutionOver;
 			_player.ConfirmPlay();
             _player._playerPA--;
-			//todo
-			//Remove that to just switch
+            StateMachine.RaisePlayerPAUpdated(_player._playerPA);
+            //todo
+            //Remove that to just switch
             StateMachine.ChangeState<PCNotifyMissingCardsState>();
         }
 
