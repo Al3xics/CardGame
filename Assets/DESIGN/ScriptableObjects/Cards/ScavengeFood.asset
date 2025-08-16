@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4c4af47719ad294e9daacd12912804b, type: 3}
+  m_Name: ScavengeFood
+  m_EditorClassIdentifier: 
+  CardVisual: {fileID: 2800000, guid: 253efabfd65fcf34c8b060e094db3078, type: 3}
+  Name: Scavenge Food
+  CardEffect: {fileID: 11400000, guid: e0a719035c158b3428df08cdac4d1153, type: 2}
+  isPassive: 0
+  isGroup: 0
+  HasTarget: 0
+  nightPriorityIndex: 0
+  turnsRemaining: -1
+  ID: 1002
+  Toggle: 1
+  effectDescription: "R\xE9colte une unit\xE9 de viande.\u200B"

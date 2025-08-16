@@ -1,0 +1,27 @@
+﻿using Unity.Services.Analytics;
+using UnityEngine;
+
+namespace Wendogo
+{
+    [CreateAssetMenu(fileName = "StealProtect", menuName = "Card Effects/Steal Protect")]
+    public class StealProtect : CardEffect
+    {
+        public override bool ApplyPassive(int playedCardId, ulong origin, ulong target, out int value)
+        {
+            value = -1;
+            var card = DataCollection.Instance.cardDatabase.GetCardByID(playedCardId);
+            
+            if (card.CardEffect is StealResource)
+            {
+                value = 1000;
+                Debug.Log($"Et non ! C'était du porc !");
+                var player = PlayerController.GetPlayer(origin);
+                HandManager handManager = player._handManager;
+                handManager.DestroyPassiveCard("StealProtect");
+                AnalyticsManager.Instance.RecordEvent(new CustomEvent("stealProtectPassiveCardWasApplied"));
+                return true;
+            }
+            return false;
+        }
+    }
+}

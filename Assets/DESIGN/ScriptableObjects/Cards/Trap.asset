@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4c4af47719ad294e9daacd12912804b, type: 3}
+  m_Name: Trap
+  m_EditorClassIdentifier: 
+  CardVisual: {fileID: 2800000, guid: 422e786886baf694cbc60d4db1e57bdc, type: 3}
+  Name: Trap
+  CardEffect: {fileID: 11400000, guid: a38bfb073b3ccde48ac49e125a54f8ad, type: 2}
+  isPassive: 1
+  isGroup: 0
+  HasTarget: 0
+  nightPriorityIndex: 0
+  turnsRemaining: -1
+  ID: 2003
+  Toggle: 1
+  effectDescription: "R\xE9duit de 1 PV les d\xE9g\xE2ts subis lors d\u2019une attaque.
+    La carte est d\xE9truite apr\xE8s activation.\u200B"

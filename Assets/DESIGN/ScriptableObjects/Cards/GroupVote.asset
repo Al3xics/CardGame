@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4c4af47719ad294e9daacd12912804b, type: 3}
+  m_Name: GroupVote
+  m_EditorClassIdentifier: 
+  CardVisual: {fileID: 2800000, guid: c7d58bd68c5a8ef44b05b4c91f3d404a, type: 3}
+  Name: Group Vote
+  CardEffect: {fileID: 11400000, guid: 5bfee2b8d8c5a39439ee7607b7183a1a, type: 2}
+  isPassive: 0
+  isGroup: 1
+  HasTarget: 1
+  nightPriorityIndex: 1
+  turnsRemaining: -1
+  ID: 1001
+  Toggle: 1
+  effectDescription: "D\xE9clenche une phase de vote avec un temps limit\xE9 \xE0
+    1 minute, durant laquelle les joueurs peuvent discuter et voter. \xC0 la fin
+    du d\xE9compte, les r\xE9sultats sont r\xE9v\xE9l\xE9s et le joueur ayant obtenu
+    le plus de votes subit 2 points de d\xE9g\xE2ts. Si la carte est jou\xE9e durant
+    la nuit, le vote sera d\xE9clench\xE9 au d\xE9but du jour suivant.\u200B"

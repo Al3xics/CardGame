@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 016ac31cee00f97448d58eccf353351a, type: 3}
+  m_Name: BloodBounty
+  m_EditorClassIdentifier: 
+  SelectResourcePrefab: {fileID: 4381171416163836051, guid: 3754eafd9fe02ef48ab8b11bd0d5749a, type: 3}
+  boostDamage: 1
