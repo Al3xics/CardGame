@@ -68,7 +68,7 @@ namespace Wendogo
                    .WithEase(Ease.OutQuad)
                    .BindToPosition(card);
 
-            LMotion.Create(card.localScale, zone.localScale / 2.5f, 0.2f)
+            LMotion.Create(card.localScale, new Vector3(12, 12, 12) / 2.5f, 0.2f)
                    .WithEase(Ease.OutQuad)
                    .BindToLocalScale(card);
 
