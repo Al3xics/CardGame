@@ -70,7 +70,7 @@ namespace Wendogo
 
         public PlayerAction[] NightActions;
 
-
+        [SerializeField] public EventTimer eventTimer;
 
         #endregion
 
@@ -192,6 +192,7 @@ namespace Wendogo
             health.OnValueChanged += UpdateHearts;
             SceneManager.sceneLoaded += OnSceneLoaded;
             CardDropZone.OnCardDataDropped += NotifyPlayedCard;
+            eventTimer.OnTick += HandleTick;
         }
 
         private new void OnDestroy()
@@ -320,7 +321,7 @@ namespace Wendogo
 
         public async UniTask GroupSelectTargetAsync()
         {
-            await UniTask.WaitUntil(() => ServerManager.Instance.PlayerReadyCount.Value == 2);
+            await UniTask.WaitUntil(() => ServerManager.Instance.PlayerReadyCount.Value == 4);
             await UniTask.WaitForSeconds(0.1f);
         }
 
@@ -345,7 +346,7 @@ namespace Wendogo
             Debug.Log($"Waiting for group vote to end");
 
             //todo change the value to the number of players in the session
-            await UniTask.WaitUntil(() => ServerManager.Instance.PlayerReadyCount.Value == 2);
+            await UniTask.WaitUntil(() => ServerManager.Instance.PlayerReadyCount.Value == 4);
 
             Debug.Log($"Vote ended");
 
@@ -553,6 +554,11 @@ namespace Wendogo
                 if (hiddenHealth <= 0)
                     pcSMObject.GetComponent<PlayerControllerSM>().ChangeToDeathState();
             }
+        }
+
+        private void HandleTick(int secondsLeft)
+        {
+            PlayerUI.Instance.DefineTimer(secondsLeft);
         }
 
         public async void ChangeResource(int resourceType, int delta)
@@ -948,7 +954,7 @@ namespace Wendogo
             }
             else if (cardDataSO.isGroup && ServerManager.Instance.currentCycle.Value != Cycle.Night)
             {
-                await UniTask.WaitUntil(() => ServerManager.Instance.PlayerReadyCount.Value == 2);
+                await UniTask.WaitUntil(() => ServerManager.Instance.PlayerReadyCount.Value == 4);
             }
             ServerManager.Instance.TransmitPlayedCardRpc(cardDataSO.ID, _selectedTarget, nbFood, nbWood);
             Debug.Log($"card {cardDataSO.Name} was sent to server ");

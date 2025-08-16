@@ -21,6 +21,7 @@ namespace Wendogo
         [SerializeField] private TextMeshProUGUI foodCount;
         [SerializeField] private TextMeshProUGUI woodCount;
         [SerializeField] private TextMeshProUGUI paCount;
+        [SerializeField] private TextMeshProUGUI timerCount;
 
         private readonly HashSet<ulong> _subscribedPlayers = new HashSet<ulong>();
 
@@ -72,6 +73,11 @@ namespace Wendogo
         public void DefinePAs(int paAmount)
         {
             paCount.text = $"{paAmount.ToString()}/2";
+        }
+
+        public void DefineTimer(int timeLeft)
+        {
+            timerCount.text = $"{timeLeft.ToString()}";
         }
 
         public void SendDebug(string message)

@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.UIElements;
 using Wendogo;
 
 namespace Wendogo
@@ -17,8 +18,10 @@ namespace Wendogo
             if (!isTurnBeginning)
             {
                 StateMachine.playerPAUpdated += _player.UpdatePA;
-
                 _player._playerPA = 2;
+
+                TimerStart();
+
                 StateMachine.RaisePlayerPAUpdated(_player._playerPA); 
                 isTurnBeginning = true;
             }
@@ -49,6 +52,11 @@ namespace Wendogo
         {
             _player.SelectCard(cardObjectData);
             StateMachine.ChangeState<PCSelectionState>();
+        }
+
+        public void TimerStart()
+        {
+            _player.eventTimer.StartTimer(60);    
         }
 
     }
