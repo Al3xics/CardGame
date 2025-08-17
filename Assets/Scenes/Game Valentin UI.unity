@@ -8208,7 +8208,7 @@ MonoBehaviour:
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes: []
-  isBurning: 0
+  isBurning: 1
 --- !u!1 &4356061697369554394
 GameObject:
   m_ObjectHideFlags: 0
