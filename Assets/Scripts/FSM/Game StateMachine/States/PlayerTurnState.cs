@@ -23,22 +23,23 @@ namespace Wendogo
                 StateMachine.CopyPublicToHidden();
             }
             
-            StartPlayerTurn(StateMachine.CurrentPlayerId);
+            StartPlayerTurn();
         }
 
         /// <summary>
         /// Initiates the turn for the specified player, setting up the necessary state for the turn.
         /// </summary>
-        /// <param name="id">The ID of the player whose turn is starting.</param>
-        private void StartPlayerTurn(int id)
+        private void StartPlayerTurn()
         {
-            Log($"Player {StateMachine.CurrentPlayerId} Begin Turn");
+            var playerId = StateMachine.CurrentPlayerId;
+            Log($"Player {playerId} Begin Turn");
             ServerManager.Instance.OnPlayerTurnEnded += OnPlayerTurnEnded;
-            ServerManager.Instance.PlayerTurnRpc(StateMachine.PlayersID[id]);
+            ServerManager.Instance.SetPlayerTurnStateRpc(true, playerId);
+            ServerManager.Instance.PlayerTurnRpc(playerId);
             ServerManager.Instance.BroadcastSharedFXEventRpc(new FXEventContext
             {
                 fxType = FXEventType.OnPlayerTurn,
-                playerID = StateMachine.PlayersID[id]
+                playerID = playerId
             });
         }
 
@@ -109,11 +110,12 @@ namespace Wendogo
         /// </summary>
         private void OnPlayerTurnEnded()
         {
-            Log($"Player {StateMachine.CurrentPlayerId} End Turn");
+            Log($"Player {StateMachine.CurrentPlayerIndex} End Turn");
             ServerManager.Instance.OnPlayerTurnEnded -= OnPlayerTurnEnded;
+            ServerManager.Instance.SetPlayerTurnStateRpc(false, StateMachine.CurrentPlayerId);
 
-            StateMachine.CurrentPlayerId++;
-            bool isLastPlayer = StateMachine.CurrentPlayerId >= StateMachine.PlayersID.Count;
+            StateMachine.CurrentPlayerIndex++;
+            bool isLastPlayer = StateMachine.CurrentPlayerIndex >= StateMachine.PlayersID.Count;
 
             switch (StateMachine.Cycle)
             {
@@ -125,7 +127,7 @@ namespace Wendogo
                     if (isLastPlayer)
                         StateMachine.ChangeState<NightConsequencesState>();
                     else
-                        StartPlayerTurn(StateMachine.CurrentPlayerId);
+                        StartPlayerTurn();
                     
                     break;
             }
