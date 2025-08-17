@@ -1356,7 +1356,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 43053c896c1a06945ac9bd8f42373ec3, type: 2}
   - {fileID: 11400000, guid: c38248927afbcd04792e9d8c1a73ec9a, type: 2}
   - {fileID: 11400000, guid: deb35b34e04154d479892c55d0ce255f, type: 2}
-  - {fileID: 0}
+  - {fileID: 11400000, guid: 1b3fd08589e907446962aa1881531373, type: 2}
   animator: {fileID: 3796272113022922041}
   audioSource: {fileID: 1070188230}
   popupText: {fileID: 1579228880}
@@ -1700,7 +1700,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3446328017623952172, guid: ab5467625563f324ba6d2feab7d9bdc6, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -999.99994
+      value: -1000
       objectReference: {fileID: 0}
     - target: {fileID: 4360173987115402742, guid: ab5467625563f324ba6d2feab7d9bdc6, type: 3}
       propertyPath: m_SizeDelta.x
@@ -1712,7 +1712,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4360173987115402742, guid: ab5467625563f324ba6d2feab7d9bdc6, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 999.99994
+      value: 1000
       objectReference: {fileID: 0}
     - target: {fileID: 4975635378272882237, guid: ab5467625563f324ba6d2feab7d9bdc6, type: 3}
       propertyPath: m_SizeDelta.x
