@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace Wendogo
 {
@@ -28,18 +29,26 @@ namespace Wendogo
         /// Assigns specific roles to players within the game, based on their unique identifiers.
         /// </summary>
         /// <remarks>
-        /// This method primarily assigns the "Wendogo" role to the first player in the player list
+        /// This method randomly assigns the "Wendogo" role to a player in the player list
         /// and assigns the "Survivor" role to all remaining players. It then converts the assignments
         /// into arrays and invokes server-side functionality to distribute roles to players.
         /// </remarks>
         private void AssignRoles()
         {
             Dictionary<ulong, RoleType> playerRoles = new();
-            playerRoles[StateMachine.PlayersID[0]] = RoleType.Wendogo;
 
-            for (int i = 1; i < StateMachine.PlayersID.Count; i++)
+            // Choose a random index to assign Wendogo
+            int randomIndex = Random.Range(0, StateMachine.PlayersID.Count);
+            ulong wendogoID = StateMachine.PlayersID[randomIndex];
+
+            // Assign Wendogo
+            playerRoles[wendogoID] = RoleType.Wendogo;
+
+            // All other players are Survivors
+            for (int i = 0; i < StateMachine.PlayersID.Count; i++)
             {
-                playerRoles[StateMachine.PlayersID[i]] = RoleType.Survivor;
+                if (i != randomIndex)
+                    playerRoles[StateMachine.PlayersID[i]] = RoleType.Survivor;
             }
 
             Utils.DictionaryToArrays(playerRoles, out ulong[] roleTypeID, out RoleType[] roleType);

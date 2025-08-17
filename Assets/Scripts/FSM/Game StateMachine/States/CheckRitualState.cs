@@ -51,9 +51,9 @@ namespace Wendogo
         {
             base.OnExit();
             
-            if (StateMachine.Cycle == Cycle.Day && StateMachine.CurrentPlayerId >= StateMachine.PlayersID.Count)
+            if (StateMachine.Cycle == Cycle.Day && StateMachine.CurrentPlayerIndex >= StateMachine.PlayersID.Count)
             {
-                StateMachine.CurrentPlayerId = 0;
+                StateMachine.CurrentPlayerIndex = 0;
                 
                 if (StateMachine.PreviousState is not NightConsequencesState)
                 {

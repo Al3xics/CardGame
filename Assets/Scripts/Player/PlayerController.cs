@@ -69,6 +69,10 @@ namespace Wendogo
         private GameObject _showcardUI;
 
         public PlayerAction[] NightActions;
+        
+        public bool isDead = false;
+        public ulong selectedVotedTarget;
+        public bool isPlayerTurn = false;
 
         [SerializeField] public EventTimer eventTimer;
 
@@ -181,9 +185,6 @@ namespace Wendogo
                 }
 
                 if (_prefabUI == null) { _prefabUI = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject; }
-
-
-
             }
             if (!IsOwner) return;
 
@@ -323,11 +324,10 @@ namespace Wendogo
 
             Debug.Log($"Selected target is {_intTarget} with {_intFood} food and {_intWood} wood. ");
         }
-
-
+        
         public async UniTask GroupSelectTargetAsync()
         {
-            await UniTask.WaitUntil(() => ServerManager.Instance.PlayerReadyCount.Value == 4);
+            await UniTask.WaitUntil(() => ServerManager.Instance.PlayerReadyCount.Value == ServerManager.Instance.livingPlayerCount.Value);
             await UniTask.WaitForSeconds(0.1f);
         }
 
@@ -352,7 +352,7 @@ namespace Wendogo
             Debug.Log($"Waiting for group vote to end");
 
             //todo change the value to the number of players in the session
-            await UniTask.WaitUntil(() => ServerManager.Instance.PlayerReadyCount.Value == 4);
+            await UniTask.WaitUntil(() => ServerManager.Instance.PlayerReadyCount.Value == ServerManager.Instance.livingPlayerCount.Value);
 
             Debug.Log($"Vote ended");
 
@@ -466,7 +466,7 @@ namespace Wendogo
             // The player is either dead, or he was not in this list to begin with.
             if (ServerManager.Instance.DeadPlayersId.Contains(clientId))
                 return null;
-
+            
             if (NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out var networkClient))
                 return networkClient.PlayerObject.GetComponent<PlayerController>();
 
@@ -973,7 +973,9 @@ namespace Wendogo
             }
             else if (cardDataSO.isGroup && ServerManager.Instance.currentCycle.Value != Cycle.Night)
             {
-                await UniTask.WaitUntil(() => ServerManager.Instance.PlayerReadyCount.Value == 4);
+                await UniTask.WaitUntil(() => ServerManager.Instance.PlayerReadyCount.Value == ServerManager.Instance.livingPlayerCount.Value);
+                // todo
+                // _selectedTarget = selectedVotedTarget;
             }
             ServerManager.Instance.TransmitPlayedCardRpc(cardDataSO.ID, _selectedTarget, nbFood, nbWood);
             Debug.Log($"card {cardDataSO.Name} was sent to server ");
