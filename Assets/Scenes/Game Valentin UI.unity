@@ -712,6 +712,18 @@ MonoBehaviour:
     - {fileID: 21300000, guid: 0b486395a3f21834882931f1e080f2c6, type: 3}
     - {fileID: 2192713683976540060}
     - {fileID: 21300000, guid: 561dc24720f88344a820751878acbfe9, type: 3}
+    - {fileID: 9046434517270117122}
+    - {fileID: 21300000, guid: bfa8a26dd4ac1d94e8ab5477755df19c, type: 3}
+    - {fileID: 4280500588824456265}
+    - {fileID: 5648258597397115020}
+    - {fileID: 21300000, guid: 8faf42db6cf6b7b4a800e968c82d7e97, type: 3}
+    - {fileID: 3047442574627678130}
+    - {fileID: 21300000, guid: 2d1116c512bfad64a8fb590f5003a907, type: 3}
+    - {fileID: 3627134502844963629}
+    - {fileID: 21300000, guid: deacf7d8fa9a9d541b321741069aeb29, type: 3}
+    - {fileID: 3677087615969394237}
+    - {fileID: 5634478187034667792}
+    - {fileID: 5401626143377286916}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -854,7 +866,7 @@ MonoBehaviour:
       Data: 
     - Name: 
       Entry: 12
-      Data: 2
+      Data: 10
     - Name: 
       Entry: 7
       Data: 
@@ -876,6 +888,102 @@ MonoBehaviour:
     - Name: $v
       Entry: 10
       Data: 10
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 10
+      Data: 11
+    - Name: $v
+      Entry: 10
+      Data: 12
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 10
+      Data: 13
+    - Name: $v
+      Entry: 10
+      Data: 12
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 10
+      Data: 14
+    - Name: $v
+      Entry: 10
+      Data: 15
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 10
+      Data: 16
+    - Name: $v
+      Entry: 10
+      Data: 17
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 10
+      Data: 18
+    - Name: $v
+      Entry: 10
+      Data: 19
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 10
+      Data: 20
+    - Name: $v
+      Entry: 10
+      Data: 19
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 10
+      Data: 21
+    - Name: $v
+      Entry: 10
+      Data: 19
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 10
+      Data: 22
+    - Name: $v
+      Entry: 10
+      Data: 19
     - Name: 
       Entry: 8
       Data: 
@@ -1192,7 +1300,7 @@ PrefabInstance:
       objectReference: {fileID: 1357682468}
     - target: {fileID: 410597146149384154, guid: 97ac440e15bba064d8ea41b10d4ffd16, type: 3}
       propertyPath: expectedPlayersCount
-      value: 2
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 3577620380678200501, guid: 97ac440e15bba064d8ea41b10d4ffd16, type: 3}
       propertyPath: m_Name
@@ -5317,7 +5425,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!222 &2327225349350058600
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5872,7 +5980,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!222 &2762514348447176266
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -7198,7 +7306,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &3661027636192572550
 GameObject:
   m_ObjectHideFlags: 0
@@ -7722,6 +7830,11 @@ MonoBehaviour:
   - {fileID: 5064688168997224683}
   - {fileID: 4258759112174957591}
   - {fileID: 3944245962269355248}
+  passiveCards:
+  - {fileID: 2704480354665728928}
+  - {fileID: 7866550022482242262}
+  - {fileID: 2321485614902747500}
+  - {fileID: 4277267483323232172}
 --- !u!224 &4088427591514173108
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7928,7 +8041,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &4280500588824456265
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8524,7 +8637,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4643280721041934501
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8590,7 +8703,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!222 &4665434844036835915
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -9934,7 +10047,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &5908994868121765555
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11054,6 +11167,11 @@ MonoBehaviour:
   - {fileID: 6151743324552720009}
   - {fileID: 187928279106875059}
   - {fileID: 340662164340064761}
+  passiveCards:
+  - {fileID: 3655241623748494389}
+  - {fileID: 4654228353394783651}
+  - {fileID: 8263993584465545000}
+  - {fileID: 8891186463322408457}
 --- !u!1 &6671606684340415220
 GameObject:
   m_ObjectHideFlags: 0
@@ -12137,7 +12255,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &7585706491582960936
 GameObject:
   m_ObjectHideFlags: 0
@@ -12294,6 +12412,11 @@ MonoBehaviour:
   - {fileID: 2985754728305990002}
   - {fileID: 6626174504953368801}
   - {fileID: 4356061697369554394}
+  passiveCards:
+  - {fileID: 5901323832312053337}
+  - {fileID: 7840472112860899583}
+  - {fileID: 7550022188334748399}
+  - {fileID: 4637782361684809194}
 --- !u!1 &7766462773900444992
 GameObject:
   m_ObjectHideFlags: 0
@@ -12345,7 +12468,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &7855022011544565797
 RectTransform:
   m_ObjectHideFlags: 0
@@ -12382,7 +12505,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &7874707214228708308
 RectTransform:
   m_ObjectHideFlags: 0
@@ -12776,7 +12899,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &8277499636575194182
 GameObject:
   m_ObjectHideFlags: 0
@@ -13307,7 +13430,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &8939821500640354852
 MonoBehaviour:
   m_ObjectHideFlags: 0

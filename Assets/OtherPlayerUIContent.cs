@@ -7,4 +7,5 @@ public class OtherPlayerUIContent : MonoBehaviour
     [SerializeField] public TextMeshProUGUI woodUI;
     [SerializeField] public TextMeshProUGUI foodUI;
     [SerializeField] public List<GameObject> hearts = new List<GameObject>();
+    [SerializeField] public List<GameObject> passiveCards = new List<GameObject>();
 }

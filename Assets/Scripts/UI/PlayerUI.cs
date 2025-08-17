@@ -166,6 +166,25 @@ namespace Wendogo
                             }
                     };
 
+                    int lastPassiveCount = player.PassiveCards.Count;
+                    player.PassiveCards.OnListChanged += (Unity.Netcode.NetworkListEvent<int> _) =>
+                    {
+                        int newCount = player.PassiveCards.Count;
+
+                        if (newCount < lastPassiveCount)
+                        {
+                            for (int i = newCount; i < lastPassiveCount; i++)
+                                otherUI.passiveCards[i].gameObject.SetActive(false);
+                        }
+                        else if (newCount > lastPassiveCount)
+                        {
+                            for (int i = lastPassiveCount; i < newCount; i++)
+                                otherUI.passiveCards[i].gameObject.SetActive(true);
+                        }
+
+                        lastPassiveCount = newCount;
+                    };
+
                     _subscribedPlayers.Add(id);
                 }
 
