@@ -7,6 +7,7 @@ using Sirenix.Serialization;
 using Sirenix.OdinInspector;
 using Unity.Netcode;
 using System.Linq;
+using UnityEngine.Rendering;
 
 namespace Wendogo
 {
@@ -30,9 +31,12 @@ namespace Wendogo
         public Dictionary<GameObject, ulong> UIPlayerID = new Dictionary<GameObject, ulong>();
         public Dictionary<Transform, GameObject> CardSpaces = new Dictionary<Transform, GameObject>();
 
-        public Dictionary<Image, Sprite> WendogoUI = new Dictionary<Image, Sprite>();
+        [OdinSerialize]
+        private Dictionary<Image, Sprite> WendogoUI = new();
+
 
         [SerializeField] private RitualUI _ritualObject;
+
 
         public static PlayerUI Instance { get; private set; }
 
