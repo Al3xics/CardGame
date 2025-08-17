@@ -1583,11 +1583,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3446328017623952172, guid: ab5467625563f324ba6d2feab7d9bdc6, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -999.99994
+      value: -1000
       objectReference: {fileID: 0}
     - target: {fileID: 4360173987115402742, guid: ab5467625563f324ba6d2feab7d9bdc6, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 999.99994
+      value: 1000
       objectReference: {fileID: 0}
     - target: {fileID: 6341192810993105382, guid: ab5467625563f324ba6d2feab7d9bdc6, type: 3}
       propertyPath: m_Name
@@ -7830,7 +7830,11 @@ MonoBehaviour:
   - {fileID: 5064688168997224683}
   - {fileID: 4258759112174957591}
   - {fileID: 3944245962269355248}
-  passiveCards: []
+  passiveCards:
+  - {fileID: 2704480354665728928}
+  - {fileID: 7866550022482242262}
+  - {fileID: 2321485614902747500}
+  - {fileID: 4277267483323232172}
 --- !u!224 &4088427591514173108
 RectTransform:
   m_ObjectHideFlags: 0
@@ -11163,7 +11167,11 @@ MonoBehaviour:
   - {fileID: 6151743324552720009}
   - {fileID: 187928279106875059}
   - {fileID: 340662164340064761}
-  passiveCards: []
+  passiveCards:
+  - {fileID: 3655241623748494389}
+  - {fileID: 4654228353394783651}
+  - {fileID: 8263993584465545000}
+  - {fileID: 8891186463322408457}
 --- !u!1 &6671606684340415220
 GameObject:
   m_ObjectHideFlags: 0
@@ -12404,7 +12412,11 @@ MonoBehaviour:
   - {fileID: 2985754728305990002}
   - {fileID: 6626174504953368801}
   - {fileID: 4356061697369554394}
-  passiveCards: []
+  passiveCards:
+  - {fileID: 5901323832312053337}
+  - {fileID: 7840472112860899583}
+  - {fileID: 7550022188334748399}
+  - {fileID: 4637782361684809194}
 --- !u!1 &7766462773900444992
 GameObject:
   m_ObjectHideFlags: 0
