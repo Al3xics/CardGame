@@ -16,6 +16,9 @@ namespace Wendogo
 
         public static event Action<CardDataSO> OnCardDataDropped;
         public static event Action<CardObjectData> OnCardDropped;
+        public static event Action<CardObjectData> OnCardBurned;
+
+        [SerializeField] private bool isBurning;
 
         #endregion
 
@@ -29,6 +32,12 @@ namespace Wendogo
             if (!draggedCard.TryGetComponent<CardDragHandler>(out var dragHandler) ||
                 !draggedCard.TryGetComponent<CardObjectData>(out var cod))
                 return;
+
+            if (isBurning)
+            {
+                OnCardBurned?.Invoke(cod);
+                return;
+            }
 
             var cardData = cod.Card;
             if (cardData.isPassive)

@@ -400,7 +400,7 @@ namespace Wendogo
 
             Debug.Log("Card burnt");
 
-            HandleUsedCard();
+            HandleUsedCard(true);
             //Placeholder for sending card lacking to server        
             //NotifyMissingCards();
         }
@@ -424,13 +424,13 @@ namespace Wendogo
 
         }
 
-        public void HandleUsedCard()
+        public void HandleUsedCard(bool isBurning= false)
         {
 
             //Remove the card from the hand
             _handManager.Discard(ActiveCard.gameObject);
 
-            if (ActiveCard.Card.isPassive)
+            if (ActiveCard.Card.isPassive && !isBurning)
             {
                 Debug.Log("Passive card placed");
             }
