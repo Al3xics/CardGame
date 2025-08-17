@@ -39,6 +39,11 @@ namespace Wendogo
             ChangeState<PCDeathState>();
         }
 
+        public void TimesUp()
+        {
+            ChangeState<PCTurnOverState>();
+        }
+
         public void RaisePlayerPAUpdated(int newValue)
         {
             playerPAUpdated?.Invoke(newValue);

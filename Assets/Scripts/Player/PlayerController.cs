@@ -193,6 +193,7 @@ namespace Wendogo
             SceneManager.sceneLoaded += OnSceneLoaded;
             CardDropZone.OnCardDataDropped += NotifyPlayedCard;
             eventTimer.OnTick += HandleTick;
+            eventTimer.OnFinished += HandleTimerOver;
         }
 
         private new void OnDestroy()
@@ -201,6 +202,8 @@ namespace Wendogo
             health.OnValueChanged -= UpdateHearts;
             food.OnValueChanged -= UpdateFoodText;
             wood.OnValueChanged -= UpdateWoodText;
+            eventTimer.OnTick -= HandleTick;
+            eventTimer.OnFinished -= HandleTimerOver;
         }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -361,6 +364,11 @@ namespace Wendogo
         private void HandleTargetSelected(int targetID)
         {
             _intTarget = targetID;
+        }
+
+        public void HandleCancelTimer()
+        {
+            eventTimer.CancelTimer();
         }
 
         public void SelectCard(CardObjectData card)
@@ -559,6 +567,11 @@ namespace Wendogo
         private void HandleTick(int secondsLeft)
         {
             PlayerUI.Instance.DefineTimer(secondsLeft);
+        }
+
+        private void HandleTimerOver()
+        {
+            pcSMObject.GetComponent<PlayerControllerSM>().TimesUp();
         }
 
         public async void ChangeResource(int resourceType, int delta)
