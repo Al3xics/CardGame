@@ -30,6 +30,8 @@ namespace Wendogo
         public Dictionary<GameObject, ulong> UIPlayerID = new Dictionary<GameObject, ulong>();
         public Dictionary<Transform, GameObject> CardSpaces = new Dictionary<Transform, GameObject>();
 
+        public Dictionary<Image, Sprite> WendogoUI = new Dictionary<Image, Sprite>();
+
         [SerializeField] private RitualUI _ritualObject;
 
         public static PlayerUI Instance { get; private set; }
@@ -98,6 +100,14 @@ namespace Wendogo
         {
             if (endText != null)
                 endText.gameObject.SetActive(true);
+        }
+
+        public void SetWendogoUI()
+        {
+            foreach (var visual in WendogoUI)
+            {
+                visual.Key.sprite = visual.Value;
+            }
         }
 
         [Rpc(SendTo.SpecifiedInParams)]

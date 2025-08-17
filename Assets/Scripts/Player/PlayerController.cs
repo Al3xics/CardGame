@@ -181,6 +181,9 @@ namespace Wendogo
                 }
 
                 if (_prefabUI == null) { _prefabUI = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject; }
+
+
+
             }
             if (!IsOwner) return;
 
@@ -432,7 +435,7 @@ namespace Wendogo
 
         }
 
-        public void HandleUsedCard(bool isBurning= false)
+        public void HandleUsedCard(bool isBurning = false)
         {
 
             //Remove the card from the hand
@@ -463,7 +466,7 @@ namespace Wendogo
             // The player is either dead, or he was not in this list to begin with.
             if (ServerManager.Instance.DeadPlayersId.Contains(clientId))
                 return null;
-            
+
             if (NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out var networkClient))
                 return networkClient.PlayerObject.GetComponent<PlayerController>();
 
@@ -611,7 +614,7 @@ namespace Wendogo
 
         public void UpdatePA(int amount)
         {
-           PlayerUI.Instance.DefinePAs(amount);
+            PlayerUI.Instance.DefinePAs(amount);
         }
 
         private async UniTaskVoid HandleVoteUIAsync()
@@ -637,6 +640,9 @@ namespace Wendogo
         {
             Role.Value = role;
             playerUIInstance?.GetRole(role.ToString());
+            if (role == RoleType.Wendogo)
+                PlayerUI.Instance.SetWendogoUI();
+
         }
 
         [Rpc(SendTo.SpecifiedInParams)]

@@ -125,7 +125,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 3469592239803189092}
+    m_TransformParent: {fileID: 89567979481326440}
     m_Modifications:
     - target: {fileID: 3842940812772168347, guid: 65f7755792458e5449351eed2c8d8e90, type: 3}
       propertyPath: m_Pivot.x
@@ -189,11 +189,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3842940812772168347, guid: 65f7755792458e5449351eed2c8d8e90, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 1
+      value: -297.49997
       objectReference: {fileID: 0}
     - target: {fileID: 3842940812772168347, guid: 65f7755792458e5449351eed2c8d8e90, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -271
+      value: 196.59631
       objectReference: {fileID: 0}
     - target: {fileID: 3842940812772168347, guid: 65f7755792458e5449351eed2c8d8e90, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -484,7 +484,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 3469592239803189092}
+    m_TransformParent: {fileID: 89567979481326440}
     m_Modifications:
     - target: {fileID: 3842940812772168347, guid: 65f7755792458e5449351eed2c8d8e90, type: 3}
       propertyPath: m_Pivot.x
@@ -548,11 +548,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3842940812772168347, guid: 65f7755792458e5449351eed2c8d8e90, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -269.4
+      value: -567.89996
       objectReference: {fileID: 0}
     - target: {fileID: 3842940812772168347, guid: 65f7755792458e5449351eed2c8d8e90, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -569
+      value: -101.403656
       objectReference: {fileID: 0}
     - target: {fileID: 3842940812772168347, guid: 65f7755792458e5449351eed2c8d8e90, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -608,7 +608,7 @@ PrefabInstance:
       objectReference: {fileID: 255065022}
     - target: {fileID: 8021568568261645957, guid: 65f7755792458e5449351eed2c8d8e90, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: PlayAttackCard
+      value: PlayLeurreCard
       objectReference: {fileID: 0}
     - target: {fileID: 8124225870277230308, guid: 65f7755792458e5449351eed2c8d8e90, type: 3}
       propertyPath: m_Type
@@ -708,6 +708,10 @@ MonoBehaviour:
     - {fileID: 1911292337869706933}
     - {fileID: 3122617667150063079}
     - {fileID: 1723472668747687414}
+    - {fileID: 5959843716947435337}
+    - {fileID: 21300000, guid: 0b486395a3f21834882931f1e080f2c6, type: 3}
+    - {fileID: 2192713683976540060}
+    - {fileID: 21300000, guid: 561dc24720f88344a820751878acbfe9, type: 3}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
@@ -828,6 +832,50 @@ MonoBehaviour:
     - Name: $v
       Entry: 6
       Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: WendogoUI
+      Entry: 7
+      Data: 4|System.Collections.Generic.Dictionary`2[[UnityEngine.UI.Image, UnityEngine.UI],[UnityEngine.Sprite,
+        UnityEngine.CoreModule]], mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 5|System.Collections.Generic.ObjectEqualityComparer`1[[UnityEngine.UI.Image,
+        UnityEngine.UI]], mscorlib
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 2
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 10
+      Data: 7
+    - Name: $v
+      Entry: 10
+      Data: 8
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 10
+      Data: 9
+    - Name: $v
+      Entry: 10
+      Data: 10
     - Name: 
       Entry: 8
       Data: 
@@ -1144,7 +1192,7 @@ PrefabInstance:
       objectReference: {fileID: 1357682468}
     - target: {fileID: 410597146149384154, guid: 97ac440e15bba064d8ea41b10d4ffd16, type: 3}
       propertyPath: expectedPlayersCount
-      value: 4
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3577620380678200501, guid: 97ac440e15bba064d8ea41b10d4ffd16, type: 3}
       propertyPath: m_Name
@@ -2636,6 +2684,8 @@ RectTransform:
   - {fileID: 1911292337869706933}
   - {fileID: 3122617667150063079}
   - {fileID: 1723472668747687414}
+  - {fileID: 10871035}
+  - {fileID: 574581643}
   m_Father: {fileID: 9092790253724587262}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
@@ -6749,8 +6799,6 @@ RectTransform:
   - {fileID: 3473775013684024118}
   - {fileID: 1579228881}
   - {fileID: 1279050604}
-  - {fileID: 10871035}
-  - {fileID: 574581643}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
