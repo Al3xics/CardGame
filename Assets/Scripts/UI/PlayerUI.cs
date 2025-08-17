@@ -23,6 +23,7 @@ namespace Wendogo
         [SerializeField] private TextMeshProUGUI woodCount;
         [SerializeField] private TextMeshProUGUI paCount;
         [SerializeField] private TextMeshProUGUI timerCount;
+        [SerializeField] private TextMeshProUGUI playerName;
 
         private readonly HashSet<ulong> _subscribedPlayers = new HashSet<ulong>();
 
@@ -89,10 +90,13 @@ namespace Wendogo
         public void SendDebug(string message)
         { Debug.Log(message); }
 
-        public void RenamePlayer(string name)
+        public void RenamePlayer(ulong playerID)
         {
-            if (playerTitle != null)
-                playerTitle.text = name;
+            var player = PlayerController.GetPlayer(playerID);
+            if (AutoSessionBootstrapper.AutoConnect)
+                playerName.text = player.name;
+            else
+                playerName.text = ServerManager.Instance.GetPlayerName(player.LocalPlayerId);
         }
         public void GetRole(string role)
         {
@@ -118,6 +122,7 @@ namespace Wendogo
         public void SetUIInfos(ulong localPLayerID, RpcParams rpcParams)
         {
             SetRitualUI();
+            RenamePlayer(localPLayerID);
 
             //todo call the method in server manager in a loop for all players 
             //when the game starts
