@@ -181,6 +181,9 @@ namespace Wendogo
                 }
 
                 if (_prefabUI == null) { _prefabUI = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject; }
+
+
+
             }
             if (!IsOwner) return;
 
@@ -193,6 +196,7 @@ namespace Wendogo
             SceneManager.sceneLoaded += OnSceneLoaded;
             CardDropZone.OnCardDataDropped += NotifyPlayedCard;
             eventTimer.OnTick += HandleTick;
+            eventTimer.OnFinished += HandleTimerOver;
         }
 
         private new void OnDestroy()
@@ -201,6 +205,8 @@ namespace Wendogo
             health.OnValueChanged -= UpdateHearts;
             food.OnValueChanged -= UpdateFoodText;
             wood.OnValueChanged -= UpdateWoodText;
+            eventTimer.OnTick -= HandleTick;
+            eventTimer.OnFinished -= HandleTimerOver;
         }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -363,6 +369,11 @@ namespace Wendogo
             _intTarget = targetID;
         }
 
+        public void HandleCancelTimer()
+        {
+            eventTimer.CancelTimer();
+        }
+
         public void SelectCard(CardObjectData card)
         {
             //Implement select card
@@ -400,7 +411,7 @@ namespace Wendogo
 
             Debug.Log("Card burnt");
 
-            HandleUsedCard();
+            HandleUsedCard(true);
             //Placeholder for sending card lacking to server        
             //NotifyMissingCards();
         }
@@ -424,13 +435,13 @@ namespace Wendogo
 
         }
 
-        public void HandleUsedCard()
+        public void HandleUsedCard(bool isBurning = false)
         {
 
             //Remove the card from the hand
             _handManager.Discard(ActiveCard.gameObject);
 
-            if (ActiveCard.Card.isPassive)
+            if (ActiveCard.Card.isPassive && !isBurning)
             {
                 Debug.Log("Passive card placed");
             }
@@ -455,7 +466,7 @@ namespace Wendogo
             // The player is either dead, or he was not in this list to begin with.
             if (ServerManager.Instance.DeadPlayersId.Contains(clientId))
                 return null;
-            
+
             if (NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out var networkClient))
                 return networkClient.PlayerObject.GetComponent<PlayerController>();
 
@@ -561,6 +572,11 @@ namespace Wendogo
             PlayerUI.Instance.DefineTimer(secondsLeft);
         }
 
+        private void HandleTimerOver()
+        {
+            pcSMObject.GetComponent<PlayerControllerSM>().TimesUp();
+        }
+
         public async void ChangeResource(int resourceType, int delta)
         {
 
@@ -598,7 +614,7 @@ namespace Wendogo
 
         public void UpdatePA(int amount)
         {
-           PlayerUI.Instance.DefinePAs(amount);
+            PlayerUI.Instance.DefinePAs(amount);
         }
 
         private async UniTaskVoid HandleVoteUIAsync()
@@ -624,6 +640,9 @@ namespace Wendogo
         {
             Role.Value = role;
             playerUIInstance?.GetRole(role.ToString());
+            if (role == RoleType.Wendogo)
+                PlayerUI.Instance.SetWendogoUI();
+
         }
 
         [Rpc(SendTo.SpecifiedInParams)]

@@ -32,6 +32,7 @@ namespace Wendogo
                     _player._handManager._attackButton.SetActive(true);
             }
             CardDropZone.OnCardDropped += ReceiveSelectedEvent;
+            CardDropZone.OnCardBurned += ReceiveBurningEvent;
             _player.EnableInput();
             _player._handManager.ToggleOnMovingCards(_player._handManager.handCards);
         }
@@ -46,12 +47,19 @@ namespace Wendogo
         {
             base.OnExit();
             CardDropZone.OnCardDropped -= ReceiveSelectedEvent;
+            CardDropZone.OnCardBurned -= ReceiveBurningEvent;
         }
 
         public void ReceiveSelectedEvent(CardObjectData cardObjectData)
         {
             _player.SelectCard(cardObjectData);
             StateMachine.ChangeState<PCSelectionState>();
+        }
+
+        public void ReceiveBurningEvent(CardObjectData cardObjectData)
+        {
+            _player.SelectCard(cardObjectData);
+            StateMachine.ChangeState<PCBurnCardState>();
         }
 
         public void TimerStart()

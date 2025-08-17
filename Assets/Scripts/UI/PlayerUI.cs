@@ -30,6 +30,8 @@ namespace Wendogo
         public Dictionary<GameObject, ulong> UIPlayerID = new Dictionary<GameObject, ulong>();
         public Dictionary<Transform, GameObject> CardSpaces = new Dictionary<Transform, GameObject>();
 
+        public Dictionary<Image, Sprite> WendogoUI = new Dictionary<Image, Sprite>();
+
         [SerializeField] private RitualUI _ritualObject;
 
         public static PlayerUI Instance { get; private set; }
@@ -100,6 +102,14 @@ namespace Wendogo
                 endText.gameObject.SetActive(true);
         }
 
+        public void SetWendogoUI()
+        {
+            foreach (var visual in WendogoUI)
+            {
+                visual.Key.sprite = visual.Value;
+            }
+        }
+
         [Rpc(SendTo.SpecifiedInParams)]
         public void SetUIInfos(ulong localPLayerID, RpcParams rpcParams)
         {
@@ -154,6 +164,25 @@ namespace Wendogo
                             {
                                 otherUI.hearts[i].gameObject.SetActive(true);
                             }
+                    };
+
+                    int lastPassiveCount = player.PassiveCards.Count;
+                    player.PassiveCards.OnListChanged += (Unity.Netcode.NetworkListEvent<int> _) =>
+                    {
+                        int newCount = player.PassiveCards.Count;
+
+                        if (newCount < lastPassiveCount)
+                        {
+                            for (int i = newCount; i < lastPassiveCount; i++)
+                                otherUI.passiveCards[i].gameObject.SetActive(false);
+                        }
+                        else if (newCount > lastPassiveCount)
+                        {
+                            for (int i = lastPassiveCount; i < newCount; i++)
+                                otherUI.passiveCards[i].gameObject.SetActive(true);
+                        }
+
+                        lastPassiveCount = newCount;
                     };
 
                     _subscribedPlayers.Add(id);

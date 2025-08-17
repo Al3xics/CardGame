@@ -14,6 +14,8 @@ namespace Wendogo
             base.OnEnter();
             if (_player._handManager._attackButton.activeSelf)
                 _player._handManager._attackButton.SetActive(false);
+            _player.HandleCancelTimer();
+            PlayerUI.Instance.DefineTimer(60);
             _player.NotifyEndTurn();
         }
 

@@ -775,6 +775,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 10118949}
     m_Modifications:
+    - target: {fileID: 679702720918246699, guid: 09f1b3889c2b9314eb64cd88d9a5a395, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -12.799988
+      objectReference: {fileID: 0}
     - target: {fileID: 2499663704193919772, guid: 09f1b3889c2b9314eb64cd88d9a5a395, type: 3}
       propertyPath: m_Name
       value: Host B
@@ -986,6 +990,10 @@ PrefabInstance:
     - target: {fileID: 7119320243332415513, guid: 09f1b3889c2b9314eb64cd88d9a5a395, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8454798955430141873, guid: 09f1b3889c2b9314eb64cd88d9a5a395, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -8.473511
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1657,6 +1665,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 10118949}
     m_Modifications:
+    - target: {fileID: 679702720918246699, guid: 09f1b3889c2b9314eb64cd88d9a5a395, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -12.799988
+      objectReference: {fileID: 0}
     - target: {fileID: 2499663704193919772, guid: 09f1b3889c2b9314eb64cd88d9a5a395, type: 3}
       propertyPath: m_Name
       value: Quit B
@@ -1812,6 +1824,10 @@ PrefabInstance:
     - target: {fileID: 7119320243332415513, guid: 09f1b3889c2b9314eb64cd88d9a5a395, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8454798955430141873, guid: 09f1b3889c2b9314eb64cd88d9a5a395, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -8.473511
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3144,6 +3160,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 10118949}
     m_Modifications:
+    - target: {fileID: 679702720918246699, guid: 09f1b3889c2b9314eb64cd88d9a5a395, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -12.799988
+      objectReference: {fileID: 0}
     - target: {fileID: 2499663704193919772, guid: 09f1b3889c2b9314eb64cd88d9a5a395, type: 3}
       propertyPath: m_Name
       value: Join B
@@ -3299,6 +3319,10 @@ PrefabInstance:
     - target: {fileID: 7119320243332415513, guid: 09f1b3889c2b9314eb64cd88d9a5a395, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8454798955430141873, guid: 09f1b3889c2b9314eb64cd88d9a5a395, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -8.473511
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5257,7 +5281,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   menuSceneName: Menu
-  gameSceneName: Game Valentin
+  gameSceneName: Game Valentin UI
   playerHealthAsked: 0
   playerFoodAsked: 0
   playerWoodAsked: 0
