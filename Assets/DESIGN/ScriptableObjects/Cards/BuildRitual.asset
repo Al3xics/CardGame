@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4c4af47719ad294e9daacd12912804b, type: 3}
   m_Name: BuildRitual
   m_EditorClassIdentifier: 
-  CardVisual: {fileID: 2800000, guid: 6897770c58a5bda4b890c91cbb7a56b3, type: 3}
+  CardVisual: {fileID: 2800000, guid: d592ffd16b2d6494ea0bb1c5edbe2950, type: 3}
   Name: Build Ritual
   CardEffect: {fileID: 11400000, guid: 501553fff6e762e44b75a0033b1faae5, type: 2}
   isPassive: 0

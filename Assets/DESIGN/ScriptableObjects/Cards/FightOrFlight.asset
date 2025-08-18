@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4c4af47719ad294e9daacd12912804b, type: 3}
   m_Name: FightOrFlight
   m_EditorClassIdentifier: 
-  CardVisual: {fileID: 2800000, guid: 207ea8fa8c20a0847975ee7df64f1f0e, type: 3}
+  CardVisual: {fileID: 2800000, guid: 0d3ec278df88b54468de28441eecd42a, type: 3}
   Name: FightOrFlight
   CardEffect: {fileID: 11400000, guid: 825191a8fc2c8d5458f5f48c01cb6db4, type: 2}
   isPassive: 0
