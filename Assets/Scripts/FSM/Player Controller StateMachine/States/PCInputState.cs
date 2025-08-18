@@ -23,6 +23,7 @@ namespace Wendogo
                 TimerStart();
 
                 StateMachine.RaisePlayerPAUpdated(_player._playerPA);
+                _player._handManager.trashZone.enabled = true;
                 isTurnBeginning = true;
             }
             if (_player.Role.Value == RoleType.Wendogo)
@@ -34,6 +35,7 @@ namespace Wendogo
             CardDropZone.OnCardBurned += ReceiveBurningEvent;
             _player.EnableInput();
             _player._handManager.ToggleOnMovingCards(_player._handManager.handCards);
+
         }
 
         public override void OnTick()
