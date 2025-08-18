@@ -18,6 +18,7 @@ namespace Wendogo
             {
                 StateMachine.ChangeState<PCCheckPAState>();
                 Debug.Log("str");
+                return;
             }
             ToggleDeck();
             handManager.ToggleOffMovingCards(handManager.handCards);

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Mono.Cecil;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using static UnityEngine.Rendering.DebugUI;
@@ -105,11 +104,25 @@ namespace Wendogo
         public readonly List<PlayerAction> NightActions = new();
 
         /// <summary>
-        /// Represents the ID of the current player whose turn is active in the game.
+        /// Represents the ID of the current player.
+        /// </summary>
+        public ulong CurrentPlayerId
+        {
+            get
+            {
+                if (PlayersID.Count == 0) return 0;
+                if (CurrentPlayerIndex >= PlayersID.Count)
+                    CurrentPlayerIndex = 0;
+                return PlayersID[CurrentPlayerIndex];
+            }
+        }
+        
+        /// <summary>
+        /// Represents the index of the current player whose turn is active in the game.
         /// This variable helps manage the game flow by tracking which player's turn is currently in progress.
         /// It is incremented sequentially to move to the next player in <see cref="PlayerTurnState.OnPlayerTurnEnded"/>.
         /// </summary>
-        public int CurrentPlayerId { get; set; } = 0;
+        public int CurrentPlayerIndex { get; set; } = 0;
 
         /// <summary>
         /// Represents a list containing the unique identifiers (IDs) of all players currently

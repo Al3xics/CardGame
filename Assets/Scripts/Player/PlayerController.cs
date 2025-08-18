@@ -1,16 +1,13 @@
 ﻿using Cysharp.Threading.Tasks;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using Unity.Netcode;
 using UnityEngine.SceneManagement;
 using Button = UnityEngine.UI.Button;
-using TMPro;
 using Unity.Collections;
 using Unity.Services.Analytics;
-using UnityEngine.SocialPlatforms;
 using UnityEngine.UI;
 using System.Collections;
 
@@ -69,6 +66,10 @@ namespace Wendogo
         private GameObject _showcardUI;
 
         public PlayerAction[] NightActions;
+        
+        public bool isDead = false;
+        public ulong selectedVotedTarget;
+        public bool isPlayerTurn = false;
 
         [SerializeField] public EventTimer eventTimer;
 
@@ -181,9 +182,6 @@ namespace Wendogo
                 }
 
                 if (_prefabUI == null) { _prefabUI = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject; }
-
-
-
             }
             if (!IsOwner) return;
 
@@ -290,8 +288,7 @@ namespace Wendogo
 
             Debug.Log($"Selected target is {_intTarget} ");
         }
-
-
+        
         public async UniTask SelectRessourceAsync()
         {
             _intFood = -1;
@@ -323,11 +320,10 @@ namespace Wendogo
 
             Debug.Log($"Selected target is {_intTarget} with {_intFood} food and {_intWood} wood. ");
         }
-
-
+        
         public async UniTask GroupSelectTargetAsync()
         {
-            await UniTask.WaitUntil(() => ServerManager.Instance.PlayerReadyCount.Value == 4);
+            await UniTask.WaitUntil(() => ServerManager.Instance.PlayerReadyCount.Value == ServerManager.Instance.livingPlayerCount.Value);
             await UniTask.WaitForSeconds(0.1f);
         }
 
@@ -352,7 +348,7 @@ namespace Wendogo
             Debug.Log($"Waiting for group vote to end");
 
             //todo change the value to the number of players in the session
-            await UniTask.WaitUntil(() => ServerManager.Instance.PlayerReadyCount.Value == 4);
+            await UniTask.WaitUntil(() => ServerManager.Instance.PlayerReadyCount.Value == ServerManager.Instance.livingPlayerCount.Value);
 
             Debug.Log($"Vote ended");
 
@@ -397,11 +393,6 @@ namespace Wendogo
             //TweeningManager.CardDown(card.gameObject.transform);
             card.isSelected = false;
         }
-
-        //public async void SelectTarget()
-        //{
-        //todo move the method in the select state here
-        //}
 
         public void BurnCard()
         {
@@ -466,7 +457,7 @@ namespace Wendogo
             // The player is either dead, or he was not in this list to begin with.
             if (ServerManager.Instance.DeadPlayersId.Contains(clientId))
                 return null;
-
+            
             if (NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out var networkClient))
                 return networkClient.PlayerObject.GetComponent<PlayerController>();
 
@@ -532,9 +523,41 @@ namespace Wendogo
 
         }
 
-        public void ShowCard(int card)
+        private async void ShowOtherPlayerCards(int CardId)
         {
+            GameObject _showingCardsUI = Instantiate(UIPrefab);
+            _showingCardsUI.SetActive(true);
+            RawImage imageToChange = _showingCardsUI.GetComponentInChildren<RawImage>();
 
+            CardDataSO cardDataSO = DataCollection.Instance.cardDatabase.GetCardByID(CardId);
+            Texture2D texture = cardDataSO.CardVisual;
+            imageToChange.texture = texture;
+
+            await UniTask.WaitForSeconds(3);
+
+            _showingCardsUI.SetActive(false);
+            Destroy(_showingCardsUI);
+
+        }
+
+        private IEnumerator ShowCardsCoroutine(int[] cardIds)
+        {
+            if (_showcardUI == null)
+                _showcardUI = Instantiate(UIPrefab);
+
+            var imageToChange = _showcardUI.GetComponentInChildren<RawImage>(true);
+
+            foreach (var cardId in cardIds)
+            {
+                _showcardUI.SetActive(true);
+
+                var cardDataSO = DataCollection.Instance.cardDatabase.GetCardByID(cardId);
+                imageToChange.texture = cardDataSO.CardVisual;
+
+                yield return new WaitForSeconds(1.5f);
+
+                _showcardUI.SetActive(false);
+            }
         }
 
         #endregion
@@ -688,6 +711,7 @@ namespace Wendogo
 
             var effect = DataCollection.Instance.cardDatabase.GetCardByID(playedCardId).CardEffect;
             effect.Apply(origin, OwnerClientId, isApplyPassive ? value : -1);
+            Debug.Log($"Effect Apply - Origin : {origin}, Target : {OwnerClientId}");
             AnalyticsManager.Instance.RecordEvent(new CustomEvent("activeCardPlayed"));
             FinishedCardPlayedRpc(RpcTarget.Me);
         }
@@ -819,8 +843,7 @@ namespace Wendogo
         {
             ChangeResource(resourceType, delta);
         }
-
-
+        
         [Rpc(SendTo.SpecifiedInParams)]
         public void MuteRpc(bool mute, RpcParams rpcParams)
         {
@@ -862,47 +885,16 @@ namespace Wendogo
                 guardianID = 1000;
         }
 
-        private async void ShowOtherPlayerCards(int CardId)
-        {
-            GameObject _showingCardsUI = Instantiate(UIPrefab);
-            _showingCardsUI.SetActive(true);
-            RawImage imageToChange = _showingCardsUI.GetComponentInChildren<RawImage>();
-
-            CardDataSO cardDataSO = DataCollection.Instance.cardDatabase.GetCardByID(CardId);
-            Texture2D texture = cardDataSO.CardVisual;
-            imageToChange.texture = texture;
-
-            await UniTask.WaitForSeconds(3);
-
-            _showingCardsUI.SetActive(false);
-            Destroy(_showingCardsUI);
-
-        }
-
         [Rpc(SendTo.SpecifiedInParams)]
         public void ShowCardsDivinationRpc(int[] CardId, RpcParams rpcParams)
         {
             StartCoroutine(ShowCardsCoroutine(CardId));
         }
 
-        private IEnumerator ShowCardsCoroutine(int[] cardIds)
+        [Rpc(SendTo.SpecifiedInParams)]
+        public void SetPlayerTurnStateRpc(bool playerTurn, RpcParams rpcParams)
         {
-            if (_showcardUI == null)
-                _showcardUI = Instantiate(UIPrefab);
-
-            var imageToChange = _showcardUI.GetComponentInChildren<RawImage>(true);
-
-            foreach (var cardId in cardIds)
-            {
-                _showcardUI.SetActive(true);
-
-                var cardDataSO = DataCollection.Instance.cardDatabase.GetCardByID(cardId);
-                imageToChange.texture = cardDataSO.CardVisual;
-
-                yield return new WaitForSeconds(1.5f);
-
-                _showcardUI.SetActive(false);
-            }
+            isPlayerTurn = playerTurn;
         }
 
         #endregion
@@ -922,7 +914,7 @@ namespace Wendogo
         public void NotifyEndTurn()
         {
             _inputEvent.enabled = false;
-            HandlePassiveCardTurnUpdate();
+            if (!isDead) HandlePassiveCardTurnUpdate();
             if (_pcSMObject != null)
             {
                 Debug.Log("Destroy the player controller");
@@ -936,10 +928,7 @@ namespace Wendogo
         private async void NotifyPlayedCard(CardDataSO cardDataSO)
         {
             if (cardDataSO.isPassive || !cardDataSO.HasTarget)
-            {
                 _selectedTarget = LocalPlayerId;
-
-            }
 
             int nbFood = -1;
             int nbWood = -1;
@@ -973,7 +962,9 @@ namespace Wendogo
             }
             else if (cardDataSO.isGroup && ServerManager.Instance.currentCycle.Value != Cycle.Night)
             {
-                await UniTask.WaitUntil(() => ServerManager.Instance.PlayerReadyCount.Value == 4);
+                await UniTask.WaitUntil(() => ServerManager.Instance.PlayerReadyCount.Value == ServerManager.Instance.livingPlayerCount.Value);
+                // todo
+                // _selectedTarget = selectedVotedTarget;
             }
             ServerManager.Instance.TransmitPlayedCardRpc(cardDataSO.ID, _selectedTarget, nbFood, nbWood);
             Debug.Log($"card {cardDataSO.Name} was sent to server ");
