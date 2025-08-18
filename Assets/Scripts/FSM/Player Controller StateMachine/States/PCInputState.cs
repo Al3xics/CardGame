@@ -22,14 +22,13 @@ namespace Wendogo
 
                 TimerStart();
 
-                StateMachine.RaisePlayerPAUpdated(_player._playerPA); 
+                StateMachine.RaisePlayerPAUpdated(_player._playerPA);
                 isTurnBeginning = true;
             }
             if (_player.Role.Value == RoleType.Wendogo)
             {
                 _player._handManager._leurreButton.SetActive(true);
-                if(ServerManager.Instance.currentCycle.Value == Cycle.Night)
-                    _player._handManager._attackButton.SetActive(true);
+                _player._handManager._attackButton.SetActive(true);
             }
             CardDropZone.OnCardDropped += ReceiveSelectedEvent;
             CardDropZone.OnCardBurned += ReceiveBurningEvent;
@@ -64,7 +63,7 @@ namespace Wendogo
 
         public void TimerStart()
         {
-            _player.eventTimer.StartTimer(60);    
+            _player.eventTimer.StartTimer(60);
         }
 
     }

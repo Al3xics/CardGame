@@ -20,6 +20,7 @@ namespace Wendogo
             if (value != 1000)
             {
                 //temp
+                //Change you can pick the resource
                 value = Random.Range(0, 2);
                 if (value == 0) // steal wood
                 {
