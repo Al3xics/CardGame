@@ -170,6 +170,8 @@ namespace Wendogo
 
         public override void OnNetworkSpawn()
         {
+            PlayerControllerSM playerController = null;
+            
             if (AutoSessionBootstrapper.AutoConnect)
             {
                 _inputEvent = GameObject.Find("EventSystem")?.GetComponent<EventSystem>();
@@ -178,7 +180,7 @@ namespace Wendogo
                 if (IsOwner)
                 {
                     pcSMObject = new GameObject($"{nameof(PlayerControllerSM)}");
-                    pcSMObject.AddComponent<PlayerControllerSM>();
+                    playerController = pcSMObject.AddComponent<PlayerControllerSM>();
                 }
 
                 if (_prefabUI == null) { _prefabUI = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject; }
@@ -187,6 +189,7 @@ namespace Wendogo
 
             LocalPlayer = this;
             LocalPlayerId = NetworkManager.Singleton.LocalClientId;
+            if (AutoSessionBootstrapper.AutoConnect && playerController != null) playerController.SetInitialState(); // done here after LocalPlayer is set
 
             food.OnValueChanged += UpdateFoodText;
             wood.OnValueChanged += UpdateWoodText;
@@ -224,7 +227,7 @@ namespace Wendogo
                 if (_inputEvent != null && _inputEvent.enabled) _inputEvent.enabled = false;
                 if (_handManager == null) _handManager = GameObject.FindWithTag("hand")?.GetComponent<HandManager>();
                 pcSMObject = new GameObject($"{nameof(PlayerControllerSM)}");
-                pcSMObject.AddComponent<PlayerControllerSM>();
+                pcSMObject.AddComponent<PlayerControllerSM>().SetInitialState();
 
                 _fxManager = GameObject.Find("FXEventManager")?.GetComponent<FXEventManager>();
 
@@ -826,7 +829,9 @@ namespace Wendogo
         [Rpc(SendTo.SpecifiedInParams)]
         public void UseVoteUIRpc(bool setUIActive, bool activePlayerInput, RpcParams rpcParams)
         {
+            if (setUIActive) DeathUIManager.Instance.RegisterUI(_prefabUI);
             _prefabUI.SetActive(setUIActive);
+            if (!setUIActive) DeathUIManager.Instance.UnregisterUI(_prefabUI);
 
             if (activePlayerInput)
                 _ = HandleVoteUIAsync(); // Fire-and-forget

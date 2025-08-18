@@ -60,12 +60,12 @@ namespace Wendogo
             return isTie ? 1000 : (ulong)maxValue;
         }
 
-        public override void ShowUI()
+        public override void ShowUI(GameObject uiInstance = null)
         {
             ServerManager.Instance.UseAllUIForVotersRpc(true, true);
         }
 
-        public override void HideUI(bool clearVotes)
+        public override void HideUI(bool clearVotes, GameObject uiInstance = null)
         {
             ServerManager.Instance.UseAllUIForVotersRpc(false, false);
             base.HideUI(clearVotes);

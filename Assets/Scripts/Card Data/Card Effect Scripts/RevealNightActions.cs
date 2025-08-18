@@ -38,19 +38,20 @@ namespace Wendogo
 
             AnalyticsManager.Instance.RecordEvent(new CustomEvent("revealNightActionsActiveCardWasApplied"));
         }
-        public override void ShowUI()
+        public override void ShowUI(GameObject uiInstance = null)
         {
             if (prefabUI == null)
                 prefabUI = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject;
+            base.ShowUI(prefabUI);
             prefabUI.SetActive(true);
         }
 
-        public override void HideUI(bool clearVotes)
+        public override void HideUI(bool clearVotes, GameObject uiInstance = null)
         {
             if (prefabUI == null)
                 prefabUI = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject;
             prefabUI.SetActive(false);
-            base.HideUI(clearVotes);
+            base.HideUI(clearVotes, prefabUI);
         }
     }
 }

@@ -17,27 +17,29 @@ namespace Wendogo
             AnalyticsManager.Instance.RecordEvent(new CustomEvent("darkTrickActiveCardWasApplied"));
         }
 
-        public override void ShowUI()
+        public override void ShowUI(GameObject uiInstance = null)
         {
             if (PlayerController.LocalPlayer.Role.Value == RoleType.Wendogo)
             {
                 if (_dtCanvaInstance == null)
                     _dtCanvaInstance = Instantiate(WendogoTrickprefabUI);
+                base.ShowUI(_dtCanvaInstance);
                 _dtCanvaInstance.SetActive(true);
             }
             else
             {
                 if (_dtCanvaInstance == null)
                     _dtCanvaInstance = Instantiate(SelectTargetPrefabUI);
+                base.ShowUI(_dtCanvaInstance);
                 _dtCanvaInstance.SetActive(true);
             }
         }
 
-        public override void HideUI(bool clearVotes)
+        public override void HideUI(bool clearVotes, GameObject uiInstance = null)
         {
             _dtCanvaInstance.SetActive(false);
             Destroy(_dtCanvaInstance.gameObject);
-            base.HideUI(clearVotes);
+            base.HideUI(clearVotes, _dtCanvaInstance);
         }
     }
 }

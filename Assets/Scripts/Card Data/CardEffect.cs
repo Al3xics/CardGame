@@ -23,10 +23,14 @@ namespace Wendogo
             return false;
         }
 
-        public virtual void ShowUI() {}
-
-        public virtual void HideUI(bool clearVotes)
+        public virtual void ShowUI(GameObject uiInstance = null)
         {
+            DeathUIManager.Instance.RegisterUI(uiInstance);
+        }
+
+        public virtual void HideUI(bool clearVotes, GameObject uiInstance = null)
+        {
+            DeathUIManager.Instance.UnregisterUI(uiInstance);
             if (clearVotes) ServerManager.Instance.ClearVoteRpc();
         }
     }
