@@ -16,42 +16,28 @@ namespace Wendogo
             if (target == 0)
             {
                 ServerManager.Instance.AskToUnlockResourcesRpc(false, true);
-                //GameStateMachine.Instance.OnCycleChanged += ResetWood;
             } 
             else if (target == 1)
             {
                 ServerManager.Instance.AskToUnlockResourcesRpc(true, true);
-                //GameStateMachine.Instance.OnCycleChanged += ResetFood;
-
             }
         }
-        
-        //private void ResetWood(Cycle cycle)
-        //{
-        //    ServerManager.Instance.AskToUnlockResourcesRpc(false, false);
-        //    GameStateMachine.Instance.OnCycleChanged -= ResetWood;
-        //}
-
-        //private void ResetFood(Cycle cycle)
-        //{
-        //    ServerManager.Instance.AskToUnlockResourcesRpc(false, false);
-        //    GameStateMachine.Instance.OnCycleChanged -= ResetFood;
-        //}
 
 
-        public override void ShowUI()
+        public override void ShowUI(GameObject uiInstance = null)
         {
             if (prefabUI == null)
                 prefabUI = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject;
+            base.ShowUI(prefabUI);
             prefabUI.SetActive(true);
         }
 
-        public override void HideUI(bool clearVotes)
+        public override void HideUI(bool clearVotes, GameObject uiInstance = null)
         {
             if (prefabUI == null)
                 prefabUI = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject;
             prefabUI.SetActive(false);
-            base.HideUI(clearVotes);
+            base.HideUI(clearVotes, prefabUI);
         }
     }
 }
