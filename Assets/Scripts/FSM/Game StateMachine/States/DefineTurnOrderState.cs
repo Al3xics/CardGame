@@ -25,8 +25,19 @@ namespace Wendogo
                 throw new System.Exception("Not enough players to start the game.");
             }
 
-            Shuffle(StateMachine.PlayersID);
+            if (StateMachine.customTurnOrder is { Count: > 0 })
+                ChooseInitialTurnOrder();
+            else
+                Shuffle(StateMachine.PlayersID);
             StateMachine.ChangeState<AssignRolesState>();
+        }
+        
+        /// <summary>
+        /// Determines the initial turn order. If no custom order is set, it randomizes.
+        /// </summary>
+        private void ChooseInitialTurnOrder()
+        {
+            StateMachine.PlayersID = new List<ulong>(StateMachine.customTurnOrder);
         }
 
         /// <summary>

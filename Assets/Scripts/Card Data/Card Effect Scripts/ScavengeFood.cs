@@ -25,10 +25,5 @@ namespace Wendogo
             
             AnalyticsManager.Instance.RecordEvent(new CustomEvent("scavengeFoodActiveCardWasApplied"));
         }
-
-        public void ShowCard()
-        {
-            
-        }
     }
 }

@@ -824,7 +824,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8029fdb0c2c728448a629f25254f338, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerID: 3
+  _playerID: 2
+  _darkTrickHandler: {fileID: 0}
 --- !u!1 &5929690449271564405
 GameObject:
   m_ObjectHideFlags: 0
@@ -971,7 +972,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8029fdb0c2c728448a629f25254f338, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerID: 2
+  _playerID: 1
+  _darkTrickHandler: {fileID: 0}
 --- !u!1 &7037426664120106412
 GameObject:
   m_ObjectHideFlags: 0
@@ -1254,7 +1256,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8029fdb0c2c728448a629f25254f338, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerID: 4
+  _playerID: 3
+  _darkTrickHandler: {fileID: 0}
 --- !u!1 &8938818542201970320
 GameObject:
   m_ObjectHideFlags: 0
@@ -1401,4 +1404,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8029fdb0c2c728448a629f25254f338, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playerID: 1
+  _playerID: 0
+  _darkTrickHandler: {fileID: 0}

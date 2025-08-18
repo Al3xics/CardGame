@@ -150,7 +150,7 @@ namespace Wendogo
                 GameObject gameStateMachineObject = Resources.FindObjectsOfTypeAll<GameObject>().FirstOrDefault(go => go.name == "GameStateMachine");
 
                 if (gameStateMachineObject != null)
-                    gameStateMachineObject.GetComponent<GameStateMachine>().StartStateMachine();
+                    gameStateMachineObject.GetComponent<GameStateMachine>().SetInitialStateAndStart();
             }
         }
 

@@ -46,18 +46,19 @@ namespace Wendogo
             }
         }
 
-        public override void ShowUI()
+        public override void ShowUI(GameObject uiInstance = null)
         {
             if (_ressouceCanvaInstance == null)
                 _ressouceCanvaInstance = Instantiate(SelectResourcePrefab);
+            base.ShowUI(_ressouceCanvaInstance);
             _ressouceCanvaInstance.SetActive(true);
         }
 
-        public override void HideUI(bool clearVotes)
+        public override void HideUI(bool clearVotes, GameObject uiInstance = null)
         {
             _ressouceCanvaInstance.SetActive(false);
             Destroy( _ressouceCanvaInstance );
-            base.HideUI(clearVotes);
+            base.HideUI(clearVotes, _ressouceCanvaInstance);
         }
     }
 }

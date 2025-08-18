@@ -61,15 +61,5 @@ namespace Wendogo
             value = -1;
             return false;
         }
-        
-        // public override void ShowUI()
-        // {
-        //     SelectResourcePrefab.SetActive(true);
-        // }
-        //
-        // public override void HideUI()
-        // {
-        //     SelectResourcePrefab.SetActive(false);
-        // }
     }
 }
