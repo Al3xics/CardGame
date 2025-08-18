@@ -24,7 +24,7 @@ namespace Wendogo
 
         private async void AwaitDisableCanvas()
         {
-            await DeathUIManager.Instance.WaitUntilAllDisabled();
+            await DeathUIManager.Instance.WaitUntilAllDestroyed();
             ServerManager.Instance.RemovePlayerFromListsRpc(_player.OwnerClientId);
             if (_player.isPlayerTurn)
             {
