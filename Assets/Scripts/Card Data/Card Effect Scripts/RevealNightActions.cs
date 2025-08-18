@@ -1,9 +1,11 @@
 ﻿using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Unity.Netcode;
 using Unity.Services.Analytics;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 namespace Wendogo
 {
@@ -14,36 +16,28 @@ namespace Wendogo
         private GameObject _showingCardsUI; 
         public override async void Apply(ulong owner, ulong target, int value = -1)
         {
-            var nightActions = GameStateMachine.Instance.GetNightActionsWithPriority();
+
+            var targetPlayer = PlayerController.GetPlayer(target);
             List<PlayerAction> playerActions = new List<PlayerAction>();
-            for (int i = 0; i < nightActions.Count; i++)
+            var serverActions = ServerManager.Instance.nightActions;
+
+            foreach (var action in serverActions)
             {
-                if (nightActions[i].OriginId == target)
+                if (action.OriginId == target)
                 {
-                    playerActions.Add(nightActions[i]);
+                    playerActions.Add(action);
                 }
             }
+            
             // Afficher playerActions
-            await ShowPlayerActions(playerActions);
+            foreach (var action in playerActions)
+            {
+                ServerManager.Instance.ShowCardsCanvaRpc(action.CardId, owner);
+                await UniTask.WaitForSeconds(1.5f);
+            }
+
             AnalyticsManager.Instance.RecordEvent(new CustomEvent("revealNightActionsActiveCardWasApplied"));
         }
-
-        private async UniTask ShowPlayerActions(List<PlayerAction> playerActions)
-        {
-            _showingCardsUI = Instantiate(prefabUI);
-            _showingCardsUI.SetActive(true);
-            RawImage imageToChange = _showingCardsUI.GetComponentInChildren<RawImage>();
-            foreach (PlayerAction action in playerActions)
-            {
-                CardDataSO cardDataSO = DataCollection.Instance.cardDatabase.GetCardByID(action.CardId);
-                Texture2D texture = cardDataSO.CardVisual;
-                imageToChange.texture = texture;
-                await UniTask.WaitForSeconds(3);
-            }
-            _showingCardsUI.SetActive(false);
-            Destroy(_showingCardsUI);
-        }
-
         public override void ShowUI()
         {
             if (prefabUI == null)

@@ -20,7 +20,10 @@ namespace Wendogo
                 card.CardEffect is GroupAttack)
             {
                 value = boostAttackBy;
-                Debug.Log($"Defense by {value}");
+                Debug.Log($"Boost attack by {value}");
+                var player = PlayerController.GetPlayer(target);
+                HandManager handManager = player._handManager;
+                handManager.DestroyPassiveCard("BoostAttack");
                 AnalyticsManager.Instance.RecordEvent(new CustomEvent("boostAttackPassiveCardWasApplied"));
                 return true;
             }

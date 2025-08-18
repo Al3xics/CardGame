@@ -16,6 +16,9 @@ namespace Wendogo
 
         public static event Action<CardDataSO> OnCardDataDropped;
         public static event Action<CardObjectData> OnCardDropped;
+        public static event Action<CardObjectData> OnCardBurned;
+
+        [SerializeField] private bool isBurning;
 
         #endregion
 
@@ -29,6 +32,12 @@ namespace Wendogo
             if (!draggedCard.TryGetComponent<CardDragHandler>(out var dragHandler) ||
                 !draggedCard.TryGetComponent<CardObjectData>(out var cod))
                 return;
+
+            if (isBurning)
+            {
+                OnCardBurned?.Invoke(cod);
+                return;
+            }
 
             var cardData = cod.Card;
             if (cardData.isPassive)
@@ -68,11 +77,11 @@ namespace Wendogo
                    .WithEase(Ease.OutQuad)
                    .BindToPosition(card);
 
-            LMotion.Create(card.localScale, zone.localScale / 2.5f, 0.2f)
+            LMotion.Create(card.localScale, new Vector3(12, 12, 12) / 2.5f, 0.2f)
                    .WithEase(Ease.OutQuad)
                    .BindToLocalScale(card);
 
-            LMotion.Create(card.rotation, zone.rotation, 0.2f)
+            LMotion.Create(card.rotation, Quaternion.Euler(0, 0, -90), 0.2f)
                    .WithEase(Ease.OutQuad)
                    .BindToRotation(card);
         }

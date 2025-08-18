@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 581809720779956719}
   - component: {fileID: 7064307092068708590}
   - component: {fileID: 2847113951078386699}
+  - component: {fileID: -9032215669252843116}
   m_Layer: 5
   m_Name: DarkTrickCanvas
   m_TagString: ResourcesUI
@@ -120,6 +121,21 @@ MonoBehaviour:
   _cardPrefab: {fileID: 4051878365438008969, guid: c099762f3219e78429819e9a61fe60db, type: 3}
   _dtSabotageCard: {fileID: 11400000, guid: 0255de49cc329b949a3177b33b064c5e, type: 2}
   _dtRevealCard: {fileID: 11400000, guid: 07492bde226fe8849bb25e4881cb0cb5, type: 2}
+--- !u!114 &-9032215669252843116
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2370279934951216}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f022e44543e92b409851f71862adfba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _cardPrefab: {fileID: 0}
+  _dtSabotageCard: {fileID: 0}
+  _dtRevealCard: {fileID: 0}
 --- !u!1 &523613010450115388
 GameObject:
   m_ObjectHideFlags: 0

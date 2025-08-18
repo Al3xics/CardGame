@@ -62,7 +62,7 @@ namespace Wendogo
 
         public override void ShowUI()
         {
-            ServerManager.Instance.UseAllUIForVotersRpc(true, false);
+            ServerManager.Instance.UseAllUIForVotersRpc(true, true);
         }
 
         public override void HideUI(bool clearVotes)

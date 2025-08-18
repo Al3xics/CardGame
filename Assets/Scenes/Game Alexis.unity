@@ -333,6 +333,7 @@ MonoBehaviour:
   _leurreButton: {fileID: 583997710}
   _leurreCard: {fileID: 11400000, guid: 274f8db282fb7e94e900b7085abff0ca, type: 2}
   _cardsHandler: {fileID: 16459162}
+  _drawCardsUI: {fileID: 0}
   handCards: []
   passiveZoneCards: []
   _isReplaced: 0
@@ -4266,52 +4267,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 819056533}
   m_CullTransparentMesh: 1
---- !u!1 &823498998
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 823499000}
-  - component: {fileID: 823498999}
-  m_Layer: 0
-  m_Name: PopupSentences
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &823498999
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 823498998}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6dc5f85db018467ab4a492614b76b280, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  otherPlayerTurnText: C'est au tour de {x} !
-  thisPlayerTurnText: "C'est \xE0 ton tour !"
---- !u!4 &823499000
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 823498998}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.6369464, y: 48.874775, z: -112.71429}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &832423007
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7832,7 +7787,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 2162891569
+  GlobalObjectIdHash: 330707452
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -12020,7 +11975,8 @@ MonoBehaviour:
       Data: 
   foodCount: {fileID: 1540466910}
   woodCount: {fileID: 1656168350}
-  foodCountP2: {fileID: 2137617997}
+  paCount: {fileID: 0}
+  timerCount: {fileID: 0}
   hearts:
   - {fileID: 1667251397}
   - {fileID: 1750333798}
@@ -12182,6 +12138,63 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4038565035146118173}
   m_CullTransparentMesh: 1
+--- !u!1001 &5454463556559599970
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 447526290622795783, guid: 28fc69e8305f51b49a523063b55ff8f0, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.6369464
+      objectReference: {fileID: 0}
+    - target: {fileID: 447526290622795783, guid: 28fc69e8305f51b49a523063b55ff8f0, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 48.874775
+      objectReference: {fileID: 0}
+    - target: {fileID: 447526290622795783, guid: 28fc69e8305f51b49a523063b55ff8f0, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -112.71429
+      objectReference: {fileID: 0}
+    - target: {fileID: 447526290622795783, guid: 28fc69e8305f51b49a523063b55ff8f0, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 447526290622795783, guid: 28fc69e8305f51b49a523063b55ff8f0, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 447526290622795783, guid: 28fc69e8305f51b49a523063b55ff8f0, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 447526290622795783, guid: 28fc69e8305f51b49a523063b55ff8f0, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 447526290622795783, guid: 28fc69e8305f51b49a523063b55ff8f0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 447526290622795783, guid: 28fc69e8305f51b49a523063b55ff8f0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 447526290622795783, guid: 28fc69e8305f51b49a523063b55ff8f0, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7919946498126704485, guid: 28fc69e8305f51b49a523063b55ff8f0, type: 3}
+      propertyPath: m_Name
+      value: PopupSentences
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 28fc69e8305f51b49a523063b55ff8f0, type: 3}
 --- !u!224 &5671779508943657559
 RectTransform:
   m_ObjectHideFlags: 0
@@ -12852,7 +12865,7 @@ SceneRoots:
   - {fileID: 1775294479}
   - {fileID: 687310887}
   - {fileID: 916108408}
-  - {fileID: 823499000}
+  - {fileID: 5454463556559599970}
   - {fileID: 221003030}
   - {fileID: 328246467}
   - {fileID: 894980997}

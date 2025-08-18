@@ -11,6 +11,8 @@ using TMPro;
 using Unity.Collections;
 using Unity.Services.Analytics;
 using UnityEngine.SocialPlatforms;
+using UnityEngine.UI;
+using System.Collections;
 
 
 namespace Wendogo
@@ -63,6 +65,12 @@ namespace Wendogo
         public bool isFlighting = false;
 
         private FXEventManager _fxManager;
+        public GameObject UIPrefab;
+        private GameObject _showcardUI;
+
+        public PlayerAction[] NightActions;
+
+        [SerializeField] public EventTimer eventTimer;
 
         #endregion
 
@@ -120,7 +128,7 @@ namespace Wendogo
             NetworkVariableWritePermission.Owner
         );
 
-        public PlayerController guardian;
+        public ulong guardianID;
 
         public NetworkVariable<bool> eatPorc = new(
             false,
@@ -151,7 +159,7 @@ namespace Wendogo
             if (AutoSessionBootstrapper.AutoConnect)
             {
                 _fxManager = GameObject.Find("FXEventManager")?.GetComponent<FXEventManager>();
-                
+
                 //Todo call at the same time the the game state machine starts instead
                 await UniTask.WaitForSeconds(15);
                 //Init UI for the other players
@@ -173,6 +181,9 @@ namespace Wendogo
                 }
 
                 if (_prefabUI == null) { _prefabUI = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject; }
+
+
+
             }
             if (!IsOwner) return;
 
@@ -184,6 +195,8 @@ namespace Wendogo
             health.OnValueChanged += UpdateHearts;
             SceneManager.sceneLoaded += OnSceneLoaded;
             CardDropZone.OnCardDataDropped += NotifyPlayedCard;
+            eventTimer.OnTick += HandleTick;
+            eventTimer.OnFinished += HandleTimerOver;
         }
 
         private new void OnDestroy()
@@ -192,6 +205,8 @@ namespace Wendogo
             health.OnValueChanged -= UpdateHearts;
             food.OnValueChanged -= UpdateFoodText;
             wood.OnValueChanged -= UpdateWoodText;
+            eventTimer.OnTick -= HandleTick;
+            eventTimer.OnFinished -= HandleTimerOver;
         }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -212,7 +227,7 @@ namespace Wendogo
                 if (_handManager == null) _handManager = GameObject.FindWithTag("hand")?.GetComponent<HandManager>();
                 pcSMObject = new GameObject($"{nameof(PlayerControllerSM)}");
                 pcSMObject.AddComponent<PlayerControllerSM>();
-                
+
                 _fxManager = GameObject.Find("FXEventManager")?.GetComponent<FXEventManager>();
 
                 Debug.Log($"This is my player id: {LocalPlayerId}");
@@ -312,7 +327,7 @@ namespace Wendogo
 
         public async UniTask GroupSelectTargetAsync()
         {
-            await UniTask.WaitUntil(() => ServerManager.Instance.PlayerReadyCount.Value == 2);
+            await UniTask.WaitUntil(() => ServerManager.Instance.PlayerReadyCount.Value == 4);
             await UniTask.WaitForSeconds(0.1f);
         }
 
@@ -337,7 +352,7 @@ namespace Wendogo
             Debug.Log($"Waiting for group vote to end");
 
             //todo change the value to the number of players in the session
-            await UniTask.WaitUntil(() => ServerManager.Instance.PlayerReadyCount.Value == 2);
+            await UniTask.WaitUntil(() => ServerManager.Instance.PlayerReadyCount.Value == 4);
 
             Debug.Log($"Vote ended");
 
@@ -352,6 +367,11 @@ namespace Wendogo
         private void HandleTargetSelected(int targetID)
         {
             _intTarget = targetID;
+        }
+
+        public void HandleCancelTimer()
+        {
+            eventTimer.CancelTimer();
         }
 
         public void SelectCard(CardObjectData card)
@@ -391,7 +411,7 @@ namespace Wendogo
 
             Debug.Log("Card burnt");
 
-            HandleUsedCard();
+            HandleUsedCard(true);
             //Placeholder for sending card lacking to server        
             //NotifyMissingCards();
         }
@@ -415,13 +435,13 @@ namespace Wendogo
 
         }
 
-        public void HandleUsedCard()
+        public void HandleUsedCard(bool isBurning = false)
         {
 
             //Remove the card from the hand
             _handManager.Discard(ActiveCard.gameObject);
 
-            if (ActiveCard.Card.isPassive)
+            if (ActiveCard.Card.isPassive && !isBurning)
             {
                 Debug.Log("Passive card placed");
             }
@@ -444,9 +464,9 @@ namespace Wendogo
         public static PlayerController GetPlayer(ulong clientId)
         {
             // The player is either dead, or he was not in this list to begin with.
-            if (!ServerManager.Instance.PlayersById.ContainsKey(clientId))
+            if (ServerManager.Instance.DeadPlayersId.Contains(clientId))
                 return null;
-            
+
             if (NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out var networkClient))
                 return networkClient.PlayerObject.GetComponent<PlayerController>();
 
@@ -547,6 +567,36 @@ namespace Wendogo
             }
         }
 
+        private void HandleTick(int secondsLeft)
+        {
+            PlayerUI.Instance.DefineTimer(secondsLeft);
+        }
+
+        private void HandleTimerOver()
+        {
+            pcSMObject.GetComponent<PlayerControllerSM>().TimesUp();
+        }
+
+        public async void ChangeResource(int resourceType, int delta)
+        {
+
+            if (ServerManager.Instance.currentCycle.Value == Cycle.Day)
+            {
+                if (resourceType == 0)
+                    wood.Value = Mathf.Clamp(wood.Value + delta, 0, 100);
+                else
+                    food.Value = Mathf.Clamp(food.Value + delta, 0, 100);
+            }
+            else
+            {
+                if (resourceType == 0)
+                    hiddenWood += delta;
+                else
+                    hiddenFood += delta;
+                await UniTask.WaitForEndOfFrame();
+            }
+        }
+
         public void UpdateHearts(int oldHealthValue, int newHealthValue)
         {
             Debug.Log($"New health is: {newHealthValue} and old health is {oldHealthValue} ");
@@ -560,6 +610,11 @@ namespace Wendogo
                 {
                     PlayerUI.Instance.hearts[i].gameObject.SetActive(true);
                 }
+        }
+
+        public void UpdatePA(int amount)
+        {
+            PlayerUI.Instance.DefinePAs(amount);
         }
 
         private async UniTaskVoid HandleVoteUIAsync()
@@ -585,6 +640,9 @@ namespace Wendogo
         {
             Role.Value = role;
             playerUIInstance?.GetRole(role.ToString());
+            if (role == RoleType.Wendogo)
+                PlayerUI.Instance.SetWendogoUI();
+
         }
 
         [Rpc(SendTo.SpecifiedInParams)]
@@ -755,24 +813,96 @@ namespace Wendogo
         {
             ChangeHealth(delta);
         }
-        
+
+        [Rpc(SendTo.SpecifiedInParams)]
+        public void RequestResourceChangeRpc(int resourceType, int delta, RpcParams rpcParams)
+        {
+            ChangeResource(resourceType, delta);
+        }
+
+
         [Rpc(SendTo.SpecifiedInParams)]
         public void MuteRpc(bool mute, RpcParams rpcParams)
         {
             SessionManager.Instance.MutePlayer(mute);
         }
-        
+
         [Rpc(SendTo.SpecifiedInParams)]
         public void GroupSelectTargetAsyncRpc(RpcParams rpcParams)
         {
             _ = GroupSelectTargetAsync();
         }
-        
+
         [Rpc(SendTo.SpecifiedInParams)]
         public void EnableInputAndDisableMovingCardsRpc(RpcParams rpcParams)
         {
             EnableInput();
             _handManager.ToggleOffMovingCards(_handManager.handCards);
+        }
+
+        [Rpc(SendTo.SpecifiedInParams)]
+        public void DeleteCardFromZoneRpc(string cardName, RpcParams rpcParams)
+        {
+            _handManager.DestroyPassiveCard(cardName);
+        }
+
+        [Rpc(SendTo.SpecifiedInParams)]
+        public void ShowCardsCanvaRpc(int CardId, RpcParams rpcParams)
+        {
+            ShowOtherPlayerCards(CardId);
+        }
+
+        [Rpc(SendTo.SpecifiedInParams)]
+        public void ChangeGuardianStatusRpc(bool hasAGuardian, int designatedGuardianID, RpcParams rpcParams)
+        {
+            hasGuardian.Value = hasAGuardian;
+            if (designatedGuardianID >= 0)
+                guardianID = (ulong)designatedGuardianID;
+            else
+                guardianID = 1000;
+        }
+
+        private async void ShowOtherPlayerCards(int CardId)
+        {
+            GameObject _showingCardsUI = Instantiate(UIPrefab);
+            _showingCardsUI.SetActive(true);
+            RawImage imageToChange = _showingCardsUI.GetComponentInChildren<RawImage>();
+
+            CardDataSO cardDataSO = DataCollection.Instance.cardDatabase.GetCardByID(CardId);
+            Texture2D texture = cardDataSO.CardVisual;
+            imageToChange.texture = texture;
+
+            await UniTask.WaitForSeconds(3);
+
+            _showingCardsUI.SetActive(false);
+            Destroy(_showingCardsUI);
+
+        }
+
+        [Rpc(SendTo.SpecifiedInParams)]
+        public void ShowCardsDivinationRpc(int[] CardId, RpcParams rpcParams)
+        {
+            StartCoroutine(ShowCardsCoroutine(CardId));
+        }
+
+        private IEnumerator ShowCardsCoroutine(int[] cardIds)
+        {
+            if (_showcardUI == null)
+                _showcardUI = Instantiate(UIPrefab);
+
+            var imageToChange = _showcardUI.GetComponentInChildren<RawImage>(true);
+
+            foreach (var cardId in cardIds)
+            {
+                _showcardUI.SetActive(true);
+
+                var cardDataSO = DataCollection.Instance.cardDatabase.GetCardByID(cardId);
+                imageToChange.texture = cardDataSO.CardVisual;
+
+                yield return new WaitForSeconds(1.5f);
+
+                _showcardUI.SetActive(false);
+            }
         }
 
         #endregion
@@ -808,6 +938,7 @@ namespace Wendogo
             if (cardDataSO.isPassive || !cardDataSO.HasTarget)
             {
                 _selectedTarget = LocalPlayerId;
+
             }
 
             int nbFood = -1;
@@ -828,6 +959,10 @@ namespace Wendogo
                 {
                     await UniTask.WaitUntil(() => _intTarget >= 0);
                     _selectedTarget = (ulong)_intTarget;
+                    if (cardDataSO.CardEffect is Sacrifice)
+                    {
+                        cardDataSO.CardEffect.Apply(LocalPlayerId, _selectedTarget);
+                    }
                 }
 
             }
@@ -838,7 +973,7 @@ namespace Wendogo
             }
             else if (cardDataSO.isGroup && ServerManager.Instance.currentCycle.Value != Cycle.Night)
             {
-                await UniTask.WaitUntil(() => ServerManager.Instance.PlayerReadyCount.Value == 2);
+                await UniTask.WaitUntil(() => ServerManager.Instance.PlayerReadyCount.Value == 4);
             }
             ServerManager.Instance.TransmitPlayedCardRpc(cardDataSO.ID, _selectedTarget, nbFood, nbWood);
             Debug.Log($"card {cardDataSO.Name} was sent to server ");

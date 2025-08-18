@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Threading.Tasks;
 using System;
 using Unity.Services.Analytics;
+using static UnityEngine.UI.Image;
 
 namespace Wendogo
 {
@@ -15,7 +16,7 @@ namespace Wendogo
 
         public override void Apply(ulong owner, ulong target, int value = -1)
         {
-            if (value <= -1) value = 0;
+            if (value == -1) value = 0;
             var newValue = damageDone + value;
             
             var targetPlayer = PlayerController.GetPlayer(target);
@@ -29,14 +30,11 @@ namespace Wendogo
                 }
                 else
                 {
-                    targetPlayer.guardian.ChangeHealth(newValue);
-                    targetPlayer.hasGuardian.Value = false;
+                    ulong guardianID = targetPlayer.guardianID;
+                    ServerManager.Instance.ChangePlayerHealthRpc(newValue, guardianID);
+                    ServerManager.Instance.AskChangeGuardianStatusRpc(false, target);
                 }
             }
-            
-            HandManager handManager = FindFirstObjectByType<HandManager>();
-            handManager.DestroyPassiveCard("Trap");
-            handManager.DestroyPassiveCard("BloodBounty");
         }
 
         public override void ShowUI()

@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 6447064145497080928}
   - component: {fileID: 2759136951029951422}
   - component: {fileID: 2433326462367118140}
+  - component: {fileID: 934834418507102801}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -81,6 +82,9 @@ MonoBehaviour:
   CardDatabaseSO: {fileID: 11400000, guid: 5318d161afaa23f45936fbd5e4b9da0c, type: 2}
   LocalPlayerId: 0
   temporaryTask: -1
+  isFlighting: 0
+  UIPrefab: {fileID: 4366196669929515438, guid: 67d464e1ff5762c4889fefceb47205b5, type: 3}
+  eventTimer: {fileID: 934834418507102801}
   hiddenHealth: 0
   maxHealth: 6
   health:
@@ -232,6 +236,18 @@ MonoBehaviour:
         byte0125: 0
   hasGuardian:
     m_InternalValue: 0
-  guardian: {fileID: 0}
+  guardianID: 0
   eatPorc:
     m_InternalValue: 0
+--- !u!114 &934834418507102801
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1698801561783264169}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f035b707fb5c9049a21a92412618690, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

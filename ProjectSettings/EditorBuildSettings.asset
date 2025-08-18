@@ -29,6 +29,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Game Ralph Integration.unity
     guid: 0de61ea3d629fd84e8ee61af584cd0c3
+  - enabled: 1
+    path: Assets/Scenes/Game Alexis UI.unity
+    guid: b214acbc7893e8c43b0c478143fd532a
+  - enabled: 1
+    path: Assets/Scenes/Game Valentin UI.unity
+    guid: 588a86c25be2bea4b812f33374f71278
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

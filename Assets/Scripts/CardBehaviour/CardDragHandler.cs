@@ -38,7 +38,7 @@ namespace Wendogo
             // Move in local (anchored) space by the pointer delta
             _rectTransform.anchoredPosition += eventData.delta / _canvas.scaleFactor;
             _rectTransform.rotation = Quaternion.identity;
-            _rectTransform.localScale = Vector3.one;
+            //_rectTransform.localScale = Vector3.one;
         }
 
         public void OnEndDrag(PointerEventData eventData)

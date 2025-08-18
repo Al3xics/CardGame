@@ -7,11 +7,12 @@ namespace Wendogo
     public class StopSabotage : CardEffect
     {
         public GameObject prefabUI;
+        private GameObject _stopCanvaInstance;
         public override void Apply(ulong owner, ulong target, int value = -1)
         {
             if (target == 0)
                 ServerManager.Instance.AskToUnlockResourcesRpc(false, false);
-            else if (value == 1)
+            else if (target == 1)
                 ServerManager.Instance.AskToUnlockResourcesRpc(true, false);
             
             AnalyticsManager.Instance.RecordEvent(new CustomEvent("stopSabotageActiveCardWasApplied"));
@@ -20,17 +21,16 @@ namespace Wendogo
         
         public override void ShowUI()
         {
-            if (prefabUI == null)
-                prefabUI = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject;
-            prefabUI.SetActive(true);
+            if (_stopCanvaInstance == null)
+                _stopCanvaInstance = Instantiate(prefabUI);
+            _stopCanvaInstance.SetActive(true);
         }
         
         public override void HideUI(bool clearVotes)
         {
             if (prefabUI == null)
-                prefabUI = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject;
-            prefabUI.SetActive(false);
-            base.HideUI(clearVotes);
+                _stopCanvaInstance.SetActive(false);
+            Destroy(_stopCanvaInstance.gameObject);
         }
     }
 }

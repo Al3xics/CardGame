@@ -1,9 +1,13 @@
+using System;
+
 namespace Wendogo
 {
     //The state machine for the player controller based on the template
     //Used to insure clean state transition for the players
     public class PlayerControllerSM : StateMachine<PlayerControllerSM>
     {
+        public event Action<int> playerPAUpdated;
+
         protected override State<PlayerControllerSM> GetInitialState()
         {
             PCInputState inputstate = new PCInputState(this, PlayerController.LocalPlayer);
@@ -33,6 +37,16 @@ namespace Wendogo
         public void ChangeToDeathState()
         {
             ChangeState<PCDeathState>();
+        }
+
+        public void TimesUp()
+        {
+            ChangeState<PCTurnOverState>();
+        }
+
+        public void RaisePlayerPAUpdated(int newValue)
+        {
+            playerPAUpdated?.Invoke(newValue);
         }
     }
 }

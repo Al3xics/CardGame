@@ -30,11 +30,7 @@ namespace Wendogo
 
         #region Actions References
 
-        private Action<FXEventContext> _onPlayerTurn;
-        private Action<FXEventContext> _onPlayerWin;
-        private Action<FXEventContext> _onPlayerLose;
-        private Action<FXEventContext> _onWendogoWin;
-        private Action<FXEventContext> _onWendogoLose;
+        private Action<FXEventContext> _handler;
 
         #endregion
 
@@ -58,26 +54,14 @@ namespace Wendogo
 
         private void OnEnable()
         {
-            _onPlayerTurn = fxEventContext => HandleFXEvents(fxEventContext).Forget();
-            _onPlayerWin = fxEventContext => HandleFXEvents(fxEventContext).Forget();
-            _onPlayerLose = fxEventContext => HandleFXEvents(fxEventContext).Forget();
-            _onWendogoWin = fxEventContext => HandleFXEvents(fxEventContext).Forget();
-            _onWendogoLose = fxEventContext => HandleFXEvents(fxEventContext).Forget();
+            _handler = fxEventContext => HandleFXEvents(fxEventContext).Forget();
 
-            GameEvents.OnPlayerTurn += _onPlayerTurn;
-            GameEvents.OnPlayerWin += _onPlayerWin;
-            GameEvents.OnPlayerLose += _onPlayerLose;
-            GameEvents.OnWendogoWin += _onWendogoWin;
-            GameEvents.OnWendogoLose += _onWendogoLose;
+            GameEvents.OnFXEvent += _handler;
         }
 
         private void OnDisable()
         {
-            GameEvents.OnPlayerTurn -= _onPlayerTurn;
-            GameEvents.OnPlayerWin -= _onPlayerWin;
-            GameEvents.OnPlayerLose -= _onPlayerLose;
-            GameEvents.OnWendogoWin -= _onWendogoWin;
-            GameEvents.OnWendogoLose -= _onWendogoLose;
+            GameEvents.OnFXEvent -= _handler;
         }
 
         #endregion

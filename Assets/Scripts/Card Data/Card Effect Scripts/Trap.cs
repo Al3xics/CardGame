@@ -7,7 +7,7 @@ namespace Wendogo
     [CreateAssetMenu(fileName = "Trap", menuName = "Card Effects/Trap")]
     public class Trap : CardEffect
     {
-        public int defenseValue = 1;
+        public int defenseValue = -2;
 
         public override bool ApplyPassive(int playedCardId, ulong origin, ulong target, out int value)
         {
@@ -20,6 +20,9 @@ namespace Wendogo
             {
                 value = defenseValue;
                 Debug.Log($"Defense by {value}");
+
+                HandManager handManager = originPlayer._handManager;
+                handManager.DestroyPassiveCard("Trap");
                 AnalyticsManager.Instance.RecordEvent(new CustomEvent("trapPassiveCardWasApplied"));
                 return true;
             }

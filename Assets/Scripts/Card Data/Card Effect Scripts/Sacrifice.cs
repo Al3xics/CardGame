@@ -1,5 +1,8 @@
-﻿using Unity.Services.Analytics;
+﻿using Cysharp.Threading.Tasks;
+using Unity.Services.Analytics;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
+using static UnityEngine.UI.GridLayoutGroup;
 
 namespace Wendogo
 {
@@ -8,23 +11,44 @@ namespace Wendogo
     {
         [HideInInspector]
         public GameObject prefabUI;
+        private ulong originalPlayerID;
+        private PlayerController playerController;
 
-        public override void Apply(ulong owner, ulong target, int value = -1)
+        public override async void Apply(ulong owner, ulong target, int value = -1)
         {
             var targetPlayer = PlayerController.GetPlayer(target);
+            playerController = targetPlayer;
+            originalPlayerID = owner;
             if (targetPlayer != null)
             {
-                targetPlayer.hasGuardian.Value = true;
-                targetPlayer.guardian = PlayerController.GetPlayer(owner);
+                ServerManager.Instance.AskChangeGuardianStatusRpc(true, target, (int)owner);
                 AnalyticsManager.Instance.RecordEvent(new CustomEvent("sacrificeActiveCardWasApplied"));
+                await UniTask.WaitForSeconds(0.5f);
+                targetPlayer.hasGuardian.OnValueChanged += RemoveSacrifice;
             }
         }
+
+        //private void OnDestroy()
+        //{
+        //    playerController.hasGuardian.OnValueChanged -= RemoveSacrifice;
+        //}
 
         public override bool ApplyPassive(int playedCardId, ulong origin, ulong target, out int value)
         {
             value = -1;
+
+            AnalyticsManager.Instance.RecordEvent(new CustomEvent("trapPassiveCardWasApplied"));
             return true;
         }
+
+        public void RemoveSacrifice(bool oldGuardianStatus, bool newGuardianStatus)
+        {
+            var player = PlayerController.GetPlayer(originalPlayerID);
+            HandManager handManager = player._handManager;
+            handManager.DestroyPassiveCard("Sacrifice");
+        }
+
+
 
         public override void ShowUI()
         {

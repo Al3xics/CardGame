@@ -13,7 +13,7 @@
             ServerManager.Instance.RemovePlayerFromListsRpc(_player.OwnerClientId);
             SessionManager.Instance.MutePlayer(true);
             _player._handManager.ToggleOffMovingCards(_player._handManager.handCards);
-            ServerManager.Instance.BroadcastSharedFXEventRpc(new FXEventContext
+            ServerManager.Instance.BroadcastLocalFXEventToPlayerRpc(new FXEventContext
             {
                 fxType = FXEventType.OnPlayerDeath,
                 playerID = _player.OwnerClientId

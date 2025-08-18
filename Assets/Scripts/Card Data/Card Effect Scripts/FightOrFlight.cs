@@ -14,7 +14,7 @@ namespace Wendogo
             PlayerController playerOwner = PlayerController.GetPlayer(owner);
             PlayerController playerTarget = PlayerController.GetPlayer(target);
             
-            if (value <= -1) value = 0;
+            if (value == -1) value = 0;
             var newValue = damageDone + value;
 
             if (playerOwner.Role.Value == RoleType.Wendogo)
@@ -25,8 +25,9 @@ namespace Wendogo
                 }
                 else
                 {
-                    playerTarget.guardian.ChangeHealth(newValue);
-                    playerTarget.hasGuardian.Value = false;
+                    ulong guardianID = playerTarget.guardianID;
+                    ServerManager.Instance.ChangePlayerHealthRpc(newValue, guardianID);
+                    ServerManager.Instance.AskChangeGuardianStatusRpc(false, target);
                 }
             }
             else

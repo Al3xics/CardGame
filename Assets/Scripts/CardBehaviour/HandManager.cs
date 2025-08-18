@@ -33,6 +33,7 @@ namespace Wendogo
 
         //temp
         [SerializeField] CardsHandler _cardsHandler;  //Handles assigning data and visuals to cards
+        public GameObject _drawCardsUI;
 
         public List<GameObject> handCards = new(); //List of all cards currently in hand
         public List<GameObject> passiveZoneCards = new();
@@ -76,7 +77,7 @@ namespace Wendogo
             //Update layout of cards along spline
             UpdateCardPositions();
 
-            g.transform.localScale = Vector3.one;
+            //g.transform.localScale = Vector3.one;
             //Delay between each card draw
             await UniTask.WaitForSeconds(0.25f);
         }
@@ -166,6 +167,8 @@ namespace Wendogo
 
         public void DestroyPassiveCard(string cardName)
         {
+            List<GameObject> cards = new List<GameObject>();
+
             foreach (GameObject passiveCard in passiveZoneCards)
             {
                 CardObjectData cardObjectData;
@@ -173,10 +176,12 @@ namespace Wendogo
 
                 if (cardObjectData.Card.Name == cardName)
                 {
-                    RemoveCardFromPassiveZone(passiveCard);
+                    cards.Add(passiveCard);
                 }
-                break;
-
+            }
+            foreach (var card in cards)
+            {
+                RemoveCardFromPassiveZone(card);
             }
         }
 
@@ -230,6 +235,6 @@ namespace Wendogo
             _cardsHandler.ApplyCardData(card, cardDataSO);
 
             CardDropZone.CallZoneDropEvents(cardObjectData, cardDataSO);
-        }        
+        }
     }
 }

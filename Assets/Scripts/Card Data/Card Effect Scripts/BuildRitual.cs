@@ -28,9 +28,9 @@ namespace Wendogo
             {
                 // Handle food
                 if (isNight)
-                    player.hiddenFood -= value;
+                    player.hiddenFood = player.hiddenFood - value;
                 else
-                    player.food.Value -= value;
+                    player.food.Value = player.food.Value - value;
 
                 ServerManager.Instance.AddRessourceToRitualRpc(isNight, true, !isWendogo, value);
             }
@@ -38,9 +38,9 @@ namespace Wendogo
             {
                 // Handle wood
                 if (isNight)
-                    player.hiddenWood -= value;
+                    player.hiddenWood = player.hiddenWood - value;
                 else
-                    player.wood.Value -= value;
+                    player.wood.Value = player.wood.Value - value;
 
                 ServerManager.Instance.AddRessourceToRitualRpc(isNight, false, !isWendogo, value);
             }
@@ -56,6 +56,7 @@ namespace Wendogo
         public override void HideUI(bool clearVotes)
         {
             _ressouceCanvaInstance.SetActive(false);
+            Destroy( _ressouceCanvaInstance );
             base.HideUI(clearVotes);
         }
     }
