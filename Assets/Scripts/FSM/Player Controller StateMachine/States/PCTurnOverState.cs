@@ -12,6 +12,7 @@ namespace Wendogo
             StateMachine.playerPAUpdated -= _player.UpdatePA;
             Debug.Log("Enter end");
             base.OnEnter();
+            _player._handManager.ToggleOffMovingCards(_player._handManager.handCards);
             _player.HandleCancelTimer();
             PlayerUI.Instance.DefineTimer(60);
             _player.NotifyEndTurn();

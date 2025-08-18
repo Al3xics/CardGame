@@ -1242,12 +1242,16 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 410597146149384154, guid: 97ac440e15bba064d8ea41b10d4ffd16, type: 3}
       propertyPath: autoConnect
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 410597146149384154, guid: 97ac440e15bba064d8ea41b10d4ffd16, type: 3}
       propertyPath: networkManager
       value: 
       objectReference: {fileID: 1357682468}
+    - target: {fileID: 410597146149384154, guid: 97ac440e15bba064d8ea41b10d4ffd16, type: 3}
+      propertyPath: expectedPlayersCount
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 410597146149384154, guid: 97ac440e15bba064d8ea41b10d4ffd16, type: 3}
       propertyPath: 'objectsToDestroy.Array.data[0]'
       value: 

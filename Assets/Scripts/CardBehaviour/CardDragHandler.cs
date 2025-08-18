@@ -7,7 +7,7 @@ namespace Wendogo
     // Handles drag-and-drop behavior for card objects in the UI
     public class CardDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
-        private CanvasGroup _canvasGroup;           //Used to control raycast blocking during drag
+        public CanvasGroup _canvasGroup;           //Used to control raycast blocking during drag
         private RectTransform _rectTransform;       //Transform for UI positioning
         private Vector3 _originalPosition;          //Position to return to if drop is invalid
         private Quaternion _originalRotation;       //Rotation to restore after invalid drag

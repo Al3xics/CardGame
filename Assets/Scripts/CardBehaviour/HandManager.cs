@@ -123,6 +123,10 @@ namespace Wendogo
             foreach (GameObject card in cardsInHand)
             {
                 CardDragHandler handler = card.GetComponent<CardDragHandler>();
+                if (handler._canvasGroup.blocksRaycasts == false)
+                {
+                    handler.RevertPosition();
+                }
                 handler.enabled = false;
             }
         }
