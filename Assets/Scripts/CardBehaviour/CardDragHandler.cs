@@ -12,7 +12,7 @@ namespace Wendogo
         private Vector3 _originalPosition;          //Position to return to if drop is invalid
         private Quaternion _originalRotation;       //Rotation to restore after invalid drag
         private Canvas _canvas;
-
+        private CardDropZone _lastDropZone;
         public PlayerController Owner { get; set; } //To set owner
 
         private void Awake()
@@ -46,10 +46,12 @@ namespace Wendogo
             //_canvasGroup.blocksRaycasts = true;
 
             //Check if the card was dropped on a valid drop zone
-            if (eventData.pointerEnter == null || !eventData.pointerEnter.TryGetComponent(out CardDropZone zone))
+            if (eventData.pointerEnter == null || !eventData.pointerEnter.TryGetComponent(out CardDropZone zone) || eventData.pointerEnter.TryGetComponent(out CardDropZone inactiveZone) &&
+    !inactiveZone.enabled)
             {
                 RevertPosition();
             }
+
 
         }
         public void RevertPosition()

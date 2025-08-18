@@ -1382,7 +1382,7 @@ PrefabInstance:
       objectReference: {fileID: 1357682468}
     - target: {fileID: 410597146149384154, guid: 97ac440e15bba064d8ea41b10d4ffd16, type: 3}
       propertyPath: expectedPlayersCount
-      value: 4
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 410597146149384154, guid: 97ac440e15bba064d8ea41b10d4ffd16, type: 3}
       propertyPath: 'objectsToDestroy.Array.data[0]'
