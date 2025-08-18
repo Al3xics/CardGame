@@ -97,6 +97,11 @@ namespace Wendogo
             NetworkVariableWritePermission.Server
         );
 
+        public NetworkVariable<int> livingPlayerCount = new(
+            0,
+            NetworkVariableReadPermission.Everyone,
+            NetworkVariableWritePermission.Server);
+
         public NetworkList<ulong> DeadPlayersId = new(
             new List<ulong>(),
             NetworkVariableReadPermission.Everyone,
@@ -129,6 +134,7 @@ namespace Wendogo
         {
             PlayerFinishSceneLoadedCpt.Value = 0;
             PlayersById = FindObjectsByType<PlayerController>(FindObjectsSortMode.None).ToDictionary(p => p.OwnerClientId);
+            UpdateLivingPlayerCount();
 
             foreach (var player in PlayersById.Values)
             {
@@ -170,6 +176,12 @@ namespace Wendogo
         {
             endGameAnimationFinishedCpt.Value = 0;
         }
+        
+        private void UpdateLivingPlayerCount()
+        {
+            int count = PlayersById.Values.Count(p => !DeadPlayersId.Contains(p.OwnerClientId));
+            livingPlayerCount.Value = count;
+        }
 
         #endregion
 
@@ -180,6 +192,7 @@ namespace Wendogo
         {
             PlayersById.Remove(playerId);
             DeadPlayersId.Add(playerId);
+            UpdateLivingPlayerCount();
             GameStateMachine.Instance.UnregisterPlayerID(playerId);
         }
 
@@ -521,6 +534,7 @@ namespace Wendogo
             foreach (var player in PlayersById.Values)
                 player.DeleteCardFromZoneRpc(cardName, RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
         }
+        
         [Rpc(SendTo.Server)]
         public void AskChangeGuardianStatusRpc(bool isGuardian, ulong clientID, int designatedGuardianID = -1)
         {
@@ -528,6 +542,12 @@ namespace Wendogo
             player.ChangeGuardianStatusRpc(isGuardian, designatedGuardianID, RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
         }
 
+        [Rpc(SendTo.Server)]
+        public void SetPlayerTurnStateRpc(bool isPlayerTurn, ulong clientID)
+        {
+            if (PlayersById.TryGetValue(clientID, out var player))
+                player.SetPlayerTurnStateRpc(isPlayerTurn, RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
+        }
 
         #endregion
 
@@ -543,7 +563,7 @@ namespace Wendogo
         public void BroadcastLocalFXEventToPlayerRpc(FXEventContext fxEventContext)
         {
             if (PlayersById.TryGetValue(fxEventContext.playerID, out var player))
-                player.BroadcastLocalFXEventToPlayerRpc(fxEventContext, RpcTarget.Single(fxEventContext.playerID, RpcTargetUse.Temp)); ;
+                player.BroadcastLocalFXEventToPlayerRpc(fxEventContext, RpcTarget.Single(fxEventContext.playerID, RpcTargetUse.Temp));
         }
 
         #endregion
