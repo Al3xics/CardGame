@@ -8,7 +8,7 @@ namespace Wendogo
     {
         public int ResourceAmount = 1;
         public GameObject prefabUITarget;
-        public GameObject prefabRessource;
+        private GameObject _uiStealRessourceInstance;
 
         public override void Apply(ulong owner, ulong target, int value = -1)
         {
@@ -21,14 +21,18 @@ namespace Wendogo
             {
                 //temp
                 //Change you can pick the resource
-                value = Random.Range(0, 2);
+                //value = Random.Range(0, 2);
                 if (value == 0) // steal wood
                 {
+                    if (targetPlayer.wood.Value <= 0) return;
+
                     ServerManager.Instance.ChangePlayerResourceRpc(value, -ResourceAmount, target);
                     ServerManager.Instance.ChangePlayerResourceRpc(value, ResourceAmount, owner);
                 }
                 else if (value == 1) // steal food
                 {
+                    if (targetPlayer.food.Value <= 0) return;
+
                     ServerManager.Instance.ChangePlayerResourceRpc(value, -ResourceAmount, target);
                     ServerManager.Instance.ChangePlayerResourceRpc(value, ResourceAmount, owner);
                 }
@@ -39,18 +43,17 @@ namespace Wendogo
 
         public override void ShowUI(GameObject uiInstance = null)
         {
-            if (prefabUITarget == null)
-                prefabUITarget = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject;
-            base.ShowUI(prefabUITarget);
+            if (_uiStealRessourceInstance == null)
+                _uiStealRessourceInstance = Instantiate(prefabUITarget);
+            base.ShowUI(_uiStealRessourceInstance);
             prefabUITarget.SetActive(true);
         }
 
         public override void HideUI(bool clearVote, GameObject uiInstance = null)
         {
-            if (prefabUITarget == null)
-                prefabUITarget = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject;
-            prefabUITarget.SetActive(false);
-            base.HideUI(clearVote, prefabUITarget);
+            _uiStealRessourceInstance.SetActive(false);
+            Destroy(_uiStealRessourceInstance.gameObject);
+            base.HideUI(clearVote, _uiStealRessourceInstance);
         }
 
     }

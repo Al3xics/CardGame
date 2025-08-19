@@ -66,10 +66,12 @@ namespace Wendogo
         private GameObject _showcardUI;
 
         public PlayerAction[] NightActions;
-        
+
         public bool isDead = false;
         public ulong selectedVotedTarget;
         public bool isPlayerTurn = false;
+
+        public int stolenID = -1;
 
         [SerializeField] public EventTimer eventTimer;
 
@@ -171,7 +173,7 @@ namespace Wendogo
         public override void OnNetworkSpawn()
         {
             PlayerControllerSM playerController = null;
-            
+
             if (AutoSessionBootstrapper.AutoConnect)
             {
                 _inputEvent = GameObject.Find("EventSystem")?.GetComponent<EventSystem>();
@@ -291,7 +293,7 @@ namespace Wendogo
 
             Debug.Log($"Selected target is {_intTarget} ");
         }
-        
+
         public async UniTask SelectRessourceAsync()
         {
             _intFood = -1;
@@ -323,7 +325,7 @@ namespace Wendogo
 
             Debug.Log($"Selected target is {_intTarget} with {_intFood} food and {_intWood} wood. ");
         }
-        
+
         public async UniTask GroupSelectTargetAsync()
         {
             await UniTask.WaitUntil(() => ServerManager.Instance.PlayerReadyCount.Value == ServerManager.Instance.livingPlayerCount.Value);
@@ -460,7 +462,7 @@ namespace Wendogo
             // The player is either dead, or he was not in this list to begin with.
             if (ServerManager.Instance.DeadPlayersId.Contains(clientId))
                 return null;
-            
+
             if (NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out var networkClient))
                 return networkClient.PlayerObject.GetComponent<PlayerController>();
 
@@ -563,6 +565,8 @@ namespace Wendogo
             }
         }
 
+
+
         #endregion
 
         #region UI Methods
@@ -610,14 +614,14 @@ namespace Wendogo
             {
                 if (resourceType == 0)
                     wood.Value = Mathf.Clamp(wood.Value + delta, 0, 100);
-                else
+                else if(resourceType == 1)
                     food.Value = Mathf.Clamp(food.Value + delta, 0, 100);
             }
             else
             {
                 if (resourceType == 0)
                     hiddenWood += delta;
-                else
+                else if (resourceType == 1)
                     hiddenFood += delta;
                 await UniTask.WaitForEndOfFrame();
             }
@@ -713,7 +717,18 @@ namespace Wendogo
             }
 
             var effect = DataCollection.Instance.cardDatabase.GetCardByID(playedCardId).CardEffect;
-            effect.Apply(origin, OwnerClientId, isApplyPassive ? value : -1);
+
+            if (effect is StealResource && value != 1000)
+            {
+                value = stolenID;
+            }
+
+            var arg = effect is StealResource
+                ? value
+                : (isApplyPassive ? value : -1);
+
+            effect.Apply(origin, OwnerClientId, arg);
+
             Debug.Log($"Effect Apply - Origin : {origin}, Target : {OwnerClientId}");
             AnalyticsManager.Instance.RecordEvent(new CustomEvent("activeCardPlayed"));
             FinishedCardPlayedRpc(RpcTarget.Me);
@@ -848,7 +863,7 @@ namespace Wendogo
         {
             ChangeResource(resourceType, delta);
         }
-        
+
         [Rpc(SendTo.SpecifiedInParams)]
         public void MuteRpc(bool mute, RpcParams rpcParams)
         {
@@ -902,6 +917,11 @@ namespace Wendogo
             isPlayerTurn = playerTurn;
         }
 
+        [Rpc(SendTo.SpecifiedInParams)]
+        public void SetStolenIDRpc(int id, RpcParams rpcParams)
+        {
+            stolenID = id;
+        }
         #endregion
 
         #region RPC Animations

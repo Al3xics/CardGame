@@ -11,6 +11,8 @@ namespace Wendogo
         public static event Action<int> OnTargetPicked;
 
         [SerializeField] private DarkTrickHandler _darkTrickHandler;
+        [SerializeField] private StealResourceHandler _stealResourceHandler;
+
 
         public void TargetSelection()
         {
@@ -27,6 +29,17 @@ namespace Wendogo
             _darkTrickHandler.PlaydtSeeCard((ulong)_playerID);
         }
 
+
+        public void StealTargetPick()
+        {
+            _stealResourceHandler.StealTargetPick(_playerID);
+        }
+
+        public void SendStealTargets()
+        {
+            ServerManager.Instance.SetStealingAllPlayersRpc(_playerID);
+            OnTargetPicked?.Invoke(_stealResourceHandler._pickedTargetToSteal);
+        }
 
     }
 }
