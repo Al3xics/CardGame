@@ -27,6 +27,11 @@ namespace Wendogo
         public bool ShowDebugLogs => showDebugLogs;
 
         /// <summary>
+        /// Represents the initial state of the state machine.
+        /// </summary>
+        private State<T> InitialState { get; set; }
+
+        /// <summary>
         /// Represents the current state of the state machine.
         /// This property holds the active state instance of type <see cref="State{T}"/> for the state machine.
         /// The state machine transitions between states by updating this property.
@@ -65,7 +70,7 @@ namespace Wendogo
         /// </summary>
         public void SetInitialState()
         {
-            CurrentState = GetInitialState();
+            InitialState = GetInitialState();
         }
 
         /// <summary>
@@ -74,6 +79,7 @@ namespace Wendogo
         /// </summary>
         public void StartStateMachine()
         {
+            CurrentState = InitialState;
             CurrentState?.OnEnter();
         }
 
