@@ -66,7 +66,7 @@ namespace Wendogo
         private GameObject _showcardUI;
 
         public PlayerAction[] NightActions;
-
+        
         public bool isDead = false;
         public ulong selectedVotedTarget;
         public bool isPlayerTurn = false;
@@ -172,8 +172,6 @@ namespace Wendogo
 
         public override void OnNetworkSpawn()
         {
-            PlayerControllerSM playerController = null;
-
             if (AutoSessionBootstrapper.AutoConnect)
             {
                 _inputEvent = GameObject.Find("EventSystem")?.GetComponent<EventSystem>();
@@ -182,7 +180,7 @@ namespace Wendogo
                 if (IsOwner)
                 {
                     pcSMObject = new GameObject($"{nameof(PlayerControllerSM)}");
-                    playerController = pcSMObject.AddComponent<PlayerControllerSM>();
+                    pcSMObject.AddComponent<PlayerControllerSM>();
                 }
 
                 if (_prefabUI == null) { _prefabUI = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject; }
@@ -191,7 +189,6 @@ namespace Wendogo
 
             LocalPlayer = this;
             LocalPlayerId = NetworkManager.Singleton.LocalClientId;
-            if (AutoSessionBootstrapper.AutoConnect && playerController != null) playerController.SetInitialState(); // done here after LocalPlayer is set
 
             food.OnValueChanged += UpdateFoodText;
             wood.OnValueChanged += UpdateWoodText;
@@ -229,7 +226,7 @@ namespace Wendogo
                 if (_inputEvent != null && _inputEvent.enabled) _inputEvent.enabled = false;
                 if (_handManager == null) _handManager = GameObject.FindWithTag("hand")?.GetComponent<HandManager>();
                 pcSMObject = new GameObject($"{nameof(PlayerControllerSM)}");
-                pcSMObject.AddComponent<PlayerControllerSM>().SetInitialState();
+                pcSMObject.AddComponent<PlayerControllerSM>();
 
                 _fxManager = GameObject.Find("FXEventManager")?.GetComponent<FXEventManager>();
 
@@ -293,7 +290,7 @@ namespace Wendogo
 
             Debug.Log($"Selected target is {_intTarget} ");
         }
-
+        
         public async UniTask SelectRessourceAsync()
         {
             _intFood = -1;
@@ -325,7 +322,7 @@ namespace Wendogo
 
             Debug.Log($"Selected target is {_intTarget} with {_intFood} food and {_intWood} wood. ");
         }
-
+        
         public async UniTask GroupSelectTargetAsync()
         {
             await UniTask.WaitUntil(() => ServerManager.Instance.PlayerReadyCount.Value == ServerManager.Instance.livingPlayerCount.Value);
@@ -462,7 +459,7 @@ namespace Wendogo
             // The player is either dead, or he was not in this list to begin with.
             if (ServerManager.Instance.DeadPlayersId.Contains(clientId))
                 return null;
-
+            
             if (NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out var networkClient))
                 return networkClient.PlayerObject.GetComponent<PlayerController>();
 
@@ -564,8 +561,6 @@ namespace Wendogo
                 _showcardUI.SetActive(false);
             }
         }
-
-
 
         #endregion
 
@@ -723,10 +718,7 @@ namespace Wendogo
                 value = stolenID;
             }
 
-            var arg = effect is StealResource
-                ? value
-                : (isApplyPassive ? value : -1);
-
+            var arg = effect is StealResource ? value : (isApplyPassive ? value : -1);
             effect.Apply(origin, OwnerClientId, arg);
 
             Debug.Log($"Effect Apply - Origin : {origin}, Target : {OwnerClientId}");
@@ -863,7 +855,7 @@ namespace Wendogo
         {
             ChangeResource(resourceType, delta);
         }
-
+        
         [Rpc(SendTo.SpecifiedInParams)]
         public void MuteRpc(bool mute, RpcParams rpcParams)
         {

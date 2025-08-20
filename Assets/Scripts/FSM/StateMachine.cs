@@ -60,32 +60,16 @@ namespace Wendogo
         private readonly Dictionary<Type, State<T>> _states = new();
 
         /// <summary>
-        /// Initializes the state machine. This method calls the <see cref="GetInitialState"/> to retrieve
-        /// the starting state of the state machine.
-        /// </summary>
-        public void SetInitialState()
-        {
-            CurrentState = GetInitialState();
-        }
-
-        /// <summary>
-        /// Transitions the state machine to the initial state.
-        /// Invoke the <see cref="State{T}.OnEnter"/> method of the <see cref="CurrentState"/>.
+        /// Initializes the state machine and transitions to the initial state.
+        /// This method calls the <see cref="GetInitialState"/> to retrieve the starting state
+        /// of the state machine. It then transitions to that state by invoking its <see cref="State{T}.OnEnter"/> method.
+        /// If overridden in derived classes, ensure to call the base implementation to properly initialize the state machine.
         /// </summary>
         public void StartStateMachine()
         {
+            _states.Clear();
+            CurrentState = GetInitialState();
             CurrentState?.OnEnter();
-        }
-
-        /// <summary>
-        /// Initializes the state machine by setting the initial state and starting the execution of the state machine.
-        /// The method internally invokes both <see cref="SetInitialState"/> to determine the initial state
-        /// and <see cref="StartStateMachine"/> to begin transitioning between states.
-        /// </summary>
-        public void SetInitialStateAndStart()
-        {
-            SetInitialState();
-            StartStateMachine();
         }
 
         /// <summary>
