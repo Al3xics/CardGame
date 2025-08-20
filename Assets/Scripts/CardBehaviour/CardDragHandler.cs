@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using LitMotion;
+using LitMotion.Extensions;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -10,9 +12,14 @@ namespace Wendogo
         public CanvasGroup _canvasGroup;           //Used to control raycast blocking during drag
         private RectTransform _rectTransform;       //Transform for UI positioning
         private Vector3 _originalPosition;          //Position to return to if drop is invalid
+        private Vector3 _originalScale;          //Position to return to if drop is invalid
         private Quaternion _originalRotation;       //Rotation to restore after invalid drag
         private Canvas _canvas;
         private CardDropZone _lastDropZone;
+
+        [SerializeField] private float _growthFactor = 1.1f;
+        [SerializeField] private float _growthDuration = 1f;
+
         public PlayerController Owner { get; set; } //To set owner
 
         private void Awake()
@@ -28,6 +35,9 @@ namespace Wendogo
             //Store initial position and rotation in case drag is cancelled or invalid
             _originalPosition = _rectTransform.position;
             _originalRotation = _rectTransform.rotation;
+            _originalScale = _rectTransform.localScale;
+
+            LMotion.Create(_originalScale, _originalScale * _growthFactor, _growthDuration).BindToLocalScale(gameObject.transform);
 
             //Disable raycasts to allow card to pass through UI drop targets
             _canvasGroup.blocksRaycasts = false;
@@ -38,12 +48,10 @@ namespace Wendogo
             // Move in local (anchored) space by the pointer delta
             _rectTransform.anchoredPosition += eventData.delta / _canvas.scaleFactor;
             _rectTransform.rotation = Quaternion.identity;
-            //_rectTransform.localScale = Vector3.one;
         }
 
         public void OnEndDrag(PointerEventData eventData)
         {
-            //_canvasGroup.blocksRaycasts = true;
 
             //Check if the card was dropped on a valid drop zone
             if (eventData.pointerEnter == null || !eventData.pointerEnter.TryGetComponent(out CardDropZone zone) || eventData.pointerEnter.TryGetComponent(out CardDropZone inactiveZone) &&
@@ -60,6 +68,7 @@ namespace Wendogo
             _canvasGroup.blocksRaycasts = true;
             _rectTransform.position = _originalPosition;
             _rectTransform.rotation = _originalRotation;
+            LMotion.Create(_rectTransform.transform.localScale, _originalScale, _growthDuration).BindToLocalScale(gameObject.transform);
         }
 
     }

@@ -40,6 +40,7 @@ namespace Wendogo
 
         public override void OnExit()
         {
+            if( _drawCardsCanva != null )
             _drawCardsCanva.SetActive(false);
 
             base.OnExit();
