@@ -328,7 +328,7 @@ namespace Wendogo
                 if (PlayerFinishSceneLoadedCpt.Value >= NetworkManager.Singleton.ConnectedClientsList.Count)
                 {
                     Debug.Log("All Players are here.");
-                    GameStateMachine.Instance.SetInitialStateAndStart();
+                    GameStateMachine.Instance.StartStateMachine();
                 }
                 else
                 {
