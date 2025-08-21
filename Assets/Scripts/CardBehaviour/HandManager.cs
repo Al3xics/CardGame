@@ -30,6 +30,8 @@ namespace Wendogo
         public GameObject _leurreButton;
         public CardDataSO _leurreCard;
 
+        public CardDropZone trashZone;
+
 
         //temp
         [SerializeField] CardsHandler _cardsHandler;  //Handles assigning data and visuals to cards
@@ -121,6 +123,10 @@ namespace Wendogo
             foreach (GameObject card in cardsInHand)
             {
                 CardDragHandler handler = card.GetComponent<CardDragHandler>();
+                if (handler._canvasGroup.blocksRaycasts == false)
+                {
+                    handler.RevertPosition();
+                }
                 handler.enabled = false;
             }
         }

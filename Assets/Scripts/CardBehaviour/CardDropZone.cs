@@ -20,8 +20,14 @@ namespace Wendogo
 
         [SerializeField] private bool isBurning;
 
+        [SerializeField] private int burnCount;
+
         #endregion
 
+        private void OnEnable()
+        {
+            burnCount = 0;
+        }
 
         public void OnDrop(PointerEventData eventData)
         {
@@ -35,7 +41,12 @@ namespace Wendogo
 
             if (isBurning)
             {
+                burnCount++;
                 OnCardBurned?.Invoke(cod);
+                if (burnCount >= 2)
+                {
+                    enabled = false;
+                }
                 return;
             }
 

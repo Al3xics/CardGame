@@ -67,6 +67,7 @@ namespace Wendogo
         /// </summary>
         public void StartStateMachine()
         {
+            _states.Clear();
             CurrentState = GetInitialState();
             CurrentState?.OnEnter();
         }

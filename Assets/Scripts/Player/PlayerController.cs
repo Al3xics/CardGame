@@ -71,6 +71,8 @@ namespace Wendogo
         public ulong selectedVotedTarget;
         public bool isPlayerTurn = false;
 
+        public int stolenID = -1;
+
         [SerializeField] public EventTimer eventTimer;
 
         #endregion
@@ -607,14 +609,14 @@ namespace Wendogo
             {
                 if (resourceType == 0)
                     wood.Value = Mathf.Clamp(wood.Value + delta, 0, 100);
-                else
+                else if(resourceType == 1)
                     food.Value = Mathf.Clamp(food.Value + delta, 0, 100);
             }
             else
             {
                 if (resourceType == 0)
                     hiddenWood += delta;
-                else
+                else if (resourceType == 1)
                     hiddenFood += delta;
                 await UniTask.WaitForEndOfFrame();
             }
@@ -710,7 +712,15 @@ namespace Wendogo
             }
 
             var effect = DataCollection.Instance.cardDatabase.GetCardByID(playedCardId).CardEffect;
-            effect.Apply(origin, OwnerClientId, isApplyPassive ? value : -1);
+
+            if (effect is StealResource && value != 1000)
+            {
+                value = stolenID;
+            }
+
+            var arg = effect is StealResource ? value : (isApplyPassive ? value : -1);
+            effect.Apply(origin, OwnerClientId, arg);
+
             Debug.Log($"Effect Apply - Origin : {origin}, Target : {OwnerClientId}");
             AnalyticsManager.Instance.RecordEvent(new CustomEvent("activeCardPlayed"));
             FinishedCardPlayedRpc(RpcTarget.Me);
@@ -826,7 +836,9 @@ namespace Wendogo
         [Rpc(SendTo.SpecifiedInParams)]
         public void UseVoteUIRpc(bool setUIActive, bool activePlayerInput, RpcParams rpcParams)
         {
+            if (setUIActive) DeathUIManager.Instance.RegisterUI(_prefabUI);
             _prefabUI.SetActive(setUIActive);
+            if (!setUIActive) DeathUIManager.Instance.UnregisterUI(_prefabUI);
 
             if (activePlayerInput)
                 _ = HandleVoteUIAsync(); // Fire-and-forget
@@ -897,6 +909,11 @@ namespace Wendogo
             isPlayerTurn = playerTurn;
         }
 
+        [Rpc(SendTo.SpecifiedInParams)]
+        public void SetStolenIDRpc(int id, RpcParams rpcParams)
+        {
+            stolenID = id;
+        }
         #endregion
 
         #region RPC Animations

@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: StealResource
   m_EditorClassIdentifier: 
   ResourceAmount: 1
-  prefabUITarget: {fileID: 0}
+  prefabUITarget: {fileID: 982774418996978934, guid: 9e8a9573ed772234db364e65e0588330, type: 3}
   prefabRessource: {fileID: 0}

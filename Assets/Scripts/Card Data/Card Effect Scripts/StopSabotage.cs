@@ -19,18 +19,20 @@ namespace Wendogo
         }
         
         
-        public override void ShowUI()
+        public override void ShowUI(GameObject uiInstance = null)
         {
             if (_stopCanvaInstance == null)
                 _stopCanvaInstance = Instantiate(prefabUI);
+            base.ShowUI(_stopCanvaInstance);
             _stopCanvaInstance.SetActive(true);
         }
         
-        public override void HideUI(bool clearVotes)
+        public override void HideUI(bool clearVotes, GameObject uiInstance = null)
         {
             if (prefabUI == null)
                 _stopCanvaInstance.SetActive(false);
             Destroy(_stopCanvaInstance.gameObject);
+            base.HideUI(clearVotes, _stopCanvaInstance);
         }
     }
 }

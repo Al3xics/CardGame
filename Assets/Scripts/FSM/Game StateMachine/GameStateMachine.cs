@@ -28,10 +28,17 @@ namespace Wendogo
 
         /* --------------- Show in Inspector --------------- */
         /// <summary>
+        /// Allows setting a custom turn order for players.
+        /// If left empty, the order will be randomized.
+        /// </summary>
+        [Header("Game Settings")]
+        [Tooltip("Provide a custom turn order for players. Leave empty for random order.")]
+        public List<ulong> customTurnOrder;
+        
+        /// <summary>
         /// Represents the maximum number of turns allowed in the game.
         /// If the number of completed turns reaches this value, the game will end.
         /// </summary>
-        [Header("Game Settings")]
         [SerializeField] private int maximumTurn = 10;
 
         /// <summary>
@@ -128,7 +135,7 @@ namespace Wendogo
         /// Represents a list containing the unique identifiers (IDs) of all players currently
         /// participating in the game. Used to manage player-specific data and turn orders.
         /// </summary>
-        public List<ulong> PlayersID { get; private set; } = new();
+        public List<ulong> PlayersID { get; set; } = new();
 
         private Cycle _cycle = Cycle.Day;
 

@@ -549,6 +549,14 @@ namespace Wendogo
                 player.SetPlayerTurnStateRpc(isPlayerTurn, RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
         }
 
+
+        [Rpc(SendTo.Server)]
+        public void SetStealingAllPlayersRpc(int id)
+        {
+            foreach (var player in PlayersById.Values)
+                player.SetStolenIDRpc(id, RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
+        }
+
         #endregion
 
         #region RPC Animation
