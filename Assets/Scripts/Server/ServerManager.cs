@@ -132,6 +132,8 @@ namespace Wendogo
         // Also registers each player in the GameStateMachine.
         public void InitializePlayers()
         {
+            if (!IsServer) return;
+            
             PlayerFinishSceneLoadedCpt.Value = 0;
             PlayersById = FindObjectsByType<PlayerController>(FindObjectsSortMode.None).ToDictionary(p => p.OwnerClientId);
             UpdateLivingPlayerCount();

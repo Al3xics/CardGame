@@ -5275,6 +5275,8 @@ MonoBehaviour:
     m_InternalValue: 0
   endGameAnimationFinishedCpt:
     m_InternalValue: 0
+  livingPlayerCount:
+    m_InternalValue: 0
 --- !u!1001 &3218768946901839885
 PrefabInstance:
   m_ObjectHideFlags: 0
