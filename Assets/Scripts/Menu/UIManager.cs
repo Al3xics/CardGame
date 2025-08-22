@@ -41,6 +41,12 @@ namespace Wendogo
         [Tooltip("Input field for entering the session code when joining.")]
         public TMP_InputField enterCodeInputField;
 
+        
+        /* ---------- Cards Page Objects --------- */
+        [Header("Cards Page Objects")]
+        [Tooltip("Reference to the cards explanation page container GameObject.")]
+        public GameObject cardsPage;
+
         #endregion
     
         private void Awake()
@@ -78,7 +84,15 @@ namespace Wendogo
             if (showSessionPlayerListClient != null) showSessionPlayerListClient.SetActive(false);
             if (enterCodeInputField != null) enterCodeInputField.text = "";
         }
-        
-        
+    
+        public void SwitchFromMainScreenToCardsPage()
+        {
+            if (cardsPage != null) cardsPage.SetActive(true);
+        }
+    
+        public void SwitchFromCardsPageToMainScreen()
+        {
+            if (cardsPage != null) cardsPage.SetActive(false);
+        }
     }
 }

@@ -27,12 +27,14 @@ namespace Wendogo
         }
 
         private List<SessionPlayerListItem> _cachedPlayerListItems = new();
+        private bool IsHost { get; set; }
 
         #endregion
 
         public void OnEnable()
         {
             SessionEventDispatcher.Instance.Register(this);
+            IsHost = SessionManager.Instance.ActiveSession.IsHost;
             UpdatePlayerList();
         }
 
@@ -131,6 +133,15 @@ namespace Wendogo
             }
             
             _playerListItems.Clear();
+        }
+
+        public async void OnQuitButtonClicked()
+        {
+            await SessionManager.Instance.LeaveSession();
+            if (IsHost)
+                UIManager.Instance.SwitchFromHostToMainScreen();
+            else
+                UIManager.Instance.SwitchFromJoinToMainScreen();
         }
     }
 }

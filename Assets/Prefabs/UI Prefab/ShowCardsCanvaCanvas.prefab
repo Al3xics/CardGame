@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6373263354482667952}
   - component: {fileID: 6483572892042815067}
   m_Layer: 0
-  m_Name: ShpwCardsCanvaCanvas
+  m_Name: ShowCardsCanvaCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

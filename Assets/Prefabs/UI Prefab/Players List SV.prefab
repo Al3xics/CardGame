@@ -638,7 +638,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hostCanKickPlayers: 1
-  listItem: {fileID: 3977174124982759217, guid: b215dd35494360b4783933d1d10fb08e, type: 3}
+  listItem: {fileID: 2067897169495052015, guid: b215dd35494360b4783933d1d10fb08e, type: 3}
   contentRoot: {fileID: 2991542493302887987}
 --- !u!1 &8706924448542722814
 GameObject:

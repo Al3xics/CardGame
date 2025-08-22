@@ -376,10 +376,13 @@ namespace Wendogo
         {
             try
             {
-                await VivoxService.LeaveChannelAsync(ActiveSession.Name);
-                Debug.Log("[Vivox] Left voice channel.");
+                if (VivoxService is { IsLoggedIn: true } && VivoxService.ActiveChannels.ContainsKey(ActiveSession.Name))
+                {
+                    await VivoxService.LeaveChannelAsync(ActiveSession.Name);
+                    Debug.Log("[Vivox] Left voice channel.");
                 
-                AnalyticsManager.Instance.RecordEvent(new CustomEvent("vivoxGroupChannelLeft"));
+                    AnalyticsManager.Instance.RecordEvent(new CustomEvent("vivoxGroupChannelLeft"));
+                }
             }
             catch (Exception ex)
             {

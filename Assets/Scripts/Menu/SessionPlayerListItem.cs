@@ -20,9 +20,6 @@ namespace Wendogo
         [Tooltip("Button used to kick a player out of the session.\nOnly visible for the host.")]
         public Button kickButton;
         
-        [Tooltip("Button used to quit the game.\nOnly visible for the host.")]
-        public Button quitButton;
-        
         [Header("Colors")]
         [Tooltip("Color to indicate which player you are in the players list.")]
         public Color colorForLocalPlayer = Color.green;
@@ -98,19 +95,12 @@ namespace Wendogo
             ShowKickButtonIfConditionsAreMet();
             kickButton.onClick.AddListener(OnKickButtonClicked);
             kickButton.enabled = true;
-
-            ShowQuitButtonIfConditionsAreMet();
-            quitButton.onClick.AddListener(OnQuitButtonClicked);
-            quitButton.enabled = true;
         }
 
         public void Reset()
         {
             kickButton.onClick.RemoveListener(OnKickButtonClicked);
             kickButton.enabled = true;
-            
-            quitButton.onClick.RemoveListener(OnQuitButtonClicked);
-            quitButton.enabled = true;
             
             _playerId = null;
             if (_isLocalPlayer)
@@ -128,25 +118,10 @@ namespace Wendogo
             var value = SessionManager.Instance.ActiveSession.IsHost && _hostCanKickPlayers && !_isLocalPlayer;
             kickButton.gameObject.SetActive(value);
         }
-
-        private void ShowQuitButtonIfConditionsAreMet()
-        {
-            quitButton.gameObject.SetActive(_isLocalPlayer);
-        }
         
         private void OnKickButtonClicked()
         {
             SessionManager.Instance.KickPlayer(_playerId);
-        }
-
-        private async void OnQuitButtonClicked()
-        {
-            quitButton.enabled = false;
-            await SessionManager.Instance.LeaveSession();
-            if (IsHost)
-                UIManager.Instance.SwitchFromHostToMainScreen();
-            else
-                UIManager.Instance.SwitchFromJoinToMainScreen();
         }
     }
 }
