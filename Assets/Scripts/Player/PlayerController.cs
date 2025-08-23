@@ -467,6 +467,18 @@ namespace Wendogo
             return null;
         }
 
+        public static PlayerController GetDeadPlayer(ulong clientId)
+        {
+            // The player is NOT dead.
+            if (!ServerManager.Instance.DeadPlayersId.Contains(clientId))
+                return null;
+            
+            if (NetworkManager.Singleton.ConnectedClients.TryGetValue(clientId, out var networkClient))
+                return networkClient.PlayerObject.GetComponent<PlayerController>();
+
+            return null;
+        }
+
         private List<int> GetPassiveCardCopy()
         {
             var copy = new List<int>();

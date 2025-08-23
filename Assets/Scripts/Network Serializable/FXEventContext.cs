@@ -19,7 +19,11 @@ namespace Wendogo
             get
             {
                 if (_cachedPlayer == null && NetworkManager.Singleton.IsClient)
+                {
                     _cachedPlayer = PlayerController.GetPlayer(playerID);
+                    if (_cachedPlayer == null) // It means the player is dead
+                        _cachedPlayer = PlayerController.GetDeadPlayer(playerID);
+                }
                 return _cachedPlayer;
             }
         }
