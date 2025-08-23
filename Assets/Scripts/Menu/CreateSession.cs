@@ -10,12 +10,6 @@ namespace Wendogo
     {
         #region Variables
         
-        /* ---------- Multiplayer Configuration --------- */
-        [Header("Configuration")]
-        [Tooltip("General Multiplayer Configuration.")]
-        public MultiplayerConfiguration multiplayerConfiguration;
-        
-        
         /* ---------- Variables --------- */
         [Header("Current Page")]
         [Tooltip("Button that initiates the session creation process.")]
@@ -31,11 +25,13 @@ namespace Wendogo
         public TMP_InputField sessionNameInputField;
 
         
+        /* ---------- Pages --------- */
         [Header("Next Page")]
+        [Tooltip("GameObject containing the UI elements for the current page.")]
+        public GameObject currentUIGameObject;
+        
         [Tooltip("GameObject containing the UI elements for the next page.")]
         public GameObject nextUIGameObject;
-
-        private GameObject _currentGameObject;
         
         #endregion
 
@@ -58,10 +54,10 @@ namespace Wendogo
                 Debug.LogError($"{nameof(sessionNameInputField)} is missing !");
             if (playerNameInputField == null)
                 Debug.LogError($"{nameof(playerNameInputField)} is missing !");
+            if (currentUIGameObject == null)
+                Debug.LogError($"{nameof(currentUIGameObject)} is missing !");
             if (nextUIGameObject == null)
                 Debug.LogError($"{nameof(nextUIGameObject)} is missing !");
-            
-            _currentGameObject = gameObject.transform.parent.gameObject;
             
             createSessionButton.onClick.AddListener(EnterSession);
             sessionNameInputField.onEndEdit.AddListener(input =>
@@ -88,6 +84,7 @@ namespace Wendogo
         {
             var rawSessionName = sessionNameInputField.text;
             var rawPlayerName = playerNameInputField.text;
+            var multiplayerConfiguration = MultiConfigManager.Instance.multiplayerConfiguration;
             
             return new EnterSessionData()
             {
@@ -111,7 +108,7 @@ namespace Wendogo
                     throw new Exception("Something went wrong. Maybe the session's name you choose is already taken.");
                 }
 
-                _currentGameObject.SetActive(false);
+                currentUIGameObject.SetActive(false);
                 nextUIGameObject.SetActive(true);
                 var showSessionInformation = nextUIGameObject.GetComponentInChildren<ShowSessionInformation>();
                 if (showSessionInformation) showSessionInformation.Initialize();

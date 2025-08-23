@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace Wendogo
 {
-    public class ShowSessionInformation : MonoBehaviour
+    public class ShowSessionInformation : MonoBehaviour, ISessionLifecycleEvents, IPlayerSessionEvents
     {
         #region Variables
 
@@ -21,6 +21,48 @@ namespace Wendogo
         
         [Tooltip("Button that copies the session code to clipboard.")]
         public Button copyCodeButton;
+        
+        [Tooltip("Text component displaying the number of player currently in the session.")]
+        public TMP_Text numberOfPlayerText;
+
+        #endregion
+
+        #region Session Events
+
+        public void OnEnable()
+        {
+            SessionEventDispatcher.Instance.Register(this);
+            UpdateNumberOfPlayer();
+        }
+
+        public void OnDisable()
+        {
+            SessionEventDispatcher.Instance.Unregister(this);
+            UpdateNumberOfPlayer();
+        }
+
+        public void OnJoinedSession()
+        {
+            UpdateNumberOfPlayer();
+            Debug.Log("[ShowSessionInformation] OnJoinedSession called.");
+        }
+
+        public void OnLeftSession()
+        {
+            UpdateNumberOfPlayer();
+            Debug.Log("[ShowSessionInformation] OnLeftSession called.");
+        }
+
+        public void OnPlayerJoinedSession(string playerId)
+        {
+            UpdateNumberOfPlayer();
+            Debug.Log("[ShowSessionInformation] OnPlayerJoinedSession called.");
+        }
+
+        public void OnPlayerLeftSession(string playerId)
+        {
+            Debug.Log("[ShowSessionInformation] OnPlayerLeftSession called.");
+        }
 
         #endregion
 
@@ -32,6 +74,10 @@ namespace Wendogo
                 Debug.LogError($"{nameof(sessionNameText)} is missing !");
             if (codeText == null)
                 Debug.LogError($"{nameof(codeText)} is missing !");
+            if (copyCodeButton == null)
+                Debug.LogError($"{nameof(copyCodeButton)} is missing !");
+            if (numberOfPlayerText == null)
+                Debug.LogError($"{nameof(numberOfPlayerText)} is missing !");
         }
 
         public void Initialize()
@@ -57,6 +103,11 @@ namespace Wendogo
 
             // Copy the text to the clipboard.
             GUIUtility.systemCopyBuffer = code;
+        }
+
+        private void UpdateNumberOfPlayer()
+        {
+            numberOfPlayerText.text = $"{SessionManager.Instance.ActiveSession.PlayerCount} / {MultiConfigManager.Instance.multiplayerConfiguration.maxPlayers}";
         }
     }
 }
