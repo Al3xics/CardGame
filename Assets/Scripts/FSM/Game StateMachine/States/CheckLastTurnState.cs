@@ -35,24 +35,10 @@
                 StateMachine.ChangeState<PlayerTurnState>();
         }
 
-        /// <summary>
-        /// Reorders the list of player IDs by moving the last player in the list to the front.
-        /// This ensures that the turn order is updated correctly at the end of a game turn.
-        /// </summary>
-        private void ReorderPlayersTurn()
-        {
-            if (StateMachine.PlayersID == null || StateMachine.PlayersID.Count <= 1) return;
-
-            // Take the last element, remove it, then add it to the front of the list
-            ulong last = StateMachine.PlayersID[^1];
-            StateMachine.PlayersID.RemoveAt(StateMachine.PlayersID.Count - 1);
-            StateMachine.PlayersID.Insert(0, last);
-        }
-
         public override void OnExit()
         {
             base.OnExit();
-            ReorderPlayersTurn();
+            StateMachine.ReorderPlayersTurn();
         }
     }
 }

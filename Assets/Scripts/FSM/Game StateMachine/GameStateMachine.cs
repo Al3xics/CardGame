@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Sirenix.OdinInspector;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
-using static UnityEngine.Rendering.DebugUI;
 using Random = UnityEngine.Random;
 
 namespace Wendogo
@@ -111,31 +110,44 @@ namespace Wendogo
         public readonly List<PlayerAction> NightActions = new();
 
         /// <summary>
-        /// Represents the ID of the current player.
-        /// </summary>
-        public ulong CurrentPlayerId
-        {
-            get
-            {
-                if (PlayersID.Count == 0) return 0;
-                if (CurrentPlayerIndex >= PlayersID.Count)
-                    CurrentPlayerIndex = 0;
-                return PlayersID[CurrentPlayerIndex];
-            }
-        }
-        
-        /// <summary>
-        /// Represents the index of the current player whose turn is active in the game.
-        /// This variable helps manage the game flow by tracking which player's turn is currently in progress.
-        /// It is incremented sequentially to move to the next player in <see cref="PlayerTurnState.OnPlayerTurnEnded"/>.
-        /// </summary>
-        public int CurrentPlayerIndex { get; set; } = 0;
-
-        /// <summary>
         /// Represents a list containing the unique identifiers (IDs) of all players currently
         /// participating in the game. Used to manage player-specific data and turn orders.
         /// </summary>
         public List<ulong> PlayersID { get; set; } = new();
+
+        /// <summary>
+        /// Represents the queue that determines the turn order of players in the game.
+        /// This property provides access to the sequential arrangement of player IDs,
+        /// allowing players to take actions in the correct order.
+        /// </summary>
+        public Queue<ulong> TurnQueue { get; private set; } = new();
+
+        /// <summary>
+        /// Gets the ID of the current player whose turn is active.
+        /// This property retrieves the player ID from the front of the turn queue.
+        /// If the queue is empty, it returns 0 as a default value.
+        /// </summary>
+        public ulong CurrentPlayerId => TurnQueue.Count > 0 ? TurnQueue.Peek() : 0;
+
+        /// <summary>
+        /// Represents the number of players active at the start of a gameplay cycle.
+        /// This value is used to track and manage the state of the turn sequence during a cycle
+        /// and can be dynamically adjusted based on player status updates, such as disconnections or eliminations.
+        /// </summary>
+        public int playersAtCycleStart;
+
+        /// <summary>
+        /// Tracks the number of players who have taken their turns in the current cycle.
+        /// This variable is incremented as each player's turn concludes
+        /// and is used to determine the progression and state transitions of the game cycle.
+        /// </summary>
+        public int playersPlayedThisCycle;
+
+        /// <summary>
+        /// Stores the set of player IDs that have completed their turn in the current cycle.
+        /// This ensures that each player is tracked as having played during a single gameplay cycle.
+        /// </summary>
+        private readonly HashSet<ulong> _playedThisCycle = new();
 
         private Cycle _cycle = Cycle.Day;
 
@@ -210,8 +222,6 @@ namespace Wendogo
         /// is blocked and inaccessible for players.
         /// </summary>
         private bool _canScavengeWood = true;
-
-        public List<ulong> MutedPlayers { get; private set; } = new();
 
         #endregion
 
@@ -367,10 +377,93 @@ namespace Wendogo
             return NightActions.Where(c => c.CardPriorityIndex > 0).ToList();
         }
 
-
         #endregion
 
         #region Called By States
+
+        /// <summary>
+        /// Configures the order of players' turns by initializing the turn queue.
+        /// If a custom turn order is specified, it will use that order; otherwise,
+        /// it shuffles the player IDs to create a random turn order.
+        /// </summary>
+        public void InitializeTurnQueue()
+        {
+            if (customTurnOrder is { Count: > 0 })
+                TurnQueue = new Queue<ulong>(customTurnOrder);
+            else
+            {
+                var shuffled = new List<ulong>(PlayersID);
+                Shuffle(shuffled);
+                TurnQueue = new Queue<ulong>(shuffled);
+            }
+
+            ResetPlayersCycle();
+        }
+
+        /// <summary>
+        /// Resets the players' cycle data by reinitializing the count of players at the beginning of the cycle
+        /// and setting the number of players who have played in the current cycle to zero.
+        /// </summary>
+        private void ResetPlayersCycle()
+        {
+            playersAtCycleStart = TurnQueue.Count; // number of living at the start of the cycle
+            playersPlayedThisCycle = 0;
+            _playedThisCycle.Clear();
+        }
+        
+        /// <summary>
+        /// Randomly shuffles the elements of the given list in place.
+        /// The order of elements in the list is randomized.
+        /// </summary>
+        /// <param name="list">The list of type <c>ulong</c> representing the player's unique IDs to be shuffled.</param>
+        private void Shuffle(List<ulong> list)
+        {
+            for (int i = 0; i < list.Count; i++)
+            {
+                int randIndex = Random.Range(i, list.Count);
+                (list[i], list[randIndex]) = (list[randIndex], list[i]);
+            }
+        }
+
+        /// <summary>
+        /// Ends the current player's turn by removing them from the front of the turn queue.
+        /// If the player is still an active participant, they are re-added to the back of the queue.
+        /// </summary>
+        public void EndCurrentPlayerTurn()
+        {
+            if (TurnQueue.Count == 0) return;
+
+            ulong finishedPlayer = TurnQueue.Dequeue();
+
+            // This player played well in THIS cycle
+            _playedThisCycle.Add(finishedPlayer);
+
+            // If he is still alive, we put him back at the end of the queue
+            if (PlayersID.Contains(finishedPlayer))
+                TurnQueue.Enqueue(finishedPlayer);
+        }
+
+        /// <summary>
+        /// Reorders the queue of player IDs by moving the last player in the queue to the front.
+        /// This ensures that the turn order is updated correctly at the end of a game turn.
+        /// </summary>
+        /// <remarks>For example, if the queue is <c>[0,1,2,3]</c> and <c>shift = 1</c>, the result will be <c>[3,0,1,2]</c>.</remarks>
+        public void ReorderPlayersTurn(int shift = 1)
+        {
+            if (TurnQueue.Count == 0 || shift <= 0) return;
+
+            var queueList = TurnQueue.ToList();
+
+            for (int i = 0; i < shift; i++)
+            {
+                // Remove the last element and add it at the beginning of the list
+                var last = queueList[^1];
+                queueList.RemoveAt(queueList.Count - 1);
+                queueList.Insert(0, last);
+            }
+
+            TurnQueue = new Queue<ulong>(queueList);
+        }
 
         /// <summary>
         /// Switches the current cycle of the game between Day and Night.
@@ -402,7 +495,8 @@ namespace Wendogo
             ServerManager.Instance.AskToUnlockResourcesRpc(true, false);
             ServerManager.Instance.nightActions.Clear();
             Cycle = newCycle;
-
+            
+            ResetPlayersCycle();
         }
 
         /// <summary>
@@ -462,12 +556,28 @@ namespace Wendogo
         }
 
         /// <summary>
+        /// The player is dead.
         /// Unregister a player ID to maintain a reference to all players in the State Machine.
         /// </summary>
         /// <param name="playerID">The unique ID of the player you want to remove.</param>
         public void UnregisterPlayerID(ulong playerID)
         {
+            if (!PlayersID.Contains(playerID))
+                return;
+
             PlayersID.Remove(playerID);
+
+            // Was he in the queue at the time of death?
+            bool wasInQueue = TurnQueue.Contains(playerID);
+            // Had he ALREADY played in the current cycle?
+            bool alreadyPlayedThisCycle = _playedThisCycle.Contains(playerID);
+
+            // Complete tail removal
+            TurnQueue = new Queue<ulong>(TurnQueue.Where(p => p != playerID));
+
+            // Only decrements the cycle quota if the player has not yet played
+            if (wasInQueue && !alreadyPlayedThisCycle && playersPlayedThisCycle < playersAtCycleStart)
+                playersAtCycleStart = Math.Max(0, playersAtCycleStart - 1);
         }
 
         /// <summary>

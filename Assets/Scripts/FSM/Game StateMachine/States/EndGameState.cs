@@ -1,4 +1,6 @@
-﻿namespace Wendogo
+﻿using System.Collections.Generic;
+
+namespace Wendogo
 {
     /// <summary>
     /// Represents the final state in the game where all gameplay processes have concluded.
@@ -21,7 +23,22 @@
 
         private void CheckWhoWon()
         {
+            // Merge both players' lists: alive (PlayersById) and dead (DeadPlayersId)
+            var allPlayers = new Dictionary<ulong, PlayerController>();
+            
             foreach (var (playerId, player) in ServerManager.Instance.PlayersById)
+            {
+                allPlayers[playerId] = player;
+            }
+            
+            foreach (var playerId in ServerManager.Instance.DeadPlayersId)
+            {
+                var deadPlayer = PlayerController.GetDeadPlayer(playerId);
+                if (deadPlayer != null) allPlayers[playerId] = deadPlayer;
+            }
+
+            // Iterate through all players and broadcast the FX event based on their role
+            foreach (var (playerId, player) in allPlayers)
             {
                 FXEventType fxType;
 
@@ -49,7 +66,7 @@
                     ServerManager.Instance.BroadcastLocalFXEventToPlayerRpc(new FXEventContext
                     {
                         fxType = fxType,
-                        playerID = player.OwnerClientId
+                        playerID = playerId
                     });
                 }
             }

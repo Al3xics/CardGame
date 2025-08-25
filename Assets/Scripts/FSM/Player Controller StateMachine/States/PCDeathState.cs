@@ -11,7 +11,7 @@ namespace Wendogo
         public override void OnEnter()
         {
             base.OnEnter();
-            _player.isDead = true;
+            _player.isDead.Value = true;
             SessionManager.Instance.MutePlayer(true);
             _player._handManager.ToggleOffMovingCards(_player._handManager.handCards);
             ServerManager.Instance.BroadcastLocalFXEventToPlayerRpc(new FXEventContext

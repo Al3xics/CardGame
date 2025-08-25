@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-namespace Wendogo
+﻿namespace Wendogo
 {
     /// <summary>
     /// Represents a state in the GameStateMachine where the ritual status is checked.
@@ -51,10 +49,8 @@ namespace Wendogo
         {
             base.OnExit();
             
-            if (StateMachine.Cycle == Cycle.Day && StateMachine.CurrentPlayerIndex >= StateMachine.PlayersID.Count)
+            if (StateMachine.Cycle == Cycle.Day && StateMachine.playersPlayedThisCycle >= StateMachine.playersAtCycleStart)
             {
-                StateMachine.CurrentPlayerIndex = 0;
-                
                 if (StateMachine.PreviousState is not NightConsequencesState)
                 {
                     ServerManager.Instance.MuteAllPlayersRpc(true);

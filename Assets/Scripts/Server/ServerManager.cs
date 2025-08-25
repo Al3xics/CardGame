@@ -574,6 +574,13 @@ namespace Wendogo
         {
             if (PlayersById.TryGetValue(fxEventContext.playerID, out var player))
                 player.BroadcastLocalFXEventToPlayerRpc(fxEventContext, RpcTarget.Single(fxEventContext.playerID, RpcTargetUse.Temp));
+
+            if (DeadPlayersId.Contains(fxEventContext.playerID))
+            {
+                var playerController = PlayerController.GetDeadPlayer(fxEventContext.playerID);
+                if (playerController.isDead.Value)
+                    playerController.BroadcastLocalFXEventToPlayerRpc(fxEventContext, RpcTarget.Single(fxEventContext.playerID, RpcTargetUse.Temp));
+            }
         }
 
         #endregion
