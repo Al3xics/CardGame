@@ -66,8 +66,6 @@ namespace Wendogo
         private GameObject _showcardUI;
 
         public PlayerAction[] NightActions;
-        
-        public bool isDead = false;
         public ulong selectedVotedTarget;
         public bool isPlayerTurn = false;
 
@@ -139,6 +137,12 @@ namespace Wendogo
             NetworkVariableWritePermission.Owner
         );
 
+        public NetworkVariable<bool> isDead = new(
+            false,
+            NetworkVariableReadPermission.Everyone,
+            NetworkVariableWritePermission.Owner
+        );
+
         public bool IsSimulatingNight => ServerManager.Instance.currentCycle.Value == Cycle.Night && IsLocalPlayer;
 
         #endregion
@@ -189,6 +193,7 @@ namespace Wendogo
 
             LocalPlayer = this;
             LocalPlayerId = NetworkManager.Singleton.LocalClientId;
+            pcSMObject.GetComponent<PlayerControllerSM>().Initialize();
 
             food.OnValueChanged += UpdateFoodText;
             wood.OnValueChanged += UpdateWoodText;
@@ -226,7 +231,7 @@ namespace Wendogo
                 if (_inputEvent != null && _inputEvent.enabled) _inputEvent.enabled = false;
                 if (_handManager == null) _handManager = GameObject.FindWithTag("hand")?.GetComponent<HandManager>();
                 pcSMObject = new GameObject($"{nameof(PlayerControllerSM)}");
-                pcSMObject.AddComponent<PlayerControllerSM>();
+                pcSMObject.AddComponent<PlayerControllerSM>().Initialize();
 
                 _fxManager = GameObject.Find("FXEventManager")?.GetComponent<FXEventManager>();
 
@@ -943,7 +948,7 @@ namespace Wendogo
         public void NotifyEndTurn()
         {
             _inputEvent.enabled = false;
-            if (!isDead) HandlePassiveCardTurnUpdate();
+            if (!isDead.Value) HandlePassiveCardTurnUpdate();
             if (_pcSMObject != null)
             {
                 Debug.Log("Destroy the player controller");

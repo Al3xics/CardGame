@@ -610,6 +610,8 @@ MonoBehaviour:
   numberOfFoodToCompleteRitual: 6
   numberOfWoodToCompleteRitual: 6
   groupVoteEffectEveryXTurn: {fileID: 11400000, guid: 5bfee2b8d8c5a39439ee7607b7183a1a, type: 2}
+  playersAtCycleStart: 0
+  playersPlayedThisCycle: 0
 --- !u!114 &830326876
 MonoBehaviour:
   m_ObjectHideFlags: 0

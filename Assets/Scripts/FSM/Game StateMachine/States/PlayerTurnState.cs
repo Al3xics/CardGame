@@ -110,12 +110,15 @@ namespace Wendogo
         /// </summary>
         private void OnPlayerTurnEnded()
         {
-            Log($"Player {StateMachine.CurrentPlayerIndex} End Turn");
+            var playerId = StateMachine.CurrentPlayerId;
+            Log($"Player {playerId} End Turn");
             ServerManager.Instance.OnPlayerTurnEnded -= OnPlayerTurnEnded;
-            ServerManager.Instance.SetPlayerTurnStateRpc(false, StateMachine.CurrentPlayerId);
+            ServerManager.Instance.SetPlayerTurnStateRpc(false, playerId);
 
-            StateMachine.CurrentPlayerIndex++;
-            bool isLastPlayer = StateMachine.CurrentPlayerIndex >= StateMachine.PlayersID.Count;
+            // Go to the next player's turn'
+            StateMachine.EndCurrentPlayerTurn();
+            StateMachine.playersPlayedThisCycle++;
+            bool isLastPlayer = StateMachine.playersPlayedThisCycle >= StateMachine.playersAtCycleStart;
 
             switch (StateMachine.Cycle)
             {
@@ -128,7 +131,6 @@ namespace Wendogo
                         StateMachine.ChangeState<NightConsequencesState>();
                     else
                         StartPlayerTurn();
-                    
                     break;
             }
         }

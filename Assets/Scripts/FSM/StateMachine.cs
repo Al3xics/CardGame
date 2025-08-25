@@ -14,6 +14,8 @@ namespace Wendogo
     public abstract class StateMachine<T> : MonoBehaviour where T : StateMachine<T>
     {
 
+        #region Variables
+
         /// <summary>
         /// Show or hide the debug logs related to the <see cref="StateMachine{T}"/>.
         /// </summary>
@@ -58,6 +60,20 @@ namespace Wendogo
         /// retrieve the registered states for transitions or operations.
         /// </summary>
         private readonly Dictionary<Type, State<T>> _states = new();
+
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// Prepares the state machine for operation by setting the initial state.
+        /// This method internally calls <see cref="GetInitialState"/> to determine the state
+        /// that will act as the starting state for the state machine.
+        /// </summary>
+        public void Initialize()
+        {
+            CurrentState = GetInitialState();
+        }
 
         /// <summary>
         /// Initializes the state machine and transitions to the initial state.
@@ -131,5 +147,7 @@ namespace Wendogo
         {
             return GetState<TState>() as TState;
         }
+
+        #endregion
     }
 }

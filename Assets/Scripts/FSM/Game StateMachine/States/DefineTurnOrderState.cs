@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
-
-namespace Wendogo
+﻿namespace Wendogo
 {
     /// <summary>
     /// Represents the state where the turn order is defined for the game.
@@ -25,33 +22,8 @@ namespace Wendogo
                 throw new System.Exception("Not enough players to start the game.");
             }
 
-            if (StateMachine.customTurnOrder is { Count: > 0 })
-                ChooseInitialTurnOrder();
-            else
-                Shuffle(StateMachine.PlayersID);
+            StateMachine.InitializeTurnQueue();
             StateMachine.ChangeState<AssignRolesState>();
-        }
-        
-        /// <summary>
-        /// Determines the initial turn order. If no custom order is set, it randomizes.
-        /// </summary>
-        private void ChooseInitialTurnOrder()
-        {
-            StateMachine.PlayersID = new List<ulong>(StateMachine.customTurnOrder);
-        }
-
-        /// <summary>
-        /// Randomly shuffles the elements of the given list in place.
-        /// The order of elements in the list is randomized.
-        /// </summary>
-        /// <param name="list">The list of type <c>ulong</c> representing the player's unique IDs to be shuffled.</param>
-        private void Shuffle(List<ulong> list)
-        {
-            for (int i = 0; i < list.Count; i++)
-            {
-                int randIndex = Random.Range(i, list.Count);
-                (list[i], list[randIndex]) = (list[randIndex], list[i]);
-            }
         }
     }
 }
