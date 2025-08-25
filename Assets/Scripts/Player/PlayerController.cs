@@ -193,7 +193,7 @@ namespace Wendogo
 
             LocalPlayer = this;
             LocalPlayerId = NetworkManager.Singleton.LocalClientId;
-            pcSMObject.GetComponent<PlayerControllerSM>().Initialize();
+            if (AutoSessionBootstrapper.AutoConnect) pcSMObject.GetComponent<PlayerControllerSM>().Initialize();
 
             food.OnValueChanged += UpdateFoodText;
             wood.OnValueChanged += UpdateWoodText;
