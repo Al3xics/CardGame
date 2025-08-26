@@ -362,6 +362,10 @@ PrefabInstance:
       value: 0.38517454
       objectReference: {fileID: 0}
     - target: {fileID: 3756716366810224825, guid: 0cd6f9fcd5866874faedcea19916735b, type: 3}
+      propertyPath: trashZone
+      value: 
+      objectReference: {fileID: 4352821330055341359}
+    - target: {fileID: 3756716366810224825, guid: 0cd6f9fcd5866874faedcea19916735b, type: 3}
       propertyPath: _drawCardsUI
       value: 
       objectReference: {fileID: 1853407996}
@@ -507,13 +511,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02a702a6338e497d8b922e7a9d004821, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canvasesToWatch:
-  - {fileID: 828363627}
-  - {fileID: 2370279934951216, guid: 3c09cb519e596a54da866d2d5d6352af, type: 3}
-  - {fileID: 2499924809553594333, guid: 887fa708ccfc7f04b95c34b7825ce309, type: 3}
-  - {fileID: 4381171416163836051, guid: 3754eafd9fe02ef48ab8b11bd0d5749a, type: 3}
-  - {fileID: 6124277884112845798, guid: 80693217957c6cc45a3b614bee04e393, type: 3}
-  - {fileID: 4366196669929515438, guid: 67d464e1ff5762c4889fefceb47205b5, type: 3}
 --- !u!4 &404996147
 Transform:
   m_ObjectHideFlags: 0
@@ -729,6 +726,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   showDebugLogs: 1
+  customTurnOrder: 
   maximumTurn: 6
   startingActionDeckAmount: 3
   startingResourceDeckAmount: 2
@@ -736,11 +734,8 @@ MonoBehaviour:
   numberOfFoodToCompleteRitual: 6
   numberOfWoodToCompleteRitual: 6
   groupVoteEffectEveryXTurn: {fileID: 11400000, guid: 5bfee2b8d8c5a39439ee7607b7183a1a, type: 2}
---- !u!1 &828363627 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 728514128433627386, guid: b591182f062020c408595876a3e3ff76, type: 3}
-  m_PrefabInstance: {fileID: 1439965822}
-  m_PrefabAsset: {fileID: 0}
+  playersAtCycleStart: 0
+  playersPlayedThisCycle: 0
 --- !u!114 &830326876
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2683,6 +2678,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   isBurning: 0
+  burnCount: 0
 --- !u!1001 &2050124738
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8372,6 +8368,7 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   isBurning: 1
+  burnCount: 0
 --- !u!1 &4356061697369554394
 GameObject:
   m_ObjectHideFlags: 0
