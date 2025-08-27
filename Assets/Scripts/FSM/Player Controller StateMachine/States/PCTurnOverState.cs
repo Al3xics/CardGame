@@ -1,3 +1,4 @@
+using Unity.Netcode;
 using UnityEngine;
 
 namespace Wendogo
@@ -12,7 +13,10 @@ namespace Wendogo
             StateMachine.playerPAUpdated -= _player.UpdatePA;
             Debug.Log("Enter end");
             base.OnEnter();
-            _player._handManager.ToggleOffMovingCards(_player._handManager.handCards);
+            HandManager handManager = _player._handManager;
+            if (handManager.handCards.Count < handManager._maxHandSize)
+               ServerManager.Instance.DrawMissingCardRpc(_player.LocalPlayerId, Random.Range(0, 2), handManager._maxHandSize - handManager.handCards.Count);
+            handManager.ToggleOffMovingCards(handManager.handCards);
             _player.HandleCancelTimer();
             PlayerUI.Instance.DefineTimer(60);
             _player.NotifyEndTurn();

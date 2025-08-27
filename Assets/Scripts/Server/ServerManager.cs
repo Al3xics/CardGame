@@ -559,6 +559,12 @@ namespace Wendogo
                 player.SetStolenIDRpc(id, RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
         }
 
+        [Rpc(SendTo.Server)]
+        public void DrawMissingCardRpc(ulong id, int deck, int amount)
+        {
+            GameStateMachine.Instance.DrawCards(id, deck, amount);
+        }
+
         #endregion
 
         #region RPC Animation
