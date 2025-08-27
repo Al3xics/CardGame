@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4c4af47719ad294e9daacd12912804b, type: 3}
   m_Name: StealProtect
   m_EditorClassIdentifier: 
-  CardVisual: {fileID: 2800000, guid: c6e4c5f11e2db664a944c049e4e2ec45, type: 3}
+  CardVisual: {fileID: 2800000, guid: a743188c2d7e4964bbdbcb05b0de7a77, type: 3}
   Name: StealProtect
   CardEffect: {fileID: 11400000, guid: a5b7841cf0e2e4346998f6e4648c0977, type: 2}
   isPassive: 1

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4c4af47719ad294e9daacd12912804b, type: 3}
   m_Name: BloodBounty
   m_EditorClassIdentifier: 
-  CardVisual: {fileID: 2800000, guid: ac969978558a73347a91aee8d24b41e2, type: 3}
+  CardVisual: {fileID: 2800000, guid: fdf852ad3b46d794bb80ee57f45cfb3f, type: 3}
   Name: BloodBounty
   CardEffect: {fileID: 11400000, guid: c3a89ec3c5140fd49b9e9a649880e727, type: 2}
   isPassive: 1

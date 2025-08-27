@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4c4af47719ad294e9daacd12912804b, type: 3}
   m_Name: Spy
   m_EditorClassIdentifier: 
-  CardVisual: {fileID: 2800000, guid: abafbd941d0a69d4eb3f3118e1b62b6c, type: 3}
+  CardVisual: {fileID: 2800000, guid: f90a48b96633b4a4baaaff8019fb3e94, type: 3}
   Name: Spy
   CardEffect: {fileID: 11400000, guid: 3ef037ab34e27324291fb0b303e03ad8, type: 2}
   isPassive: 0
