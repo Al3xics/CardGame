@@ -9,10 +9,8 @@ namespace Wendogo
     [CreateAssetMenu(fileName = "Spy", menuName = "Card Effects/Spy")]
     public class Spy : CardEffect
     {
-        [HideInInspector]
         public GameObject prefabUI;
-        public GameObject showingPrefabUI;
-        private GameObject _showingCardsUI;
+        private GameObject targetPrefabInstance;
         public override void Apply(ulong owner, ulong target, int value = -1)
         {
             var targetPlayer = PlayerController.GetPlayer(target);
@@ -24,8 +22,8 @@ namespace Wendogo
                 int selectedCard = targetPlayer.PassiveCards[index];
 
                 value = selectedCard;
-                
-                ServerManager.Instance.ShowCardsCanvaRpc(selectedCard, owner);;
+
+                ServerManager.Instance.ShowCardsCanvaRpc(selectedCard, owner); ;
                 AnalyticsManager.Instance.RecordEvent(new CustomEvent("spyActiveCardWasApplied"));
             }
 
@@ -33,18 +31,17 @@ namespace Wendogo
 
         public override void ShowUI(GameObject uiInstance = null)
         {
-            if (prefabUI == null)
-                prefabUI = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject;
-            base.ShowUI(prefabUI);
-            prefabUI.SetActive(true);
+            if (targetPrefabInstance == null)
+                targetPrefabInstance = Instantiate(prefabUI);
+            base.ShowUI(targetPrefabInstance);
+            targetPrefabInstance.SetActive(true);
         }
 
         public override void HideUI(bool clearVotes, GameObject uiInstance = null)
         {
-            if (prefabUI == null)
-                prefabUI = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject;
-            prefabUI.SetActive(false);
-            base.HideUI(clearVotes, prefabUI);
+            targetPrefabInstance.SetActive(false);
+            Destroy(targetPrefabInstance.gameObject);
+            base.HideUI(clearVotes, targetPrefabInstance);
         }
     }
 }
