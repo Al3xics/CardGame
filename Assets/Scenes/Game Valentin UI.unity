@@ -494,7 +494,7 @@ GameObject:
   - component: {fileID: 263896794}
   - component: {fileID: 263896793}
   m_Layer: 5
-  m_Name: Current_Player_Heart1 (2)
+  m_Name: Current_Player_Heart2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -566,7 +566,7 @@ GameObject:
   - component: {fileID: 331876723}
   - component: {fileID: 331876722}
   m_Layer: 5
-  m_Name: Current_Player_Heart1 (6)
+  m_Name: Current_Player_Heart6
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1195,84 +1195,12 @@ MonoBehaviour:
   playerName: {fileID: 1616717620114365600}
   hearts:
   - {fileID: 3017483020264857029}
-  - {fileID: 863923946}
   - {fileID: 263896791}
   - {fileID: 1622042630}
   - {fileID: 1075609334}
+  - {fileID: 1468245273}
   - {fileID: 331876720}
   _ritualObject: {fileID: 1068322941}
---- !u!1 &863923946
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 863923947}
-  - component: {fileID: 863923949}
-  - component: {fileID: 863923948}
-  m_Layer: 5
-  m_Name: Current_Player_Heart1 (1)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &863923947
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 863923946}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.45000002, y: 0.45000002, z: 0.45000002}
-  m_ConstrainProportionsScale: 1
-  m_Children: []
-  m_Father: {fileID: 267447506194886015}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -85.5, y: 0}
-  m_SizeDelta: {x: 104, y: 102}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &863923948
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 863923946}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1344c3c82d62a2a41a3576d8abb8e3ea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 0
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Texture: {fileID: 2800000, guid: 9d6e916c19c516f47b5cdd3a1119bf32, type: 3}
-  m_UVRect:
-    serializedVersion: 2
-    x: 0
-    y: 0
-    width: 1
-    height: 1
---- !u!222 &863923949
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 863923946}
-  m_CullTransparentMesh: 1
 --- !u!1001 &898415483
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1602,7 +1530,7 @@ GameObject:
   - component: {fileID: 1075609337}
   - component: {fileID: 1075609336}
   m_Layer: 5
-  m_Name: Current_Player_Heart1 (4)
+  m_Name: Current_Player_Heart4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1680,7 +1608,7 @@ PrefabInstance:
       objectReference: {fileID: 1357682468}
     - target: {fileID: 410597146149384154, guid: 97ac440e15bba064d8ea41b10d4ffd16, type: 3}
       propertyPath: expectedPlayersCount
-      value: 2
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 410597146149384154, guid: 97ac440e15bba064d8ea41b10d4ffd16, type: 3}
       propertyPath: 'objectsToDestroy.Array.data[0]'
@@ -1991,7 +1919,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3446328017623952172, guid: ab5467625563f324ba6d2feab7d9bdc6, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -1000
+      value: -999.99994
       objectReference: {fileID: 0}
     - target: {fileID: 4360173987115402742, guid: ab5467625563f324ba6d2feab7d9bdc6, type: 3}
       propertyPath: m_SizeDelta.x
@@ -2003,7 +1931,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4360173987115402742, guid: ab5467625563f324ba6d2feab7d9bdc6, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 1000
+      value: 999.99994
       objectReference: {fileID: 0}
     - target: {fileID: 4975635378272882237, guid: ab5467625563f324ba6d2feab7d9bdc6, type: 3}
       propertyPath: m_SizeDelta.x
@@ -2529,7 +2457,7 @@ GameObject:
   - component: {fileID: 1468245276}
   - component: {fileID: 1468245275}
   m_Layer: 5
-  m_Name: Current_Player_Heart1 (5)
+  m_Name: Current_Player_Heart5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2860,6 +2788,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6127332377753245486, guid: 4d997522a5d9bad4f9d9af61b2b31784, type: 3}
+      propertyPath: m_fontSize
+      value: 32.7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2893,7 +2825,7 @@ GameObject:
   - component: {fileID: 1622042633}
   - component: {fileID: 1622042632}
   m_Layer: 5
-  m_Name: Current_Player_Heart1 (3)
+  m_Name: Current_Player_Heart3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3947,7 +3879,6 @@ RectTransform:
   - {fileID: 2218523128434518069}
   - {fileID: 4433510306096628987}
   - {fileID: 6181318019807901499}
-  - {fileID: 863923947}
   - {fileID: 263896792}
   - {fileID: 1622042631}
   - {fileID: 1075609335}

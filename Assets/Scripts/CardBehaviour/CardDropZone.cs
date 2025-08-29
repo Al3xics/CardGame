@@ -6,6 +6,7 @@ using Cysharp.Threading.Tasks;
 using LitMotion;
 using LitMotion.Extensions;
 using System.Linq;
+using UnityEditor.Rendering;
 
 namespace Wendogo
 {
@@ -68,6 +69,23 @@ namespace Wendogo
                     }
                 }
             }
+            else
+            {
+                LMotion.Create(draggedCard.transform.position, gameObject.transform.position, 0.3f)
+                    .WithEase(Ease.OutQuad)
+                    .BindToPosition(draggedCard.transform);
+
+                LMotion.Create(draggedCard.transform.localScale, Vector3.zero, 0.5f)
+                    .WithEase(Ease.OutQuad)
+                    .WithOnComplete(() =>
+                    {
+                        dragHandler.enabled = false;
+                        CallZoneDropEvents(cod, cardData);
+                    })
+                    .BindToLocalScale(draggedCard.transform);
+                return;
+            }
+
 
             dragHandler.enabled = false;
             CallZoneDropEvents(cod, cardData);
