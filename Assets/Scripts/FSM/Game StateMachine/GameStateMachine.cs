@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Cysharp.Threading.Tasks;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -25,19 +24,27 @@ namespace Wendogo
 
         #region Variables
 
-        /* --------------- Show in Inspector --------------- */
+        /* --------------- Show in Inspector : Debug --------------- */
         /// <summary>
         /// Allows setting a custom turn order for players.
         /// If left empty, the order will be randomized.
         /// </summary>
-        [Header("Game Settings")]
         [Tooltip("Provide a custom turn order for players. Leave empty for random order.")]
         public List<ulong> customTurnOrder;
+
+        /// <summary>
+        /// Specifies a custom ID for the Wendogo character.
+        /// If set to -1, a random Wendogo ID will be assigned.
+        /// </summary>
+        [Tooltip("Provide a custom ID for the Wendogo. Leave '-1' for default .")]
+        public int wendogoId = -1;
         
+        /* --------------- Show in Inspector : Game Settings --------------- */
         /// <summary>
         /// Represents the maximum number of turns allowed in the game.
         /// If the number of completed turns reaches this value, the game will end.
         /// </summary>
+        [Header("Game Settings")]
         [SerializeField] private int maximumTurn = 10;
 
         /// <summary>

@@ -29,28 +29,39 @@ namespace Wendogo
         /// Assigns specific roles to players within the game, based on their unique identifiers.
         /// </summary>
         /// <remarks>
-        /// This method randomly assigns the "Wendogo" role to a player in the player list
-        /// and assigns the "Survivor" role to all remaining players. It then converts the assignments
-        /// into arrays and invokes server-side functionality to distribute roles to players.
+        /// This method assigns the "Wendogo" role to a specific player if defined by wendogoId,
+        /// or randomly assigns it if wendogoId is -1. All remaining players are assigned the "Survivor" role.
         /// </remarks>
         private void AssignRoles()
         {
             Dictionary<ulong, RoleType> playerRoles = new();
 
-            // Choose a random index to assign Wendogo
-            int randomIndex = Random.Range(0, StateMachine.PlayersID.Count);
-            ulong wendogoID = StateMachine.PlayersID[randomIndex];
+            // Retrieve custom Wendogo ID from Game Settings (or fall back to random)
+            ulong? selectedWendogoID = StateMachine.wendogoId != -1 ? (ulong)StateMachine.wendogoId : null;
+            
+            // Validate if the custom Wendogo ID exists in the current player list
+            if (selectedWendogoID.HasValue && !StateMachine.PlayersID.Contains(selectedWendogoID.Value))
+            {
+                Debug.LogWarning($"Provided Wendogo ID {selectedWendogoID.Value} is invalid. Falling back to random assignment.");
+                selectedWendogoID = null; // Reset to fall back to random
+            }
+
+            // Select Wendogo ID
+            ulong wendogoID = selectedWendogoID ?? StateMachine.PlayersID[Random.Range(0, StateMachine.PlayersID.Count)];
 
             // Assign Wendogo
             playerRoles[wendogoID] = RoleType.Wendogo;
 
-            // All other players are Survivors
-            for (int i = 0; i < StateMachine.PlayersID.Count; i++)
+            // Assign Survivors to other players
+            foreach (ulong playerId in StateMachine.PlayersID)
             {
-                if (i != randomIndex)
-                    playerRoles[StateMachine.PlayersID[i]] = RoleType.Survivor;
+                if (playerId != wendogoID)
+                {
+                    playerRoles[playerId] = RoleType.Survivor;
+                }
             }
 
+            // Convert dictionary to server arrays
             Utils.DictionaryToArrays(playerRoles, out ulong[] roleTypeID, out RoleType[] roleType);
             ServerManager.Instance.AssignRolesToPlayersRpc(roleTypeID, roleType);
         }
