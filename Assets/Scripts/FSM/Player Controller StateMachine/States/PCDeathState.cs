@@ -12,6 +12,7 @@ namespace Wendogo
         {
             base.OnEnter();
             _player.isDead.Value = true;
+            PlayerUI.Instance.DeactivateAllHearts();
             SessionManager.Instance.MutePlayer(true);
             _player._handManager.ToggleOffMovingCards(_player._handManager.handCards);
             ServerManager.Instance.BroadcastLocalFXEventToPlayerRpc(new FXEventContext

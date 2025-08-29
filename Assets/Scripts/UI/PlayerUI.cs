@@ -8,6 +8,7 @@ using Sirenix.OdinInspector;
 using Unity.Netcode;
 using System.Linq;
 using UnityEngine.Rendering;
+using Cysharp.Threading.Tasks;
 
 namespace Wendogo
 {
@@ -96,8 +97,9 @@ namespace Wendogo
             if (AutoSessionBootstrapper.AutoConnect)
                 playerName.text = player.name;
             else
-                playerName.text = ServerManager.Instance.GetPlayerName(player.LocalPlayerId);
+                playerName.text = ServerManager.Instance.GetPlayerName(playerID);
         }
+
         public void GetRole(string role)
         {
             if (roleText != null)
@@ -119,7 +121,7 @@ namespace Wendogo
         }
 
         [Rpc(SendTo.SpecifiedInParams)]
-        public void SetUIInfos(ulong localPLayerID, RpcParams rpcParams)
+        public async void SetUIInfos(ulong localPLayerID, RpcParams rpcParams)
         {
             SetRitualUI();
             RenamePlayer(localPLayerID);
@@ -222,5 +224,15 @@ namespace Wendogo
                 ritualFood.text = newVal.ToString() + "/6";
             };
         }
+
+        public void DeactivateAllHearts()
+        {
+            foreach (var heart in hearts)
+            {
+                if(heart.activeSelf)
+                    heart.gameObject.SetActive(false);
+            }
+        }
+
     }
 }
