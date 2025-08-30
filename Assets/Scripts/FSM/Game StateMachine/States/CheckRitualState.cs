@@ -1,4 +1,6 @@
-﻿namespace Wendogo
+﻿using System.Linq;
+
+namespace Wendogo
 {
     /// <summary>
     /// Represents a state in the GameStateMachine where the ritual status is checked.
@@ -26,6 +28,7 @@
             {
                 Log("The Ritual is over.");
                 ServerManager.Instance.MuteAllPlayersRpc(false);
+                StateMachine.EndGameReason = EndGameReason.RitualEnded;
                 StateMachine.ChangeState<EndGameState>();
                 return;
             }
@@ -49,7 +52,11 @@
         {
             base.OnExit();
             
-            if (StateMachine.Cycle == Cycle.Day && StateMachine.playersPlayedThisCycle >= StateMachine.playersAtCycleStart)
+            bool allPlayersPlayed = StateMachine.PlayersID
+                .Where(id => StateMachine.TurnQueue.Contains(id) || StateMachine.PlayedThisCycle.Contains(id))
+                .All(id => StateMachine.PlayedThisCycle.Contains(id));
+            
+            if (StateMachine.Cycle == Cycle.Day && allPlayersPlayed)
             {
                 if (StateMachine.PreviousState is not NightConsequencesState)
                 {

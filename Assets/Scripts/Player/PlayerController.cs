@@ -971,7 +971,7 @@ namespace Wendogo
                 Destroy(_pcSMObject);
                 _pcSMObject = null;
             }
-            ServerManager.Instance.PlayerTurnEndedRpc();
+            ServerManager.Instance.PlayerTurnEndedRpc(OwnerClientId);
 
         }
 

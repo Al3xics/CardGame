@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Unity.Services.Analytics;
 
 namespace Wendogo
@@ -108,40 +109,32 @@ namespace Wendogo
         /// <summary>
         /// Advances the game to the next player's turn.
         /// </summary>
-        private void OnPlayerTurnEnded()
+        /// <param name="finishedPlayerId">The id of the player who finished his turn.</param>
+        private void OnPlayerTurnEnded(ulong finishedPlayerId)
         {
-            var playerId = StateMachine.CurrentPlayerId;
-            Log($"Player {playerId} End Turn");
+            Log($"Player {finishedPlayerId} End Turn");
             ServerManager.Instance.OnPlayerTurnEnded -= OnPlayerTurnEnded;
-            ServerManager.Instance.SetPlayerTurnStateRpc(false, playerId);
+            ServerManager.Instance.SetPlayerTurnStateRpc(false, finishedPlayerId);
 
             // Go to the next player's turn'
-            StateMachine.EndCurrentPlayerTurn();
-            StateMachine.playersPlayedThisCycle++;
-            bool isLastPlayer = StateMachine.playersPlayedThisCycle >= StateMachine.playersAtCycleStart;
+            StateMachine.EndCurrentPlayerTurn(finishedPlayerId);
+            bool isLastPlayer = StateMachine.PlayersID
+                .Where(id => StateMachine.TurnQueue.Contains(id) || StateMachine.PlayedThisCycle.Contains(id))
+                .All(id => StateMachine.PlayedThisCycle.Contains(id));
 
             switch (StateMachine.Cycle)
             {
                 case Cycle.Day:
-                    StateMachine.ChangeState<CheckRitualState>();
+                    StateMachine.ChangeState<CheckWinLoseState>();
                     break;
 
                 case Cycle.Night:
                     if (isLastPlayer)
-                        StateMachine.ChangeState<NightConsequencesState>();
+                        StateMachine.ChangeState<CheckWinLoseState>();
                     else
                         StartPlayerTurn();
                     break;
             }
-        }
-        
-        public override void OnExit()
-        {
-            base.OnExit();
-            
-            if (StateMachine.Cycle == Cycle.Night)
-                StateMachine.SwitchCycle();
-
         }
     }
 }
