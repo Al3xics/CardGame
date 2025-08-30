@@ -305,7 +305,6 @@ namespace Wendogo
 
             await UniTask.WaitUntil(() => _intTarget >= 0);
 
-            //todo change logic for the wendigo offering
             if (_intTarget == 0)
             {
                 if (wood.Value == 0)
