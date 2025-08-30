@@ -1,4 +1,5 @@
 using Unity.Netcode;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace Wendogo
@@ -8,7 +9,7 @@ namespace Wendogo
         private PlayerController _player;
         public PCTurnOverState(PlayerControllerSM stateMachine, PlayerController player) : base(stateMachine) { _player = player; }
 
-        public override void OnEnter()
+        public async override void OnEnter()
         {
             StateMachine.playerPAUpdated -= _player.UpdatePA;
             Debug.Log("Enter end");
@@ -19,6 +20,7 @@ namespace Wendogo
             handManager.ToggleOffMovingCards(handManager.handCards);
             _player.HandleCancelTimer();
             PlayerUI.Instance.DefineTimer(60);
+            await UniTask.DelayFrame(10);
             _player.NotifyEndTurn();
         }
 

@@ -84,4 +84,16 @@ namespace Wendogo
         OnWendogoLose,
         OnPlayerDeath,
     }
+
+    /// <summary>
+    /// Enum representing the reasons for ending the game.
+    /// </summary>
+    public enum EndGameReason
+    {
+        None,
+        LastTurnEnded,
+        RitualEnded,
+        SurvivorsDead,
+        WendogoDead
+    }
 }

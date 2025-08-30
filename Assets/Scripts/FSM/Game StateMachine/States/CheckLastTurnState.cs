@@ -30,7 +30,10 @@
         private void CheckLastTurn()
         {
             if (StateMachine.CheckMaximumTurnReached())
+            {
+                StateMachine.EndGameReason = EndGameReason.LastTurnEnded;
                 StateMachine.ChangeState<EndGameState>();
+            }
             else
                 StateMachine.ChangeState<PlayerTurnState>();
         }

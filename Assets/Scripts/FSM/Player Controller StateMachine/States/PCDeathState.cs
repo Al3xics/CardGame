@@ -13,6 +13,8 @@ namespace Wendogo
             base.OnEnter();
             _player.isDead.Value = true;
             PlayerUI.Instance.DeactivateAllHearts();
+            _player.NotifyDeathRpc();
+            ServerManager.Instance.RemovePlayerFromListsRpc(_player.OwnerClientId);
             SessionManager.Instance.MutePlayer(true);
             _player._handManager.ToggleOffMovingCards(_player._handManager.handCards);
             ServerManager.Instance.BroadcastLocalFXEventToPlayerRpc(new FXEventContext
@@ -26,7 +28,6 @@ namespace Wendogo
         private async void AwaitDisableCanvas()
         {
             await DeathUIManager.Instance.WaitUntilAllDestroyed();
-            ServerManager.Instance.RemovePlayerFromListsRpc(_player.OwnerClientId);
             if (_player.isPlayerTurn)
             {
                 _player.NotifyEndTurn();
