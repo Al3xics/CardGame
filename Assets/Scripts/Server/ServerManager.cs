@@ -351,8 +351,13 @@ namespace Wendogo
         public void UseAllUIForVotersRpc(bool setUIActive, bool activePlayerInput)
         {
             foreach (var player in PlayersById.Values)
-            {
                 player.UseVoteUIRpc(setUIActive, activePlayerInput, RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
+            
+            // Handle the case where the player is dead
+            foreach (var deadPlayerId in DeadPlayersId)
+            {
+                var deadPlayer = PlayerController.GetDeadPlayer(deadPlayerId);
+                if (deadPlayer != null) deadPlayer.DisablePrefabIfActiveRpc(RpcTarget.Single(deadPlayerId, RpcTargetUse.Temp));;
             }
         }
 

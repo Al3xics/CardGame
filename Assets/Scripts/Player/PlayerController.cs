@@ -140,7 +140,7 @@ namespace Wendogo
         public NetworkVariable<bool> isDead = new(
             false,
             NetworkVariableReadPermission.Everyone,
-            NetworkVariableWritePermission.Owner
+            NetworkVariableWritePermission.Server
         );
 
         public bool IsSimulatingNight => ServerManager.Instance.currentCycle.Value == Cycle.Night && IsLocalPlayer;
@@ -862,6 +862,15 @@ namespace Wendogo
         }
 
         [Rpc(SendTo.SpecifiedInParams)]
+        public void DisablePrefabIfActiveRpc(RpcParams rpcParams)
+        {
+            if (!_prefabUI.activeSelf) return;
+            
+            _prefabUI.SetActive(false);
+            DeathUIManager.Instance.UnregisterUI(_prefabUI);
+        }
+
+        [Rpc(SendTo.SpecifiedInParams)]
         public void RequestHealthChangeRpc(int delta, RpcParams rpcParams)
         {
             ChangeHealth(delta);
@@ -931,6 +940,13 @@ namespace Wendogo
         {
             stolenID = id;
         }
+        
+        [Rpc(SendTo.Server)]
+        public void NotifyDeathRpc()
+        {
+            isDead.Value = true;
+        }
+        
         #endregion
 
         #region RPC Animations
