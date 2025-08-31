@@ -1081,6 +1081,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   woodUI: {fileID: 1922353624652597410}
   foodUI: {fileID: 4912241913091604579}
+  ritualParts: []
 --- !u!1 &1070188229
 GameObject:
   m_ObjectHideFlags: 0
