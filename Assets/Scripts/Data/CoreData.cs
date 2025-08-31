@@ -83,6 +83,8 @@ namespace Wendogo
         OnWendogoWin,
         OnWendogoLose,
         OnPlayerDeath,
+        OnTransitionToNight,
+        OnTransitionToDay,
     }
 
     /// <summary>
