@@ -301,31 +301,11 @@ namespace Wendogo
             _intFood = -1;
             _intWood = -1;
             _intTarget = -1;
-            TargetSelectionUI.OnTargetPicked += HandleTargetSelected;
+            ResourcesSelectionUI.OnResourcesValidated += HandleResourcesSelected;
 
-            await UniTask.WaitUntil(() => _intTarget >= 0);
+            await UniTask.WaitUntil(() => _intFood >= 0 || _intWood >= 0);
 
-            //todo change logic for the wendigo offering
-            if (_intTarget == 0)
-            {
-                if (wood.Value == 0)
-                    return;
-
-                _intWood = 0;
-                _intWood++;
-            }
-            else if (_intTarget == 1)
-            {
-                if (food.Value == 0)
-                    return;
-
-                _intFood = 0;
-                _intFood++;
-            }
-
-            TargetSelectionUI.OnTargetPicked -= HandleTargetSelected;
-
-            Debug.Log($"Selected target is {_intTarget} with {_intFood} food and {_intWood} wood. ");
+            ResourcesSelectionUI.OnResourcesValidated -= HandleResourcesSelected;
         }
         
         public async UniTask GroupSelectTargetAsync()
@@ -370,6 +350,12 @@ namespace Wendogo
         private void HandleTargetSelected(int targetID)
         {
             _intTarget = targetID;
+        }
+
+        private void HandleResourcesSelected(int foodValue, int woodValue)
+        {
+            _intFood = foodValue;
+            _intWood = woodValue;
         }
 
         public void HandleCancelTimer()
@@ -754,12 +740,6 @@ namespace Wendogo
             if (nbFood <= -1) nbFood = 0;
             if (nbWood <= -1) nbWood = 0;
 
-            // Check if both resources combined are inferior or equal to the maximum use of this card BuildRitual
-            var value = nbFood + nbWood;
-            if (value > buildRitual.RitualCost)
-                // todo --> normalement ça arrive jamais car Valentin vérifie que le total est correcte avant que le joueur valide
-                throw new Exception("The sum of the food and wood resources used by the card is superior to the maximum use of this card BuildRitual !");
-
             if (nbFood > 0) buildRitual.ApplyRitualEffect(origin, ResourceType.Food, nbFood);
             if (nbWood > 0) buildRitual.ApplyRitualEffect(origin, ResourceType.Wood, nbWood);
 
@@ -989,7 +969,7 @@ namespace Wendogo
                 if (cardDataSO.CardEffect is BuildRitual)
                 {
                     _selectedTarget = LocalPlayerId;
-                    await UniTask.WaitUntil(() => _intTarget >= 0);
+                    await UniTask.WaitUntil(() => _intFood >= 0 || _intWood >= 0);
                     await UniTask.WaitForEndOfFrame();
                     nbFood = _intFood;
                     nbWood = _intWood;
