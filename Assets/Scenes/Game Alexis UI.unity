@@ -603,6 +603,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   showDebugLogs: 1
   customTurnOrder: 
+  wendogoId: -1
   maximumTurn: 6
   startingActionDeckAmount: 3
   startingResourceDeckAmount: 2
@@ -610,8 +611,6 @@ MonoBehaviour:
   numberOfFoodToCompleteRitual: 6
   numberOfWoodToCompleteRitual: 6
   groupVoteEffectEveryXTurn: {fileID: 11400000, guid: 5bfee2b8d8c5a39439ee7607b7183a1a, type: 2}
-  playersAtCycleStart: 0
-  playersPlayedThisCycle: 0
 --- !u!114 &830326876
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1082,6 +1081,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   woodUI: {fileID: 1922353624652597410}
   foodUI: {fileID: 4912241913091604579}
+  ritualParts: []
 --- !u!1 &1070188229
 GameObject:
   m_ObjectHideFlags: 0

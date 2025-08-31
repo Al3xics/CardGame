@@ -12,6 +12,7 @@ namespace Wendogo
         {
             var player = PlayerController.GetPlayer(target);
             player._playerPA += points;
+            player.UpdatePA(player._playerPA);
             AnalyticsManager.Instance.RecordEvent(new CustomEvent("pointActionActiveCardWasApplied"));
         }
     }

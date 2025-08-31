@@ -12,5 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5ae5b10497285a14d80558561f07ed0d, type: 3}
   m_Name: Spy
   m_EditorClassIdentifier: 
-  prefabUI: {fileID: 4366196669929515438, guid: 67d464e1ff5762c4889fefceb47205b5, type: 3}
-  showingPrefabUI: {fileID: 4366196669929515438, guid: 67d464e1ff5762c4889fefceb47205b5, type: 3}
+  prefabUI: {fileID: 728514128433627386, guid: b591182f062020c408595876a3e3ff76, type: 3}

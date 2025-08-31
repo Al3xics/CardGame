@@ -34,7 +34,7 @@ namespace Wendogo
 
         public event Action OnAssignedRoles;
         public event Action OnDrawCard;
-        public event Action OnPlayerTurnEnded;
+        public event Action<ulong> OnPlayerTurnEnded;
         public event Action OnResolveCardNightConsequences;
         public event Action OnCheckTriggerVote;
         public event Action OnAnimationFinished;
@@ -247,9 +247,9 @@ namespace Wendogo
 
         // Notifies that a player's turn has ended by invoking the corresponding event.
         [Rpc(SendTo.Server)]
-        public void PlayerTurnEndedRpc()
+        public void PlayerTurnEndedRpc(ulong playerId)
         {
-            OnPlayerTurnEnded?.Invoke();
+            OnPlayerTurnEnded?.Invoke(playerId);
         }
 
         // Asks the server to draw cards for a specific player from a specific deck via the GameStateMachine.
@@ -351,8 +351,13 @@ namespace Wendogo
         public void UseAllUIForVotersRpc(bool setUIActive, bool activePlayerInput)
         {
             foreach (var player in PlayersById.Values)
-            {
                 player.UseVoteUIRpc(setUIActive, activePlayerInput, RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
+            
+            // Handle the case where the player is dead
+            foreach (var deadPlayerId in DeadPlayersId)
+            {
+                var deadPlayer = PlayerController.GetDeadPlayer(deadPlayerId);
+                if (deadPlayer != null) deadPlayer.DisablePrefabIfActiveRpc(RpcTarget.Single(deadPlayerId, RpcTargetUse.Temp));;
             }
         }
 
@@ -557,6 +562,12 @@ namespace Wendogo
         {
             foreach (var player in PlayersById.Values)
                 player.SetStolenIDRpc(id, RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
+        }
+
+        [Rpc(SendTo.Server)]
+        public void DrawMissingCardRpc(ulong id, int deck, int amount)
+        {
+            GameStateMachine.Instance.DrawCards(id, deck, amount);
         }
 
         #endregion

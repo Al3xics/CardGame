@@ -9,7 +9,6 @@ namespace Wendogo
     {
         public GameObject SelectResourcePrefab;
         private GameObject _ressouceCanvaInstance;
-        public int RitualCost = 1;
 
         public void ApplyRitualEffect(ulong owner, ResourceType resourceType, int value)
         {
