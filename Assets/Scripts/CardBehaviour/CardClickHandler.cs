@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using LitMotion;
 using LitMotion.Extensions;
+using UnityEngine.UI;
 
 namespace Wendogo
 {
@@ -12,12 +13,15 @@ namespace Wendogo
     public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler
     {
         private CardObjectData _cardObjectData; //Reference to the CardObjectData on this GameObject
+        private RawImage _cardImage;
 
         public static event Action<CardObjectData> OnCardClicked; //Event when any card is clicked
 
         private Vector3 _originalScale;
+        private Vector3 _originalPosition;
         private Quaternion _originalRotation;
-        
+        private RawImage _cardVisual;
+
         private CancellationToken cancellationToken;
         private CancellationTokenSource _cts;
 
@@ -27,6 +31,7 @@ namespace Wendogo
         {
             //Get the CardObjectData component attached to this GameObject
             _cardObjectData = GetComponent<CardObjectData>();
+            _cardImage =GetComponentInChildren<RawImage>();
         }
 
         public void OnPointerClick(PointerEventData eventData)
@@ -53,6 +58,8 @@ namespace Wendogo
             Debug.Log("Finder put down");
             _originalScale = transform.localScale;
             _originalRotation = transform.rotation;
+            _originalPosition = transform.localPosition;
+            _cardVisual = _cardImage;
 
             transform.SetAsLastSibling();
 
@@ -65,11 +72,15 @@ namespace Wendogo
 
                 await UniTask.WaitForSeconds(1, cancellationToken: cancellationToken);
 
-                Vector3 zoomedV3 = new Vector3(5, 5, 5);
+                Vector3 zoomedV3 = new Vector3(30, 30, 30);
 
                 transform.rotation = Quaternion.identity;
-                LMotion.Create(transform.localScale, zoomedV3, 0.25f)
+                
+                LMotion.Create(transform.localPosition,Vector3.up,0.1f)
+                    .BindToLocalPosition(transform);
+                LMotion.Create(transform.localScale, zoomedV3, 0.1f)
                     .BindToLocalScale(transform);
+                _cardImage.texture = _cardObjectData.Card.EffectVisual;
                 Debug.Log("Finger holded");
             }
             catch (OperationCanceledException)
@@ -91,6 +102,8 @@ namespace Wendogo
 
             transform.localScale = _originalScale;
             transform.rotation = _originalRotation;
+            transform.localPosition = _originalPosition;
+            _cardImage = _cardVisual;
         }
 
         private void OnDestroy()

@@ -32,6 +32,8 @@ public class CardDataSO : ScriptableObject
     [VerticalGroup("CardData/Stats"), LabelWidth(120)]
     public bool HasTarget; //Indicates whether the card needs a target to be played
 
+    public Texture2D EffectVisual;
+
     [VerticalGroup("CardData/Stats")]
     [InfoBox("@_priorityIndexMessage", InfoMessageType.Info, "@_showWarning")]
     [InfoBox("@_priorityIndexMessage", InfoMessageType.Error, "@_showError")]

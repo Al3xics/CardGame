@@ -18,6 +18,7 @@ MonoBehaviour:
   isPassive: 0
   isGroup: 0
   HasTarget: 1
+  EffectVisual: {fileID: 2800000, guid: 6a7d0e58980a0cf45801a942a87f230c, type: 3}
   nightPriorityIndex: 0
   turnsRemaining: -1
   ID: 1014
