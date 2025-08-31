@@ -9,7 +9,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Menu_Refonte.unity
     guid: 6eeb3c6831b6189418434c1b5f3ac34c
   - enabled: 1
-    path: Assets/Scenes/Valentin_UI.unity
+    path: Assets/Scenes/RealGameScene.unity
     guid: 588a86c25be2bea4b812f33374f71278
   - enabled: 1
     path: Assets/Scenes/Game Alexis UI.unity
