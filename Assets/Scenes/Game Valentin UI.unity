@@ -6547,6 +6547,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3469592239803189092}
     m_Modifications:
+    - target: {fileID: 1111359723659420119, guid: 4d997522a5d9bad4f9d9af61b2b31784, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2728156018169354578, guid: 4d997522a5d9bad4f9d9af61b2b31784, type: 3}
       propertyPath: m_Name
       value: Pop-up
