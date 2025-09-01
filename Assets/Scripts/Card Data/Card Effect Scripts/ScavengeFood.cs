@@ -21,6 +21,12 @@ namespace Wendogo
                     player.hiddenFood += food; // Night, so apply only for local player
                 else
                     player.food.Value += food; // Day, so apply for all players
+                
+                ServerManager.Instance.BroadcastLocalFXEventToPlayerRpc(new FXEventContext
+                {
+                    fxType = FXEventType.OnFarmFood,
+                    playerID = owner
+                });
             }
             
             AnalyticsManager.Instance.RecordEvent(new CustomEvent("scavengeFoodActiveCardWasApplied"));

@@ -16,6 +16,7 @@ namespace Wendogo
 
             PlayerController ownerPlayer = PlayerController.GetPlayer(owner);
             PlayerController targetPlayer = PlayerController.GetPlayer(target);
+            bool isNight = targetPlayer.IsSimulatingNight;
 
             if (value != 1000)
             {
@@ -26,12 +27,42 @@ namespace Wendogo
                 {
                     if (targetPlayer.wood.Value <= 0) return;
 
+                    if (!isNight)
+                    {
+                        ServerManager.Instance.BroadcastLocalFXEventToPlayerRpc(new FXEventContext
+                        {
+                            fxType = FXEventType.OnStolenWood,
+                            playerID = target
+                        });
+                    }
+                    
+                    ServerManager.Instance.BroadcastLocalFXEventToPlayerRpc(new FXEventContext
+                    {
+                        fxType = FXEventType.OnStealWood,
+                        playerID = owner
+                    });
+
                     ServerManager.Instance.ChangePlayerResourceRpc(value, -ResourceAmount, target);
                     ServerManager.Instance.ChangePlayerResourceRpc(value, ResourceAmount, owner);
                 }
                 else if (value == 1) // steal food
                 {
                     if (targetPlayer.food.Value <= 0) return;
+
+                    if (!isNight)
+                    {
+                        ServerManager.Instance.BroadcastLocalFXEventToPlayerRpc(new FXEventContext
+                        {
+                            fxType = FXEventType.OnStolenFood,
+                            playerID = target
+                        });
+                    }
+                    
+                    ServerManager.Instance.BroadcastLocalFXEventToPlayerRpc(new FXEventContext
+                    {
+                        fxType = FXEventType.OnStealFood,
+                        playerID = owner
+                    });
 
                     ServerManager.Instance.ChangePlayerResourceRpc(value, -ResourceAmount, target);
                     ServerManager.Instance.ChangePlayerResourceRpc(value, ResourceAmount, owner);
