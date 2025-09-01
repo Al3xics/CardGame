@@ -828,6 +828,11 @@ namespace Wendogo
             if (food.Value >= 1)
             {
                 food.Value--;
+                ServerManager.Instance.BroadcastLocalFXEventToPlayerRpc(new FXEventContext
+                {
+                    fxType = FXEventType.OnEatFood,
+                    playerID = OwnerClientId
+                });
             }
             else
             {

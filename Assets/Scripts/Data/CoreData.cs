@@ -85,6 +85,15 @@ namespace Wendogo
         OnPlayerDeath,
         OnTransitionToNight,
         OnTransitionToDay,
+        OnEatFood,
+        OnFarmFood,
+        OnFarmWood,
+        OnBuildRitualFood,
+        OnBuildRitualWood,
+        OnStealFood,
+        OnStealWood,
+        OnStolenFood,
+        OnStolenWood,
     }
 
     /// <summary>
