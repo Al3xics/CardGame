@@ -255,6 +255,7 @@ namespace Wendogo
                     }
                 UpdateRitualParts();
             };
+            UpdateRitualParts();
         }
 
         private void UpdateRitualParts()

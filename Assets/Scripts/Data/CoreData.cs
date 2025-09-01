@@ -94,6 +94,9 @@ namespace Wendogo
         OnStealWood,
         OnStolenFood,
         OnStolenWood,
+        OnRitual1,
+        OnRitual2,
+        OnRitual3,
     }
 
     /// <summary>
