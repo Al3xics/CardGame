@@ -18,7 +18,7 @@ MonoBehaviour:
   publishIpAddress: 127.0.0.1
   port: 0
   sessionName: Session
-  maxPlayers: 2
+  maxPlayers: 4
   isLocked: 0
   isPrivate: 0
   enableVoiceChat: 0

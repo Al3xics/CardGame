@@ -213,7 +213,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 420fcac2162e47c4935a5ef7743c7bcb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  multiplayerConfiguration: {fileID: 11400000, guid: 72f10e2eedad9774e83e8819d618f74f, type: 2}
+  multiplayerConfiguration: {fileID: 11400000, guid: af580614e15bb824c8baca1ca5eaf107, type: 2}
 --- !u!4 &294249686
 Transform:
   m_ObjectHideFlags: 0
@@ -893,7 +893,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   menuSceneName: Menu
-  gameSceneName: Game Alexis UI
+  gameSceneName: Game Valentin UI
   playerHealthAsked: 0
   playerFoodAsked: 0
   playerWoodAsked: 0

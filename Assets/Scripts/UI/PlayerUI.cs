@@ -269,11 +269,11 @@ namespace Wendogo
         private void SetRitualUI()
         {
             TextMeshProUGUI ritualWood = _ritualObject.woodUI;
-            ritualWood.text = $"{ServerManager.Instance._woodInRitual.Value}/6";
+            ritualWood.text = $"{ServerManager.Instance._woodInRitual.Value}";
 
             ServerManager.Instance._woodInRitual.OnValueChanged += (oldVal, newVal) =>
             {
-                ritualWood.text = $"{newVal}/6";
+                ritualWood.text = $"{newVal}";
 
                 if (newVal < oldVal)
                     for (int i = newVal; i < oldVal; i++)
@@ -290,10 +290,10 @@ namespace Wendogo
 
             TextMeshProUGUI ritualFood = _ritualObject.foodUI;
             List<GameObject> foodGauge = _ritualObject.foodGaugeParts;
-            ritualFood.text = ServerManager.Instance._foodInRitual.Value.ToString() + "/6";
+            ritualFood.text = ServerManager.Instance._foodInRitual.Value.ToString() ;
             ServerManager.Instance._foodInRitual.OnValueChanged += (oldVal, newVal) =>
             {
-                ritualFood.text = $"{newVal}/6";
+                ritualFood.text = $"{newVal}";
 
                 if (newVal < oldVal)
                     for (int i = newVal; i < oldVal; i++)
@@ -321,7 +321,7 @@ namespace Wendogo
 
             foreach (var part in _ritualObject.ritualParts)
                 part.gameObject.SetActive(false);
-
+            //rajouter les FX events
             int index = -1;
             if (total >= MaxTotal) index = 2;         
             else if (total >= TwoThirds) index = 1;   
