@@ -49,6 +49,8 @@ namespace Wendogo
             }
             
             if (fxEvents.Count == 0) throw new Exception("fxEvents is empty !");
+            if (animator == null) throw new Exception("animator is empty !");
+            if (audioSource == null) throw new Exception("audioSource is empty !");
             if (popupText == null) throw new Exception("Pop-up Text not found");
         }
 
