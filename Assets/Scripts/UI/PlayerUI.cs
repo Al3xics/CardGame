@@ -9,6 +9,7 @@ using Unity.Netcode;
 using System.Linq;
 using UnityEngine.Rendering;
 using Cysharp.Threading.Tasks;
+using Unity.VisualScripting;
 
 namespace Wendogo
 {
@@ -46,6 +47,15 @@ namespace Wendogo
         public GameObject TextPlayerName2;
         public GameObject TextPlayerName3;
         public GameObject TextPlayerName4;
+        
+        public GameObject OwnerPlayer;
+        public GameObject Player1disp;
+        public GameObject Player2disp;
+        public GameObject Player3disp;
+        
+        public Dictionary<ulong, Texture2D> PlayerTextures = new();
+        public Dictionary<ulong, Sprite> PlayerSprites = new();
+        
 
 
         void Awake()
@@ -106,6 +116,31 @@ namespace Wendogo
             }
         }
 
+        public void SetCadreToPlayer(ulong playerID, GameObject cadreRef)
+        {
+            cadreRef.GetComponent<Image>().sprite = PlayerSprites[playerID];
+        }
+
+        public void SetPlayerTextures()
+        {
+            foreach (var i in ServerManager.GlobalPlayersByName.Keys)
+            {
+                ServerManager.GlobalPlayersByName.TryGetValue(i, out var name);
+                if (Player1disp.transform.Find("Player_2_Name").GetComponent<TextMeshPro>().text == name)
+                {
+                    Player1disp.transform.Find("Player_2_Icon").GetComponent<RawImage>().texture = PlayerTextures[i];
+                }
+                if (Player2disp.transform.Find("Player_3_Name").GetComponent<TextMeshPro>().text == name)
+                {
+                    Player2disp.transform.Find("Player_3_Icon").GetComponent<RawImage>().texture = PlayerTextures[i];
+                }
+                if (Player3disp.transform.Find("Player_4_Name").GetComponent<TextMeshPro>().text == name)
+                {
+                    Player3disp.transform.Find("Player_4_Icon").GetComponent<RawImage>().texture = PlayerTextures[i];
+                }
+            }
+        }
+
         public void GetRole(string role)
         {
             if (roleText != null)
@@ -131,6 +166,7 @@ namespace Wendogo
         {
             SetRitualUI();
             RenamePlayer(localPLayerID);
+            SetCadreToPlayer(localPLayerID, OwnerPlayer);
 
             //todo call the method in server manager in a loop for all players 
             //when the game starts
@@ -214,7 +250,6 @@ namespace Wendogo
                 {
                     title.text = ServerManager.GlobalPlayersByName.TryGetValue(trueID, out var name) ? name : $"Sah Player {trueID}";
                 }
-
             }
 
             if (TextPlayerName1 != null)
@@ -227,9 +262,8 @@ namespace Wendogo
                     ServerManager.GlobalPlayersByName.TryGetValue(2, out var playerName3) ? playerName3 : $"Sah Player 2";
                 TextPlayerName4.GetComponent<TextMeshProUGUI>().text =
                     ServerManager.GlobalPlayersByName.TryGetValue(3, out var playerName4) ? playerName4 : $"Sah Player 3";
-                
-                Debug.Log(TextPlayerName1.GetComponent<TextMeshProUGUI>().text);
             }
+            SetPlayerTextures();
         }
 
         private void SetRitualUI()
