@@ -8,6 +8,7 @@ using Sirenix.OdinInspector;
 using Unity.Netcode;
 using System.Linq;
 using UnityEngine.Rendering;
+using Cysharp.Threading.Tasks;
 
 namespace Wendogo
 {
@@ -104,6 +105,7 @@ namespace Wendogo
                 playerName.text = SessionManager.Instance.ActiveSession.CurrentPlayer.Properties[SessionConstants.PlayerNamePropertyKey].Value.ToString();
             }
         }
+
         public void GetRole(string role)
         {
             if (roleText != null)
@@ -125,7 +127,7 @@ namespace Wendogo
         }
 
         [Rpc(SendTo.SpecifiedInParams)]
-        public void SetUIInfos(ulong localPLayerID, RpcParams rpcParams)
+        public async void SetUIInfos(ulong localPLayerID, RpcParams rpcParams)
         {
             SetRitualUI();
             RenamePlayer(localPLayerID);
@@ -233,18 +235,76 @@ namespace Wendogo
         private void SetRitualUI()
         {
             TextMeshProUGUI ritualWood = _ritualObject.woodUI;
-            ritualWood.text = ServerManager.Instance._woodInRitual.Value.ToString() + "/6";
+            ritualWood.text = $"{ServerManager.Instance._woodInRitual.Value}/6";
+
             ServerManager.Instance._woodInRitual.OnValueChanged += (oldVal, newVal) =>
             {
-                ritualWood.text = newVal.ToString() + "/6";
+                ritualWood.text = $"{newVal}/6";
+
+                if (newVal < oldVal)
+                    for (int i = newVal; i < oldVal; i++)
+                    {
+                        _ritualObject.woodGaugeParts[i].gameObject.SetActive(false);
+                    }
+                else if (newVal > oldVal)
+                    for (int i = oldVal; i < newVal; i++)
+                    {
+                        _ritualObject.woodGaugeParts[i].gameObject.SetActive(true);
+                    }
+                UpdateRitualParts();
             };
 
             TextMeshProUGUI ritualFood = _ritualObject.foodUI;
+            List<GameObject> foodGauge = _ritualObject.foodGaugeParts;
             ritualFood.text = ServerManager.Instance._foodInRitual.Value.ToString() + "/6";
             ServerManager.Instance._foodInRitual.OnValueChanged += (oldVal, newVal) =>
             {
-                ritualFood.text = newVal.ToString() + "/6";
+                ritualFood.text = $"{newVal}/6";
+
+                if (newVal < oldVal)
+                    for (int i = newVal; i < oldVal; i++)
+                    {
+                        _ritualObject.foodGaugeParts[i].gameObject.SetActive(false);
+                    }
+                else if (newVal > oldVal)
+                    for (int i = oldVal; i < newVal; i++)
+                    {
+                        _ritualObject.foodGaugeParts[i].gameObject.SetActive(true);
+                    }
+                UpdateRitualParts();
             };
+            UpdateRitualParts();
         }
+
+        private void UpdateRitualParts()
+        {
+            const int MaxTotal = 12;
+            const int OneThird = MaxTotal / 3;
+            const int TwoThirds = 2 * MaxTotal / 3; 
+            int wood = ServerManager.Instance._woodInRitual.Value;
+            int food = ServerManager.Instance._foodInRitual.Value;
+            int total = Mathf.Clamp(wood + food, 0, MaxTotal);
+
+            foreach (var part in _ritualObject.ritualParts)
+                part.gameObject.SetActive(false);
+
+            int index = -1;
+            if (total >= MaxTotal) index = 2;         
+            else if (total >= TwoThirds) index = 1;   
+            else if (total >= OneThird) index = 0;   
+
+            if (index >= 0 && index < _ritualObject.ritualParts.Count)
+                _ritualObject.ritualParts[index].SetActive(true);
+        }
+
+        public void DeactivateAllHearts()
+        {
+            foreach (var heart in hearts)
+            {
+                if (heart.activeSelf)
+                    heart.gameObject.SetActive(false);
+            }
+        }
+
     }
 }

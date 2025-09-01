@@ -5,92 +5,181 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using LitMotion;
 using LitMotion.Extensions;
+using UnityEngine.UI;
 
 namespace Wendogo
 {
-    //Handles player interactions with individual cards via touch
+    /// <summary>
+    /// Handles player interactions with individual cards via tap/click and long-press preview.
+    /// Designed to avoid conflicts with CardDragHandler.
+    /// </summary>
     public class CardClickHandler : MonoBehaviour, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler
     {
-        private CardObjectData _cardObjectData; //Reference to the CardObjectData on this GameObject
+        // Data/visuals
+        private CardObjectData _cardObjectData;     // Reference to the CardObjectData on this GameObject
+        private RawImage _cardImage;                // Card visual
+        private CanvasGroup _canvasGroup;
 
-        public static event Action<CardObjectData> OnCardClicked; //Event when any card is clicked
+        public static event Action<CardObjectData> OnCardClicked; // Event when any card is clicked
 
+        // Original state (for preview reset)
         private Vector3 _originalScale;
+        private Vector3 _originalLocalPosition;
         private Quaternion _originalRotation;
-        
-        private CancellationToken cancellationToken;
+        private Texture _cardTexture;
+
+        // Long-press handling
         private CancellationTokenSource _cts;
 
-        public PlayerController Owner { get; set; } //Define card ownership
+        // Coordination flags
+        private bool _isDragging;                   // Set from CardDragHandler
+        private bool _isPreviewing;                 // True while long-press preview is active
+
+        [Header("Long-Press Settings")]
+        [SerializeField] private float _longPressSeconds = 1f;
+        [SerializeField] private Vector3 _previewScale = new Vector3(30, 30, 30);
+        [SerializeField] private float _previewTween = 0.1f;
+
+        public PlayerController Owner { get; set; } // Define card ownership
 
         private void Awake()
         {
-            //Get the CardObjectData component attached to this GameObject
             _cardObjectData = GetComponent<CardObjectData>();
+            _cardImage = GetComponentInChildren<RawImage>(true);
+            _canvasGroup = GetComponent<CanvasGroup>();
         }
 
-        public void OnPointerClick(PointerEventData eventData)
+        /// <summary>
+        /// Called by CardDragHandler to mark drag intent/state.
+        /// </summary>
+        public void SetDragging(bool value)
         {
-            //Broadcast the click event with this card's data
-            //OnCardClicked?.Invoke(_cardObjectData);
+            _isDragging = value;
 
-            ////Toggle card selection through the PlayerController
-            //if (!_cardObjectData.isSelected)
-            //{
-            //    Owner.SelectCard(_cardObjectData);
-            //}
-            //else
-            //{
-            //    Owner.DeselectCard(_cardObjectData);
-            //}
-
-
-
+            // If a drag begins while preview is pending/active, cancel the preview.
+            if (value)
+            {
+                CancelPreviewToken();
+                if (_isPreviewing)
+                {
+                    ResetPreviewVisuals();
+                }
+            }
         }
 
-        public async void OnPointerDown(PointerEventData eventData)
+        public void OnPointerDown(PointerEventData eventData)
         {
-            Debug.Log("Finder put down");
-            _originalScale = transform.localScale;
-            _originalRotation = transform.rotation;
+            // Ignore click/hold logic if a drag is in progress (or about to)
+            if (_isDragging) return;
 
+            // Only allow preview when raycasts are enabled (i.e., NOT dragging)
+            if (_canvasGroup != null && !_canvasGroup.blocksRaycasts)
+                return;
+
+            CacheOriginalState();
             transform.SetAsLastSibling();
 
             _cts?.Cancel();
             _cts = new CancellationTokenSource();
-            CancellationToken cancellationToken = _cts.Token;
+            var token = _cts.Token;
 
-            try
-            {
-
-                await UniTask.WaitForSeconds(1, cancellationToken: cancellationToken);
-
-                Vector3 zoomedV3 = new Vector3(5, 5, 5);
-
-                transform.rotation = Quaternion.identity;
-                LMotion.Create(transform.localScale, zoomedV3, 0.25f)
-                    .BindToLocalScale(transform);
-                Debug.Log("Finger holded");
-            }
-            catch (OperationCanceledException)
-            {
-                Debug.LogWarning("Animation canceled");
-            }
+            _ = RunLongPressPreviewAsync(token);
         }
 
         public void OnPointerUp(PointerEventData eventData)
         {
-            Debug.Log("Finder removed");
+            // If user actually dragged, do not fight the drag handler.
+            if (eventData.dragging || _isDragging)
+            {
+                CancelPreviewToken();
+                // If a preview was active, quietly reset it
+                if (_isPreviewing) ResetPreviewVisuals();
+                return;
+            }
 
+            // Reset only if we changed something for preview
+            CancelPreviewToken();
+            if (_isPreviewing)
+            {
+                ResetPreviewVisuals();
+            }
+        }
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            // Only fire click if there was no preview and no drag
+            if (_isDragging || _isPreviewing) return;
+
+            OnCardClicked?.Invoke(_cardObjectData);
+        }
+
+        private async UniTaskVoid RunLongPressPreviewAsync(CancellationToken token)
+        {
+            try
+            {
+                await UniTask.WaitForSeconds(_longPressSeconds, cancellationToken: token);
+
+                // Activate preview
+                _isPreviewing = true;
+
+                transform.rotation = Quaternion.identity;
+
+                // Small vertical lift for feedback (tweak as needed)
+                var rt = transform as RectTransform;
+
+                // Move a little up in local space
+                LMotion.Create(rt.localPosition, rt.localPosition + Vector3.up * 250, _previewTween)
+                       .BindToLocalPosition(transform);
+
+
+                LMotion.Create(transform.localScale, _previewScale, _previewTween)
+                       .BindToLocalScale(transform);
+
+                if (_cardObjectData != null && _cardImage != null && _cardObjectData.Card != null)
+                {
+                    _cardImage.texture = _cardObjectData.Card.EffectVisual;
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // Swallow: user lifted or started drag
+            }
+        }
+
+        private void CacheOriginalState()
+        {
+            _originalScale = transform.localScale;
+            _originalRotation = transform.rotation;
+            _originalLocalPosition = transform.localPosition;
+            if (_cardImage != null)
+            {
+                _cardTexture = _cardImage.texture;
+            }
+        }
+
+        private void ResetPreviewVisuals()
+        {
+            // Restore transform & texture
+            transform.localScale = _originalScale;
+            transform.rotation = _originalRotation;
+            transform.localPosition = _originalLocalPosition;
+
+            if (_cardImage != null)
+            {
+                _cardImage.texture = _cardTexture;
+            }
+
+            _isPreviewing = false;
+        }
+
+        private void CancelPreviewToken()
+        {
             if (_cts != null && !_cts.IsCancellationRequested)
             {
                 _cts.Cancel();
                 _cts.Dispose();
                 _cts = null;
             }
-
-            transform.localScale = _originalScale;
-            transform.rotation = _originalRotation;
         }
 
         private void OnDestroy()
@@ -98,6 +187,5 @@ namespace Wendogo
             _cts?.Cancel();
             _cts?.Dispose();
         }
-
     }
 }

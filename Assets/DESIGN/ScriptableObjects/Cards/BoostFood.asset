@@ -12,12 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4c4af47719ad294e9daacd12912804b, type: 3}
   m_Name: BoostFood
   m_EditorClassIdentifier: 
-  CardVisual: {fileID: 2800000, guid: ecf1ec1e39afedf40baf82c9c326e4a0, type: 3}
+  CardVisual: {fileID: 2800000, guid: 2185abf4adba9c64db20c7518c0bd768, type: 3}
   Name: Boost Food
   CardEffect: {fileID: 11400000, guid: fbb7a4cd94c927e439a08c87f1fecde3, type: 2}
   isPassive: 1
   isGroup: 0
   HasTarget: 0
+  EffectVisual: {fileID: 2800000, guid: bad1f2b39bcb00a43bc99d544c0daff7, type: 3}
   nightPriorityIndex: 0
   turnsRemaining: 2
   ID: 2002

@@ -83,5 +83,31 @@ namespace Wendogo
         OnWendogoWin,
         OnWendogoLose,
         OnPlayerDeath,
+        OnTransitionToNight,
+        OnTransitionToDay,
+        OnEatFood,
+        OnFarmFood,
+        OnFarmWood,
+        OnBuildRitualFood,
+        OnBuildRitualWood,
+        OnStealFood,
+        OnStealWood,
+        OnStolenFood,
+        OnStolenWood,
+        OnRitual1,
+        OnRitual2,
+        OnRitual3,
+    }
+
+    /// <summary>
+    /// Enum representing the reasons for ending the game.
+    /// </summary>
+    public enum EndGameReason
+    {
+        None,
+        LastTurnEnded,
+        RitualEnded,
+        SurvivorsDead,
+        WendogoDead
     }
 }

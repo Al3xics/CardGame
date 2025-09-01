@@ -12,12 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4c4af47719ad294e9daacd12912804b, type: 3}
   m_Name: Divination
   m_EditorClassIdentifier: 
-  CardVisual: {fileID: 2800000, guid: 2079a3a06bb934d4883627e817309446, type: 3}
+  CardVisual: {fileID: 2800000, guid: 51c06a298dc71da42abbc420b13425a5, type: 3}
   Name: Divination
   CardEffect: {fileID: 11400000, guid: 9e836d353328b0149814286b99e52a78, type: 2}
   isPassive: 0
   isGroup: 0
   HasTarget: 0
+  EffectVisual: {fileID: 2800000, guid: 030e3dda17976df41b20977a82e91d85, type: 3}
   nightPriorityIndex: 0
   turnsRemaining: -1
   ID: 1009

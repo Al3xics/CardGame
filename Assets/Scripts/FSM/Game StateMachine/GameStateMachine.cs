@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Cysharp.Threading.Tasks;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -25,19 +24,27 @@ namespace Wendogo
 
         #region Variables
 
-        /* --------------- Show in Inspector --------------- */
+        /* --------------- Show in Inspector : Debug --------------- */
         /// <summary>
         /// Allows setting a custom turn order for players.
         /// If left empty, the order will be randomized.
         /// </summary>
-        [Header("Game Settings")]
         [Tooltip("Provide a custom turn order for players. Leave empty for random order.")]
         public List<ulong> customTurnOrder;
+
+        /// <summary>
+        /// Specifies a custom ID for the Wendogo character.
+        /// If set to -1, a random Wendogo ID will be assigned.
+        /// </summary>
+        [Tooltip("Provide a custom ID for the Wendogo. Leave '-1' for default .")]
+        public int wendogoId = -1;
         
+        /* --------------- Show in Inspector : Game Settings --------------- */
         /// <summary>
         /// Represents the maximum number of turns allowed in the game.
         /// If the number of completed turns reaches this value, the game will end.
         /// </summary>
+        [Header("Game Settings")]
         [SerializeField] private int maximumTurn = 10;
 
         /// <summary>
@@ -130,24 +137,10 @@ namespace Wendogo
         public ulong CurrentPlayerId => TurnQueue.Count > 0 ? TurnQueue.Peek() : 0;
 
         /// <summary>
-        /// Represents the number of players active at the start of a gameplay cycle.
-        /// This value is used to track and manage the state of the turn sequence during a cycle
-        /// and can be dynamically adjusted based on player status updates, such as disconnections or eliminations.
-        /// </summary>
-        public int playersAtCycleStart;
-
-        /// <summary>
-        /// Tracks the number of players who have taken their turns in the current cycle.
-        /// This variable is incremented as each player's turn concludes
-        /// and is used to determine the progression and state transitions of the game cycle.
-        /// </summary>
-        public int playersPlayedThisCycle;
-
-        /// <summary>
         /// Stores the set of player IDs that have completed their turn in the current cycle.
         /// This ensures that each player is tracked as having played during a single gameplay cycle.
         /// </summary>
-        private readonly HashSet<ulong> _playedThisCycle = new();
+        public readonly HashSet<ulong> PlayedThisCycle = new();
 
         private Cycle _cycle = Cycle.Day;
 
@@ -223,6 +216,13 @@ namespace Wendogo
         /// </summary>
         private bool _canScavengeWood = true;
 
+        /// <summary>
+        /// Represents the reason why the game has reached its end state.
+        /// This property is used to indicate whether the game concluded due to the completion
+        /// of the ritual, the demise of all survivors, or the death of the Wendogo.
+        /// </summary>
+        public EndGameReason EndGameReason { get; set; } = EndGameReason.None;
+
         #endregion
 
         #region Action
@@ -265,6 +265,7 @@ namespace Wendogo
             AddState(new CheckLastTurnState(this));
             AddState(new CheckRitualState(this));
             AddState(new CheckTriggerVoteState(this));
+            AddState(new CheckWinLoseState(this));
             AddState(turnOrderState);
             AddState(new DistributeCardsState(this));
             AddState(new EndGameState(this));
@@ -406,9 +407,7 @@ namespace Wendogo
         /// </summary>
         private void ResetPlayersCycle()
         {
-            playersAtCycleStart = TurnQueue.Count; // number of living at the start of the cycle
-            playersPlayedThisCycle = 0;
-            _playedThisCycle.Clear();
+            PlayedThisCycle.Clear();
         }
         
         /// <summary>
@@ -429,18 +428,16 @@ namespace Wendogo
         /// Ends the current player's turn by removing them from the front of the turn queue.
         /// If the player is still an active participant, they are re-added to the back of the queue.
         /// </summary>
-        public void EndCurrentPlayerTurn()
+        /// <param name="finishedPlayerId">The id of the player who finished his turn.</param>
+        public void EndCurrentPlayerTurn(ulong finishedPlayerId)
         {
-            if (TurnQueue.Count == 0) return;
+            PlayedThisCycle.Add(finishedPlayerId);
 
-            ulong finishedPlayer = TurnQueue.Dequeue();
+            if (TurnQueue.Count > 0 && TurnQueue.Peek() == finishedPlayerId)
+                TurnQueue.Dequeue();
 
-            // This player played well in THIS cycle
-            _playedThisCycle.Add(finishedPlayer);
-
-            // If he is still alive, we put him back at the end of the queue
-            if (PlayersID.Contains(finishedPlayer))
-                TurnQueue.Enqueue(finishedPlayer);
+            if (PlayersID.Contains(finishedPlayerId))
+                TurnQueue.Enqueue(finishedPlayerId);
         }
 
         /// <summary>
@@ -481,10 +478,20 @@ namespace Wendogo
             {
                 case Cycle.Day:
                     newCycle = Cycle.Night;
+                    ServerManager.Instance.BroadcastSharedFXEventRpc(new FXEventContext
+                    {
+                        fxType = FXEventType.OnTransitionToNight,
+                        playerID = 0
+                    });
                     break;
                 case Cycle.Night:
                     newCycle = Cycle.Day;
                     CptTurn++;
+                    ServerManager.Instance.BroadcastSharedFXEventRpc(new FXEventContext
+                    {
+                        fxType = FXEventType.OnTransitionToDay,
+                        playerID = 0
+                    });
                     break;
                 default:
                     throw new System.Exception("Invalid cycle value.");
@@ -566,18 +573,7 @@ namespace Wendogo
                 return;
 
             PlayersID.Remove(playerID);
-
-            // Was he in the queue at the time of death?
-            bool wasInQueue = TurnQueue.Contains(playerID);
-            // Had he ALREADY played in the current cycle?
-            bool alreadyPlayedThisCycle = _playedThisCycle.Contains(playerID);
-
-            // Complete tail removal
             TurnQueue = new Queue<ulong>(TurnQueue.Where(p => p != playerID));
-
-            // Only decrements the cycle quota if the player has not yet played
-            if (wasInQueue && !alreadyPlayedThisCycle && playersPlayedThisCycle < playersAtCycleStart)
-                playersAtCycleStart = Math.Max(0, playersAtCycleStart - 1);
         }
 
         /// <summary>

@@ -12,12 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4c4af47719ad294e9daacd12912804b, type: 3}
   m_Name: ScavengeWood
   m_EditorClassIdentifier: 
-  CardVisual: {fileID: 2800000, guid: 05c96089e83c4c54f93588677bcfa83a, type: 3}
+  CardVisual: {fileID: 2800000, guid: 2111afa061587ed49a6e1980ee2eae76, type: 3}
   Name: Scavenge Wood
   CardEffect: {fileID: 11400000, guid: 55cd397d58e152743bdb957cfd0ca36c, type: 2}
   isPassive: 0
   isGroup: 0
   HasTarget: 0
+  EffectVisual: {fileID: 2800000, guid: fa4961fd22d18b848bcfd7efdee88bae, type: 3}
   nightPriorityIndex: 0
   turnsRemaining: -1
   ID: 1003

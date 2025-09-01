@@ -12,12 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4c4af47719ad294e9daacd12912804b, type: 3}
   m_Name: PointAction
   m_EditorClassIdentifier: 
-  CardVisual: {fileID: 2800000, guid: 301d9b85319602843be7ce2813beaf8a, type: 3}
+  CardVisual: {fileID: 2800000, guid: a4b9842de4b664542ae9b8d4b314f2f7, type: 3}
   Name: Point Action
   CardEffect: {fileID: 11400000, guid: f71f538dcf4813746a5dfc5e8dc3cca0, type: 2}
   isPassive: 0
   isGroup: 0
   HasTarget: 0
+  EffectVisual: {fileID: 2800000, guid: 030e3dda17976df41b20977a82e91d85, type: 3}
   nightPriorityIndex: 0
   turnsRemaining: 2
   ID: 1004
