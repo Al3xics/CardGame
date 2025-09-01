@@ -97,7 +97,9 @@ namespace Wendogo
             if (AutoSessionBootstrapper.AutoConnect)
                 playerName.text = player.name;
             else
-                playerName.text = ServerManager.Instance.GetPlayerName(playerID);
+            {
+                playerName.text = SessionManager.Instance.ActiveSession.CurrentPlayer.Properties[SessionConstants.PlayerNamePropertyKey].Value.ToString();
+            }
         }
 
         public void GetRole(string role)
@@ -201,9 +203,13 @@ namespace Wendogo
 
                 var title = go.GetComponentInChildren<TextMeshProUGUI>();
                 if (AutoSessionBootstrapper.AutoConnect)
+                {
                     title.text = player.name;
+                }
                 else
-                    title.text = ServerManager.Instance.GetPlayerName(player.LocalPlayerId);
+                {
+                    title.text = ServerManager.GlobalPlayersByName.TryGetValue(trueID, out var name) ? name : $"Sah Player {trueID}";
+                }
 
             }
         }
