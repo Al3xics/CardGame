@@ -40,7 +40,11 @@ namespace Wendogo
 
 
         public static PlayerUI Instance { get; private set; }
-
+        
+        public GameObject TextPlayerName1;
+        public GameObject TextPlayerName2;
+        public GameObject TextPlayerName3;
+        public GameObject TextPlayerName4;
 
 
         void Awake()
@@ -209,6 +213,20 @@ namespace Wendogo
                     title.text = ServerManager.GlobalPlayersByName.TryGetValue(trueID, out var name) ? name : $"Sah Player {trueID}";
                 }
 
+            }
+
+            if (TextPlayerName1 != null)
+            {
+                TextPlayerName1.GetComponent<TextMeshProUGUI>().text =
+                    ServerManager.GlobalPlayersByName.TryGetValue(0, out var playerName1) ? playerName1 : $"Sah Player 0";
+                TextPlayerName2.GetComponent<TextMeshProUGUI>().text =
+                    ServerManager.GlobalPlayersByName.TryGetValue(1, out var playerName2) ? playerName2 : $"Sah Player 1";
+                TextPlayerName3.GetComponent<TextMeshProUGUI>().text =
+                    ServerManager.GlobalPlayersByName.TryGetValue(2, out var playerName3) ? playerName3 : $"Sah Player 2";
+                TextPlayerName4.GetComponent<TextMeshProUGUI>().text =
+                    ServerManager.GlobalPlayersByName.TryGetValue(3, out var playerName4) ? playerName4 : $"Sah Player 3";
+                
+                Debug.Log(TextPlayerName1.GetComponent<TextMeshProUGUI>().text);
             }
         }
 
