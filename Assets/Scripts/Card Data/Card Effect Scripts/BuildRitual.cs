@@ -29,7 +29,15 @@ namespace Wendogo
                 if (isNight)
                     player.hiddenFood = player.hiddenFood - value;
                 else
+                {
                     player.food.Value = player.food.Value - value;
+                
+                    ServerManager.Instance.BroadcastSharedFXEventRpc(new FXEventContext
+                    {
+                        fxType = FXEventType.OnBuildRitualFood,
+                        playerID = owner
+                    });
+                }
 
                 ServerManager.Instance.AddRessourceToRitualRpc(isNight, true, !isWendogo, value);
             }
@@ -39,8 +47,16 @@ namespace Wendogo
                 if (isNight)
                     player.hiddenWood = player.hiddenWood - value;
                 else
+                {
                     player.wood.Value = player.wood.Value - value;
 
+                    ServerManager.Instance.BroadcastSharedFXEventRpc(new FXEventContext
+                    {
+                        fxType = FXEventType.OnBuildRitualWood,
+                        playerID = owner
+                    });
+                }
+                
                 ServerManager.Instance.AddRessourceToRitualRpc(isNight, false, !isWendogo, value);
             }
         }

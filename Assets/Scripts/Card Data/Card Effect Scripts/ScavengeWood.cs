@@ -21,6 +21,12 @@ namespace Wendogo
                     player.hiddenWood += wood; // Night, so apply only for local player
                 else
                     player.wood.Value += wood; // Day, so apply for all players
+                
+                ServerManager.Instance.BroadcastLocalFXEventToPlayerRpc(new FXEventContext
+                {
+                    fxType = FXEventType.OnFarmWood,
+                    playerID = owner
+                });
             }
             
             AnalyticsManager.Instance.RecordEvent(new CustomEvent("scavengeWoodActiveCardWasApplied"));
