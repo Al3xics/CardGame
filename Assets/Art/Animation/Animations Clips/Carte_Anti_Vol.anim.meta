@@ -1,8 +1,12 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/DESIGN/ScriptableObjects/FX/FX_TransitionToDay.asset.meta
+guid: d60fa364f27625848944d59c0896f59f
+========
 guid: 51dddf74a77584644a6a39a99673e0c0
+>>>>>>>> UI_Implementation:Assets/Art/Animation/Animations Clips/Carte_Anti_Vol.anim.meta
 NativeFormatImporter:
   externalObjects: {}
-  mainObjectFileID: 7400000
+  mainObjectFileID: 11400000
   userData: 
   assetBundleName: 
   assetBundleVariant: 

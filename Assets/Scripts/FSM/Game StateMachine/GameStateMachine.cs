@@ -478,10 +478,20 @@ namespace Wendogo
             {
                 case Cycle.Day:
                     newCycle = Cycle.Night;
+                    ServerManager.Instance.BroadcastSharedFXEventRpc(new FXEventContext
+                    {
+                        fxType = FXEventType.OnTransitionToNight,
+                        playerID = 0
+                    });
                     break;
                 case Cycle.Night:
                     newCycle = Cycle.Day;
                     CptTurn++;
+                    ServerManager.Instance.BroadcastSharedFXEventRpc(new FXEventContext
+                    {
+                        fxType = FXEventType.OnTransitionToDay,
+                        playerID = 0
+                    });
                     break;
                 default:
                     throw new System.Exception("Invalid cycle value.");
