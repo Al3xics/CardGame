@@ -217,17 +217,44 @@ namespace Wendogo
         private void SetRitualUI()
         {
             TextMeshProUGUI ritualWood = _ritualObject.woodUI;
-            ritualWood.text = ServerManager.Instance._woodInRitual.Value.ToString() + "/6";
+            ritualWood.text = $"{ServerManager.Instance._woodInRitual.Value}/6";
+
             ServerManager.Instance._woodInRitual.OnValueChanged += (oldVal, newVal) =>
             {
-                ritualWood.text = newVal.ToString() + "/6";
+                ritualWood.text = $"{newVal}/6";
+
+                foreach (var part in _ritualObject.woodGaugeParts)
+                {
+                    part.gameObject.SetActive(false);
+                }
+
+                int activeParts = newVal / 2;
+
+                for (int i = 0; i < activeParts && i < _ritualObject.woodGaugeParts.Count; i++)
+                {
+                    _ritualObject.woodGaugeParts[i].gameObject.SetActive(true);
+                }
             };
 
             TextMeshProUGUI ritualFood = _ritualObject.foodUI;
+            List<GameObject> foodGauge = _ritualObject.foodGaugeParts;
             ritualFood.text = ServerManager.Instance._foodInRitual.Value.ToString() + "/6";
             ServerManager.Instance._foodInRitual.OnValueChanged += (oldVal, newVal) =>
             {
-                ritualFood.text = newVal.ToString() + "/6";
+
+                ritualFood.text = $"{newVal}/6";
+
+                foreach (var part in _ritualObject.foodGaugeParts)
+                {
+                    part.gameObject.SetActive(false);
+                }
+
+                int activeParts = newVal / 2;
+
+                for (int i = 0; i < activeParts && i < _ritualObject.foodGaugeParts.Count; i++)
+                {
+                    _ritualObject.foodGaugeParts[i].gameObject.SetActive(true);
+                }
             };
         }
 
@@ -235,7 +262,7 @@ namespace Wendogo
         {
             foreach (var heart in hearts)
             {
-                if(heart.activeSelf)
+                if (heart.activeSelf)
                     heart.gameObject.SetActive(false);
             }
         }
