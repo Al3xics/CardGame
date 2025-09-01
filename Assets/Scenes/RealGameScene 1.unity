@@ -1365,6 +1365,14 @@ MonoBehaviour:
   - {fileID: 8434642913358711223}
   - {fileID: 8551434808503556175}
   - {fileID: 5285448402088654176}
+  foodGaugeParts:
+  - {fileID: 1253731475}
+  - {fileID: 2026123399}
+  - {fileID: 2026123399}
+  woodGaugeParts:
+  - {fileID: 1686139483}
+  - {fileID: 1109554057}
+  - {fileID: 1393281747}
 --- !u!1 &1070188229
 GameObject:
   m_ObjectHideFlags: 0
@@ -1670,10 +1678,20 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 97ac440e15bba064d8ea41b10d4ffd16, type: 3}
+--- !u!1 &1109554057 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8938818542201970320, guid: b591182f062020c408595876a3e3ff76, type: 3}
+  m_PrefabInstance: {fileID: 1439965822}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1231005842 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6398564213177136130, guid: 65f7755792458e5449351eed2c8d8e90, type: 3}
   m_PrefabInstance: {fileID: 10871034}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1253731475 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3980749914441443571, guid: b591182f062020c408595876a3e3ff76, type: 3}
+  m_PrefabInstance: {fileID: 1439965822}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1268357330
 GameObject:
@@ -2059,6 +2077,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1393281747 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5929690449271564405, guid: b591182f062020c408595876a3e3ff76, type: 3}
+  m_PrefabInstance: {fileID: 1439965822}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1425267997
 GameObject:
   m_ObjectHideFlags: 0
@@ -2327,7 +2350,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  GlobalObjectIdHash: 1624443445
+  GlobalObjectIdHash: 3186643401
   InScenePlacedSourceGlobalObjectIdHash: 0
   DeferredDespawnTick: 0
   Ownership: 1
@@ -2631,6 +2654,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1622042630}
   m_CullTransparentMesh: 1
+--- !u!1 &1686139483 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8683349521659396406, guid: ab5467625563f324ba6d2feab7d9bdc6, type: 3}
+  m_PrefabInstance: {fileID: 1279050603}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1775294476
 GameObject:
   m_ObjectHideFlags: 0
@@ -3196,6 +3224,11 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &2026123399 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 77126397346965621, guid: ab5467625563f324ba6d2feab7d9bdc6, type: 3}
+  m_PrefabInstance: {fileID: 1279050603}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2050124738
 PrefabInstance:
   m_ObjectHideFlags: 0

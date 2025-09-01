@@ -63,6 +63,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c6d2c6c7d3c41a44faff8c94d225e31b, type: 2}
   - {fileID: 11400000, guid: c38248927afbcd04792e9d8c1a73ec9a, type: 2}
   - {fileID: 11400000, guid: 43053c896c1a06945ac9bd8f42373ec3, type: 2}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   animator: {fileID: 0}
   audioSource: {fileID: 7120337252202022789}
   popupText: {fileID: 0}
