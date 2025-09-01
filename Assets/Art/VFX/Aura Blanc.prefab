@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5504035263313651259}
   - component: {fileID: 5835453160856523357}
   m_Layer: 0
-  m_Name: Aura carte
+  m_Name: Aura Blanc
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
