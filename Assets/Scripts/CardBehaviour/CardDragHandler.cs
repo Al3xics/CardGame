@@ -21,6 +21,7 @@ namespace Wendogo
         private Quaternion _originalRotation;           // Rotation to restore after invalid drag
         private Canvas _canvas;                         // Root canvas (for scale factor)
         private CardClickHandler _click;                // Sibling click/press handler
+        private CardObjectData _cardObjectData;
 
         [Header("Drag visuals")]
         [SerializeField] private float _growthFactor = 1.1f;
@@ -35,6 +36,7 @@ namespace Wendogo
             _rectTransform = GetComponent<RectTransform>();
             _canvas = FindAnyObjectByType<Canvas>();
             _click = GetComponent<CardClickHandler>(); // May be null if not present
+           _cardObjectData = GetComponent<CardObjectData>();
         }
 
         public void OnBeginDrag(PointerEventData eventData)
@@ -45,6 +47,8 @@ namespace Wendogo
             _originalPosition = _rectTransform.position;
             _originalRotation = _rectTransform.rotation;
             _originalScale = _rectTransform.localScale;
+            _cardObjectData.auraSelect.gameObject.SetActive(true);
+            
 
             // Visual grow-on-pickup
             LMotion.Create(_originalScale, _originalScale * _growthFactor, _growthDuration)
@@ -103,6 +107,7 @@ namespace Wendogo
             // Restore transform
             _rectTransform.position = _originalPosition;
             _rectTransform.rotation = _originalRotation;
+            _cardObjectData.auraSelect.gameObject.SetActive(false);
 
             LMotion.Create(_rectTransform.localScale, _originalScale, _growthDuration)
                    .BindToLocalScale(transform);

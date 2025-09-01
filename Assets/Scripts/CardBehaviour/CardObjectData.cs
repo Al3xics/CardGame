@@ -7,5 +7,7 @@ namespace Wendogo
     {
         public CardDataSO Card;
         public bool isSelected;
+        public GameObject auraSelect;
+        public GameObject aurPassive;
     }
 }
