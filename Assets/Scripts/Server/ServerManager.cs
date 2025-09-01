@@ -107,6 +107,8 @@ namespace Wendogo
             NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Server
         );
+        
+
 
         #endregion
 
@@ -155,7 +157,6 @@ namespace Wendogo
             if (IsServer && SceneManager.GetActiveScene().name != gameSceneName)
                 NetworkManager.SceneManager.LoadScene(gameSceneName, LoadSceneMode.Single);
         }
-
         // When the game is over, go back to the menu scene
         public void ReturnToMenu()
         {
@@ -326,16 +327,32 @@ namespace Wendogo
         {
             PlayerFinishSceneLoadedCpt.Value++;
 
-            if (!AutoSessionBootstrapper.AutoConnect)
-                if (PlayerFinishSceneLoadedCpt.Value >= NetworkManager.Singleton.ConnectedClientsList.Count)
+                if (!AutoSessionBootstrapper.AutoConnect)
                 {
-                    Debug.Log("All Players are here.");
-                    GameStateMachine.Instance.StartStateMachine();
-                }
-                else
-                {
-                    Debug.Log("Waiting for all players to load the scene");
-                    Debug.Log($"_playerFinishSceneLoadedCpt = {PlayerFinishSceneLoadedCpt}");
+                    if (PlayerFinishSceneLoadedCpt.Value >= NetworkManager.Singleton.ConnectedClientsList.Count)
+                    {
+                        Debug.Log("All Players are here.");
+                        
+                        // Debug de GlobalPlayersByName
+                        Debug.Log("==== GlobalPlayersByName contents ====");
+                        foreach (var kvp in GlobalPlayersByName)
+                        {
+                            Debug.Log($"ClientId: {kvp.Key} | Name: {kvp.Value}");
+                        }
+                        Debug.Log("======================================");
+
+                        // Envoie une requête d'UI update à tout le monde
+                        foreach (var player in PlayersById.Values)
+                        {
+                            player.SetupLocalUIRpc(RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
+                        }
+
+                        GameStateMachine.Instance.StartStateMachine();
+                    }
+                    else
+                    {
+                        Debug.Log("Waiting for all players to load the scene");
+                    }
                 }
         }
 
@@ -361,7 +378,7 @@ namespace Wendogo
         {
             // Adding a new user
             GlobalPlayersByName[clientId] = playerName;
-
+        
             // Inform all customers of the network-side change (RPC)
             UpdateGlobalNameListClientRpc(clientId, playerName);
         }
@@ -374,7 +391,7 @@ namespace Wendogo
                 GlobalPlayersByName.Remove(clientId);
 
                 // Inform all customers of the network-side change (RPC)
-                UpdateGlobalNameListClientRpc(clientId, null);
+                //UpdateGlobalNameListClientRpc(clientId, null);
             }
         }
 
@@ -558,6 +575,8 @@ namespace Wendogo
             foreach (var player in PlayersById.Values)
                 player.SetStolenIDRpc(id, RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
         }
+        
+        
 
         #endregion
 

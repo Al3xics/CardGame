@@ -72,6 +72,10 @@ namespace Wendogo
         public int stolenID = -1;
 
         [SerializeField] public EventTimer eventTimer;
+        
+        public string PlayerName { get; private set; }
+        
+        public static Dictionary<ulong, string> LocalGlobalPlayersByName { get; private set; } = new();
 
         #endregion
 
@@ -170,7 +174,7 @@ namespace Wendogo
                 //Todo call at the same time the the game state machine starts instead
                 await UniTask.WaitForSeconds(15);
                 //Init UI for the other players
-                PlayerUI.Instance.SetUIInfos(LocalPlayerId, RpcTarget.Me);
+                // PlayerUI.Instance.SetUIInfos(LocalPlayerId, RpcTarget.Me);
             }
         }
 
@@ -216,16 +220,17 @@ namespace Wendogo
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-
             if (!IsOwner || uiInitialized) return;
 
+            if (!AutoSessionBootstrapper.AutoConnect)
+            {
+                var name = SessionManager.Instance.ActiveSession.CurrentPlayer.Properties[SessionConstants.PlayerNamePropertyKey].Value;
+                ServerManager.Instance.RegisterPlayerNameRpc(OwnerClientId, name);
+            }
+            
             if (scene.name == ServerManager.Instance.gameSceneName)
             {
-                if (!AutoSessionBootstrapper.AutoConnect)
-                {
-                    name = SessionManager.Instance.ActiveSession.CurrentPlayer.Properties[SessionConstants.PlayerNamePropertyKey].Value;
-                    ServerManager.Instance.RegisterPlayerNameRpc(OwnerClientId, name);
-                }
+                
 
                 _inputEvent = GameObject.Find("EventSystem")?.GetComponent<EventSystem>();
                 if (_inputEvent != null && _inputEvent.enabled) _inputEvent.enabled = false;
@@ -237,7 +242,7 @@ namespace Wendogo
 
                 Debug.Log($"This is my player id: {LocalPlayerId}");
 
-                PlayerUI.Instance.SetUIInfos(LocalPlayerId, RpcTarget.Me);
+                //PlayerUI.Instance.SetUIInfos(LocalPlayerId, RpcTarget.Me);
 
                 if (_prefabUI == null) { _prefabUI = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject; }
 
@@ -931,6 +936,13 @@ namespace Wendogo
         {
             stolenID = id;
         }
+        
+        [Rpc(SendTo.SpecifiedInParams)]
+        public void SetupLocalUIRpc(RpcParams rpcParams)
+        {
+            PlayerUI.Instance.SetUIInfos(OwnerClientId, RpcTarget.Me);
+        }
+
         #endregion
 
         #region RPC Animations
