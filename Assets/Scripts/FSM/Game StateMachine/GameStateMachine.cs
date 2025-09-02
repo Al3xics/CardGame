@@ -282,14 +282,19 @@ namespace Wendogo
         /// <returns>True if both the food and wood requirements are fulfilled; otherwise, false.</returns>
         private bool CheckRitualOver()
         {
-            _ritualFoodCollected.RemoveAll(item => item == false);
-            _ritualWoodCollected.RemoveAll(item => item == false);
-
             bool isFoodComplete = _ritualFoodCollected.Count == numberOfFoodToCompleteRitual && _ritualFoodCollected.All(item => item);
             bool isWoodComplete = _ritualWoodCollected.Count == numberOfWoodToCompleteRitual && _ritualWoodCollected.All(item => item);
 
-            return isFoodComplete && isWoodComplete;
+            if (isFoodComplete && isWoodComplete)
+            {
+                _ritualFoodCollected.RemoveAll(item => item == false);
+                _ritualWoodCollected.RemoveAll(item => item == false);
+            } 
 
+            isFoodComplete = _ritualFoodCollected.Count == numberOfFoodToCompleteRitual && _ritualFoodCollected.All(item => item);
+            isWoodComplete = _ritualWoodCollected.Count == numberOfWoodToCompleteRitual && _ritualWoodCollected.All(item => item);
+
+            return isFoodComplete && isWoodComplete;
         }
 
         /// <summary>
