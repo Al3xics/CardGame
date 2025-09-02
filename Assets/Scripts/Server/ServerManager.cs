@@ -107,8 +107,6 @@ namespace Wendogo
             NetworkVariableReadPermission.Everyone,
             NetworkVariableWritePermission.Server
         );
-        
-
 
         #endregion
 

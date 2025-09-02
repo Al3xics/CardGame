@@ -169,12 +169,15 @@ namespace Wendogo
 
             if (AutoSessionBootstrapper.AutoConnect)
             {
-                _fxManager = GameObject.Find("FXEventManager")?.GetComponent<FXEventManager>();
+                if (IsLocalPlayer)
+                {
+                    _fxManager = GameObject.Find("FXEventManager")?.GetComponent<FXEventManager>();
 
-                //Todo call at the same time the the game state machine starts instead
-                await UniTask.WaitForSeconds(15);
-                //Init UI for the other players
-                PlayerUI.Instance.SetUIInfos(LocalPlayerId, RpcTarget.Me);
+                    //Todo call at the same time the the game state machine starts instead
+                    await UniTask.WaitForSeconds(15);
+                    //Init UI for the other players
+                    PlayerUI.Instance.SetUIInfos(LocalPlayerId);
+                }
             }
         }
 
@@ -242,7 +245,7 @@ namespace Wendogo
 
                 Debug.Log($"This is my player id: {LocalPlayerId}");
 
-                //PlayerUI.Instance.SetUIInfos(LocalPlayerId, RpcTarget.Me);
+                //PlayerUI.Instance.SetUIInfos(LocalPlayerId);
 
                 if (_prefabUI == null) { _prefabUI = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject; }
 
@@ -940,7 +943,7 @@ namespace Wendogo
         [Rpc(SendTo.SpecifiedInParams)]
         public void SetupLocalUIRpc(RpcParams rpcParams)
         {
-            PlayerUI.Instance.SetUIInfos(OwnerClientId, RpcTarget.Me);
+            PlayerUI.Instance.SetUIInfos(OwnerClientId);
         }
         #endregion
 
