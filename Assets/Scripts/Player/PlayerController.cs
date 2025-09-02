@@ -188,8 +188,9 @@ namespace Wendogo
         {
             if (AutoSessionBootstrapper.AutoConnect)
             {
-                _inputEvent = GameObject.Find("EventSystem")?.GetComponent<EventSystem>();
-                if (_inputEvent != null && _inputEvent.enabled) _inputEvent.enabled = false;
+                // _inputEvent = GameObject.Find("EventSystem")?.GetComponent<EventSystem>();
+                // if (_inputEvent != null && _inputEvent.enabled) _inputEvent.enabled = false;
+                if (IsOwner) StartCoroutine(DisableInputWhenReady()); // Start the coroutine to disable input when ready
                 if (_handManager == null) _handManager = GameObject.FindWithTag("hand")?.GetComponent<HandManager>();
                 if (IsOwner)
                 {
@@ -236,10 +237,9 @@ namespace Wendogo
             
             if (scene.name == ServerManager.Instance.gameSceneName)
             {
-                
-
-                _inputEvent = GameObject.Find("EventSystem")?.GetComponent<EventSystem>();
-                if (_inputEvent != null && _inputEvent.enabled) _inputEvent.enabled = false;
+                // _inputEvent = GameObject.Find("EventSystem")?.GetComponent<EventSystem>();
+                // if (_inputEvent != null && _inputEvent.enabled) _inputEvent.enabled = false;
+                if (IsOwner) StartCoroutine(DisableInputWhenReady()); // Start the coroutine to disable input when ready
                 if (_handManager == null) _handManager = GameObject.FindWithTag("hand")?.GetComponent<HandManager>();
                 pcSMObject = new GameObject($"{nameof(PlayerControllerSM)}");
                 pcSMObject.AddComponent<PlayerControllerSM>().Initialize();
@@ -255,10 +255,25 @@ namespace Wendogo
                 ServerManager.Instance.IncrementPlayerFinishedLoadCountRpc();
             }
         }
+        
+        private IEnumerator DisableInputWhenReady()
+        {
+            // Wait until _handManager and handCards are properly initialized
+            yield return new WaitUntil(() => _handManager && 
+                                             _handManager.handCards is { Count: > 0 });
+
+            DisableInput();
+            Debug.Log("Input disabled after ensuring _handManager and handCards are initialized.");
+        }
 
         public void EnableInput()
         {
-            _inputEvent.enabled = true;
+            _handManager.ToggleOnMovingCards(_handManager.handCards);
+            if (Role.Value == RoleType.Wendogo)
+            {
+                PlayerUI.Instance.SetAttackButtonInteractable(true);
+                PlayerUI.Instance.SetDecoyButtonInteractable(true);
+            }
 
             //Implement enable input
             Debug.Log("Input enabled");
@@ -266,7 +281,12 @@ namespace Wendogo
 
         public void DisableInput()
         {
-            _inputEvent.enabled = false;
+            _handManager.ToggleOffMovingCards(_handManager.handCards);
+            if (Role.Value == RoleType.Wendogo)
+            {
+                PlayerUI.Instance.SetAttackButtonInteractable(false);
+                PlayerUI.Instance.SetDecoyButtonInteractable(false);
+            }
 
             //Implement enable input
             Debug.Log("Input disabled");
@@ -328,7 +348,7 @@ namespace Wendogo
         public async UniTask GroupSelectTargetVoteAsync()
         {
             _handManager.ToggleOffMovingCards(_handManager.handCards);
-            _inputEvent.enabled = true;
+            // _inputEvent.enabled = true;
             _intTarget = -1;
 
             TargetSelectionUI.OnTargetPicked += HandleTargetSelected;
@@ -339,7 +359,7 @@ namespace Wendogo
 
             Debug.Log($"Voted against target is {_intTarget} ");
 
-            _inputEvent.enabled = false;
+            // _inputEvent.enabled = false;
 
             ServerManager.Instance.SendVoteRpc(_intTarget);
 
@@ -889,7 +909,7 @@ namespace Wendogo
         [Rpc(SendTo.SpecifiedInParams)]
         public void MuteRpc(bool mute, RpcParams rpcParams)
         {
-            SessionManager.Instance.MutePlayer(mute);
+            PlayerUI.Instance.SwitchMute(mute);
         }
 
         [Rpc(SendTo.SpecifiedInParams)]
@@ -898,12 +918,16 @@ namespace Wendogo
             _ = GroupSelectTargetAsync();
         }
 
-        [Rpc(SendTo.SpecifiedInParams)]
-        public void EnableInputAndDisableMovingCardsRpc(RpcParams rpcParams)
-        {
-            EnableInput();
-            _handManager.ToggleOffMovingCards(_handManager.handCards);
-        }
+        // [Rpc(SendTo.SpecifiedInParams)]
+        // public void EnableInputAndDisableMovingCardsRpc(RpcParams rpcParams)
+        // {
+        //     _handManager.ToggleOffMovingCards(_handManager.handCards);
+        //     if (Role.Value == RoleType.Wendogo)
+        //     {
+        //         PlayerUI.Instance.SetAttackButtonInteractable(false);
+        //         PlayerUI.Instance.SetDecoyButtonInteractable(false);
+        //     }
+        // }
 
         [Rpc(SendTo.SpecifiedInParams)]
         public void DeleteCardFromZoneRpc(string cardName, RpcParams rpcParams)
@@ -972,7 +996,8 @@ namespace Wendogo
 
         public void NotifyEndTurn()
         {
-            _inputEvent.enabled = false;
+            // _inputEvent.enabled = false;
+            DisableInput();
             if (!isDead.Value) HandlePassiveCardTurnUpdate();
             if (_pcSMObject != null)
             {
