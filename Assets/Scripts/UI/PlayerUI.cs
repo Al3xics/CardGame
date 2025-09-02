@@ -122,34 +122,26 @@ namespace Wendogo
             }
         }
 
-        [Rpc(SendTo.SpecifiedInParams)]
-        public async void SetUIInfos(ulong localPLayerID, RpcParams rpcParams)
+        public void SetUIInfos(ulong localPlayerID)
         {
             SetRitualUI();
-            RenamePlayer(localPLayerID);
+            RenamePlayer(localPlayerID);
+            
+            List<ulong> allPlayerIds = NetworkManager.Singleton.ConnectedClientsList.Select(x => x.ClientId).ToList(); // List of all connected players
+            allPlayerIds.Remove(localPlayerID); // Remove local player
+            GameObject[] slots = UIPlayerID.Keys.ToArray();
 
-            //todo call the method in server manager in a loop for all players 
-            //when the game starts
-            KeyValuePair<GameObject, ulong>[] snapshot = UIPlayerID.ToArray();
-
-            foreach (var kvp in snapshot)
+            for (int i = 0; i < slots.Length; i++)
             {
-                GameObject go = kvp.Key;
-                ulong id = kvp.Value;
-
-                if (!go.activeSelf)
+                GameObject go = slots[i];
+                ulong trueID = allPlayerIds[i];
+                
+                var player = PlayerController.GetPlayer(trueID);
+                if (player == null)
                     continue;
 
-                ulong trueID = id;
-                if (id == localPLayerID)
-                {
-                    UIPlayerID[go] = 0;
-                    trueID = 0;
-                }
-
+                PlayerController.PlayerSlots[trueID] = i + 1;
                 OtherPlayerUIContent otherUI = go.GetComponent<OtherPlayerUIContent>();
-
-                var player = PlayerController.GetPlayer(trueID);
 
                 if (!_subscribedPlayers.Contains(trueID))
                 {
@@ -198,7 +190,7 @@ namespace Wendogo
                         lastPassiveCount = newCount;
                     };
 
-                    _subscribedPlayers.Add(id);
+                    _subscribedPlayers.Add(trueID);
                 }
 
                 var title = go.GetComponentInChildren<TextMeshProUGUI>();

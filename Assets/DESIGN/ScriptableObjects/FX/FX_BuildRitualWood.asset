@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: FX_BuildRitualWood
   m_EditorClassIdentifier: 
   eventType: 13
-  logic: {fileID: 0}
+  logic: {fileID: 11400000, guid: 140d0e4fc8e18004696b275706d91289, type: 2}
   playAnimation: 1
-  animation: {fileID: 7400000, guid: a38c169b11b50fc4980c201baefb8ca2, type: 2}
+  animation: {fileID: 7400000, guid: 0c48eb0dfed2d334fb959e8c0b4a552a, type: 2}
   waitForAnimationEnd: 1
   isAnimPlayedForAll: 1
   playSound: 0

@@ -36,11 +36,11 @@ namespace Wendogo
                         });
                     }
                     
-                    ServerManager.Instance.BroadcastLocalFXEventToPlayerRpc(new FXEventContext
+                    ServerManager.Instance.BroadcastLocalFXEventToPlayerButTargetOtherRpc(new FXEventContext
                     {
                         fxType = FXEventType.OnStealWood,
-                        playerID = owner
-                    });
+                        playerID = target
+                    }, owner);
 
                     ServerManager.Instance.ChangePlayerResourceRpc(value, -ResourceAmount, target);
                     ServerManager.Instance.ChangePlayerResourceRpc(value, ResourceAmount, owner);
@@ -58,11 +58,11 @@ namespace Wendogo
                         });
                     }
                     
-                    ServerManager.Instance.BroadcastLocalFXEventToPlayerRpc(new FXEventContext
+                    ServerManager.Instance.BroadcastLocalFXEventToPlayerButTargetOtherRpc(new FXEventContext
                     {
                         fxType = FXEventType.OnStealFood,
-                        playerID = owner
-                    });
+                        playerID = target
+                    }, owner);
 
                     ServerManager.Instance.ChangePlayerResourceRpc(value, -ResourceAmount, target);
                     ServerManager.Instance.ChangePlayerResourceRpc(value, ResourceAmount, owner);

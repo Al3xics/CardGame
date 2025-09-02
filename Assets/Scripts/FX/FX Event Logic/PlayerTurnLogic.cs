@@ -5,7 +5,7 @@ namespace Wendogo
     [CreateAssetMenu(fileName = "PlayerTurnLogic", menuName = "FX/FX Event Logic/Player Turn")]
     public class PlayerTurnLogic : FXEventLogicBase
     {
-        public override void PreFX(FXEventContext context)
+        public override void PreFX(FXEventAsset asset, FXEventContext context)
         {
             var popupText = FXEventManager.Instance.popupText;
             
@@ -20,7 +20,7 @@ namespace Wendogo
             }
         }
 
-        public override void PostFX(FXEventContext context)
+        public override void PostFX(FXEventAsset asset, FXEventContext context)
         {
             FXEventManager.Instance.popupText.text = "";
         }

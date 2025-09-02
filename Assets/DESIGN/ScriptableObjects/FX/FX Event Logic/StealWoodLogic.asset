@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6841936aca14899853106f13c833511, type: 3}
+  m_Name: StealWoodLogic
+  m_EditorClassIdentifier: 
+  stealWoodClipP2: {fileID: 7400000, guid: 6acc9ee00e70f1348b632953937a4691, type: 2}
+  stealWoodClipP3: {fileID: 7400000, guid: df116df298e21384ca58a22d27b78846, type: 2}
+  stealWoodClipP4: {fileID: 7400000, guid: fb556b20ed29e794eb13015745822a7c, type: 2}

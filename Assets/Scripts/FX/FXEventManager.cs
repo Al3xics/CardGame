@@ -96,7 +96,7 @@ namespace Wendogo
 
             foreach (var fx in fxList)
             {
-                fx.logic?.PreFX(context);
+                fx.logic?.PreFX(fx, context);
 
                 UniTask animTask = fx.playAnimation ? PlayAnimation(fx) : UniTask.CompletedTask;
                 UniTask soundTask = fx.playSound ? PlaySound(fx) : UniTask.CompletedTask;
@@ -115,7 +115,7 @@ namespace Wendogo
                     fxTask = UniTask.CompletedTask;
                 }
 
-                fxTasks.Add(fxTask.ContinueWith(() => fx.logic?.PostFX(context)));
+                fxTasks.Add(fxTask.ContinueWith(() => fx.logic?.PostFX(fx, context)));
             }
 
             await UniTask.WhenAll(fxTasks);

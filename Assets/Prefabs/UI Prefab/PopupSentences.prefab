@@ -45,4 +45,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   otherPlayerTurnText: C'est au tour de {x} !
-  thisPlayerTurnText: "C'est \xE0 ton tour !"
+  thisPlayerTurnText: C'est a ton tour !
