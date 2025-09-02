@@ -183,26 +183,26 @@ namespace Wendogo
         /// Each entry in the list indicates whether a particular food resource contributes meaningfully
         /// to the ritual completion based on its validity.
         /// </summary>
-        private readonly List<bool> _ritualFoodCollected = new();
+        [SerializeField] private List<bool> _ritualFoodCollected = new();
 
         /// <summary>
         /// Represents a private collection tracking the hidden food contributions by players
         /// during the <see cref="Cycle.Night"/> cycle. See <see cref="_ritualFoodCollected"/> for the ritual.
         /// </summary>
-        private readonly List<bool> _hiddenRitualFoodCollected = new();
+        [SerializeField] private List<bool> _hiddenRitualFoodCollected = new();
 
         /// <summary>
         /// Represents a collection that tracks the status of collected wood for the ritual.
         /// Each entry in the list indicates whether a particular wood resource contributes meaningfully
         /// to the ritual completion based on its validity.
         /// </summary>
-        private readonly List<bool> _ritualWoodCollected = new();
+        [SerializeField] private List<bool> _ritualWoodCollected = new();
 
         /// <summary>
         /// Represents a private collection tracking the hidden wood contributions by players
         /// during the <see cref="Cycle.Night"/> cycle. See <see cref="_ritualWoodCollected"/> for the ritual.
         /// </summary>
-        private readonly List<bool> _hiddenRitualWoodCollected = new();
+        [SerializeField] private List<bool> _hiddenRitualWoodCollected = new();
 
         /// <summary>
         /// Represent the state of the food. If it is false, then this resource

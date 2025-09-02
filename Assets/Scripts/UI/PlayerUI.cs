@@ -11,6 +11,8 @@ using UnityEngine.Rendering;
 using Cysharp.Threading.Tasks;
 using Unity.VisualScripting;
 using UnityEditor.Animations;
+using static UnityEngine.UI.GridLayoutGroup;
+using UnityEditor.SceneManagement;
 
 namespace Wendogo
 {
@@ -37,10 +39,11 @@ namespace Wendogo
 
         [OdinSerialize]
         private Dictionary<Image, Sprite> WendogoUI = new();
-
+        [SerializeField] private GameObject _attackButton;
+        [SerializeField] private GameObject _decoyButton;
 
         [SerializeField] private RitualUI _ritualObject;
-
+        private int _lastRitualStage = -1;
 
         public static PlayerUI Instance { get; private set; }
         
@@ -166,37 +169,35 @@ namespace Wendogo
             {
                 visual.Key.sprite = visual.Value;
             }
+
+            if(_attackButton != null)
+            _attackButton.SetActive(true);
+            if(_decoyButton != null)
+            _decoyButton.SetActive(true);
         }
 
-        [Rpc(SendTo.SpecifiedInParams)]
-        public async void SetUIInfos(ulong localPLayerID, RpcParams rpcParams)
+        public void SetUIInfos(ulong localPlayerID)
         {
             SetRitualUI();
-            RenamePlayer(localPLayerID);
+
             SetCadreToPlayer(localPLayerID, OwnerPlayer);
+            RenamePlayer(localPlayerID);
+            
+            List<ulong> allPlayerIds = NetworkManager.Singleton.ConnectedClientsList.Select(x => x.ClientId).ToList(); // List of all connected players
+            allPlayerIds.Remove(localPlayerID); // Remove local player
+            GameObject[] slots = UIPlayerID.Keys.ToArray();
 
-            //todo call the method in server manager in a loop for all players 
-            //when the game starts
-            KeyValuePair<GameObject, ulong>[] snapshot = UIPlayerID.ToArray();
-
-            foreach (var kvp in snapshot)
+            for (int i = 0; i < slots.Length; i++)
             {
-                GameObject go = kvp.Key;
-                ulong id = kvp.Value;
-
-                if (!go.activeSelf)
+                GameObject go = slots[i];
+                ulong trueID = allPlayerIds[i];
+                
+                var player = PlayerController.GetPlayer(trueID);
+                if (player == null)
                     continue;
 
-                ulong trueID = id;
-                if (id == localPLayerID)
-                {
-                    UIPlayerID[go] = 0;
-                    trueID = 0;
-                }
-
+                PlayerController.PlayerSlots[trueID] = i + 1;
                 OtherPlayerUIContent otherUI = go.GetComponent<OtherPlayerUIContent>();
-
-                var player = PlayerController.GetPlayer(trueID);
 
                 if (!_subscribedPlayers.Contains(trueID))
                 {
@@ -245,7 +246,7 @@ namespace Wendogo
                         lastPassiveCount = newCount;
                     };
 
-                    _subscribedPlayers.Add(id);
+                    _subscribedPlayers.Add(trueID);
                 }
 
                 var title = go.GetComponentInChildren<TextMeshProUGUI>();
@@ -325,21 +326,69 @@ namespace Wendogo
         {
             const int MaxTotal = 12;
             const int OneThird = MaxTotal / 3;
-            const int TwoThirds = 2 * MaxTotal / 3; 
+            const int TwoThirds = 2 * MaxTotal / 3;
             int wood = ServerManager.Instance._woodInRitual.Value;
             int food = ServerManager.Instance._foodInRitual.Value;
             int total = Mathf.Clamp(wood + food, 0, MaxTotal);
 
             foreach (var part in _ritualObject.ritualParts)
                 part.gameObject.SetActive(false);
-            //rajouter les FX events
-            int index = -1;
-            if (total >= MaxTotal) index = 2;         
-            else if (total >= TwoThirds) index = 1;   
-            else if (total >= OneThird) index = 0;   
 
-            if (index >= 0 && index < _ritualObject.ritualParts.Count)
-                _ritualObject.ritualParts[index].SetActive(true);
+            int stage = -1;
+            if (total >= MaxTotal) stage = 2;
+            else if (total >= TwoThirds) stage = 1;
+            else if (total >= OneThird) stage = 0;
+
+            for (int i = 0; i < _ritualObject.ritualParts.Count; i++)
+                _ritualObject.ritualParts[i].SetActive(i <= stage && stage >= 0);
+
+            int halfTotal = MaxTotal / 2;
+            if (wood == halfTotal)
+            {
+                ServerManager.Instance.BroadcastSharedFXEventRpc(new FXEventContext
+                {
+                    fxType = FXEventType.OnRitualWoodComplete,
+                    playerID = PlayerController.LocalPlayer.LocalPlayerId
+                });
+            }
+
+            if (food == halfTotal)
+            {
+                ServerManager.Instance.BroadcastSharedFXEventRpc(new FXEventContext
+                {
+                    fxType = FXEventType.OnRitualFoodComplete,
+                    playerID = PlayerController.LocalPlayer.LocalPlayerId
+                });
+            }
+
+            if (stage > _lastRitualStage)
+            {
+                if (stage == 0)
+                {
+                    ServerManager.Instance.BroadcastSharedFXEventRpc(new FXEventContext
+                    {
+                        fxType = FXEventType.OnRitual1,
+                        playerID = PlayerController.LocalPlayer.LocalPlayerId
+                    });
+                }
+                else if (stage == 1)
+                {
+                    ServerManager.Instance.BroadcastSharedFXEventRpc(new FXEventContext
+                    {
+                        fxType = FXEventType.OnRitual2,
+                        playerID = PlayerController.LocalPlayer.LocalPlayerId
+                    });
+                }
+                else if (stage == 2)
+                {
+                    ServerManager.Instance.BroadcastSharedFXEventRpc(new FXEventContext
+                    {
+                        fxType = FXEventType.OnRitual3,
+                        playerID = PlayerController.LocalPlayer.LocalPlayerId
+                    });
+                }
+            }
+            _lastRitualStage = stage;
         }
 
         public void DeactivateAllHearts()

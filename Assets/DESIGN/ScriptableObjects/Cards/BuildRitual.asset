@@ -21,7 +21,7 @@ MonoBehaviour:
   EffectVisual: {fileID: 2800000, guid: eb61eb1c255aab546bfcc07820440c69, type: 3}
   nightPriorityIndex: 0
   turnsRemaining: -1
-  ID: 1007
+  ID: 1018
   Toggle: 1
   effectDescription: "Permet au joueur de s\xE9lectionner une ressource de sa propre
     r\xE9serve et de l\u2019ajouter au rituel central."
