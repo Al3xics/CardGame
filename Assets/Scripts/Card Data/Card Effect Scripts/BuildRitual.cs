@@ -9,6 +9,7 @@ namespace Wendogo
     {
         public GameObject SelectResourcePrefab;
         private GameObject _ressouceCanvaInstance;
+        public bool isDecoy;
 
         public void ApplyRitualEffect(ulong owner, ResourceType resourceType, int value)
         {
@@ -18,7 +19,6 @@ namespace Wendogo
             if (!player) return;
 
             bool isNight = player.IsSimulatingNight;
-            bool isWendogo = player.Role.Value is RoleType.Wendogo;
             bool isFood = resourceType == ResourceType.Food;
             
             AnalyticsManager.Instance.RecordEvent(new CustomEvent("buildRitualActiveCardWasApplied"));
@@ -39,7 +39,7 @@ namespace Wendogo
                     });
                 }
 
-                ServerManager.Instance.AddRessourceToRitualRpc(isNight, true, !isWendogo, value);
+                ServerManager.Instance.AddRessourceToRitualRpc(isNight, true, !isDecoy, value);
             }
             else
             {
@@ -57,7 +57,7 @@ namespace Wendogo
                     });
                 }
                 
-                ServerManager.Instance.AddRessourceToRitualRpc(isNight, false, !isWendogo, value);
+                ServerManager.Instance.AddRessourceToRitualRpc(isNight, false, !isDecoy, value);
             }
         }
 

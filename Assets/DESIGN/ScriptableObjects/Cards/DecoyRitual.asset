@@ -10,18 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b4c4af47719ad294e9daacd12912804b, type: 3}
-  m_Name: BuildRitual
+  m_Name: DecoyRitual
   m_EditorClassIdentifier: 
   CardVisual: {fileID: 2800000, guid: d592ffd16b2d6494ea0bb1c5edbe2950, type: 3}
-  Name: Build Ritual
-  CardEffect: {fileID: 11400000, guid: 501553fff6e762e44b75a0033b1faae5, type: 2}
+  Name: DecoyRitual
+  CardEffect: {fileID: 11400000, guid: 6119630f11c48734892849ad973b8731, type: 2}
   isPassive: 0
   isGroup: 0
   HasTarget: 1
   EffectVisual: {fileID: 2800000, guid: eb61eb1c255aab546bfcc07820440c69, type: 3}
   nightPriorityIndex: 0
   turnsRemaining: -1
-  ID: 1018
+  ID: 1007
   Toggle: 1
   effectDescription: "Permet au joueur de s\xE9lectionner une ressource de sa propre
     r\xE9serve et de l\u2019ajouter au rituel central."

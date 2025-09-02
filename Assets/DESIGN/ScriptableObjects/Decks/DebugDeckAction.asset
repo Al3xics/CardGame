@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   deckID: 0
   cardDeckData:
-  - CardData: {fileID: 11400000, guid: 0a317f580c8ea75419dac16871435e5b, type: 2}
-    quantity: 13
-  - CardData: {fileID: 11400000, guid: c51dcd943ac9fed4cabb67b4f295b501, type: 2}
-    quantity: 13
+  - CardData: {fileID: 11400000, guid: 0f961ec93fae9e94385cca09e6aa1c19, type: 2}
+    quantity: 30
+  - CardData: {fileID: 11400000, guid: 274f8db282fb7e94e900b7085abff0ca, type: 2}
+    quantity: 30

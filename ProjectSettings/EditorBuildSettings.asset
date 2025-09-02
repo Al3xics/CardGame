@@ -20,7 +20,7 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/RealGameScene 1.unity
     guid: 98d2ebb3d99054b4499b3c3142baaa17
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/RealGameScene.unity
     guid: c18f561023e0a024bb2ebc709a3b53f0
   m_configObjects:
