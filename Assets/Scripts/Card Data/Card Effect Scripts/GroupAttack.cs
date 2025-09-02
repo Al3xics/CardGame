@@ -77,10 +77,12 @@ namespace Wendogo
         public override void ShowUI(GameObject uiInstance = null)
         {
             ServerManager.Instance.UseAllUIForVotersRpc(true, true);
+            PlayerController.LocalPlayer.eventTimer.PauseTimer();
         }
 
         public override void HideUI(bool clearVotes, GameObject uiInstance = null)
         {
+            PlayerController.LocalPlayer.eventTimer.ResumeTimer();
             ServerManager.Instance.UseAllUIForVotersRpc(false, false);
             base.HideUI(clearVotes);
         }
