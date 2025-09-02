@@ -31,7 +31,6 @@ namespace Wendogo
             {
                 await _player.GroupSelectTargetAsync();
                 _player._handManager.ToggleOnMovingCards(_player._handManager.handCards);
-                _player.EnableInput();
                 ServerManager.Instance.ClearVoteRpc();
             }
             else if(cardToUse.CardEffect is BuildRitual)

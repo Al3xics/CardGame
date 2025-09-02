@@ -14,7 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   wendogoWinList:
   - {fileID: 8300000, guid: d30b756e230e7b845b0c8e11ff0235ca, type: 3}
-  - {fileID: 8300000, guid: beae7d23d72c64d44851fcc46b07d70b, type: 3}
   - {fileID: 8300000, guid: fff7af29af4e28448999bfea093c5593, type: 3}
   - {fileID: 8300000, guid: a7905d36781c6fa43aff95d9cc12f406, type: 3}
   - {fileID: 8300000, guid: a526383cdc3406d459c8421a9cd4112a, type: 3}

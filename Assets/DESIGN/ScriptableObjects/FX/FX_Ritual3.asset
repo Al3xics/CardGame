@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: FX_Ritual3
   m_EditorClassIdentifier: 
   eventType: 20
-  logic: {fileID: 11400000, guid: dcabf80ef7947fa4f9f688bcebb98e21, type: 2}
+  logic: {fileID: 0}
   playAnimation: 1
   animation: {fileID: 7400000, guid: 4d1a495e1b60ddb4492133fe69acde19, type: 2}
   waitForAnimationEnd: 1
