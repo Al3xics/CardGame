@@ -672,6 +672,10 @@ MonoBehaviour:
   showDebugLogs: 1
   customTurnOrder: 
   wendogoId: -1
+  audioSourceOST: {fileID: 687310889}
+  dayMusicClip: {fileID: 8300000, guid: 98c5dc3e5488f0a40b1800ef5d5d82a0, type: 3}
+  nightMusicClip: {fileID: 8300000, guid: 6e65e2e7892b7b845908adad28ec4467, type: 3}
+  transitionSpeed: 1
   maximumTurn: 6
   startingActionDeckAmount: 3
   startingResourceDeckAmount: 2
@@ -692,9 +696,9 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 0.4
+  m_Volume: 0.3
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
