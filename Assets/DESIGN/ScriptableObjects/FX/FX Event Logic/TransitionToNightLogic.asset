@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0780381004384bfeb6697793bfe054a9, type: 3}
+  m_Name: TransitionToNightLogic
+  m_EditorClassIdentifier: 
+  transitionToNightList:
+  - {fileID: 8300000, guid: 6b0bc843db2800044a7d13fc6ef88e35, type: 3}
+  - {fileID: 8300000, guid: 5a0691a6746137e4cbbfbaf4be872573, type: 3}
+  - {fileID: 8300000, guid: 97487319f8a55484f97ccfdbd8de1fcb, type: 3}
+  - {fileID: 8300000, guid: f5eeb65e26bc5ec4abe9fbb2eef32b61, type: 3}
+  - {fileID: 8300000, guid: 4097c735693648446a6922ad99295ed1, type: 3}
+  - {fileID: 8300000, guid: 7cb3d5b22458b48418584bd67da67515, type: 3}
+  - {fileID: 8300000, guid: 64b9556d9e8d86344a257791fce949f4, type: 3}
+  - {fileID: 8300000, guid: 1cd71b818048cc9409fcffa7c9eb4f79, type: 3}
+  - {fileID: 8300000, guid: 93ed959ebbec0164fbe2bc1f9ab4e0cc, type: 3}
+  - {fileID: 8300000, guid: 559df4f68cb8f21438bd78ca03b07e2c, type: 3}
+  - {fileID: 8300000, guid: 6671328c94d4e7241ac11b146428be4a, type: 3}

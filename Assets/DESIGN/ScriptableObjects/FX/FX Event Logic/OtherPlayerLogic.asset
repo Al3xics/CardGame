@@ -15,3 +15,14 @@ MonoBehaviour:
   deathClipP2: {fileID: 7400000, guid: 7240f8bbe2edf6d48ada9b60bb2c4f65, type: 2}
   deathClipP3: {fileID: 7400000, guid: 2f19be568f9c4924a9892fb0c35d79c4, type: 2}
   deathClipP4: {fileID: 7400000, guid: d5a3b46f0f8aab649850c3645abd4676, type: 2}
+  playerDeathList:
+  - {fileID: 8300000, guid: 52ccc702575611f4894c624c6020d6c3, type: 3}
+  - {fileID: 8300000, guid: f7ac5c6ffcdc0d248983260e8ffca736, type: 3}
+  - {fileID: 8300000, guid: 285c82c81194ffe4d91390030f979453, type: 3}
+  - {fileID: 8300000, guid: 235b5c3a1e91d0b40bbf2b6742bd3457, type: 3}
+  - {fileID: 8300000, guid: 458bff56f97743240800385917feeb82, type: 3}
+  - {fileID: 8300000, guid: 21b5c0e4915cc7e4884c1a11fdfbb106, type: 3}
+  - {fileID: 8300000, guid: d11ea90953a07144b8b44c0b92e7ff6d, type: 3}
+  - {fileID: 8300000, guid: de09739a8c6195c4e9d5ab2d1fff60b6, type: 3}
+  - {fileID: 8300000, guid: ebe671ac59face04c85bd141f1ba5678, type: 3}
+  - {fileID: 8300000, guid: a6089f11ef3f61e4b8b670c7a344a7d5, type: 3}

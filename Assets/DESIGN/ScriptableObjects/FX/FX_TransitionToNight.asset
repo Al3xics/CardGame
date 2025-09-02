@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: FX_TransitionToNight
   m_EditorClassIdentifier: 
   eventType: 7
-  logic: {fileID: 0}
+  logic: {fileID: 11400000, guid: 3c474360e92f74f4a96310a44855ec8c, type: 2}
   playAnimation: 1
   animation: {fileID: 7400000, guid: 277effdb97285134aadffdda801a099c, type: 2}
   waitForAnimationEnd: 1
   isAnimPlayedForAll: 1
-  playSound: 0
-  clip: {fileID: 0}
-  waitForSoundEnd: 0
-  isSoundPlayedForAll: 0
+  playSound: 1
+  clip: {fileID: 8300000, guid: 6b0bc843db2800044a7d13fc6ef88e35, type: 3}
+  waitForSoundEnd: 1
+  isSoundPlayedForAll: 1

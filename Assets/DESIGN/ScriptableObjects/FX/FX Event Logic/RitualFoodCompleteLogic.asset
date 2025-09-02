@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e884371df834c38a22f3da53ea1c1f0, type: 3}
+  m_Name: RitualFoodCompleteLogic
+  m_EditorClassIdentifier: 
+  ritualFoodCompleteList:
+  - {fileID: 8300000, guid: 89b0f08c706014040bbd2f07a74d5824, type: 3}
+  - {fileID: 8300000, guid: 376f2dd26df805949a5c1eddcc900227, type: 3}
+  - {fileID: 8300000, guid: 491e9780a667e774c8bb2e17c54259cc, type: 3}
+  - {fileID: 8300000, guid: b86dfc6f8a81950458bab71fc9d5583e, type: 3}
+  - {fileID: 8300000, guid: e049c92a8e92b5d489ee82601f71083d, type: 3}
+  - {fileID: 8300000, guid: a1d364d3bc10c474ba37445df5477919, type: 3}
+  - {fileID: 8300000, guid: ebbee06d849b3c948b8e8260f202d3f6, type: 3}
+  - {fileID: 8300000, guid: 5b7aa9f153747f74ebce2aca6dc8c6dc, type: 3}

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -58,5 +59,27 @@ namespace Wendogo
                 index++;
             }
         }
+        
+        /// <summary>
+        /// Chooses a random element from the provided collection.
+        /// </summary>
+        /// <typeparam name="T">The type of elements in the collection.</typeparam>
+        /// <param name="collection">The collection to choose a random element from.</param>
+        /// <returns>A randomly selected element from the collection.</returns>
+        /// <exception cref="ArgumentNullException">Thrown if the collection is null.</exception>
+        /// <exception cref="InvalidOperationException">Thrown if the collection is empty.</exception>
+        public static T ChooseRandom<T>(IEnumerable<T> collection)
+        {
+            if (collection == null)
+                throw new ArgumentNullException(nameof(collection), "The collection cannot be null.");
+
+            var list = new List<T>(collection);
+            if (list.Count == 0)
+                throw new InvalidOperationException("The collection is empty. Cannot choose a random element.");
+
+            int randomIndex = UnityEngine.Random.Range(0, list.Count);
+            return list[randomIndex];
+        }
+
     }
 }
