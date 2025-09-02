@@ -26,11 +26,6 @@ namespace Wendogo
                 _player._handManager.trashZone.enabled = true;
                 isTurnBeginning = true;
             }
-            if (_player.Role.Value == RoleType.Wendogo)
-            {
-                _player._handManager._leurreButton.SetActive(true);
-                _player._handManager._attackButton.SetActive(true);
-            }
             CardDropZone.OnCardDropped += ReceiveSelectedEvent;
             CardDropZone.OnCardBurned += ReceiveBurningEvent;
             _player.EnableInput();

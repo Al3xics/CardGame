@@ -37,7 +37,8 @@ namespace Wendogo
 
         [OdinSerialize]
         private Dictionary<Image, Sprite> WendogoUI = new();
-
+        [SerializeField] private GameObject _attackButton;
+        [SerializeField] private GameObject _decoyButton;
 
         [SerializeField] private RitualUI _ritualObject;
         private int _lastRitualStage = -1;
@@ -122,6 +123,11 @@ namespace Wendogo
             {
                 visual.Key.sprite = visual.Value;
             }
+
+            if(_attackButton != null)
+            _attackButton.SetActive(true);
+            if(_decoyButton != null)
+            _decoyButton.SetActive(true);
         }
 
         public void SetUIInfos(ulong localPlayerID)
