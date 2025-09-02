@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -38,6 +39,37 @@ namespace Wendogo
         /// </summary>
         [Tooltip("Provide a custom ID for the Wendogo. Leave '-1' for default .")]
         public int wendogoId = -1;
+        
+        /* --------------- Show in Inspector : OST Settings --------------- */
+        /// <summary>
+        /// Represents the AudioSource used for playing the Original Soundtrack (OST) in the game.
+        /// This serialized field can be assigned through the Unity Inspector to configure
+        /// and control the audio source responsible for the background music.
+        /// </summary>
+        [Header("OST Settings")]
+        [SerializeField] private AudioSource audioSourceOST;
+
+        /// <summary>
+        /// Represents the audio clip used for background music during daytime in the game.
+        /// This variable is used to assign and manage the daytime soundtrack.
+        /// </summary>
+        [Tooltip("Music for Day. Assign the proper AudioClip here.")]
+        [SerializeField] private AudioClip dayMusicClip;
+
+        /// <summary>
+        /// Represents the audio clip to be played during the night phase of the game.
+        /// This clip is intended to enhance the nighttime atmosphere and should be
+        /// assigned through the Unity Inspector.
+        /// </summary>
+        [Tooltip("Music for Night. Assign the proper AudioClip here.")]
+        [SerializeField] private AudioClip nightMusicClip;
+
+        /// <summary>
+        /// Specifies the speed of the transition between day and night in the game, measured in seconds.
+        /// This value determines how quickly the music and environment shift during these transitions.
+        /// </summary>
+        [Tooltip("Defines how fast the music transitions between day and night (in seconds).")]
+        [SerializeField] private float transitionSpeed = 2f;
         
         /* --------------- Show in Inspector : Game Settings --------------- */
         /// <summary>
@@ -245,9 +277,29 @@ namespace Wendogo
 
             if (groupVoteEffectEveryXTurn == null)
                 throw new Exception($"The variable 'Group Vote Effect Every X Turn' inside the 'GameStateMachine' script is null.");
+            
+            if (audioSourceOST == null) throw new Exception($"The variable 'Audio Source OST' inside the 'GameStateMachine' script is null.");
+            if (dayMusicClip == null) throw new Exception($"The variable 'Day Music Clip' inside the 'GameStateMachine' script is null.");
+            if (nightMusicClip == null) throw new Exception($"The variable 'Night Music Clip' inside the 'GameStateMachine' script is null.");
 
             if (!AutoSessionBootstrapper.AutoConnect)
+            {
+                OnCycleChanged += HandleCycleMusicTransition;
                 ServerManager.Instance.InitializePlayers();
+            }
+            else
+            {
+                OnCycleChanged += HandleCycleMusicTransition;
+            }
+        }
+
+        /// <summary>
+        /// Cleans up the GameStateMachine instance by unregistering event handlers and
+        /// performing necessary teardown processes during the destruction of the object.
+        /// </summary>
+        private void OnDestroy()
+        {
+            OnCycleChanged -= HandleCycleMusicTransition;
         }
 
         /// <summary>
@@ -635,6 +687,52 @@ namespace Wendogo
 
         public bool GetCanScavengeWood() => _canScavengeWood;
 
+        #endregion
+        
+        #region OST
+        
+        /// <summary>
+        /// Smoothly transitions between day and night music based on the current cycle.
+        /// </summary>
+        /// <param name="newCycle">The new cycle (Day or Night).</param>
+        private void HandleCycleMusicTransition(Cycle newCycle)
+        {
+            AudioClip targetClip = newCycle == Cycle.Day ? dayMusicClip : nightMusicClip;
+            if (audioSourceOST.clip != targetClip)
+                StartCoroutine(SmoothChangeMusic(targetClip));
+        }
+        
+        /// <summary>
+        /// Coroutine to smoothly transition the audio to a new AudioClip with configurable speed (directly proportional to transitionSpeed, volume clamped properly).
+        /// </summary>
+        /// <param name="newClip">The AudioClip to transition to.</param>
+        /// <returns>An IEnumerator for the coroutine.</returns>
+        private IEnumerator SmoothChangeMusic(AudioClip newClip)
+        {
+            float initialVolume = audioSourceOST.volume;
+
+            // Fade-out phase
+            while (audioSourceOST.volume > 0)
+            {
+                audioSourceOST.volume -= Time.deltaTime * transitionSpeed; // Proportional fade-out
+                audioSourceOST.volume = Mathf.Clamp(audioSourceOST.volume, 0, initialVolume); // Clamp volume between 0 and initialVolume
+                yield return null;
+            }
+            audioSourceOST.Stop();
+
+            // Change the clip and play
+            audioSourceOST.clip = newClip;
+            audioSourceOST.Play();
+
+            // Fade-in phase
+            while (audioSourceOST.volume < initialVolume)
+            {
+                audioSourceOST.volume += Time.deltaTime * transitionSpeed; // Proportional fade-in
+                audioSourceOST.volume = Mathf.Clamp(audioSourceOST.volume, 0, initialVolume); // Clamp volume between 0 and initialVolume
+                yield return null;
+            }
+        }
+        
         #endregion
     }
 }

@@ -86,7 +86,7 @@ namespace Wendogo
 
             await UniTask.WhenAll(sharedTask, localTask);
             
-            if (shouldBlockInput && fxEventContext.Player == PlayerController.LocalPlayer)
+            if (shouldBlockInput && fxEventContext.Player == PlayerController.LocalPlayer && PlayerController.LocalPlayer.isPlayerTurn)
                 fxEventContext.Player.EnableInput();
         }
 
