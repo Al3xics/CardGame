@@ -9,6 +9,7 @@ using Unity.Netcode;
 using System.Linq;
 using UnityEngine.Rendering;
 using Cysharp.Threading.Tasks;
+using static UnityEngine.UI.GridLayoutGroup;
 
 namespace Wendogo
 {
@@ -269,11 +270,38 @@ namespace Wendogo
 
             foreach (var part in _ritualObject.ritualParts)
                 part.gameObject.SetActive(false);
+
             //rajouter les FX events
             int index = -1;
-            if (total >= MaxTotal) index = 2;         
-            else if (total >= TwoThirds) index = 1;   
-            else if (total >= OneThird) index = 0;   
+            if (total >= MaxTotal)
+            {
+                index = 2;
+                ServerManager.Instance.BroadcastSharedFXEventRpc(new FXEventContext
+                {
+                    fxType = FXEventType.OnRitual1,
+                    playerID = PlayerController.LocalPlayer.LocalPlayerId
+                });
+            }
+
+            else if (total >= TwoThirds)
+            {
+                index = 1;
+                ServerManager.Instance.BroadcastSharedFXEventRpc(new FXEventContext
+                {
+                    fxType = FXEventType.OnRitual2,
+                    playerID = PlayerController.LocalPlayer.LocalPlayerId
+                });
+            }
+
+            else if (total >= OneThird)
+            {
+                index = 0;
+                ServerManager.Instance.BroadcastSharedFXEventRpc(new FXEventContext
+                {
+                    fxType = FXEventType.OnRitual3,
+                    playerID = PlayerController.LocalPlayer.LocalPlayerId
+                });
+            }
 
             if (index >= 0 && index < _ritualObject.ritualParts.Count)
                 _ritualObject.ritualParts[index].SetActive(true);
