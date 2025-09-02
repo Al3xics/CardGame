@@ -10,6 +10,7 @@ using System.Linq;
 using UnityEngine.Rendering;
 using Cysharp.Threading.Tasks;
 using static UnityEngine.UI.GridLayoutGroup;
+using UnityEditor.SceneManagement;
 
 namespace Wendogo
 {
@@ -39,7 +40,7 @@ namespace Wendogo
 
 
         [SerializeField] private RitualUI _ritualObject;
-
+        private int _lastRitualStage = -1;
 
         public static PlayerUI Instance { get; private set; }
 
@@ -255,7 +256,7 @@ namespace Wendogo
         {
             const int MaxTotal = 12;
             const int OneThird = MaxTotal / 3;
-            const int TwoThirds = 2 * MaxTotal / 3; 
+            const int TwoThirds = 2 * MaxTotal / 3;
             int wood = ServerManager.Instance._woodInRitual.Value;
             int food = ServerManager.Instance._foodInRitual.Value;
             int total = Mathf.Clamp(wood + food, 0, MaxTotal);
@@ -263,40 +264,42 @@ namespace Wendogo
             foreach (var part in _ritualObject.ritualParts)
                 part.gameObject.SetActive(false);
 
-            //rajouter les FX events
-            int index = -1;
-            if (total >= MaxTotal)
-            {
-                index = 2;
-                ServerManager.Instance.BroadcastSharedFXEventRpc(new FXEventContext
-                {
-                    fxType = FXEventType.OnRitual1,
-                    playerID = PlayerController.LocalPlayer.LocalPlayerId
-                });
-            }
+            int stage = -1;
+            if (total >= MaxTotal) stage = 2;
+            else if (total >= TwoThirds) stage = 1;
+            else if (total >= OneThird) stage = 0;
 
-            else if (total >= TwoThirds)
-            {
-                index = 1;
-                ServerManager.Instance.BroadcastSharedFXEventRpc(new FXEventContext
-                {
-                    fxType = FXEventType.OnRitual2,
-                    playerID = PlayerController.LocalPlayer.LocalPlayerId
-                });
-            }
+            for (int i = 0; i < _ritualObject.ritualParts.Count; i++)
+                _ritualObject.ritualParts[i].SetActive(i <= stage && stage >= 0);
 
-            else if (total >= OneThird)
+            if (stage > _lastRitualStage)
             {
-                index = 0;
-                ServerManager.Instance.BroadcastSharedFXEventRpc(new FXEventContext
+                if (stage == 0)
                 {
-                    fxType = FXEventType.OnRitual3,
-                    playerID = PlayerController.LocalPlayer.LocalPlayerId
-                });
+                    ServerManager.Instance.BroadcastSharedFXEventRpc(new FXEventContext
+                    {
+                        fxType = FXEventType.OnRitual1,
+                        playerID = PlayerController.LocalPlayer.LocalPlayerId
+                    });
+                }
+                else if (stage == 1)
+                {
+                    ServerManager.Instance.BroadcastSharedFXEventRpc(new FXEventContext
+                    {
+                        fxType = FXEventType.OnRitual2,
+                        playerID = PlayerController.LocalPlayer.LocalPlayerId
+                    });
+                }
+                else if (stage == 2)
+                {
+                    ServerManager.Instance.BroadcastSharedFXEventRpc(new FXEventContext
+                    {
+                        fxType = FXEventType.OnRitual3,
+                        playerID = PlayerController.LocalPlayer.LocalPlayerId
+                    });
+                }
             }
-
-            if (index >= 0 && index < _ritualObject.ritualParts.Count)
-                _ritualObject.ritualParts[index].SetActive(true);
+            _lastRitualStage = stage;
         }
 
         public void DeactivateAllHearts()
