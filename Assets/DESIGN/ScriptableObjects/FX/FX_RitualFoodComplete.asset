@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b90643f3d9644824b52e4c33c864c9c3, type: 3}
+  m_Name: FX_RitualFoodComplete
+  m_EditorClassIdentifier: 
+  eventType: 21
+  logic: {fileID: 11400000, guid: e7ee04c0d44f46146b99a5a9e892c54e, type: 2}
+  playAnimation: 0
+  animation: {fileID: 0}
+  waitForAnimationEnd: 0
+  isAnimPlayedForAll: 0
+  playSound: 1
+  clip: {fileID: 8300000, guid: 89b0f08c706014040bbd2f07a74d5824, type: 3}
+  waitForSoundEnd: 1
+  isSoundPlayedForAll: 1

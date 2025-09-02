@@ -97,6 +97,9 @@ namespace Wendogo
         OnRitual1,
         OnRitual2,
         OnRitual3,
+        OnRitualFoodComplete,
+        OnRitualWoodComplete,
+        OnRitualFakeComplete,
         OnOtherPlayerDeath,
     }
 
