@@ -272,6 +272,25 @@ namespace Wendogo
             for (int i = 0; i < _ritualObject.ritualParts.Count; i++)
                 _ritualObject.ritualParts[i].SetActive(i <= stage && stage >= 0);
 
+            int halfTotal = MaxTotal / 2;
+            if (wood == halfTotal)
+            {
+                ServerManager.Instance.BroadcastSharedFXEventRpc(new FXEventContext
+                {
+                    fxType = FXEventType.OnRitualWoodComplete,
+                    playerID = PlayerController.LocalPlayer.LocalPlayerId
+                });
+            }
+
+            if (food == halfTotal)
+            {
+                ServerManager.Instance.BroadcastSharedFXEventRpc(new FXEventContext
+                {
+                    fxType = FXEventType.OnRitualFoodComplete,
+                    playerID = PlayerController.LocalPlayer.LocalPlayerId
+                });
+            }
+
             if (stage > _lastRitualStage)
             {
                 if (stage == 0)
