@@ -1311,7 +1311,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 410597146149384154, guid: 97ac440e15bba064d8ea41b10d4ffd16, type: 3}
       propertyPath: autoConnect
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 410597146149384154, guid: 97ac440e15bba064d8ea41b10d4ffd16, type: 3}
       propertyPath: networkManager
