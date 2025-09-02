@@ -176,7 +176,7 @@ namespace Wendogo
                     _fxManager = GameObject.Find("FXEventManager")?.GetComponent<FXEventManager>();
 
                     //Todo call at the same time the the game state machine starts instead
-                    await UniTask.WaitForSeconds(10);
+                    await UniTask.WaitForSeconds(15);
                     //Init UI for the other players
                     PlayerUI.Instance.SetUIInfos(LocalPlayerId);
                     Debug.Log($"|||||||||| SetUIInfos DONE ||||||||||");

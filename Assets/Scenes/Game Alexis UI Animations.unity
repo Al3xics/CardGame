@@ -5450,6 +5450,7 @@ GameObject:
   - component: {fileID: 2073911998499086760}
   - component: {fileID: 1906253152397289398}
   - component: {fileID: 437783707080956564}
+  - component: {fileID: 2073911998499086761}
   m_Layer: 5
   m_Name: Pillage_Food
   m_TagString: Untagged
@@ -6797,7 +6798,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: 399.9986}
+  m_AnchoredPosition: {x: 0, y: 399.99854}
   m_SizeDelta: {x: 238, y: 400}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1843667227117872445
@@ -7224,6 +7225,29 @@ RectTransform:
   m_AnchoredPosition: {x: -58.399994, y: 0.2}
   m_SizeDelta: {x: 373, y: 460}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!223 &2073911998499086761
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1286783238837719018}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 1
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 1
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 9999
+  m_TargetDisplay: 0
 --- !u!224 &2082850665554082790
 RectTransform:
   m_ObjectHideFlags: 0
@@ -13164,6 +13188,7 @@ GameObject:
   - component: {fileID: 44865785299109902}
   - component: {fileID: 7220106942450030411}
   - component: {fileID: 8709466711646919184}
+  - component: {fileID: 8709466711646919185}
   m_Layer: 5
   m_Name: Pillage_Wood
   m_TagString: Untagged
@@ -19466,6 +19491,29 @@ MonoBehaviour:
     y: 0
     width: 1
     height: 1
+--- !u!223 &8709466711646919185
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5184855112445111450}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 1
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 1
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 9999
+  m_TargetDisplay: 0
 --- !u!1 &8714793510953700564
 GameObject:
   m_ObjectHideFlags: 0
