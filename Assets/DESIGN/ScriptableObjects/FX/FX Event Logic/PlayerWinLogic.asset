@@ -13,9 +13,7 @@ MonoBehaviour:
   m_Name: PlayerWinLogic
   m_EditorClassIdentifier: 
   ritualCompleteList:
-  - {fileID: 8300000, guid: badae1334351f4143a8011227fa1ff92, type: 3}
   - {fileID: 8300000, guid: c621917c496cf254d92ad3c6312d991b, type: 3}
   - {fileID: 8300000, guid: 6e01714c27db9934c8c3f065d8870c2f, type: 3}
   - {fileID: 8300000, guid: 20d2878429ec13342942d05eb4bdcfad, type: 3}
   - {fileID: 8300000, guid: 64eb43bbb11312547ad10b7d3cee3ee7, type: 3}
-  - {fileID: 8300000, guid: 4cb86b90e91445a4991aa5bea7ace062, type: 3}
