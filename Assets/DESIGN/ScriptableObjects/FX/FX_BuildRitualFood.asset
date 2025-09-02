@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: FX_BuildRitualFood
   m_EditorClassIdentifier: 
   eventType: 12
-  logic: {fileID: 0}
+  logic: {fileID: 11400000, guid: 3aa805173828a924db518c5458bc68ff, type: 2}
   playAnimation: 1
-  animation: {fileID: 7400000, guid: 5ea0f9b05c330a44aaef268c35008a9e, type: 2}
+  animation: {fileID: 7400000, guid: eaca501c955612342b9b03933cb3bb3b, type: 2}
   waitForAnimationEnd: 1
   isAnimPlayedForAll: 1
   playSound: 0

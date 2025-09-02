@@ -97,6 +97,7 @@ namespace Wendogo
         OnRitual1,
         OnRitual2,
         OnRitual3,
+        OnOtherPlayerDeath,
     }
 
     /// <summary>
