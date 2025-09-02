@@ -76,6 +76,8 @@ namespace Wendogo
         public string PlayerName { get; private set; }
         
         public static Dictionary<ulong, string> LocalGlobalPlayersByName { get; private set; } = new();
+        
+        public static Dictionary<ulong, int> PlayerSlots = new();
 
         #endregion
 
@@ -174,9 +176,10 @@ namespace Wendogo
                     _fxManager = GameObject.Find("FXEventManager")?.GetComponent<FXEventManager>();
 
                     //Todo call at the same time the the game state machine starts instead
-                    await UniTask.WaitForSeconds(15);
+                    await UniTask.WaitForSeconds(10);
                     //Init UI for the other players
                     PlayerUI.Instance.SetUIInfos(LocalPlayerId);
+                    Debug.Log($"|||||||||| SetUIInfos DONE ||||||||||");
                 }
             }
         }
@@ -593,7 +596,15 @@ namespace Wendogo
             {
                 health.Value = Mathf.Clamp(health.Value - delta, 0, maxHealth);
                 if (health.Value <= 0)
+                {
+                    // Broadcast to other players that the player is dead
+                    ServerManager.Instance.BroadcastSharedFXEventExcludingPlayerRpc(new FXEventContext
+                    {
+                        fxType = FXEventType.OnOtherPlayerDeath,
+                        playerID = OwnerClientId
+                    });
                     pcSMObject.GetComponent<PlayerControllerSM>().ChangeToDeathState();
+                }
             }
             else
             {

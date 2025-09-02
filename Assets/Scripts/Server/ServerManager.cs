@@ -610,7 +610,34 @@ namespace Wendogo
                     playerController.BroadcastLocalFXEventToPlayerRpc(fxEventContext, RpcTarget.Single(fxEventContext.playerID, RpcTargetUse.Temp));
             }
         }
+        
+        [Rpc(SendTo.Server)]
+        public void BroadcastSharedFXEventExcludingPlayerRpc(FXEventContext fxEventContext)
+        {
+            ulong excludePlayerId = fxEventContext.playerID;
+            
+            foreach (var player in PlayersById)
+            {
+                if (player.Key != excludePlayerId)
+                {
+                    var playerController = player.Value;
+                    playerController.BroadcastLocalFXEventToPlayerRpc(fxEventContext, RpcTarget.Single(player.Key, RpcTargetUse.Temp));;
+                }
+            }
 
+            foreach (var deadPlayerId in DeadPlayersId)
+            {
+                if (deadPlayerId != excludePlayerId)
+                {
+                    var deadPlayerController = PlayerController.GetDeadPlayer(deadPlayerId);
+                    if (deadPlayerController != null && deadPlayerController.isDead.Value)
+                    {
+                        deadPlayerController.BroadcastLocalFXEventToPlayerRpc(fxEventContext, RpcTarget.Single(deadPlayerId, RpcTargetUse.Temp));
+                    }
+                }
+            }
+        }
+        
         #endregion
     }
 }

@@ -140,8 +140,7 @@ namespace Wendogo
                 if (player == null)
                     continue;
 
-                player.slotIndex.Value = i + 1;
-                
+                PlayerController.PlayerSlots[trueID] = i + 1;
                 OtherPlayerUIContent otherUI = go.GetComponent<OtherPlayerUIContent>();
 
                 if (!_subscribedPlayers.Contains(trueID))

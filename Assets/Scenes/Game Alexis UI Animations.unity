@@ -339,29 +339,9 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 726433537480893366}
     - target: {fileID: 2673959860602467067, guid: c3667cc12a89732469b4d65d5934e28e, type: 3}
-      propertyPath: fxEvents.Array.size
-      value: 23
-      objectReference: {fileID: 0}
-    - target: {fileID: 2673959860602467067, guid: c3667cc12a89732469b4d65d5934e28e, type: 3}
-      propertyPath: 'fxEvents.Array.data[17]'
-      value: 
-      objectReference: {fileID: 11400000, guid: 62cfe37bc02eca8409142220c799d0a1, type: 2}
-    - target: {fileID: 2673959860602467067, guid: c3667cc12a89732469b4d65d5934e28e, type: 3}
-      propertyPath: 'fxEvents.Array.data[18]'
-      value: 
-      objectReference: {fileID: 11400000, guid: 761944e84ad294847863684ab26cc3a6, type: 2}
-    - target: {fileID: 2673959860602467067, guid: c3667cc12a89732469b4d65d5934e28e, type: 3}
-      propertyPath: 'fxEvents.Array.data[19]'
-      value: 
-      objectReference: {fileID: 11400000, guid: 09a801cf06263734e876043cd60b158d, type: 2}
-    - target: {fileID: 2673959860602467067, guid: c3667cc12a89732469b4d65d5934e28e, type: 3}
-      propertyPath: 'fxEvents.Array.data[20]'
-      value: 
-      objectReference: {fileID: 11400000, guid: f359c0539f4a6de44a61d90a4540494e, type: 2}
-    - target: {fileID: 2673959860602467067, guid: c3667cc12a89732469b4d65d5934e28e, type: 3}
       propertyPath: 'fxEvents.Array.data[21]'
       value: 
-      objectReference: {fileID: 11400000, guid: 945acbaec640609488f7f388f1ae7b9f, type: 2}
+      objectReference: {fileID: 11400000, guid: 26c9f95dd54b2634398e589079998d18, type: 2}
     - target: {fileID: 2673959860602467067, guid: c3667cc12a89732469b4d65d5934e28e, type: 3}
       propertyPath: 'fxEvents.Array.data[22]'
       value: 
