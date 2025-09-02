@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68fc5d37ab8f47319884ddadb4569641, type: 3}
+  m_Name: OtherPlayerLogic
+  m_EditorClassIdentifier: 
+  deathClipP2: {fileID: 7400000, guid: 7240f8bbe2edf6d48ada9b60bb2c4f65, type: 2}
+  deathClipP3: {fileID: 7400000, guid: 2f19be568f9c4924a9892fb0c35d79c4, type: 2}
+  deathClipP4: {fileID: 7400000, guid: d5a3b46f0f8aab649850c3645abd4676, type: 2}

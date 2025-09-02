@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13a087a3c4704c9da628f2515b2d9948, type: 3}
+  m_Name: StealFoodLogic
+  m_EditorClassIdentifier: 
+  stealFoodClipP2: {fileID: 7400000, guid: ad1134461c79be34d9e8e9f6360c3f79, type: 2}
+  stealFoodClipP3: {fileID: 7400000, guid: 940542e2acb809d4cb341db08326c72f, type: 2}
+  stealFoodClipP4: {fileID: 7400000, guid: 973ad4667badd4f43b56102bd249b790, type: 2}

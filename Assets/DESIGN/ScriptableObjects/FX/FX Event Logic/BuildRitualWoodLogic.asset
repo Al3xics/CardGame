@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7e62f09545f496da17508f2937f7c8f, type: 3}
+  m_Name: BuildRitualWoodLogic
+  m_EditorClassIdentifier: 
+  buildRitualWoodClipP1: {fileID: 7400000, guid: 0c48eb0dfed2d334fb959e8c0b4a552a, type: 2}
+  buildRitualWoodClipP2: {fileID: 7400000, guid: 9ee07d8e233df7e458c4e14a73ee33b0, type: 2}
+  buildRitualWoodClipP3: {fileID: 7400000, guid: 95391bd588e759e43ad28aab47f7b240, type: 2}
+  buildRitualWoodClipP4: {fileID: 7400000, guid: 5a4b003db73844a4fbf72e7546685b51, type: 2}

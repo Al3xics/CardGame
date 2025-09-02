@@ -76,6 +76,8 @@ namespace Wendogo
         public string PlayerName { get; private set; }
         
         public static Dictionary<ulong, string> LocalGlobalPlayersByName { get; private set; } = new();
+        
+        public static Dictionary<ulong, int> PlayerSlots = new();
 
         #endregion
 
@@ -169,12 +171,16 @@ namespace Wendogo
 
             if (AutoSessionBootstrapper.AutoConnect)
             {
-                _fxManager = GameObject.Find("FXEventManager")?.GetComponent<FXEventManager>();
+                if (IsLocalPlayer)
+                {
+                    _fxManager = GameObject.Find("FXEventManager")?.GetComponent<FXEventManager>();
 
-                //Todo call at the same time the the game state machine starts instead
-                await UniTask.WaitForSeconds(15);
-                //Init UI for the other players
-                PlayerUI.Instance.SetUIInfos(LocalPlayerId, RpcTarget.Me);
+                    //Todo call at the same time the the game state machine starts instead
+                    await UniTask.WaitForSeconds(15);
+                    //Init UI for the other players
+                    PlayerUI.Instance.SetUIInfos(LocalPlayerId);
+                    Debug.Log($"|||||||||| SetUIInfos DONE ||||||||||");
+                }
             }
         }
 
@@ -242,7 +248,7 @@ namespace Wendogo
 
                 Debug.Log($"This is my player id: {LocalPlayerId}");
 
-                //PlayerUI.Instance.SetUIInfos(LocalPlayerId, RpcTarget.Me);
+                //PlayerUI.Instance.SetUIInfos(LocalPlayerId);
 
                 if (_prefabUI == null) { _prefabUI = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject; }
 
@@ -590,7 +596,15 @@ namespace Wendogo
             {
                 health.Value = Mathf.Clamp(health.Value - delta, 0, maxHealth);
                 if (health.Value <= 0)
+                {
+                    // Broadcast to other players that the player is dead
+                    ServerManager.Instance.BroadcastSharedFXEventExcludingPlayerRpc(new FXEventContext
+                    {
+                        fxType = FXEventType.OnOtherPlayerDeath,
+                        playerID = OwnerClientId
+                    });
                     pcSMObject.GetComponent<PlayerControllerSM>().ChangeToDeathState();
+                }
             }
             else
             {
@@ -940,7 +954,7 @@ namespace Wendogo
         [Rpc(SendTo.SpecifiedInParams)]
         public void SetupLocalUIRpc(RpcParams rpcParams)
         {
-            PlayerUI.Instance.SetUIInfos(OwnerClientId, RpcTarget.Me);
+            PlayerUI.Instance.SetUIInfos(OwnerClientId);
         }
         #endregion
 
