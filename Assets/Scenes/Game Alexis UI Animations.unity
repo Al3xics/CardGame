@@ -794,14 +794,6 @@ PrefabInstance:
       propertyPath: popupText
       value: 
       objectReference: {fileID: 726433537480893366}
-    - target: {fileID: 2673959860602467067, guid: c3667cc12a89732469b4d65d5934e28e, type: 3}
-      propertyPath: 'fxEvents.Array.data[21]'
-      value: 
-      objectReference: {fileID: 11400000, guid: 26c9f95dd54b2634398e589079998d18, type: 2}
-    - target: {fileID: 2673959860602467067, guid: c3667cc12a89732469b4d65d5934e28e, type: 3}
-      propertyPath: 'fxEvents.Array.data[22]'
-      value: 
-      objectReference: {fileID: 11400000, guid: 26c9f95dd54b2634398e589079998d18, type: 2}
     - target: {fileID: 2789633915368823295, guid: c3667cc12a89732469b4d65d5934e28e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
