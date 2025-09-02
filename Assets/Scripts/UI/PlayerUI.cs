@@ -10,6 +10,7 @@ using System.Linq;
 using UnityEngine.Rendering;
 using Cysharp.Threading.Tasks;
 using Unity.VisualScripting;
+using UnityEditor.Animations;
 
 namespace Wendogo
 {
@@ -43,18 +44,19 @@ namespace Wendogo
 
         public static PlayerUI Instance { get; private set; }
         
-        public GameObject TextPlayerName1;
-        public GameObject TextPlayerName2;
-        public GameObject TextPlayerName3;
-        public GameObject TextPlayerName4;
+        public GameObject PlayerGameObj1;
+        public GameObject PlayerGameObj2;
+        public GameObject PlayerGameObj3;
+        public GameObject PlayerGameObj4;
         
         public GameObject OwnerPlayer;
         public GameObject Player1disp;
         public GameObject Player2disp;
         public GameObject Player3disp;
         
-        public Dictionary<ulong, Texture2D> PlayerTextures = new();
+        public Dictionary<ulong, RuntimeAnimatorController> PlayerAnimsIcons = new();
         public Dictionary<ulong, Sprite> PlayerSprites = new();
+        public Dictionary<ulong, Texture2D> PlayerImageIcons = new();
         
 
 
@@ -121,22 +123,27 @@ namespace Wendogo
             cadreRef.GetComponent<Image>().sprite = PlayerSprites[playerID];
         }
 
-        public void SetPlayerTextures()
+        public void SetPlayerAnimIcons()
         {
             foreach (var i in ServerManager.GlobalPlayersByName.Keys)
             {
                 ServerManager.GlobalPlayersByName.TryGetValue(i, out var name);
-                if (Player1disp.transform.Find("Player_2_Name").GetComponent<TextMeshPro>().text == name)
+                if (name == null) Debug.Log($"$$$$$$$$$$ name est null");
+                if (Player1disp == null) Debug.Log($"$$$$$$$$$$ Player1disp est null");
+                if (Player1disp.transform.Find("Player_2_Name") == null) Debug.Log($"$$$$$$$$$$ Find du player name est null");
+                if (Player1disp.transform.Find("Player_2_Name").GetComponent<TMP_Text>().text == null) Debug.Log($"$$$$$$$$$$ Chier putain ta race du player name est null");
+                
+                if (Player1disp.transform.Find("Player_2_Name").GetComponent<TMP_Text>().text == name)
                 {
-                    Player1disp.transform.Find("Player_2_Icon").GetComponent<RawImage>().texture = PlayerTextures[i];
+                    Player1disp.transform.Find("Player_2_Icon").GetComponent<Animator>().runtimeAnimatorController = PlayerAnimsIcons[i];
                 }
-                if (Player2disp.transform.Find("Player_3_Name").GetComponent<TextMeshPro>().text == name)
+                if (Player2disp.transform.Find("Player_3_Name").GetComponent<TMP_Text>().text == name)
                 {
-                    Player2disp.transform.Find("Player_3_Icon").GetComponent<RawImage>().texture = PlayerTextures[i];
+                    Player2disp.transform.Find("Player_3_Icon").GetComponent<Animator>().runtimeAnimatorController = PlayerAnimsIcons[i];
                 }
-                if (Player3disp.transform.Find("Player_4_Name").GetComponent<TextMeshPro>().text == name)
+                if (Player3disp.transform.Find("Player_4_Name").GetComponent<TMP_Text>().text == name)
                 {
-                    Player3disp.transform.Find("Player_4_Icon").GetComponent<RawImage>().texture = PlayerTextures[i];
+                    Player3disp.transform.Find("Player_4_Icon").GetComponent<Animator>().runtimeAnimatorController = PlayerAnimsIcons[i];
                 }
             }
         }
@@ -251,19 +258,23 @@ namespace Wendogo
                     title.text = ServerManager.GlobalPlayersByName.TryGetValue(trueID, out var name) ? name : $"Sah Player {trueID}";
                 }
             }
-
-            if (TextPlayerName1 != null)
-            {
-                TextPlayerName1.GetComponent<TextMeshProUGUI>().text =
-                    ServerManager.GlobalPlayersByName.TryGetValue(0, out var playerName1) ? playerName1 : $"Sah Player 0";
-                TextPlayerName2.GetComponent<TextMeshProUGUI>().text =
-                    ServerManager.GlobalPlayersByName.TryGetValue(1, out var playerName2) ? playerName2 : $"Sah Player 1";
-                TextPlayerName3.GetComponent<TextMeshProUGUI>().text =
-                    ServerManager.GlobalPlayersByName.TryGetValue(2, out var playerName3) ? playerName3 : $"Sah Player 2";
-                TextPlayerName4.GetComponent<TextMeshProUGUI>().text =
-                    ServerManager.GlobalPlayersByName.TryGetValue(3, out var playerName4) ? playerName4 : $"Sah Player 3";
-            }
-            SetPlayerTextures();
+            
+            PlayerGameObj1.transform.Find("Player_2_Name").GetComponent<TMP_Text>().text =
+                ServerManager.GlobalPlayersByName.TryGetValue(0, out var playerName1) ? playerName1 : $"Sah Player 0";
+            PlayerGameObj2.transform.Find("Player_2_Name").GetComponent<TMP_Text>().text =
+                ServerManager.GlobalPlayersByName.TryGetValue(1, out var playerName2) ? playerName2 : $"Sah Player 1";
+            PlayerGameObj3.transform.Find("Player_2_Name").GetComponent<TMP_Text>().text =
+                ServerManager.GlobalPlayersByName.TryGetValue(2, out var playerName3) ? playerName3 : $"Sah Player 2";
+            PlayerGameObj4.transform.Find("Player_2_Name").GetComponent<TMP_Text>().text =
+                ServerManager.GlobalPlayersByName.TryGetValue(3, out var playerName4) ? playerName4 : $"Sah Player 3";
+            
+            PlayerGameObj1.transform.Find("Player_2_Icon").GetComponent<RawImage>().texture = PlayerImageIcons[0];
+            PlayerGameObj2.transform.Find("Player_2_Icon").GetComponent<RawImage>().texture = PlayerImageIcons[1];
+            PlayerGameObj3.transform.Find("Player_2_Icon").GetComponent<RawImage>().texture = PlayerImageIcons[2];
+            PlayerGameObj4.transform.Find("Player_2_Icon").GetComponent<RawImage>().texture = PlayerImageIcons[3];
+            
+            
+            SetPlayerAnimIcons();
         }
 
         private void SetRitualUI()
