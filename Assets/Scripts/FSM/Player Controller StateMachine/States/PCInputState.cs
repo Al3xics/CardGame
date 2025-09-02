@@ -29,8 +29,6 @@ namespace Wendogo
             CardDropZone.OnCardDropped += ReceiveSelectedEvent;
             CardDropZone.OnCardBurned += ReceiveBurningEvent;
             _player.EnableInput();
-            _player._handManager.ToggleOnMovingCards(_player._handManager.handCards);
-
         }
 
         public override void OnTick()

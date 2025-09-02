@@ -46,7 +46,7 @@ namespace Wendogo
             
             currentPlayerAction = sortedActions[id];
             currentPlayerAction.GetCardDataSO().CardEffect.ShowUI();
-            ServerManager.Instance.EnableInputAndDisableMovingCardsRpc();
+            // ServerManager.Instance.EnableInputAndDisableMovingCardsRpc();
             ServerManager.Instance.GroupSelectTargetAsyncForAllPlayersRpc();
         }
 

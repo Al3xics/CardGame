@@ -42,6 +42,11 @@ namespace Wendogo
 
         [SerializeField] private RitualUI _ritualObject;
         private int _lastRitualStage = -1;
+        
+        private bool _playerMuted = false;
+        [SerializeField] private Image imageComponentMuteButton;
+        [SerializeField] private Sprite unmutedImage;
+        [SerializeField] private Sprite mutedImage;
 
         public static PlayerUI Instance { get; private set; }
 
@@ -66,6 +71,10 @@ namespace Wendogo
 
             if (readyText != null) readyText.gameObject.SetActive(false);
             if (endText != null) endText.gameObject.SetActive(false);
+
+            if (imageComponentMuteButton == null) throw new Exception($"[PlayerUI] imageComponentMuteButton is null");
+            if (unmutedImage == null) throw new Exception($"[PlayerUI] unmutedImage is null");
+            if (mutedImage == null) throw new Exception($"[PlayerUI] mutedImage is null");
         }
 
 
@@ -336,5 +345,31 @@ namespace Wendogo
             }
         }
 
+
+
+        public void SetAttackButtonInteractable(bool interactable)
+        {
+            _attackButton.GetComponent<Button>().interactable = interactable;
+        }
+
+        public void SetDecoyButtonInteractable(bool interactable)
+        {
+            _decoyButton.GetComponent<Button>().interactable = interactable;
+        }
+        
+        
+
+        public void MuteUnmuteMyself()
+        {
+            if (ServerManager.Instance.currentCycle.Value == Cycle.Night) return;
+            SwitchMute(!_playerMuted);
+        }
+
+        public void SwitchMute(bool mute)
+        {
+            _playerMuted = mute;
+            imageComponentMuteButton.sprite = mute ? mutedImage : unmutedImage;
+            SessionManager.Instance.MutePlayer(mute);
+        }
     }
 }
