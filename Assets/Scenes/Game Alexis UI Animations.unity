@@ -683,6 +683,10 @@ MonoBehaviour:
   numberOfFoodToCompleteRitual: 6
   numberOfWoodToCompleteRitual: 6
   groupVoteEffectEveryXTurn: {fileID: 11400000, guid: 5bfee2b8d8c5a39439ee7607b7183a1a, type: 2}
+  _ritualFoodCollected: 
+  _hiddenRitualFoodCollected: 
+  _ritualWoodCollected: 
+  _hiddenRitualWoodCollected: 
 --- !u!82 &687310889
 AudioSource:
   m_ObjectHideFlags: 0
@@ -2348,7 +2352,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   menuSceneName: Menu_Refonte
-  gameSceneName: Game Valentin
+  gameSceneName: Game Alexis UI Animations
   playerHealthAsked: 0
   playerFoodAsked: 0
   playerWoodAsked: 0
