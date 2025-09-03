@@ -974,14 +974,6 @@ PrefabInstance:
       propertyPath: popupText
       value: 
       objectReference: {fileID: 726433537480893366}
-    - target: {fileID: 2673959860602467067, guid: c3667cc12a89732469b4d65d5934e28e, type: 3}
-      propertyPath: fxEvents.Array.size
-      value: 25
-      objectReference: {fileID: 0}
-    - target: {fileID: 2673959860602467067, guid: c3667cc12a89732469b4d65d5934e28e, type: 3}
-      propertyPath: 'fxEvents.Array.data[24]'
-      value: 
-      objectReference: {fileID: 11400000, guid: 58865c75dec42e84f8e7e57cef298655, type: 2}
     - target: {fileID: 2789633915368823295, guid: c3667cc12a89732469b4d65d5934e28e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -2454,7 +2446,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   menuSceneName: Menu_Refonte
-  gameSceneName: Game Valentin
+  gameSceneName: Game Martin UI
   playerHealthAsked: 0
   playerFoodAsked: 0
   playerWoodAsked: 0
