@@ -275,7 +275,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4742860448802633135, guid: 09f1b3889c2b9314eb64cd88d9a5a395, type: 3}
       propertyPath: m_fontSize
-      value: 104.15
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 4742860448802633135, guid: 09f1b3889c2b9314eb64cd88d9a5a395, type: 3}
+      propertyPath: m_fontSizeMax
+      value: 90
       objectReference: {fileID: 0}
     - target: {fileID: 5985852031825009482, guid: 09f1b3889c2b9314eb64cd88d9a5a395, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
@@ -2336,6 +2340,14 @@ PrefabInstance:
     - target: {fileID: 6742100646686296091, guid: 6632143f5ca36ef489231b137101b9e5, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7201646774857561588, guid: 6632143f5ca36ef489231b137101b9e5, type: 3}
+      propertyPath: m_fontSize
+      value: 108
+      objectReference: {fileID: 0}
+    - target: {fileID: 7201646774857561588, guid: 6632143f5ca36ef489231b137101b9e5, type: 3}
+      propertyPath: m_fontSizeMax
+      value: 108
       objectReference: {fileID: 0}
     - target: {fileID: 7351357939082246738, guid: 6632143f5ca36ef489231b137101b9e5, type: 3}
       propertyPath: m_LocalScale.x
