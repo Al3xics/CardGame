@@ -43,7 +43,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -108,7 +108,403 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: Sprite_Bison_Iddle 1_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 5000
+        width: 2500
+        height: 2500
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 26a374ecf2609eb43bb1dca04d6775b8
+      internalID: -685372754
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sprite_Bison_Iddle 1_1
+      rect:
+        serializedVersion: 2
+        x: 2500
+        y: 5000
+        width: 2500
+        height: 2500
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 76fd405ce3b2abf4cb1385214ce2fb23
+      internalID: -1394529123
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sprite_Bison_Iddle 1_2
+      rect:
+        serializedVersion: 2
+        x: 5000
+        y: 5000
+        width: 2500
+        height: 2500
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2e92b6e4a1b1a6f4b9476a0faefa1609
+      internalID: 1746954581
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sprite_Bison_Iddle 1_3
+      rect:
+        serializedVersion: 2
+        x: 7500
+        y: 5000
+        width: 2500
+        height: 2500
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 57a55a1b554b81d4d86317dda9ea36dc
+      internalID: -489304929
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sprite_Bison_Iddle 1_4
+      rect:
+        serializedVersion: 2
+        x: 10000
+        y: 5000
+        width: 2500
+        height: 2500
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9b5d932e6d028ca4f8edd12f8876dbe0
+      internalID: 141287472
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sprite_Bison_Iddle 1_5
+      rect:
+        serializedVersion: 2
+        x: 12500
+        y: 5000
+        width: 2500
+        height: 2500
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e2ab4894225c52b4a8f7ee2d6ad29599
+      internalID: 283576112
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sprite_Bison_Iddle 1_6
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2500
+        width: 2500
+        height: 2500
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a4c16a9fb0c694640a7ac37dc426c50c
+      internalID: -1829393187
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sprite_Bison_Iddle 1_7
+      rect:
+        serializedVersion: 2
+        x: 2500
+        y: 2500
+        width: 2500
+        height: 2500
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a6075c49d39c8f045a858b165419d984
+      internalID: -417116101
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sprite_Bison_Iddle 1_8
+      rect:
+        serializedVersion: 2
+        x: 5000
+        y: 2500
+        width: 2500
+        height: 2500
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3dc8e46600ae51d42ae52113eed68a14
+      internalID: -1851162437
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sprite_Bison_Iddle 1_9
+      rect:
+        serializedVersion: 2
+        x: 7500
+        y: 2500
+        width: 2500
+        height: 2500
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 87eee741af18f474087ec9ba0b271629
+      internalID: -1448108798
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sprite_Bison_Iddle 1_10
+      rect:
+        serializedVersion: 2
+        x: 10000
+        y: 2500
+        width: 2500
+        height: 2500
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6b72a8bca860f2f4a83dad7877967188
+      internalID: 1903013793
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sprite_Bison_Iddle 1_11
+      rect:
+        serializedVersion: 2
+        x: 12500
+        y: 2500
+        width: 2500
+        height: 2500
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6b1fcce7b3c90144594e196cc2561b27
+      internalID: 1112992104
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sprite_Bison_Iddle 1_12
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 2500
+        height: 2500
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d652fd32f12f7654bb0f72e4080fb25f
+      internalID: 1239363937
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sprite_Bison_Iddle 1_13
+      rect:
+        serializedVersion: 2
+        x: 2500
+        y: 0
+        width: 2500
+        height: 2500
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ccbce120a1ee9544da1b37f4f4ea8ce4
+      internalID: -1391268856
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sprite_Bison_Iddle 1_14
+      rect:
+        serializedVersion: 2
+        x: 5000
+        y: 0
+        width: 2500
+        height: 2500
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 28b821fd575738c49bdf46bb8b7fd066
+      internalID: -1074871830
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sprite_Bison_Iddle 1_15
+      rect:
+        serializedVersion: 2
+        x: 7500
+        y: 0
+        width: 2500
+        height: 2500
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6ff9e0048d0b69741821de622649f8cc
+      internalID: 198385089
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sprite_Bison_Iddle 1_16
+      rect:
+        serializedVersion: 2
+        x: 10000
+        y: 0
+        width: 2500
+        height: 2500
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: abd09861658089849ac6a81dc6878244
+      internalID: -1056214603
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Sprite_Bison_Iddle 1_17
+      rect:
+        serializedVersion: 2
+        x: 12500
+        y: 0
+        width: 2500
+        height: 2500
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5ff06eb4ab1b81c4c933ef7de13832d1
+      internalID: 1958180905
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
@@ -122,7 +518,25 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Sprite_Bison_Iddle 1_0: -685372754
+      Sprite_Bison_Iddle 1_1: -1394529123
+      Sprite_Bison_Iddle 1_10: 1903013793
+      Sprite_Bison_Iddle 1_11: 1112992104
+      Sprite_Bison_Iddle 1_12: 1239363937
+      Sprite_Bison_Iddle 1_13: -1391268856
+      Sprite_Bison_Iddle 1_14: -1074871830
+      Sprite_Bison_Iddle 1_15: 198385089
+      Sprite_Bison_Iddle 1_16: -1056214603
+      Sprite_Bison_Iddle 1_17: 1958180905
+      Sprite_Bison_Iddle 1_2: 1746954581
+      Sprite_Bison_Iddle 1_3: -489304929
+      Sprite_Bison_Iddle 1_4: 141287472
+      Sprite_Bison_Iddle 1_5: 283576112
+      Sprite_Bison_Iddle 1_6: -1829393187
+      Sprite_Bison_Iddle 1_7: -417116101
+      Sprite_Bison_Iddle 1_8: -1851162437
+      Sprite_Bison_Iddle 1_9: -1448108798
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

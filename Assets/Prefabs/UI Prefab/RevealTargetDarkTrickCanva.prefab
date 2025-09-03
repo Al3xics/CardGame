@@ -2962,7 +2962,7 @@ GameObject:
   - component: {fileID: 9036578305214834183}
   - component: {fileID: 4834765601332566016}
   m_Layer: 5
-  m_Name: UpdatedSelectTargetCanvas (1)
+  m_Name: UpdatedSelectTargetCanvas
   m_TagString: TargetUI
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3982,7 +3982,7 @@ GameObject:
   - component: {fileID: 8178818671963573892}
   - component: {fileID: 806820242120400134}
   m_Layer: 5
-  m_Name: Player_2 (1)
+  m_Name: Player_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4829,7 +4829,7 @@ GameObject:
   - component: {fileID: 4978502906705731408}
   - component: {fileID: 9008491997391765831}
   m_Layer: 5
-  m_Name: Player_2 (2)
+  m_Name: Player_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7291,7 +7291,7 @@ GameObject:
   - component: {fileID: 2306330570299212275}
   - component: {fileID: 8229862321613499835}
   m_Layer: 5
-  m_Name: Player_2 (3)
+  m_Name: Player_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

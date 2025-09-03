@@ -248,7 +248,7 @@ namespace Wendogo
 
                 Debug.Log($"This is my player id: {LocalPlayerId}");
 
-                //PlayerUI.Instance.SetUIInfos(LocalPlayerId);
+                PlayerUI.Instance.SetUIInfos(LocalPlayerId);
 
                 if (_prefabUI == null) { _prefabUI = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject; }
 

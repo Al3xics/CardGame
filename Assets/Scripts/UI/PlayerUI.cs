@@ -9,6 +9,8 @@ using Unity.Netcode;
 using System.Linq;
 using UnityEngine.Rendering;
 using Cysharp.Threading.Tasks;
+using Unity.VisualScripting;
+using UnityEditor.Animations;
 using static UnityEngine.UI.GridLayoutGroup;
 using UnityEditor.SceneManagement;
 
@@ -44,7 +46,22 @@ namespace Wendogo
         private int _lastRitualStage = -1;
 
         public static PlayerUI Instance { get; private set; }
-
+        
+        public GameObject PlayerGameObj1;
+        public GameObject PlayerGameObj2;
+        public GameObject PlayerGameObj3;
+        public GameObject PlayerGameObj4;
+        
+        public GameObject OwnerPlayer;
+        public GameObject Player1disp;
+        public GameObject Player2disp;
+        public GameObject Player3disp;
+        
+        public Dictionary<ulong, RuntimeAnimatorController> PlayerAnimsIcons = new();
+        public Dictionary<ulong, Sprite> PlayerSpritesCadres = new();
+        public Dictionary<ulong, Texture2D> PlayerImageIcons = new();
+        public Dictionary<ulong, Sprite> PlayerSpritesIcons = new();
+        
 
 
         void Awake()
@@ -105,6 +122,36 @@ namespace Wendogo
             }
         }
 
+        public void SetCadreToPlayer(ulong playerID, GameObject cadreRef)
+        {
+            cadreRef.GetComponent<Image>().sprite = PlayerSpritesCadres[playerID];
+        }
+
+        public void SetPlayerAnimIcons()
+        {
+            foreach (var i in ServerManager.GlobalPlayersByName.Keys)
+            {
+                ServerManager.GlobalPlayersByName.TryGetValue(i, out var name);
+                if (name == null) Debug.Log($"$$$$$$$$$$ name est null");
+                if (Player1disp == null) Debug.Log($"$$$$$$$$$$ Player1disp est null");
+                if (Player1disp.transform.Find("Player_2_Name") == null) Debug.Log($"$$$$$$$$$$ Find du player name est null");
+                if (Player1disp.transform.Find("Player_2_Name").GetComponent<TMP_Text>().text == null) Debug.Log($"$$$$$$$$$$ Chier putain ta race du player name est null");
+                
+                if (Player1disp.transform.Find("Player_2_Name").GetComponent<TMP_Text>().text == name)
+                {
+                    Player1disp.transform.Find("Player_2_Icon").GetComponent<Animator>().runtimeAnimatorController = PlayerAnimsIcons[i];
+                }
+                if (Player2disp.transform.Find("Player_3_Name").GetComponent<TMP_Text>().text == name)
+                {
+                    Player2disp.transform.Find("Player_3_Icon").GetComponent<Animator>().runtimeAnimatorController = PlayerAnimsIcons[i];
+                }
+                if (Player3disp.transform.Find("Player_4_Name").GetComponent<TMP_Text>().text == name)
+                {
+                    Player3disp.transform.Find("Player_4_Icon").GetComponent<Animator>().runtimeAnimatorController = PlayerAnimsIcons[i];
+                }
+            }
+        }
+
         public void GetRole(string role)
         {
             if (roleText != null)
@@ -133,6 +180,8 @@ namespace Wendogo
         public void SetUIInfos(ulong localPlayerID)
         {
             SetRitualUI();
+
+            SetCadreToPlayer(localPlayerID, OwnerPlayer);
             RenamePlayer(localPlayerID);
             
             List<ulong> allPlayerIds = NetworkManager.Singleton.ConnectedClientsList.Select(x => x.ClientId).ToList(); // List of all connected players
@@ -210,8 +259,24 @@ namespace Wendogo
                 {
                     title.text = ServerManager.GlobalPlayersByName.TryGetValue(trueID, out var name) ? name : $"Sah Player {trueID}";
                 }
-
             }
+            
+            PlayerGameObj1.transform.Find("Player_2_Name").GetComponent<TMP_Text>().text =
+                ServerManager.GlobalPlayersByName.TryGetValue(0, out var playerName1) ? playerName1 : $"Sah Player 0";
+            PlayerGameObj2.transform.Find("Player_2_Name").GetComponent<TMP_Text>().text =
+                ServerManager.GlobalPlayersByName.TryGetValue(1, out var playerName2) ? playerName2 : $"Sah Player 1";
+            PlayerGameObj3.transform.Find("Player_2_Name").GetComponent<TMP_Text>().text =
+                ServerManager.GlobalPlayersByName.TryGetValue(2, out var playerName3) ? playerName3 : $"Sah Player 2";
+            PlayerGameObj4.transform.Find("Player_2_Name").GetComponent<TMP_Text>().text =
+                ServerManager.GlobalPlayersByName.TryGetValue(3, out var playerName4) ? playerName4 : $"Sah Player 3";
+            
+            PlayerGameObj1.transform.Find("Player_2_Icon").GetComponent<RawImage>().texture = PlayerImageIcons[0];
+            PlayerGameObj2.transform.Find("Player_2_Icon").GetComponent<RawImage>().texture = PlayerImageIcons[1];
+            PlayerGameObj3.transform.Find("Player_2_Icon").GetComponent<RawImage>().texture = PlayerImageIcons[2];
+            PlayerGameObj4.transform.Find("Player_2_Icon").GetComponent<RawImage>().texture = PlayerImageIcons[3];
+            
+            
+            SetPlayerAnimIcons();
         }
 
         private void SetRitualUI()
