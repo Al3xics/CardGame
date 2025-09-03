@@ -20,6 +20,11 @@ namespace Wendogo
                 
                 if (targetPlayer != null)
                 {
+                    //ServerManager.Instance.BroadcastSharedFXEventRpc(new FXEventContext
+                    //{
+                    //    fxType = FXEventType.OnHealVFX,
+                    //    playerID = owner,
+                    //});
                     ServerManager.Instance.ChangePlayerHealthRpc(healValue, targetPlayer.OwnerClientId);
                     AnalyticsManager.Instance.RecordEvent(new CustomEvent("groupHealActiveCardWasApplied"));
                 }

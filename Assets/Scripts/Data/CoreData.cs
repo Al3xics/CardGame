@@ -101,6 +101,7 @@ namespace Wendogo
         OnRitualWoodComplete,
         OnRitualFakeComplete,
         OnOtherPlayerDeath,
+        OnHealVFX,
     }
 
     /// <summary>

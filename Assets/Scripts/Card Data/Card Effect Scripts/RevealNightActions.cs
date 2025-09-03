@@ -6,6 +6,7 @@ using Unity.Services.Analytics;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
+using TMPro;
 
 namespace Wendogo
 {
@@ -44,6 +45,20 @@ namespace Wendogo
                 prefabUI = FindAnyObjectByType<CanvaTarget>(FindObjectsInactive.Include).gameObject;
             base.ShowUI(prefabUI);
             prefabUI.SetActive(true);
+            
+            ServerManager.GlobalPlayersByName.TryGetValue(0, out var value1);
+            ServerManager.GlobalPlayersByName.TryGetValue(1, out var value2);
+            ServerManager.GlobalPlayersByName.TryGetValue(2, out var value3);
+            ServerManager.GlobalPlayersByName.TryGetValue(3, out var value4);
+            prefabUI.transform.Find("UpdatedSelectTargetCanvas").transform.Find("Panel").transform.Find("ButtonPlayer1").transform.Find("Player_2").transform.Find("Player_2_Name").GetComponent<TMP_Text>().text = value1;
+            prefabUI.transform.Find("UpdatedSelectTargetCanvas").transform.Find("Panel").transform.Find("ButtonPlayer2").transform.Find("Player_2").transform.Find("Player_2_Name").GetComponent<TMP_Text>().text = value2;
+            prefabUI.transform.Find("UpdatedSelectTargetCanvas").transform.Find("Panel").transform.Find("ButtonPlayer3").transform.Find("Player_2").transform.Find("Player_2_Name").GetComponent<TMP_Text>().text = value3;
+            prefabUI.transform.Find("UpdatedSelectTargetCanvas").transform.Find("Panel").transform.Find("ButtonPlayer4").transform.Find("Player_2").transform.Find("Player_2_Name").GetComponent<TMP_Text>().text = value4;
+                
+            prefabUI.transform.Find("UpdatedSelectTargetCanvas").transform.Find("Panel").transform.Find("ButtonPlayer1").transform.Find("Player_2").transform.Find("Player_2_Icon").GetComponent<RawImage>().texture = PlayerUI.Instance.PlayerImageIcons[0];
+            prefabUI.transform.Find("UpdatedSelectTargetCanvas").transform.Find("Panel").transform.Find("ButtonPlayer2").transform.Find("Player_2").transform.Find("Player_2_Icon").GetComponent<RawImage>().texture = PlayerUI.Instance.PlayerImageIcons[1];
+            prefabUI.transform.Find("UpdatedSelectTargetCanvas").transform.Find("Panel").transform.Find("ButtonPlayer3").transform.Find("Player_2").transform.Find("Player_2_Icon").GetComponent<RawImage>().texture = PlayerUI.Instance.PlayerImageIcons[2];
+            prefabUI.transform.Find("UpdatedSelectTargetCanvas").transform.Find("Panel").transform.Find("ButtonPlayer4").transform.Find("Player_2").transform.Find("Player_2_Icon").GetComponent<RawImage>().texture = PlayerUI.Instance.PlayerImageIcons[3];
         }
 
         public override void HideUI(bool clearVotes, GameObject uiInstance = null)
