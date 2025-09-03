@@ -14,15 +14,15 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Game Alexis UI Animations.unity
     guid: d6fb52cabd28fd34f9de6bda1446563c
-  - enabled: 1
-    path: Assets/Scenes/RealGameScene.unity
-    guid: e514f6156a5728d449c11be30fd20d8d
   - enabled: 0
     path: Assets/Scenes/Game Arthur_UI.unity
     guid: e81932bdbceb6b64a8676ae7f9e29b4a
   - enabled: 0
     path: Assets/Scenes/RealGameScene 1.unity
     guid: 98d2ebb3d99054b4499b3c3142baaa17
+  - enabled: 0
+    path: Assets/Scenes/RealGameScene.unity
+    guid: c18f561023e0a024bb2ebc709a3b53f0
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

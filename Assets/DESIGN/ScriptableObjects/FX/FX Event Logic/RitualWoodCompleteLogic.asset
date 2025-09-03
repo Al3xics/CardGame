@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: RitualWoodCompleteLogic
   m_EditorClassIdentifier: 
   ritualWoodCompleteList:
+  - {fileID: 8300000, guid: ce05ab81aa854154db7437ace897e7fe, type: 3}
   - {fileID: 8300000, guid: 23c44691f1dbc8f4ea34dfe0562fb621, type: 3}
   - {fileID: 8300000, guid: 838032b27144cba45a0c9bfa1caeee62, type: 3}
   - {fileID: 8300000, guid: c46a026051d99db4fb5cebfc9d7a854e, type: 3}
   - {fileID: 8300000, guid: 8715f3cb4f6b6d748bd16120a9dd2706, type: 3}
+  - {fileID: 8300000, guid: afd17c4edf10fe44193c2da4bec46e44, type: 3}

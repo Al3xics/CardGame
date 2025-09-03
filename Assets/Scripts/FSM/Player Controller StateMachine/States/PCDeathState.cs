@@ -15,8 +15,8 @@ namespace Wendogo
             PlayerUI.Instance.DeactivateAllHearts();
             _player.NotifyDeathRpc();
             ServerManager.Instance.RemovePlayerFromListsRpc(_player.OwnerClientId);
-            PlayerUI.Instance.SwitchMute(true);
-            _player.DisableInput();
+            SessionManager.Instance.MutePlayer(true);
+            _player._handManager.ToggleOffMovingCards(_player._handManager.handCards);
             ServerManager.Instance.BroadcastLocalFXEventToPlayerRpc(new FXEventContext
             {
                 fxType = FXEventType.OnPlayerDeath,

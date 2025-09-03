@@ -535,13 +535,13 @@ namespace Wendogo
             foreach (var player in PlayersById.Values)
                 player.GroupSelectTargetAsyncRpc(RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
         }
-        //
-        // [Rpc(SendTo.Server)]
-        // public void EnableInputAndDisableMovingCardsRpc()
-        // {
-        //     foreach (var player in PlayersById.Values)
-        //         player.EnableInputAndDisableMovingCardsRpc(RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
-        // }
+
+        [Rpc(SendTo.Server)]
+        public void EnableInputAndDisableMovingCardsRpc()
+        {
+            foreach (var player in PlayersById.Values)
+                player.EnableInputAndDisableMovingCardsRpc(RpcTarget.Single(player.OwnerClientId, RpcTargetUse.Temp));
+        }
 
         [Rpc(SendTo.Server)]
         public void ShowCardsCanvaRpc(int CardId, ulong clientID)

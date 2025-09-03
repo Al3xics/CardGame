@@ -15,7 +15,9 @@ MonoBehaviour:
   transitionToNightList:
   - {fileID: 8300000, guid: 6b0bc843db2800044a7d13fc6ef88e35, type: 3}
   - {fileID: 8300000, guid: 5a0691a6746137e4cbbfbaf4be872573, type: 3}
+  - {fileID: 8300000, guid: 97487319f8a55484f97ccfdbd8de1fcb, type: 3}
   - {fileID: 8300000, guid: f5eeb65e26bc5ec4abe9fbb2eef32b61, type: 3}
+  - {fileID: 8300000, guid: 4097c735693648446a6922ad99295ed1, type: 3}
   - {fileID: 8300000, guid: 7cb3d5b22458b48418584bd67da67515, type: 3}
   - {fileID: 8300000, guid: 64b9556d9e8d86344a257791fce949f4, type: 3}
   - {fileID: 8300000, guid: 1cd71b818048cc9409fcffa7c9eb4f79, type: 3}
