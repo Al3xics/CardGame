@@ -65,6 +65,7 @@ namespace Wendogo
                         AnimateCardToZone(draggedCard.transform, zone);
 
                         slots[zone] = draggedCard;
+                        
                         break;
                     }
                 }
@@ -89,6 +90,12 @@ namespace Wendogo
 
             dragHandler.enabled = false;
             CallZoneDropEvents(cod, cardData);
+            if (cardData.CardEffect is Sacrifice)
+            {
+                LMotion.Create(cod.gameObject.transform.localScale, new Vector3(12, 12, 12) / 2.5f, 0.2f)
+                   .WithEase(Ease.OutQuad)
+                   .BindToLocalScale(cod.gameObject.transform);
+            }
         }
 
         public static void CallZoneDropEvents(CardObjectData cod, CardDataSO cardData)

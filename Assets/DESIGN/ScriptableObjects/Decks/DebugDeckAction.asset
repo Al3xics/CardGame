@@ -16,5 +16,9 @@ MonoBehaviour:
   cardDeckData:
   - CardData: {fileID: 11400000, guid: 0f961ec93fae9e94385cca09e6aa1c19, type: 2}
     quantity: 30
-  - CardData: {fileID: 11400000, guid: 274f8db282fb7e94e900b7085abff0ca, type: 2}
-    quantity: 30
+  - CardData: {fileID: 11400000, guid: a1ec95ed7b35044498bf34e5ce08fc68, type: 2}
+    quantity: 300
+  - CardData: {fileID: 11400000, guid: 621412b713679d1458e76c20065a8cb0, type: 2}
+    quantity: 300
+  - CardData: {fileID: 11400000, guid: 0f0dc0dc6f5db2944b1960d0bee62926, type: 2}
+    quantity: 300
