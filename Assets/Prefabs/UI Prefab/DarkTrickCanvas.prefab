@@ -910,7 +910,7 @@ GameObject:
   - component: {fileID: 3901748854041891312}
   - component: {fileID: 1090115823490598963}
   m_Layer: 5
-  m_Name: UpdatedSelectTargetCanvas (1)
+  m_Name: UpdatedSelectTargetCanvas
   m_TagString: TargetUI
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1769,7 +1769,7 @@ GameObject:
   - component: {fileID: 8463271470950850686}
   - component: {fileID: 4873671461353615846}
   m_Layer: 5
-  m_Name: SelectResourcesCanvas (1)
+  m_Name: SelectResourcesCanvas
   m_TagString: ResourcesUI
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

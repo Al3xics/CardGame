@@ -63,8 +63,9 @@ namespace Wendogo
         public GameObject Player3disp;
         
         public Dictionary<ulong, RuntimeAnimatorController> PlayerAnimsIcons = new();
-        public Dictionary<ulong, Sprite> PlayerSprites = new();
+        public Dictionary<ulong, Sprite> PlayerSpritesCadres = new();
         public Dictionary<ulong, Texture2D> PlayerImageIcons = new();
+        public Dictionary<ulong, Sprite> PlayerSpritesIcons = new();
         
 
 
@@ -132,7 +133,7 @@ namespace Wendogo
 
         public void SetCadreToPlayer(ulong playerID, GameObject cadreRef)
         {
-            cadreRef.GetComponent<Image>().sprite = PlayerSprites[playerID];
+            cadreRef.GetComponent<Image>().sprite = PlayerSpritesCadres[playerID];
         }
 
         public void SetPlayerAnimIcons()
@@ -189,7 +190,7 @@ namespace Wendogo
         {
             SetRitualUI();
 
-            SetCadreToPlayer(localPLayerID, OwnerPlayer);
+            SetCadreToPlayer(localPlayerID, OwnerPlayer);
             RenamePlayer(localPlayerID);
             
             List<ulong> allPlayerIds = NetworkManager.Singleton.ConnectedClientsList.Select(x => x.ClientId).ToList(); // List of all connected players
