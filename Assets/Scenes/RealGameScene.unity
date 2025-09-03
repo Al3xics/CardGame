@@ -671,6 +671,10 @@ MonoBehaviour:
   showDebugLogs: 1
   customTurnOrder: 
   wendogoId: -1
+  audioSourceOST: {fileID: 0}
+  dayMusicClip: {fileID: 0}
+  nightMusicClip: {fileID: 0}
+  transitionSpeed: 2
   maximumTurn: 6
   startingActionDeckAmount: 3
   startingResourceDeckAmount: 2
@@ -1315,7 +1319,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 410597146149384154, guid: 97ac440e15bba064d8ea41b10d4ffd16, type: 3}
       propertyPath: autoConnect
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 410597146149384154, guid: 97ac440e15bba064d8ea41b10d4ffd16, type: 3}
       propertyPath: networkManager
@@ -4331,7 +4335,7 @@ RectTransform:
   m_GameObject: {fileID: 2874101728495403660}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 38, y: 38, z: 38}
+  m_LocalScale: {x: 7, y: 7, z: 7}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 7606725345538133759}
@@ -8767,7 +8771,7 @@ RectTransform:
   m_GameObject: {fileID: 4375552676014907645}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 38, y: 38, z: 38}
+  m_LocalScale: {x: 7, y: 7, z: 7}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 3212917402984282420}
@@ -10611,8 +10615,8 @@ RectTransform:
   m_GameObject: {fileID: 8471282593171586445}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 38, y: 38, z: 38}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 7, y: 7, z: 7}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 156929646526669655}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -20202,6 +20206,74 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
+    - Name: PlayerAnimsIcons
+      Entry: 7
+      Data: 6|System.Collections.Generic.Dictionary`2[[System.UInt64, mscorlib],[UnityEngine.RuntimeAnimatorController,
+        UnityEngine.AnimationModule]], mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 7|System.Collections.Generic.GenericEqualityComparer`1[[System.UInt64,
+        mscorlib]], mscorlib
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: PlayerSpritesCadres
+      Entry: 7
+      Data: 8|System.Collections.Generic.Dictionary`2[[System.UInt64, mscorlib],[UnityEngine.Sprite,
+        UnityEngine.CoreModule]], mscorlib
+    - Name: comparer
+      Entry: 9
+      Data: 7
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: PlayerImageIcons
+      Entry: 7
+      Data: 9|System.Collections.Generic.Dictionary`2[[System.UInt64, mscorlib],[UnityEngine.Texture2D,
+        UnityEngine.CoreModule]], mscorlib
+    - Name: comparer
+      Entry: 9
+      Data: 7
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: PlayerSpritesIcons
+      Entry: 7
+      Data: 10|System.Collections.Generic.Dictionary`2[[System.UInt64, mscorlib],[UnityEngine.Sprite,
+        UnityEngine.CoreModule]], mscorlib
+    - Name: comparer
+      Entry: 9
+      Data: 7
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
   foodCount: {fileID: 7527250268547598437}
   woodCount: {fileID: 4221050306631716006}
   paCount: {fileID: 2409779098791518913}
@@ -20217,6 +20289,17 @@ MonoBehaviour:
   _attackButton: {fileID: 2651841721123487418}
   _decoyButton: {fileID: 1233672931675324724}
   _ritualObject: {fileID: 2512217716068055076}
+  imageComponentMuteButton: {fileID: 0}
+  unmutedImage: {fileID: 0}
+  mutedImage: {fileID: 0}
+  PlayerGameObj1: {fileID: 0}
+  PlayerGameObj2: {fileID: 0}
+  PlayerGameObj3: {fileID: 0}
+  PlayerGameObj4: {fileID: 0}
+  OwnerPlayer: {fileID: 0}
+  Player1disp: {fileID: 0}
+  Player2disp: {fileID: 0}
+  Player3disp: {fileID: 0}
 --- !u!224 &8796894845435585058
 RectTransform:
   m_ObjectHideFlags: 0
