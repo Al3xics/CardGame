@@ -1589,7 +1589,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShowTopMostFoldoutHeaderGroup: 1
   menuSceneName: Menu_Refonte
-  gameSceneName: Game Alexis UI Animations
+  gameSceneName: Game Martin UI
   playerHealthAsked: 0
   playerFoodAsked: 0
   playerWoodAsked: 0
