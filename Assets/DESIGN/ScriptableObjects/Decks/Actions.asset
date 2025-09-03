@@ -40,10 +40,6 @@ MonoBehaviour:
     quantity: 7
   - CardData: {fileID: 11400000, guid: 9aa288262a939f5448d3a2ef7026e76f, type: 2}
     quantity: 7
-  - CardData: {fileID: 11400000, guid: b129981254c9e1d43b0310dcae8b0c13, type: 2}
-    quantity: 13
-  - CardData: {fileID: 11400000, guid: ac7dcf49869352b42b67444497e0d2ea, type: 2}
-    quantity: 7
   - CardData: {fileID: 11400000, guid: 4892ce60f4aeb0040bc8803ae0d30610, type: 2}
     quantity: 7
   - CardData: {fileID: 11400000, guid: 4fc4836935832cd49b78fd574c621528, type: 2}
