@@ -13,7 +13,11 @@ namespace Wendogo
 
         public void ApplyRitualEffect(ulong owner, ResourceType resourceType, int value)
         {
-            if (value <= 0) return;
+            if (value <= 0)
+            {
+                return;
+            }
+
 
             var player = PlayerController.GetPlayer(owner);
             if (!player) return;

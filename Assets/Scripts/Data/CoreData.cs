@@ -102,6 +102,7 @@ namespace Wendogo
         OnRitualFakeComplete,
         OnOtherPlayerDeath,
         OnHealVFX,
+        OnCardPlayedWithoutEffect
     }
 
     /// <summary>
